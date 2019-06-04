@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="path">
-      <h3>About</h3>
+      <h5>About</h5>
     </div>
     <div class="row">
       <div class="col">

@@ -1,16 +1,14 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">FuzzREST</a>
+  <div>
+    <b-navbar toggleable="lg" type="dark" variant="primary" fixed="top">
+      <b-navbar-brand href="/">FuzzREST</b-navbar-brand>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
           <router-link class="nav-link" to="/projects">Projects</router-link>
-        </li>
-        <li class="nav-item">
           <router-link class="nav-link" to="/about">About</router-link>
-        </li>
-      </ul>
-    </div>
-  </nav>     
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+  </div>
 </template>

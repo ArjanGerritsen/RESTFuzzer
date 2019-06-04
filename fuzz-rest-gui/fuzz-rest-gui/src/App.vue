@@ -23,12 +23,12 @@ export default {
 <style scoped>
   #container {
     margin: auto;
-    width: 95%;
+    width: 98%;
   }
 </style>
 
 <style>
   .path {
-    margin: 30px 0px 20px 0px;
+    margin: 90px 0px 20px 0px;
   }
 </style>
