@@ -12,7 +12,7 @@
 
     <b-button type="submit" variant="primary" @click="loadingList">loading</b-button>
 
-    <fr-table @select-item="selectProject"  :fields="fields" :items="items"></fr-table>
+    <fr-table @select-item="selectProject" :fields="fields" :items="items"></fr-table>
 
     <div>{{this.selectedProject}}</div>
   </div>

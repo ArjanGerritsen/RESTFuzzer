@@ -1,17 +1,20 @@
+/* imports Vue */
 import '@babel/polyfill'
 import 'mutationobserver-shim'
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import BootstrapVue from 'bootstrap-vue';
 
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+/* bootstrap */
+import './plugins/bootstrap-vue'
 
-Vue.use(BootstrapVue)
+/* filters */
+import './filters/date-filter'
 
-Vue.config.productionTip = false;
+/* other */
+Vue.config.productionTip = false
 
+/* init Vue */
 new Vue({
   router,
   render: h => h(App)

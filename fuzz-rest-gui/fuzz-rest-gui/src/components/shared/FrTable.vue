@@ -48,6 +48,7 @@ export default {
     isBusy() {
       return this.items === null;
     }
-  }
+  }, 
+  created: function() { }
 }
 </script>
