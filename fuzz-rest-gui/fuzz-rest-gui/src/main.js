@@ -14,8 +14,12 @@ import './filters/date-filter'
 /* other */
 Vue.config.productionTip = false
 
+/* vuex */
+import store from './plugins/veux'
+
 /* init Vue */
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount("#app");

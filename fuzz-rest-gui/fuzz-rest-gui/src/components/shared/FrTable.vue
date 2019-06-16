@@ -6,12 +6,20 @@
       show-empty
       :busy="isBusy"
       selectable select-mode="single" selectedVariant="primary" @row-selected="selectRow" striped hover 
-      :items="items" :fields="fields" :current-page="currentPage" :per-page="perPage">
+      :items="items"
+      :fields="fields"
+      :current-page="currentPage" :per-page="perPage">
 
       <div slot="table-busy" class="text-center text-primary my-2">
         <b-spinner type="grow" class="align-middle"></b-spinner>
         <strong style="margin-left:10px;">Loading...</strong>
       </div>
+
+      <template v-for="formatter in formatters" :slot="formatter.field" slot-scope="row">
+        <template v-if="formatter.as === 'date'">
+          {{ row.value | formatDate }}
+        </template>
+      </template>
 
       <template slot="empty">
         <h6>No data present.</h6>
@@ -23,10 +31,10 @@
 <script>
 export default {
   name: 'FrTable',
-  props: ['items', 'fields'],
+  props: ['items', 'fields', 'formatters'],
   data() {
      return {
-       perPage: 3,
+       perPage: 15,
        currentPage: 1
      }
   },
