@@ -4,13 +4,15 @@
       <h5>Projects</h5>
     </div>
 
-    <b-button type="submit" variant="primary">add project</b-button>
+    <b-button type="submit" variant="primary">Add project</b-button>
 
     <div class="row">
-      <div class="col-sm">
+      <div class="col">
         <project-list></project-list>
       </div>
-      <div class="col-sm">
+    </div>
+    <div class="row">
+      <div class="col">
         <project></project>
       </div>
     </div>

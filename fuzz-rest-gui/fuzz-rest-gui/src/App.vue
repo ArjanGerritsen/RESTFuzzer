@@ -31,4 +31,12 @@ export default {
   .path {
     margin: 90px 0px 20px 0px;
   }
+
+  .button-group {
+    margin-bottom:15px;
+  }
+
+  .button-group button {
+    margin-right: 10px;
+  }
 </style>

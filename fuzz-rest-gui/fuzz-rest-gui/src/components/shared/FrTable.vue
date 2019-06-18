@@ -11,7 +11,7 @@
       :current-page="currentPage" :per-page="perPage">
 
       <div slot="table-busy" class="text-center text-primary my-2">
-        <b-spinner type="grow" class="align-middle"></b-spinner>
+        <b-spinner type="border" class="align-middle" small></b-spinner>
         <strong style="margin-left:10px;">Loading...</strong>
       </div>
 
@@ -34,7 +34,7 @@ export default {
   props: ['items', 'fields', 'formatters'],
   data() {
      return {
-       perPage: 15,
+       perPage: 5,
        currentPage: 1
      }
   },
