@@ -21,9 +21,9 @@
                 <dt>Created @</dt>
                 <dd>{{this.project.created_at | formatDate }}</dd>
                 <dt>Started @</dt>
-                <dd>{{this.project.started_at | formatDate }}</dd>
+                <dd>{{this.project.last_started_at | formatDate }}</dd>
                 <dt>Finished @</dt>
-                <dd>{{this.project.finished_at | formatDate }}</dd>
+                <dd>{{this.project.last_finished_at | formatDate }}</dd>
               </dl>
             </div>
             <div class="col">

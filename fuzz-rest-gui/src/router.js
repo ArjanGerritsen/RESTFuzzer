@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 
 import Projects from "./components/projects/Projects.vue";
+import Tasks from "./components/tasks/Tasks.vue";
 import About from "./components/About.vue";
 
 Vue.use(Router);
@@ -10,6 +11,11 @@ export default new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
+    {
+      path: "/tasks",
+      name: "tasks",
+      component: Tasks
+    },
     {
       path: "/projects",
       name: "projects",
