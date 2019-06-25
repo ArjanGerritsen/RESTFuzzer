@@ -4,7 +4,7 @@
 
 <script>
   import FrTable from '../shared/FrTable'
-  import store from '../../plugins/veux'
+  import Store from '../shared/Store'
 
   export default {
     components: {

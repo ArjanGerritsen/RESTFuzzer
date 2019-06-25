@@ -20,7 +20,7 @@
 	</dependencies>
 
 	<build>
-	 <directory>../target/fuzz-rest-service/</directory>
+	 <!-- <directory>../target/fuzz-rest-service/</directory> -->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

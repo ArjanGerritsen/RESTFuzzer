@@ -1,7 +1,5 @@
 <template>
   <div>
-    <b-pagination style="float:right;" v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="project_table"></b-pagination>
-
     <b-table id="project_table" 
       show-empty
       :busy="isBusy"
@@ -25,6 +23,8 @@
         <h6>No data present.</h6>
       </template>      
     </b-table>
+
+    <b-pagination v-if="displayPagination" style="float:right;" v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="project_table"></b-pagination>
   </div>
 </template>
 
@@ -51,11 +51,15 @@ export default {
   },
   computed: {
     rows() {
-      return (this.items === null ? 0 : this.items.length);
+      return (this.items === null ? 0 : this.items.length)
     },
     isBusy() {
-      return this.items === null;
-    }
+      return this.items === null
+    },
+    displayPagination() {
+      if (this.items === null) { return false }
+      return this.items.length > this.perPage
+    },
   }, 
   created: function() { }
 }

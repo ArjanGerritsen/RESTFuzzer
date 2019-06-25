@@ -13,7 +13,7 @@
 	<name>FuzzRestGui</name>
 
 	<build>
-		<directory>../target/fuzz-rest-gui/</directory>
+		<!--  <directory>../target/fuzz-rest-gui/</directory> -->
 		<plugins>
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
@@ -21,7 +21,7 @@
 				<version>${frontend-maven-plugin.version}</version>
 				<configuration>
 					<workingDirectory>vuejs</workingDirectory>
-					<installDirectory>../target/fuzz-rest-gui/</installDirectory>
+					<!--  <installDirectory>../target/fuzz-rest-gui/</installDirectory> -->
 				</configuration>
 				<executions>
 					<execution> <!-- Install our node and npm version to run npm/node scripts -->
