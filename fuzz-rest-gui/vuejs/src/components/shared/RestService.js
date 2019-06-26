@@ -28,6 +28,18 @@ export default class RestService {
     )    
   }
 
+  getAdministrativeTasks() {
+    axios
+      .get('rest/administrative/tasks')
+      .then(response => { store.commit('administrative_tasks_set', { tasks: response.data } ) })
+      .catch(error => {
+        this.handleError("Couldn't retrieve administrative tasks.", error); 
+        store.commit('administrative_tasks_set', { tasks: [] } 
+        );
+      }
+    )
+  }
+
   handleError(text, error) {
     this.toast.toast(text, {
       title: 'AJAX call failed',

@@ -6,7 +6,10 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     projects: null,
-    project: null
+    project: null,
+    administrative: {
+      tasks: null
+    }
   },
   getters: {
     projects: state => {
@@ -15,6 +18,9 @@ const store = new Vuex.Store({
     project: state => {
       return state.project
     },
+    administrative_tasks: state => {
+      return state.administrative.tasks
+    }
   },
   mutations: {
     projects_set (state, payload) {
@@ -22,6 +28,9 @@ const store = new Vuex.Store({
     },
     project_set (state, payload) {
       state.project = payload.project
+    },
+    administrative_tasks_set (state, payload) {
+      state.administrative.tasks = payload.tasks
     },
   }
 })

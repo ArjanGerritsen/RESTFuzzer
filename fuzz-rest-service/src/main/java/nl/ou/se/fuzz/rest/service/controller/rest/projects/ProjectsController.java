@@ -37,7 +37,7 @@ public class ProjectsController {
 		project.setId(2);
 		project.setOasUrl("http://localhost/rest/swagger.json");
 		project.setStatus("NIEUW");
-		this.projects.add(project);		
+		this.projects.add(project);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)

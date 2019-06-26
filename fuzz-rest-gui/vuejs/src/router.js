@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
 
-import Projects from "./components/projects/Projects.vue";
-import Tasks from "./components/tasks/Tasks.vue";
+import Projects from "./components/projects/Projects";
+import AdministrativeTasks from "./components/administrative/tasks/Tasks";
 import About from "./components/About.vue";
 
 Vue.use(Router);
@@ -12,14 +12,14 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/tasks",
-      name: "tasks",
-      component: Tasks
-    },
-    {
       path: "/projects",
       name: "projects",
       component: Projects
+    },
+    {
+      path: "/administrative-tasks",
+      name: "administrative-tasks",
+      component: AdministrativeTasks
     },
     {
       path: "/about",
