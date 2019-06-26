@@ -4,60 +4,47 @@
       <h5>Projects</h5>
     </div>
 
-    <button-group>
-      <b-button type="submit" variant="primary"><font-awesome-icon icon="plus" size="1x" /></b-button>
-    </button-group>
-
     <div class="row">
       <div class="col-8">
         <project-list></project-list>
       </div>
       <div class="col-4">
-        <project></project>
+        <b-card header="Actions">
+          <b-button type="submit" variant="primary"><font-awesome-icon icon="plus" size="xs" />&nbsp;add project</b-button>
+        </b-card>
+        <project-add></project-add>
+        <project-detail></project-detail>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import ProjectAdd from './Add'
   import ProjectList from './List'
-  import Project from './Detail'
-
-  import store from '../shared/Store'
-
-  import axios from 'axios';
+  import ProjectDetail from './Detail'
+  import RestService from '../shared/RestService'
 
   export default {
     components: {
-      ProjectList, Project
+      ProjectAdd,
+      ProjectList,
+      ProjectDetail
     },
     data() {
       return {
-        form: {
-          email: '',
-          name: '',
-          checked: []
-        }
+        restService: new RestService(this.$bvToast)
       }
     },
-    methods: {
-      getProjects() {
-        axios
-          .get('rest/projects')
-          .then(response => { store.commit('projects_set', { projects: response.data } ) })
-          .catch(error => { console.log(error) })
-          .finally(() => console.log('done loading projects') )
-      }
-    },
+    methods: { },
     computed: { },
-    created: function () {
-      setTimeout(() => { this.getProjects() }, 1500)
+    created: function() {
+      this.restService.getProjects()
     },
   }
 </script>
 
-<style scoped>
-  .btn {
-    margin-right: 10px;
-  }
+<style>
+  .card { margin-bottom: 20px; }
+  .btn { margin-right: 10px; }
 </style>

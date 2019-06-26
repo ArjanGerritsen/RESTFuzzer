@@ -1,14 +1,14 @@
 <template>
-  <fr-table @select-item="selectTask" :fields="fields" :items="items" :formatters="formatters"></fr-table>
+  <default-table @select-item="selectTask" :fields="fields" :items="items" :formatters="formatters"></default-table>
 </template>
 
 <script>
-  import FrTable from '../shared/FrTable'
+  import DefaultTable from '../shared/DefaultTable'
   import Store from '../shared/Store'
 
   export default {
     components: {
-      FrTable
+      DefaultTable
     },
     data() {
       return {

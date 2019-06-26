@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style scoped>
-  #container {
+ #container {
     margin: auto;
     width: 98%;
   }
@@ -30,13 +30,5 @@ export default {
 <style>
   .path {
     margin: 90px 0px 20px 0px;
-  }
-
-  .button-group {
-    margin-bottom:15px;
-  }
-
-  .button-group button {
-    margin-right: 10px;
   }
 </style>

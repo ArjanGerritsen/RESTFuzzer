@@ -10,7 +10,7 @@
 
       <div slot="table-busy" class="text-center text-primary my-2">
         <b-spinner type="border" class="align-middle" small></b-spinner>
-        <strong style="margin-left:10px;">Loading...</strong>
+        <span style="margin-left:10px;">Loading...</span>
       </div>
 
       <template v-for="formatter in formatters" :slot="formatter.field" slot-scope="row">

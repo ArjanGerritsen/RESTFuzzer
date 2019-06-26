@@ -1,15 +1,14 @@
 <template>
-  <fr-table @select-item="selectProject" :fields="fields" :items="projects" :formatters="formatters"></fr-table>
+  <default-table @select-item="selectProject" :fields="fields" :items="projects" :formatters="formatters"></default-table>
 </template>
 
 <script>
-  import FrTable from '../shared/FrTable'
-
+  import DefaultTable from '../shared/DefaultTable'
   import Store from '../shared/Store'
 
   export default {
     components: {
-      FrTable
+      DefaultTable
     },
     data() {
       return {
@@ -18,7 +17,7 @@
         ],
         fields: [
           { key: 'status', thStyle: 'width: 100px;' },
-          { key: 'oasUrl', label: 'OpenAPI Specifcation', thStyle: 'width: 400px;' },
+          { key: 'oasUrl', label: 'OAS url', thStyle: 'width: 400px;' },
           { key: 'description' },
           { key: 'createdAt', label: 'Created @', thStyle: 'width: 150px;' },
         ],
