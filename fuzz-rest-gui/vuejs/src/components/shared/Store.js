@@ -7,8 +7,9 @@ const store = new Vuex.Store({
   state: {
     projects: null,
     project: null,
-    administrative: {
-      tasks: null
+    admin: {
+      tasks: null,
+      task: null,
     }
   },
   getters: {
@@ -18,9 +19,12 @@ const store = new Vuex.Store({
     project: state => {
       return state.project
     },
-    administrative_tasks: state => {
-      return state.administrative.tasks
-    }
+    admin_tasks: state => {
+      return state.admin.tasks
+    },
+    admin_task: state => {
+      return state.admin.task
+    },
   },
   mutations: {
     projects_set (state, payload) {
@@ -29,8 +33,11 @@ const store = new Vuex.Store({
     project_set (state, payload) {
       state.project = payload.project
     },
-    administrative_tasks_set (state, payload) {
-      state.administrative.tasks = payload.tasks
+    admin_tasks_set (state, payload) {
+      state.admin.tasks = payload.tasks
+    },
+    admin_task_set (state, payload) {
+      state.admin.task = payload.task
     },
   }
 })

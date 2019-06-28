@@ -28,6 +28,9 @@ export default {
 </style>
 
 <style>
+  body {
+    background-color: #dddddd !important;
+  }
   .path {
     margin: 90px 0px 20px 0px;
   }

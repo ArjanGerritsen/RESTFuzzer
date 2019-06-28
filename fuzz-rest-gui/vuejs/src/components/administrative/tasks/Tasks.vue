@@ -6,16 +6,22 @@
 
     <div class="row">
       <div class="col-8">
-        <task-list></task-list>
+        <b-card header-tag="header">
+          <span slot="header"><font-awesome-icon icon="list" size="1x" />&nbsp;Overview</span>
+          <b-card-text>
+            <task-list></task-list>
+          </b-card-text>
+        </b-card>
       </div>
       <div class="col-4">
-        <b-card header="Actions">
+        <b-card header-tag="header">
+          <span slot="header"><font-awesome-icon icon="hammer" size="1x" />&nbsp;Actions</span>
           <b-button type="submit" variant="primary"><font-awesome-icon icon="plus" size="xs" />&nbsp;add task</b-button>
           <b-button type="submit" variant="primary"><font-awesome-icon icon="cloud-download-alt" size="xs" />&nbsp;backup</b-button>
           <b-button type="submit" variant="danger"><font-awesome-icon icon="cloud-upload-alt" size="xs" />&nbsp;restore</b-button>
         </b-card>
-        <!-- <project-add></project-add>
-        <project-detail></project-detail> -->
+        <!--<project-add></project-add> -->
+        <task-detail></task-detail>
       </div>
     </div>
   </div>
@@ -24,14 +30,14 @@
 <script>
 //   import ProjectAdd from './Add'
   import TaskList from './TaskList'
-//   import ProjectDetail from './Detail'
+  import TaskDetail from './TaskDetail'
   import RestService from '../../shared/RestService'
 
   export default {
     components: {
     //   ProjectAdd,
       TaskList,
-    //   ProjectDetail
+      TaskDetail,
     },
     data() {
       return {
@@ -41,7 +47,7 @@
     methods: { },
     computed: { },
     created: function() {
-      this.restService.getAdministrativeTasks()
+      this.restService.getAdminTasks()
     },
   }
 </script>

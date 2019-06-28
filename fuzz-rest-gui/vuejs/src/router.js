@@ -17,8 +17,8 @@ export default new Router({
       component: Projects
     },
     {
-      path: "/administrative-tasks",
-      name: "administrative-tasks",
+      path: "/admin-tasks",
+      name: "admin-tasks",
       component: AdministrativeTasks
     },
     {

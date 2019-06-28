@@ -3,21 +3,19 @@
 </template>
 
 <script>
-  import DefaultTable from '../../shared/DefaultTable'
+  import DefaultTable from '../../shared/DefaultList'
   import Store from '../../shared/Store'
 
   export default {
-    components: {
-      DefaultTable
-    },
+    components: { DefaultTable },
     data() {
       return {
         formatters: [
           { field: 'createdAt', as: 'date' },
           { field: 'lastStartedAt', as: 'date' },
+          { field: 'status_icon', as: 'html' },
         ],
         fields: [
-          { key: 'id', thStyle: 'width: 100px;' },
           { key: 'status', thStyle: 'width: 100px;' },
           { key: 'type', label: 'type', thStyle: 'width: 200px;' },
           { key: 'description' },
@@ -26,15 +24,11 @@
         ],
       }
     },
-    methods: { 
-      selectTask(task) {
-    //     Store.commit('project_set', { project: value } )
-      }
+    methods: {
+      selectTask(task) { Store.commit('admin_task_set', { task: task } ) },
     },
     computed: { 
-      tasks() {
-        return Store.getters.administrative_tasks
-      }
+      tasks() { return Store.getters.admin_tasks }
     },
     created: function () { },
   }

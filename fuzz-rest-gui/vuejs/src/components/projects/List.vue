@@ -1,15 +1,13 @@
 <template>
-  <default-table @select-item="selectProject" :fields="fields" :items="projects" :formatters="formatters"></default-table>
+  <default-list @select-item="selectProject" :fields="fields" :items="projects" :formatters="formatters"></default-list>
 </template>
 
 <script>
-  import DefaultTable from '../shared/DefaultTable'
+  import DefaultList from '../shared/DefaultList'
   import Store from '../shared/Store'
 
   export default {
-    components: {
-      DefaultTable
-    },
+    components: { DefaultList },
     data() {
       return {
         formatters: [
@@ -24,14 +22,10 @@
       }
     },
     methods: { 
-      selectProject(value) {
-        Store.commit('project_set', { project: value } )
-      }
+      selectProject(value) { Store.commit('project_set', { project: value } ) },
     },
     computed: { 
-      projects() {
-        return Store.getters.projects
-      }
+      projects() { return Store.getters.projects },
     },
     created: function () { },
   }

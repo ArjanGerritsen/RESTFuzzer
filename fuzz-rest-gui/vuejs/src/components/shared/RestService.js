@@ -2,10 +2,10 @@ import axios from 'axios'
 import store from './Store'
 
 export default class RestService {
-  toast;
+  static toast;
 
   constructor(toast) {
-    this.toast = toast;
+    RestService.toast = toast;
   }
 
   getProjects() {
@@ -13,7 +13,7 @@ export default class RestService {
       .get('rest/projects')
       .then(response => { store.commit('projects_set', { projects: response.data } ) })
       .catch(error => {
-        this.handleError("Couldn't retrieve projects.", error); 
+        RestService.handleError("Couldn't retrieve projects.", error); 
         store.commit('projects_set', { projects: [] } 
         );
       }
@@ -24,23 +24,31 @@ export default class RestService {
     axios
       .post('rest/projects', project)
       .then(response => { console.log('done') })
-      .catch(error => { this.handleError("Couldn't add project.", error); }
+      .catch(error => { RestService.handleError("Couldn't add project.", error); }
     )    
   }
 
-  getAdministrativeTasks() {
+  getAdminTasks() {
     axios
-      .get('rest/administrative/tasks')
-      .then(response => { store.commit('administrative_tasks_set', { tasks: response.data } ) })
+      .get('rest/admin/tasks')
+      .then(response => { store.commit('admin_tasks_set', { tasks: response.data } ) })
       .catch(error => {
-        this.handleError("Couldn't retrieve administrative tasks.", error); 
-        store.commit('administrative_tasks_set', { tasks: [] } 
+        RestService.handleError("Couldn't retrieve administrative tasks.", error); 
+        store.commit('admin_tasks_set', { tasks: [] } 
         );
       }
     )
   }
 
-  handleError(text, error) {
+  getAdminTaskEvents(taskId, events) {
+    axios
+      .get(`rest/admin/tasks/${taskId}/events`)
+      .then(response => { events = response.data })
+      .catch(error => { RestService.handleError("Couldn't retrieve events for administrative task.", error) }
+    )
+  }
+
+  static handleError(text, error) {
     this.toast.toast(text, {
       title: 'AJAX call failed',
       variant: 'danger',

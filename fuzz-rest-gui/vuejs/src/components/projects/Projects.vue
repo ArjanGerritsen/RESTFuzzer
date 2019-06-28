@@ -6,10 +6,16 @@
 
     <div class="row">
       <div class="col-8">
-        <project-list></project-list>
+        <b-card header-tag="header">
+          <span slot="header"><font-awesome-icon icon="list" size="1x" />&nbsp;Overview</span>
+          <b-card-text>
+            <project-list></project-list>
+          </b-card-text>
+        </b-card>
       </div>
       <div class="col-4">
-        <b-card header="Actions">
+        <b-card header-tag="header">
+          <span slot="header"><font-awesome-icon icon="hammer" size="1x" />&nbsp;Actions</span>
           <b-button type="submit" variant="primary"><font-awesome-icon icon="plus" size="xs" />&nbsp;add project</b-button>
         </b-card>
         <project-add></project-add>

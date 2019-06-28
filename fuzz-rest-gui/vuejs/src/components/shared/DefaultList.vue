@@ -6,6 +6,7 @@
       selectable select-mode="single" selectedVariant="primary" @row-selected="selectRow" striped hover 
       :items="items"
       :fields="fields"
+      :borderless="true"
       :current-page="currentPage" :per-page="perPage">
 
       <div slot="table-busy" class="text-center text-primary my-2">
@@ -30,7 +31,6 @@
 
 <script>
 export default {
-  name: 'FrTable',
   props: ['items', 'fields', 'formatters'],
   data() {
      return {

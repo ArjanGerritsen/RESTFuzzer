@@ -1,14 +1,19 @@
 package nl.ou.se.fuzz.rest.service.controller.rest.administrative.tasks;
 
-public class TaskDto {
+public class TaskDto implements Comparable<TaskDto> {
 
 	private Integer id;
 	private String description;
-	private String type;
-	private String status;
+	private TaskType type;
+	private TaskStatus status;
 	private String payload;
 	private Long createdAt;
 	private Long lastStartedAt;
+
+	@Override
+	public int compareTo(TaskDto other) {
+		return this.getCreatedAt().compareTo(other.getCreatedAt());
+	}
 
 	public Integer getId() {
 		return id;
@@ -26,19 +31,19 @@ public class TaskDto {
 		this.description = description;
 	}
 
-	public String getType() {
+	public TaskType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(TaskType type) {
 		this.type = type;
 	}
 
-	public String getStatus() {
+	public TaskStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
 
