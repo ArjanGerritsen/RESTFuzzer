@@ -16,7 +16,7 @@
       <div class="col-4">
         <b-card header-tag="header">
           <span slot="header"><font-awesome-icon icon="hammer" size="1x" />&nbsp;Actions</span>
-          <b-button type="submit" variant="primary"><font-awesome-icon icon="plus" size="xs" />&nbsp;add project</b-button>
+          <b-button type="submit" variant="primary" v-b-modal.projects-add><font-awesome-icon icon="plus" size="xs" />&nbsp;add project</b-button>
         </b-card>
         <project-add></project-add>
         <project-detail></project-detail>
@@ -26,9 +26,9 @@
 </template>
 
 <script>
-  import ProjectAdd from './Add'
-  import ProjectList from './List'
-  import ProjectDetail from './Detail'
+  import ProjectAdd from './ProjectsAdd'
+  import ProjectList from './ProjectsList'
+  import ProjectDetail from './ProjectsDetail'
   import RestService from '../shared/RestService'
 
   export default {

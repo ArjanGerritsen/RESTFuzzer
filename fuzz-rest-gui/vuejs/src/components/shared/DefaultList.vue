@@ -34,7 +34,7 @@ export default {
   props: ['items', 'fields', 'formatters'],
   data() {
      return {
-       perPage: 20,
+       perPage: 18,
        currentPage: 1
      }
   },
