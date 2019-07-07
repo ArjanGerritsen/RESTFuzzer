@@ -1,2 +1,12 @@
 server:
   port: 8888
+
+spring:
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:mysql://localhost:3306/rest_fuzz
+    username: root
+    password: aqlp12
