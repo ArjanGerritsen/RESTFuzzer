@@ -10,7 +10,7 @@ export default class RestService {
 
   getProjects() {
     axios
-      .get('rest/projects')
+      .get('/rest/projects')
       .then(response => { store.commit('projects_set', { projects: response.data } ) })
       .catch(error => {
         RestService.handleError("Couldn't retrieve projects.", error); 
@@ -22,7 +22,7 @@ export default class RestService {
 
   addProject(project) {
     axios
-      .post('rest/projects', project)
+      .post('/rest/projects', project)
       .then(response => { console.log('done') })
       .catch(error => { RestService.handleError("Couldn't add project.", error); }
     )    
@@ -30,7 +30,7 @@ export default class RestService {
 
   getAdminTasks() {
     axios
-      .get('rest/admin/tasks')
+      .get('/rest/admin/tasks')
       .then(response => { store.commit('admin_tasks_set', { tasks: response.data } ) })
       .catch(error => {
         RestService.handleError("Couldn't retrieve administrative tasks.", error); 
@@ -40,9 +40,21 @@ export default class RestService {
     )
   }
 
+  getAdminSettings() {
+    axios
+      .get('/rest/admin/settings')
+      .then(response => { store.commit('admin_settings_set', { settings: response.data } ) })
+      .catch(error => {
+        RestService.handleError("Couldn't retrieve administrative settings.", error); 
+        store.commit('admin_settings_set', { settings: [] } 
+        );
+      }
+    )
+  }
+
   getAdminTaskEvents(taskId, events) {
     axios
-      .get(`rest/admin/tasks/${taskId}/events`)
+      .get(`/rest/admin/tasks/${taskId}/events`)
       .then(response => { events = response.data })
       .catch(error => { RestService.handleError("Couldn't retrieve events for administrative task.", error) }
     )

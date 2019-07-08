@@ -6,7 +6,8 @@
 
         <b-nav-item href="#" to="/projects">Projects</b-nav-item>
         <b-nav-item-dropdown text="Administrative" right>
-          <b-dropdown-item to="/admin-tasks">Tasks</b-dropdown-item>
+          <b-dropdown-item to="/admin/settings">Settings</b-dropdown-item>
+          <b-dropdown-item to="/admin/tasks">Tasks</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item href="#" to="/about">About</b-nav-item>
       </b-navbar-nav>

@@ -1,4 +1,4 @@
-package nl.ou.se.fuzz.rest.service.controller.rest.administrative.tasks;
+package nl.ou.se.fuzz.rest.service.admin.tasks;
 
 public class TaskDto implements Comparable<TaskDto> {
 

@@ -1,4 +1,4 @@
-package nl.ou.se.fuzz.rest.service.controller.rest.shared;
+package nl.ou.se.fuzz.rest.service.admin.shared;
 
 public class EventDto implements Comparable<EventDto> {
 

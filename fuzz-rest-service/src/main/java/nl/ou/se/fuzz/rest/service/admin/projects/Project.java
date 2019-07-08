@@ -1,4 +1,4 @@
-package nl.ou.se.fuzz.rest.service.dao.projects;
+package nl.ou.se.fuzz.rest.service.admin.projects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

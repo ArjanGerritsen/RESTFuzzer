@@ -1,4 +1,4 @@
-package nl.ou.se.fuzz.rest.service.dao.projects;
+package nl.ou.se.fuzz.rest.service.admin.projects;
 
 import org.springframework.data.repository.CrudRepository;
 

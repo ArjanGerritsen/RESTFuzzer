@@ -2,7 +2,8 @@ import Vue from "vue";
 import Router from "vue-router";
 
 import Projects from "./components/projects/Projects";
-import AdministrativeTasks from "./components/administrative/tasks/Tasks";
+import Tasks from "./components/administrative/tasks/Tasks";
+import Settings from "./components/administrative/settings/Settings";
 import About from "./components/About.vue";
 
 Vue.use(Router);
@@ -17,9 +18,14 @@ export default new Router({
       component: Projects
     },
     {
-      path: "/admin-tasks",
-      name: "admin-tasks",
-      component: AdministrativeTasks
+      path: "/admin/tasks",
+      name: "tasks",
+      component: Tasks
+    },
+    {
+      path: "/admin/settings",
+      name: "settings",
+      component: Settings
     },
     {
       path: "/about",
