@@ -30,12 +30,45 @@
         ></b-form-textarea>
       </b-form-group>
 
-      <b-form-group
-        label="Value:"
-        label-for="input-value"
-      >
-        <b-form-input id="input-value" v-model="setting.value" required placeholder="Enter value"></b-form-input>
+      <b-form-group label="Type:">
+        <b-form-radio-group
+          v-model="setting.type"
+          :options="typeOptions"
+          name="radio-type"
+        ></b-form-radio-group>
       </b-form-group>
+
+      <b-form-group label="Scope:">
+        <b-form-radio-group
+          v-model="setting.scope"
+          :options="scopeOptions"
+          name="radio-scope"
+        ></b-form-radio-group>
+      </b-form-group>
+
+      <b-form-group
+        v-if="this.setting.type === 'STRING'"
+        label="Value:"
+        label-for="input-value-string"
+      >
+        <b-form-input id="input-value-string" type="text" v-model="setting.value" required placeholder="Enter value"></b-form-input>        
+      </b-form-group>
+
+      <b-form-group
+        v-if="this.setting.type === 'NUMBER'"
+        label="Value:"
+        label-for="input-value-number"
+      >
+        <b-form-input id="input-value-number" type="number" v-model="setting.value" required placeholder="Enter value"></b-form-input>        
+      </b-form-group>
+
+      <b-form-group v-if="this.setting.type === 'BOOLEAN'" label="Value:">
+        <b-form-radio-group
+          v-model="setting.value"
+          :options="booleanOptions"
+          name="radio-boolean"
+        ></b-form-radio-group>
+      </b-form-group>      
     </b-form>
 
     <template slot="modal-footer" slot-scope="{ cancel }">
@@ -53,12 +86,25 @@ import RestService from "../../shared/RestService";
 export default {
   data() {
     return {
+      typeOptions: [
+        { text: 'String', value: 'STRING' },
+        { text: 'Number', value: 'NUMBER' },
+        { text: 'Boolean', value: 'BOOLEAN' }
+      ],
+      scopeOptions: [
+        { text: 'Global', value: 'GLOBAL' },
+        { text: 'Project', value: 'PROJECT' }
+      ],
+      booleanOptions: [
+        { text: 'True', value: 'TRUE' },
+        { text: 'False', value: 'FALSE' }
+      ],
       setting: {
         key: "",
-        type: "",
-        scope: "",
+        type: null,
+        scope: null,
         description: "",
-        value: "",
+        value: ""
       },
       display: true,
       restService: new RestService(this.$bvToast)
@@ -66,19 +112,21 @@ export default {
   },
   methods: {
     reset() {
-      this.setting.key = ""
-      this.project.type = ""
+      this.setting.key = "";
+      this.project.type = "";
     },
     cancel() {
-      this.reset
-      this.display = false
+      this.reset;
+      this.display = false;
     },
-    addProject() {
-      this.restService.addSetting(this.setting)
-      this.$nextTick(() => {
-        this.$refs.modal.hide()
-      });
-    },
+    addSetting() {
+      if (true) {
+        this.restService.addSetting(this.setting);
+        this.$nextTick(() => {
+          this.$refs.modal.hide();
+        });
+      }
+    }
   }
 };
 </script>

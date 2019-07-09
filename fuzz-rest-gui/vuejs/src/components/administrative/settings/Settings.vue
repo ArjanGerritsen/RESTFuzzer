@@ -17,10 +17,6 @@
         <b-card header-tag="header">
           <span slot="header"><font-awesome-icon icon="hammer" size="1x" />&nbsp;Actions</span>
           <b-button type="submit" variant="primary" v-b-modal.settings-add><font-awesome-icon icon="plus" size="xs" />&nbsp;add setting</b-button>
-          <!--
-            <b-button type="submit" variant="primary"><font-awesome-icon icon="cloud-download-alt" size="xs" />&nbsp;backup</b-button>
-            <b-button type="submit" variant="danger"><font-awesome-icon icon="cloud-upload-alt" size="xs" />&nbsp;restore</b-button>
-          -->
         </b-card>
         <settings-detail></settings-detail>
       </div>
@@ -40,7 +36,7 @@
     components: {
       SettingsAdd,
       SettingsList,
-      SettingsDetail,
+      SettingsDetail
     },
     data() {
       return {
@@ -50,8 +46,8 @@
     methods: { },
     computed: { },
     created: function() {
-      this.restService.getAdminSettings()
-    },
+      this.restService.getAdminSettings();
+    }
   }
 </script>
 

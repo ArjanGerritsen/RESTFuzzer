@@ -3,7 +3,7 @@
     <b-table id="project_table" 
       show-empty
       :busy="isBusy"
-      selectable select-mode="single" selectedVariant="primary" @row-selected="selectRow" striped hover 
+      selectable select-mode="single" selectedVariant="primary" @row-selected="selectRow" @row-clicked="rowClicked" striped hover 
       :items="items"
       :fields="fields"
       :borderless="true"
@@ -44,6 +44,9 @@ export default {
         return; 
       }
       this.$emit('select-item', item[0]);
+    },
+    rowClicked(item) {
+      this.$emit('deselect-item');
     },
     linkGen(pageNum) {
       return pageNum === 1 ? '?' : `?page=${pageNum}`

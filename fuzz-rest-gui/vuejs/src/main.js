@@ -19,10 +19,10 @@ import store from './components/shared/Store'
 
 /* font-awesome */
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlus, faCloudDownloadAlt, faCloudUploadAlt, faTrashAlt, faRunning, faList, faHammer } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faCloudDownloadAlt, faCloudUploadAlt, faTrashAlt, faRunning, faList, faHammer, faInfo, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faPlus, faCloudDownloadAlt, faCloudUploadAlt, faTrashAlt, faRunning, faList, faHammer)
+library.add(faPlus, faCloudDownloadAlt, faCloudUploadAlt, faTrashAlt, faRunning, faList, faHammer, faInfo, faInfoCircle)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

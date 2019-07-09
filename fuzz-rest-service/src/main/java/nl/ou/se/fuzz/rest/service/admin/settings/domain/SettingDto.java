@@ -1,6 +1,6 @@
 package nl.ou.se.fuzz.rest.service.admin.settings.domain;
 
-public class SettingDto {
+public class SettingDto implements Comparable<SettingDto> {
 
 	private Long id;
 	private String key;
@@ -10,6 +10,12 @@ public class SettingDto {
 	private String value;
 	private Long createdAt;
 	private Long updatedAt;
+
+	@Override
+	public int compareTo(SettingDto other) {
+		int scope = this.getScope().compareTo(other.getScope());
+		return (scope == 0) ? this.getKey().compareTo(other.getKey()) : scope;
+	}
 
 	public Long getId() {
 		return id;

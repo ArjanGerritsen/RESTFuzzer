@@ -11,21 +11,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import nl.ou.se.fuzz.rest.service.admin.settings.domain.SettingDto;
+import nl.ou.se.fuzz.rest.service.admin.settings.domain.SettingJpa;
 
 @RestController()
 @RequestMapping("/rest/admin/settings")
 public class SettingsController {
 
-	private SortedSet<SettingDto> settings = new TreeSet<>();
+	private SortedSet<SettingJpa> settings = new TreeSet<>();
 
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody Set<SettingDto> list() {
-		return this.settings;
+		return SettingsMapper.mapToDtos(this.settings);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody SettingDto add(@RequestBody SettingDto settingDto) {
-		this.settings.add(settingDto);
+		this.settings.add(SettingsMapper.mapToDomain(settingDto));
 		return settingDto;
 	}
 }

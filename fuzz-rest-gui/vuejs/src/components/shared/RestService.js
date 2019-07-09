@@ -52,6 +52,14 @@ export default class RestService {
     )
   }
 
+  addSetting(setting) {
+    axios
+      .post('/rest/admin/settings', setting)
+      .then(response => { RestService.displayToast("Add setting", "Setting added successful."); })
+      .catch(error => { RestService.handleError("Couldn't add setting.", error); }
+    )    
+  }  
+
   getAdminTaskEvents(taskId, events) {
     axios
       .get(`/rest/admin/tasks/${taskId}/events`)
@@ -68,4 +76,13 @@ export default class RestService {
       appendToast: true
     })
   }
+
+  static displayToast(title, text) {
+    this.toast.toast(text, {
+      title: title,
+      variant: 'primary',
+      noAutoHide: false,
+      appendToast: true
+    })
+  }  
 }

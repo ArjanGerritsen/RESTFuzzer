@@ -1,51 +1,40 @@
 <template>
-  <b-card v-if="this.task !== null" no-body>
+  <b-card v-if="this.setting !== null" no-body>
     <b-tabs nav-tabs card>
-      <b-tab title="General" active>
+      <b-tab active>
+        <template slot="title">
+          <font-awesome-icon icon="info-circle" size="xs" /> General
+        </template>        
         <b-card-text>
           <div class="row">
             <div class="col" style="margin:5px 0px 15px 0px;">
-              <b-button type="submit" variant="outline-primary"><font-awesome-icon icon="running" size="xs" />&nbsp;execute</b-button>
               <b-button type="submit" variant="outline-danger"><font-awesome-icon icon="trash-alt" size="xs" />&nbsp;delete</b-button>
             </div>
           </div>
           <div class="row">
             <div class="col">
               <dl class="dl-horizontal">
-                <dt>Status</dt>
-                <dd>{{this.task.status}}</dd>
+                <dt>Scope</dt>
+                <dd>{{this.setting.scope}}</dd>
+                <dt>Key</dt>
+                <dd>{{this.setting.key}}</dd>
                 <dt>Type</dt>
-                <dd>{{this.task.type}}</dd>
+                <dd>{{this.setting.type}}</dd>
+                <dt>Value</dt>
+                <dd>{{this.setting.value}}</dd>
               </dl>
             </div>
             <div class="col">
               <dl class="dl-horizontal">
                 <dt>Description</dt>
-                <dd>{{this.task.description}}</dd>
+                <dd>{{this.setting.description}}</dd>
                 <dt>Created @</dt>
-                <dd>{{this.task.createdAt | formatDate }}</dd>
-                <dt>Last started @</dt>
-                <dd>{{this.task.lastStartedAt | formatDate }}</dd>
+                <dd>{{this.setting.createdAt | formatDate }}</dd>
+                <dt>Updated @</dt>
+                <dd>{{this.setting.updatedAt | formatDate }}</dd>
               </dl>
             </div>
           </div>
-        </b-card-text>
-      </b-tab>
-      <b-tab title="Payload">
-        <b-card-text>
-          <div class="row">
-            <div class="col">
-              <dl class="dl-horizontal">
-                <dt>Payload</dt>
-                <dd>{{this.task.payload}}</dd>
-              </dl>
-            </div>
-          </div>
-        </b-card-text>
-      </b-tab>
-      <b-tab title="Events" @click="getEvents()">
-        <b-card-text>
-          <event-list :events="events"></event-list>
         </b-card-text>
       </b-tab>
     </b-tabs>
@@ -53,41 +42,17 @@
 </template>
 
 <script>
-import store from '../../shared/Store'
-import axios from 'axios'
-import EventList from '../../shared/EventList'
-import RestService from '../../shared/RestService'
+import Store from '../../shared/Store'
 
 export default {
-  components: {
-    EventList
+  components: { },
+  data() { 
+    return { } 
   },
-  data() {
-    return {
-      restService: new RestService(this.$bvToast),
-      events: null,
-    }
+  methods: { },
+  computed: { 
+    setting() { return Store.getters.admin_setting; }    
   },
-  methods: {
-    getEvents() {
-      // if (this.events !== null) {
-      //   return
-      // }
-      axios
-        .get(`rest/admin/tasks/${this.task.id}/events`)
-        .then(response => { this.events = response.data })
-        .catch(error => {
-          RestService.handleError("Couldn't retrieve events for administrative task.", error)
-          this.events = []
-        }
-      )
-    },
-  },
-  computed: {
-    task() {
-      return store.getters.admin_task
-    },
-  },
-  created: function () { },
+  created: function () { }
 }
 </script>
