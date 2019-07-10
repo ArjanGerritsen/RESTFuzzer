@@ -1,4 +1,4 @@
-package nl.ou.se.fuzz.rest.service.admin.tasks;
+package nl.ou.se.fuzz.rest.service.tasks;
 
 import java.util.Date;
 import java.util.Set;
@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import nl.ou.se.fuzz.rest.service.admin.shared.EventDto;
-import nl.ou.se.fuzz.rest.service.admin.shared.EventType;
+import nl.ou.se.fuzz.rest.service.shared.domain.EventDto;
+import nl.ou.se.fuzz.rest.service.shared.domain.EventType;
+import nl.ou.se.fuzz.rest.service.tasks.domain.TaskDto;
+import nl.ou.se.fuzz.rest.service.tasks.domain.TaskStatus;
+import nl.ou.se.fuzz.rest.service.tasks.domain.TaskType;
 
 @RestController()
 @RequestMapping("/rest/admin/tasks")

@@ -1,4 +1,4 @@
-package nl.ou.se.fuzz.rest.service.admin.projects;
+package nl.ou.se.fuzz.rest.service.projects.domain;
 
 public class ProjectDto {
 

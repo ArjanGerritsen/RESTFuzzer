@@ -1,4 +1,4 @@
-package nl.ou.se.fuzz.rest.service.admin.settings.domain;
+package nl.ou.se.fuzz.rest.service.settings.domain;
 
 public class SettingDto implements Comparable<SettingDto> {
 

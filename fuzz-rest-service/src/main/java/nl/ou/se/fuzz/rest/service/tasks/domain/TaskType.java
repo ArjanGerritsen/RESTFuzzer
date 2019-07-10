@@ -1,4 +1,4 @@
-package nl.ou.se.fuzz.rest.service.admin.tasks;
+package nl.ou.se.fuzz.rest.service.tasks.domain;
 
 public enum TaskType {
 

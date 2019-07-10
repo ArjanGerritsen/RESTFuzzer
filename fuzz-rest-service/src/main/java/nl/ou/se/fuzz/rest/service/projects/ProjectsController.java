@@ -1,4 +1,4 @@
-package nl.ou.se.fuzz.rest.service.admin.projects;
+package nl.ou.se.fuzz.rest.service.projects;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import nl.ou.se.fuzz.rest.service.projects.domain.ProjectDto;
 
 @RestController()
 @RequestMapping("/rest/projects")

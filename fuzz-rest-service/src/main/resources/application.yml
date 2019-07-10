@@ -6,7 +6,12 @@ spring:
     database: mysql
     hibernate:
       ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        globally_quoted_identifiers: true
   datasource:
-    url: jdbc:mysql://localhost:3306/rest_fuzz
+    url: jdbc:mysql://localhost:3306/fuzz_rest
     username: root
     password: aqlp12

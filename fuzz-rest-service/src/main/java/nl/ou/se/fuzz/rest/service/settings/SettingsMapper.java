@@ -1,17 +1,15 @@
-package nl.ou.se.fuzz.rest.service.admin.settings;
+package nl.ou.se.fuzz.rest.service.settings;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
-import nl.ou.se.fuzz.rest.service.admin.settings.domain.SettingDto;
-import nl.ou.se.fuzz.rest.service.admin.settings.domain.SettingJpa;
+import nl.ou.se.fuzz.rest.service.settings.domain.SettingDto;
+import nl.ou.se.fuzz.rest.service.settings.domain.SettingJpa;
 
 public class SettingsMapper {
 
-	public static Set<SettingJpa> mapToDomain(List<SettingDto> settingDtos) {
+	public static Set<SettingJpa> mapToDomain(Iterable<SettingDto> settingDtos) {
 		Set<SettingJpa> settingJpas = new TreeSet<>();
 		settingDtos.forEach(s -> settingJpas.add(mapToDomain(s)));
 		return settingJpas;
@@ -32,7 +30,7 @@ public class SettingsMapper {
 		return s;
 	}
 
-	public static Set<SettingDto> mapToDtos(SortedSet<SettingJpa> settingJpas) {
+	public static Set<SettingDto> mapToDtos(Iterable<SettingJpa> settingJpas) {
 		Set<SettingDto> settingDtos = new TreeSet<>();
 		settingJpas.forEach(s -> settingDtos.add(mapToDto(s)));
 		return settingDtos;
