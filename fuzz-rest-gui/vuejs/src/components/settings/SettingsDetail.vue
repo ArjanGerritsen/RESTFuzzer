@@ -3,12 +3,12 @@
     <b-tabs nav-tabs card>
       <b-tab active>
         <template slot="title">
-          <font-awesome-icon icon="info-circle" size="xs" /> General
+          <font-awesome-icon icon="info-circle" size="1x" />&nbsp;General
         </template>        
         <b-card-text>
           <div class="row">
             <div class="col" style="margin:5px 0px 15px 0px;">
-              <b-button type="submit" variant="outline-danger"><font-awesome-icon icon="trash-alt" size="xs" />&nbsp;delete</b-button>
+              <b-button type="submit" v-b-modal.settings-delete variant="outline-danger"><font-awesome-icon icon="trash-alt" size="xs" />&nbsp;delete</b-button>
             </div>
           </div>
           <div class="row">
@@ -42,12 +42,12 @@
 </template>
 
 <script>
-import Store from '../../shared/Store'
+import Store from '../shared/Store';
 
 export default {
   components: { },
   data() { 
-    return { } 
+    return { }
   },
   methods: { },
   computed: { 

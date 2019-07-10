@@ -1,13 +1,20 @@
 <template>
-  <default-table @select-item="selectSetting" @deselect-item="deselectSetting" :fields="fields" :items="settings" :formatters="formatters"></default-table>
+  <div>
+    <b-card header-tag="header">
+      <span slot="header"><font-awesome-icon icon="list" size="1x" />&nbsp;Overview</span>
+      <b-card-text>
+        <default-list @select-item="selectSetting" @deselect-item="deselectSetting" :fields="fields" :items="settings" :formatters="formatters"></default-list>
+      </b-card-text>
+    </b-card>
+  </div>
 </template>
 
 <script>
-  import DefaultTable from '../../shared/DefaultList'
-  import Store from '../../shared/Store'
+  import Store from '../shared/Store';
+  import DefaultList from '../shared/DefaultList';
 
   export default {
-    components: { DefaultTable },
+    components: { DefaultList },
     data() {
       return {
         formatters: [
@@ -23,7 +30,7 @@
           { key: 'createdAt', label: 'Created @', thStyle: 'width: 150px;' },
           { key: 'updatedAt', label: 'Updated @', thStyle: 'width: 150px;' }
         ]
-      }
+      };
     },
     methods: {
       selectSetting(setting) { Store.commit('admin_setting_set', { setting: setting } ); },

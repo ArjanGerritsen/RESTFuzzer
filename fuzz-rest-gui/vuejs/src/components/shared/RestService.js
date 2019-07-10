@@ -41,23 +41,30 @@ export default class RestService {
   }
 
   getAdminSettings() {
-    axios
-      .get('/rest/admin/settings')
-      .then(response => { store.commit('admin_settings_set', { settings: response.data } ) })
-      .catch(error => {
-        RestService.handleError("Couldn't retrieve administrative settings.", error); 
-        store.commit('admin_settings_set', { settings: [] } 
-        );
-      }
-    )
+    return new Promise( function (resolve, reject) {
+      axios
+        .get('/rest/admin/settings')
+        .then(response => { resolve(response.data); } )
+        .catch(error => { reject(error); } )
+    })
   }
 
   addSetting(setting) {
-    axios
-      .post('/rest/admin/settings', setting)
-      .then(response => { RestService.displayToast("Add setting", "Setting added successful."); })
-      .catch(error => { RestService.handleError("Couldn't add setting.", error); }
-    )    
+    return new Promise( function (resolve, reject) {
+      axios
+        .post('/rest/admin/settings', setting)
+        .then(response => { resolve(response); })
+        .catch(error => { reject(error); } )
+    })
+  }
+
+  deleteSetting(setting) {
+    return new Promise( function (resolve, reject) {
+      axios
+        .delete(`/rest/admin/settings/${setting.id}`)
+        .then(response => { resolve(response); })
+        .catch(error => { reject(error); } )
+    })
   }  
 
   getAdminTaskEvents(taskId, events) {

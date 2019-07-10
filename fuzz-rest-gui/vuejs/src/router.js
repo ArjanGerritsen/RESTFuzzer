@@ -2,8 +2,8 @@ import Vue from "vue";
 import Router from "vue-router";
 
 import Projects from "./components/projects/Projects";
+import Settings from "./components/settings/Settings";
 import Tasks from "./components/administrative/tasks/Tasks";
-import Settings from "./components/administrative/settings/Settings";
 import About from "./components/About.vue";
 
 Vue.use(Router);
@@ -18,12 +18,7 @@ export default new Router({
       component: Projects
     },
     {
-      path: "/admin/tasks",
-      name: "tasks",
-      component: Tasks
-    },
-    {
-      path: "/admin/settings",
+      path: "/settings",
       name: "settings",
       component: Settings
     },
@@ -36,6 +31,11 @@ export default new Router({
       // // which is lazy-loaded when the route is visited.
       // component: () =>
       //   import(/* webpackChunkName: "about" */ "./views/About.vue")
+    },
+    {
+      path: "/admin/tasks",
+      name: "tasks",
+      component: Tasks
     }
   ]
 });

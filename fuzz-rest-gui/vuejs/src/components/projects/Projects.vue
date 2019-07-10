@@ -29,6 +29,7 @@
   import ProjectAdd from './ProjectsAdd'
   import ProjectList from './ProjectsList'
   import ProjectDetail from './ProjectsDetail'
+  
   import RestService from '../shared/RestService'
 
   export default {
