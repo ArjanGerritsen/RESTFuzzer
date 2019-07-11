@@ -1,23 +1,34 @@
 package nl.ou.se.fuzz.rest.service;
 
+import java.util.concurrent.Executor;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+@EnableAsync
+@EnableScheduling
 @SpringBootApplication
 @EnableAutoConfiguration
-@RestController
 public class Application {
-
-	@RequestMapping("/")
-	String home() {
-		return "Hello World!";
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
+	@Bean("JobExecutor")
+	public Executor taskExecutor() {
+		ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+		threadPoolTaskExecutor.setCorePoolSize(2);
+		threadPoolTaskExecutor.setMaxPoolSize(10);
+		threadPoolTaskExecutor.setQueueCapacity(20);
+		threadPoolTaskExecutor.setThreadNamePrefix("job-executor-");
+		threadPoolTaskExecutor.initialize();
+		return threadPoolTaskExecutor;
+	}
+	
 }
