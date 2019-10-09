@@ -9,25 +9,24 @@ import nl.ou.se.fuzz.rest.service.settings.domain.SettingJpa;
 
 public class SettingsMapper {
 
-	public static Set<SettingJpa> mapToDomain(Iterable<SettingDto> settingDtos) {
-		Set<SettingJpa> settingJpas = new TreeSet<>();
-		settingDtos.forEach(s -> settingJpas.add(mapToDomain(s)));
-		return settingJpas;
-	}
+//	public static Set<SettingJpa> mapToDomain(Iterable<SettingDto> settingDtos) {
+//		Set<SettingJpa> settingJpas = new TreeSet<>();
+//		settingDtos.forEach(s -> settingJpas.add(cop(s)));
+//		return settingJpas;
+//	}
 
-	public static SettingJpa mapToDomain(SettingDto dto) {
-		SettingJpa s = new SettingJpa();		
+	public static SettingJpa copyPropsToDomain(SettingJpa jpa, SettingDto dto) {
 		Date now = new Date();
 
-		s.setCreatedAt(dto.getCreatedAt() == null ? now : new Date(dto.getCreatedAt()));
-		s.setDescription(dto.getDescription());
-		s.setId(dto.getId());
-		s.setKey(dto.getKey());
-		s.setScope(dto.getScope());
-		s.setType(dto.getType());
-		s.setUpdatedAt(dto.getUpdatedAt() == null ? now : new Date(dto.getUpdatedAt()));
-		s.setValue(dto.getValue());
-		return s;
+		jpa.setCreatedAt(dto.getCreatedAt() == null ? now : new Date(dto.getCreatedAt()));
+		jpa.setDescription(dto.getDescription());
+		jpa.setId(dto.getId());
+		jpa.setKey(dto.getKey());
+		jpa.setScope(dto.getScope());
+		jpa.setType(dto.getType());
+		jpa.setUpdatedAt(dto.getUpdatedAt() == null ? now : new Date(dto.getUpdatedAt()));
+		jpa.setValue(dto.getValue());
+		return jpa;
 	}
 
 	public static Set<SettingDto> mapToDtos(Iterable<SettingJpa> settingJpas) {

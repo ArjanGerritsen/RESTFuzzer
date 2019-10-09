@@ -19,16 +19,12 @@ import store from './components/shared/Store'
 
 /* font-awesome */
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlus, faCloudDownloadAlt, faCloudUploadAlt, faTrashAlt, faRunning, faList, faHammer, faInfoCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faCloudDownloadAlt, faCloudUploadAlt, faTrashAlt, faRunning, faList, faHammer, faInfoCircle, faTimesCircle, faWrench } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faPlus, faCloudDownloadAlt, faCloudUploadAlt, faTrashAlt, faRunning, faList, faHammer, faInfoCircle, faTimesCircle )
+library.add(faPlus, faCloudDownloadAlt, faCloudUploadAlt, faTrashAlt, faRunning, faList, faHammer, faInfoCircle, faTimesCircle, faWrench )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-
-/* validation */
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate)
 
 /* init Vue */
 new Vue({

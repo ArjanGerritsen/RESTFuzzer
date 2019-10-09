@@ -8,6 +8,7 @@
         <b-card-text>
           <div class="row">
             <div class="col" style="margin:5px 0px 15px 0px;">
+              <b-button type="submit" v-b-modal.settings-edit variant="outline-primary"><font-awesome-icon icon="wrench" size="xs" />&nbsp;edit</b-button>
               <b-button type="submit" v-b-modal.settings-delete variant="outline-danger"><font-awesome-icon icon="trash-alt" size="xs" />&nbsp;delete</b-button>
             </div>
           </div>

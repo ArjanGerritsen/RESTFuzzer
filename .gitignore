@@ -1,3 +1,6 @@
 # No maven target folder(s)
 /target/*
 */target/*
+
+# No node 
+fuzz-rest-gui/vuejs/node/*

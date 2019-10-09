@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       restService: new RestService(this.$bvToast),
-      messageService: new MessageService(this.$bvToast)
+      messageService: new MessageService(this)
     }
   }, 
   computed: {
