@@ -1,10 +1,10 @@
 import Vue from "vue";
 import Router from "vue-router";
 
-import Projects from "./components/projects/Projects";
-import Settings from "./components/settings/Settings";
-import Tasks from "./components/administrative/tasks/Tasks";
-import About from "./components/About.vue";
+import Projects from "./components/projects/projects";
+import Settings from "./components/settings/settings";
+import Tasks from "./components/tasks/tasks";
+import About from "./components/other/about";
 
 Vue.use(Router);
 

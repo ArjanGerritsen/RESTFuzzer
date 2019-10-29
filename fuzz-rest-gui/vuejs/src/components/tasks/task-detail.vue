@@ -53,10 +53,10 @@
 </template>
 
 <script>
-import store from '../../shared/Store'
+import store from '../../store/store'
 import axios from 'axios'
-import EventList from '../../shared/EventList'
-import RestService from '../../shared/RestService'
+import EventList from '../../shared/event-list'
+import RestService from '../../shared/service/rest-service'
 
 export default {
   components: {

@@ -10,8 +10,8 @@
 </template>
 
 <script>
-  import Store from '../shared/Store';
-  import DefaultList from '../shared/DefaultList';
+  import Store from '../../store/store';
+  import DefaultList from '../../shared/default-list';
 
   export default {
     components: { DefaultList },

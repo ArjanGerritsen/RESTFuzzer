@@ -28,10 +28,10 @@
 </template>
 
 <script>
-//   import ProjectAdd from './Add'
-  import TaskList from './TaskList'
-  import TaskDetail from './TaskDetail'
-  import RestService from '../../shared/RestService'
+  //   import ProjectAdd from './Add'
+  import TaskList from './task-detail'
+  import TaskDetail from './task-detail'
+  import RestService from '../../shared/service/rest-service'
 
   export default {
     components: {

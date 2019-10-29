@@ -7,21 +7,12 @@ export default class MessageService {
     this.toast = vueComponent.$bvToast;
   }
 
-  // error(text, error) {
-  //   this.toast.toast(`${text} : ${error.response.status} - ${error.response.data.message}`, {
-  //     title: 'Something went wrong',
-  //     variant: 'danger',
-  //     noAutoHide: true,
-  //     appendToast: true
-  //   })
-  // }
-  
   error(title, error) {
     this.toast.toast(this.getMsg(error), {
       title: title,
       variant: 'danger',
       noAutoHide: false,
-      autoHideDelay: 30000,
+      autoHideDelay: 20000,
       appendToast: true
     })
   }
@@ -48,11 +39,13 @@ export default class MessageService {
     const h = this.vueComponent.$createElement;
 
     let violoations = [];
-    error.response.data.violations.forEach(v => violoations.push(h('li', { style : 'font-style: italic;' }, v)));
+    if (error.response.data.violations) {
+      error.response.data.violations.forEach(v => violoations.push(h('li', { style : 'font-style: italic;' }, v)));
+    }
 
     let msg = h('span', {}, [
          h('div', { style : 'margin: 10px 0px 15px 0px;' }, `${error.response.statusText} (${error.response.status}):` ),
-         violoations.length === 0 ? '' : h('ul', {}, violoations)
+         violoations.length === 0 ? '-' : h('ul', {}, violoations)
        ]
     );
 

@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import Store from '../shared/Store';
+import Store from '../../store/store';
 
 export default {
   components: { },

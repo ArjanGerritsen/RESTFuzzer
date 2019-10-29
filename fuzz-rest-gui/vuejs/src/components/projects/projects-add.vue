@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import RestService from "../shared/RestService";
+import RestService from '../../shared/service/rest-service';
 
 export default {
   data() {

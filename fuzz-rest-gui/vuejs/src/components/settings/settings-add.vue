@@ -104,9 +104,9 @@
 </template>
 
 <script>
-import Store from "../shared/Store";
-import RestService from "../shared/RestService";
-import MessageService from "../shared/MessageService";
+import Store from '../../store/store';
+import RestService from '../../shared/service/rest-service';
+import MessageService from '../../shared/service/message-service';
 
 export default {
   data() {

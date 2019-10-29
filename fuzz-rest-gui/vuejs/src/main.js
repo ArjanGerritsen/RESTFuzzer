@@ -2,7 +2,7 @@
 import '@babel/polyfill'
 import 'mutationobserver-shim'
 import Vue from "vue";
-import App from "./App.vue";
+import App from "./app.vue";
 import router from "./router";
 
 /* bootstrap */
@@ -15,7 +15,7 @@ import './filters/date-filter'
 Vue.config.productionTip = false
 
 /* vuex */
-import store from './components/shared/Store'
+import store from './store/store'
 
 /* font-awesome */
 import { library } from '@fortawesome/fontawesome-svg-core'

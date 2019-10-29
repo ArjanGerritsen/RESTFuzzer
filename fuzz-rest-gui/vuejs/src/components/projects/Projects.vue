@@ -26,11 +26,11 @@
 </template>
 
 <script>
-  import ProjectAdd from './ProjectsAdd'
-  import ProjectList from './ProjectsList'
-  import ProjectDetail from './ProjectsDetail'
+  import ProjectAdd from './projects-add'
+  import ProjectList from './projects-list'
+  import ProjectDetail from './projects-detail'
   
-  import RestService from '../shared/RestService'
+  import RestService from '../../shared/service/rest-service';
 
   export default {
     components: {

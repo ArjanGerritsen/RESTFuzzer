@@ -23,14 +23,14 @@
 </template>
 
 <script>
-  import SettingsAdd from './SettingsAdd';
-  import SettingsList from './SettingsList';
-  import SettingsDetail from './SettingsDetail';
-  import SettingsDelete from './SettingsDelete';
+  import SettingsAdd from './settings-add';
+  import SettingsList from './settings-list';
+  import SettingsDetail from './settings-detail';
+  import SettingsDelete from './settings-delete';
 
-  import Store from '../shared/Store'
-  import RestService from '../shared/RestService';
-  import MessageService from '../shared/MessageService';
+  import Store from '../../store/store';
+  import RestService from '../../shared/service/rest-service';
+  import MessageService from '../../shared/service/message-service';
 
   export default {
     components: {

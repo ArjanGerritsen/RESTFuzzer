@@ -3,8 +3,8 @@
 </template>
 
 <script>
-  import DefaultTable from '../../shared/DefaultList'
-  import Store from '../../shared/Store'
+  import Store from '../../store/store'
+  import DefaultTable from '../../shared/default-list'
 
   export default {
     components: { DefaultTable },

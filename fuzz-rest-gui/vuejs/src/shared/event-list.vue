@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import DefaultList from './DefaultList'
+  import DefaultList from './default-list'
 
   export default {
     props: ['events'],

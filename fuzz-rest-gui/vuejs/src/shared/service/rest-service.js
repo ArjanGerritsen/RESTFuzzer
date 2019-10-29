@@ -1,5 +1,5 @@
 import axios from 'axios'
-import store from './Store'
+import store from '../../store/store'
 
 export default class RestService {
   static toast;
@@ -57,6 +57,15 @@ export default class RestService {
         .catch(error => { reject(error); } )
     })
   }
+
+  updateSetting(setting) {
+    return new Promise( function (resolve, reject) {
+      axios
+        .put(`/rest/admin/settings/${setting.id}`, setting)
+        .then(response => { resolve(response); })
+        .catch(error => { reject(error); } )
+    })
+  }  
 
   deleteSetting(setting) {
     return new Promise( function (resolve, reject) {

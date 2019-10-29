@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import store from '../shared/Store'
+import Store from '../../store/store'
 
 export default {
   name: 'Project',
