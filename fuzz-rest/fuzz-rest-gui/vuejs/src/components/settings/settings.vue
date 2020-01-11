@@ -51,7 +51,7 @@
       this.restService.getAdminSettings()
         .then(settings => Store.commit('admin_settings_set', { settings: settings } ) )
         .catch(error => {
-          this.messageService.error("Couldn't retrieve administrative settings.", error);
+          this.messageService.error('Couldn\'t retrieve administrative settings.', error);
           Store.commit('admin_settings_set', { settings: [] } );
         }
       );
