@@ -1,72 +1,105 @@
 package nl.ou.se.rest.fuzzer.data.domain.rdm;
 
-public class RdmParameter {
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
-    // variables
-    private int position;
-    private String name;
-    private boolean required;
-    private String description;
-    private RdmParameterType type;
-    private RdmParameterContext context;
+public class RdmParameter implements Comparable<RdmParameter> {
 
-    // constructor
-    public RdmParameter(int position, String name, boolean required, String description, String type,
-            String context) {
-        this.position = position;
-        this.name = name;
-        this.required = required;
-        this.description = description;
-        this.type = RdmParameterType.valueOf(type);
-        this.context = RdmParameterContext.valueOf(context);
-    }
+	// variables
+	private Integer position;
+	private String name;
+	private boolean required;
+	private String description;
+	private RdmParameterType type;
+	private RdmParameterContext context;
+	private String pattern;
+	private String format;
 
-    // getters and setters
-    public int getPosition() {
-        return position;
-    }
+	// constructor
+	public RdmParameter(int position, String name, boolean required, String description, String type, String context,
+			String pattern, String format) {
+		this.position = position;
+		this.name = name;
+		this.required = required;
+		this.description = description;
+		this.type = RdmParameterType.valueOf(type);
+		this.context = RdmParameterContext.valueOf(context);
+		this.pattern = pattern;
+		this.format = format;
+	}
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
+	// methods
+	public int compareTo(RdmParameter other) {
+		return this.getPosition().compareTo(other.getPosition());
+	}
 
-    public String getName() {
-        return name;
-    }
+	// getters and setters
+	public Integer getPosition() {
+		return position;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
 
-    public boolean isRequired() {
-        return required;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public boolean isRequired() {
+		return required;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
 
-    public RdmParameterType getType() {
-        return type;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setType(RdmParameterType type) {
-        this.type = type;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public RdmParameterContext getContext() {
-        return context;
-    }
+	public RdmParameterType getType() {
+		return type;
+	}
 
-    public void setContext(RdmParameterContext context) {
-        this.context = context;
-    }
+	public void setType(RdmParameterType type) {
+		this.type = type;
+	}
+
+	public RdmParameterContext getContext() {
+		return context;
+	}
+
+	public void setContext(RdmParameterContext context) {
+		this.context = context;
+	}
+
+	public String getPattern() {
+		return pattern;
+	}
+
+	public void setPattern(String pattern) {
+		this.pattern = pattern;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	// toString
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 }

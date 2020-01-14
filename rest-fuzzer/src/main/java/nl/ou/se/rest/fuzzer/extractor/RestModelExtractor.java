@@ -1,9 +1,9 @@
 package nl.ou.se.rest.fuzzer.extractor;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
-import io.swagger.models.ExternalDocs;
 import io.swagger.models.HttpMethod;
 import io.swagger.models.Operation;
 import io.swagger.models.Path;
@@ -14,116 +14,109 @@ import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
 import io.swagger.models.parameters.QueryParameter;
 import io.swagger.parser.SwaggerParser;
+import nl.ou.se.rest.fuzzer.data.domain.rdm.RdmAction;
 import nl.ou.se.rest.fuzzer.data.domain.rdm.factory.RdmActionFactory;
 
 public class RestModelExtractor {
 
-    private String location;
+	// variables
+	private String location;
+	private List<RdmAction> actions = new ArrayList<>();
 
-    public RestModelExtractor(String location) {
-        this.location = location;
-    }
+	// constructor
+	public RestModelExtractor(String location) {
+		this.location = location;
+	}
 
-    public void execute() {
-        Swagger swagger = new SwaggerParser().read(location);
+	// methods
+	public void processV2() {
+		Swagger s = new SwaggerParser().read(location);
+		s.getPaths().entrySet().forEach(e -> handlePath(s.getHost(), s.getBasePath(), e));
+	}
 
-        System.out.println(swagger.getHost());
-        System.out.println(swagger.getBasePath());
+	public void handlePath(String host, String basePath, Entry<String, Path> pathEntry) {
+		pathEntry.getValue().getOperationMap().entrySet()
+				.forEach(o -> handleOperation(host, basePath, pathEntry.getKey(), o));
+	}
 
-        Map<String, Path> paths = swagger.getPaths();
-        paths.entrySet().forEach(e -> handlePath(e));
-    }
+	public void handleOperation(String host, String basePath, String key, Entry<HttpMethod, Operation> operationEntry) {
+		RdmActionFactory rdmActionFactory = new RdmActionFactory();
 
-    public void handlePath(Entry<String, Path> pathEntry) {
-        System.out.println("===========================");
-        System.out.println(pathEntry.getKey());
+		String url = host + basePath + key;
+		rdmActionFactory.create(url, operationEntry.getKey().toString());
 
-        System.out.println("\n" + "Operations:");
-        pathEntry.getValue().getOperationMap().entrySet().forEach(o -> handleOperation(o));
-    }
+		// add parameters
+		operationEntry.getValue().getParameters().forEach(p -> handleParameter(rdmActionFactory, p));
 
-    public void handleOperation(Entry<HttpMethod, Operation> operationEntry) {
-        RdmActionFactory rdmActionFactory = new RdmActionFactory();
+		// add responses
+		operationEntry.getValue().getResponses().entrySet().forEach(r -> handleResponse(rdmActionFactory, r));
 
-        rdmActionFactory.create("TODO", operationEntry.getKey().toString());
+		actions.add(rdmActionFactory.build());
+	}
 
-        System.out.println("\n\t" + "Method:");
-        System.out.println("\t\t" + operationEntry.getKey());
+	public void handleParameter(RdmActionFactory rdmActionFactory, Parameter parameter) {
+		rdmActionFactory.addParameter(parameter.getName(), parameter.getRequired(), parameter.getDescription(),
+				parameter.getIn().toUpperCase(), getParameterType(parameter).toUpperCase(), parameter.getPattern(),
+				getParameterFormat(parameter));
+	}
 
-        System.out.println("\t" + "Parameters:");
-        operationEntry.getValue().getParameters().forEach(p -> handleParameter(p));
+	private String getParameterType(Parameter parameter) {
+		String type = null;
 
-        System.out.println("\t" + "Responses:");
-        operationEntry.getValue().getResponses().entrySet().forEach(r -> handleResponse(r));
+		if (parameter instanceof QueryParameter) {
+			QueryParameter qp = (QueryParameter) parameter;
+			type = qp.getType();
+			// TODO min-max-etc ... 
+		} else if (parameter instanceof PathParameter) {
+			PathParameter pp = (PathParameter) parameter;
+			type = pp.getType();
+		} else if (parameter instanceof FormParameter) {
+			FormParameter fp = (FormParameter) parameter;
+			type = fp.getType();
+		} else {
+			throw new IllegalAccessError(String.format("Unknown parametertype: ", parameter.getClass().getName()));
+		}
 
-        System.out.println("\t" + "Produces:");
-        operationEntry.getValue().getProduces().forEach(p -> handleProduces(p));
+		if (type == null) {
+			System.out.println(String.format("Type is null for parameter: %s", parameter.getName()));
+			return "DATE";
+		}
 
-        System.out.println("\t" + "Consumes:");
-        operationEntry.getValue().getConsumes().forEach(p -> handleProduces(p));
+		return type;
+	}
 
-        System.out.println("\t" + "Externaldocs:");
-        handleExternDocs(operationEntry.getValue().getExternalDocs());
-        
-        System.out.println(operationEntry.getValue().getSecurity());
-    }
+	private String getParameterFormat(Parameter parameter) {
+		String format = null;
 
-    private void handleExternDocs(ExternalDocs ed) {
-        if (ed != null) {
-            System.out.println(ed.getUrl());
-        } else {
-            System.out.println("\t\t-");
-        }
-    }
-    
-    private void handleProduces(String producing) {
-        System.out.println("\t\t" + producing);
-    }
+		if (parameter instanceof QueryParameter) {
+			QueryParameter qp = (QueryParameter) parameter;
+			format = qp.getFormat();
+		} else if (parameter instanceof PathParameter) {
+			PathParameter pp = (PathParameter) parameter;
+			format = pp.getFormat();
+		} else if (parameter instanceof FormParameter) {
+			FormParameter fp = (FormParameter) parameter;
+			format = fp.getFormat();
+		}
 
-    public void handleParameter(Parameter parameter) {
-        StringBuffer sb = new StringBuffer();
+		return format;
+	}
 
-        sb.append("\t\t");
-        sb.append(parameter.getName());
-        sb.append(" (required: ");
-        sb.append(parameter.getRequired());
-        sb.append(" / in: ");
-        sb.append(parameter.getIn());
-        sb.append(" / description: ");
-        sb.append(parameter.getDescription());
+	public void handleResponse(RdmActionFactory rdmActionFactory, Entry<String, Response> responseEntry) {
+		rdmActionFactory.addResponse(responseEntry.getKey(), responseEntry.getValue().getDescription());
+	}
 
-        if (parameter instanceof QueryParameter) {
-            QueryParameter qp = (QueryParameter) parameter;
-            sb.append(" / type: ");
-            sb.append(qp.getType());
-        }
+	// getters and setters
+	public List<RdmAction> getRdmActions() {
+		return this.actions;
+	}
 
-        if (parameter instanceof PathParameter) {
-            PathParameter pp = (PathParameter) parameter;
-            sb.append(" / type: ");
-            sb.append(pp.getType());
-        }
-
-        if (parameter instanceof FormParameter) {
-            FormParameter fp = (FormParameter) parameter;
-            sb.append(" / type: ");
-            sb.append(fp.getType());
-        }
-
-//        minimum: 1
-
-        sb.append(")");
-        
-        System.out.println(sb);
-    }
-
-    public void handleResponse(Entry<String, Response> responseEntry) {
-        System.out.println("\t\t" + responseEntry.getKey() + ": "  + responseEntry.getValue().getDescription());
-    }
-    
-    
-    public static void main(String[] args) {
-        RestModelExtractor rme = new RestModelExtractor("http://localhost/wordpress/rest-api/schema");
-        rme.execute();
-    }
+	public static void main(String[] args) {
+		// RestModelExtractor rme = new
+		// RestModelExtractor("http://localhost/wordpress/rest-api/schema");
+		RestModelExtractor rme = new RestModelExtractor(
+				"/ws/git/ou-prototype/rest-fuzzer/src/main/resources/schema.json");
+		rme.processV2();
+		System.out.println(rme.getRdmActions());
+	}
 }
