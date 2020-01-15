@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.data.domain.rdm;
+package nl.ou.se.rest.fuzzer.rdm.domain;
 
 public enum RdmHttpMethod {
 

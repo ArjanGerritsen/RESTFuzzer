@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.data.domain.rdm;
+package nl.ou.se.rest.fuzzer.rdm.domain;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -9,24 +9,24 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class RdmAction {
 
 	// variables
-    private String url;
+    private String path;
     private RdmHttpMethod httpMethod;
     private SortedSet<RdmParameter> parameters = new TreeSet<>();
     private SortedSet<RdmResponse> responses = new TreeSet<>();
 
     // constructor
-    public RdmAction(String url, String httpMethod) {
-        this.url = url;
+    public RdmAction(String path, String httpMethod) {
+        this.path = path;
         this.httpMethod = RdmHttpMethod.valueOf(httpMethod);
     }
 
     // getters and setters
-	public String getUrl() {
-		return url;
+	public String getPath() {
+		return path;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public RdmHttpMethod getHttpMethod() {
