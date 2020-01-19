@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public class JobsExecutor {
 
 	@Async("JobExecutor")
-	public void execute(Job job) {
+	public void execute(JobExecution job) {
 		job.run();
 	}
 }

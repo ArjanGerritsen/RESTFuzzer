@@ -1,13 +1,30 @@
 package nl.ou.se.rest.fuzzer.data.rmd.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+@Entity(name= "rmd_responses")
 public class Response implements Comparable<Response> {
 
 	// variables
-	Integer statusCode;
-	String description;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@NotNull
+	@NotEmpty
+	private Integer statusCode;
+
+	@NotNull
+	@NotEmpty
+	private String description;
 
 	// constructor
 	public Response(Integer statusCode, String description) {

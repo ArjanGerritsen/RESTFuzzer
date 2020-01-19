@@ -3,16 +3,43 @@ package nl.ou.se.rest.fuzzer.data.rmd.domain;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+@Entity(name = "rmd_actions")
 public class Action {
 
 	// variables
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@NotNull
+	@NotEmpty
     private String path;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
     private HttpMethod httpMethod;
+
+	@OneToMany
+	@OrderBy("position ASC")
     private SortedSet<Parameter> parameters = new TreeSet<>();
-    private SortedSet<Response> responses = new TreeSet<>();
+	
+	@OneToMany
+	@OrderBy("statusCode ASC")
+	private SortedSet<Response> responses = new TreeSet<>();
 
     // constructors
     public Action(String path, String httpMethod) {

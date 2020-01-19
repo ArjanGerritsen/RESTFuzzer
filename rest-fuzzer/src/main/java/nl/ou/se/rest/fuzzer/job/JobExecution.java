@@ -1,6 +1,6 @@
 package nl.ou.se.rest.fuzzer.job;
 
-public interface Job {
+public interface JobExecution {
 
 	public void run();
 

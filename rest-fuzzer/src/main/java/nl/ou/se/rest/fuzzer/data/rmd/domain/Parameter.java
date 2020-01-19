@@ -3,22 +3,58 @@ package nl.ou.se.rest.fuzzer.data.rmd.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+@Entity(name = "rmd_parameters")
 public class Parameter implements Comparable<Parameter> {
 
     // variables
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)	
+	private Long id;
+	
+	@NotNull
+	@NotEmpty
     private Integer position;
-    private String name;
-    private boolean required;
+
+	@NotNull
+	@NotEmpty
+	@Size(min = 1, max = 64)
+	private String name;
+
+	@NotNull
+	@NotEmpty
+	private Boolean required;
+
+	@NotNull
+	@NotEmpty
     private String description;
-    private ParameterType type;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private ParameterType type;
+	
+	@NotNull
+	@Enumerated(EnumType.STRING)
     private ParameterContext context;
+	
+	@OneToMany
     private List<ParameterMeta> metas = new ArrayList<>();
 
     // constructor
-    public Parameter(int position, String name, boolean required, String description, String type, String context) {
+    public Parameter(int position, String name, Boolean required, String description, String type, String context) {
         this.position = position;
         this.name = name;
         this.required = required;
@@ -49,11 +85,11 @@ public class Parameter implements Comparable<Parameter> {
         this.name = name;
     }
 
-    public boolean isRequired() {
+    public Boolean isRequired() {
         return required;
     }
 
-    public void setRequired(boolean required) {
+    public void setRequired(Boolean required) {
         this.required = required;
     }
 

@@ -1,8 +1,17 @@
 package nl.ou.se.rest.fuzzer.data.rmd.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+@Entity(name = "rmd_parametermetas")
 public class ParameterMeta {
 
     // constants
@@ -22,8 +31,18 @@ public class ParameterMeta {
     public static final String DEFAULT = "DEFAULT";
 
     // variables
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)	
+    private Long id;
+
+	@NotNull
+	@NotEmpty
     private String key;
-    private Object value;
+
+	@NotNull
+	@NotEmpty
+	@Lob
+	private Object value;
 
     // constructors
     public ParameterMeta(String key, Object value) {
