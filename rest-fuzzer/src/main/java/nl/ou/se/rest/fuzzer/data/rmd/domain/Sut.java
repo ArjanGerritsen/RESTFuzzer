@@ -9,27 +9,29 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Entity(name = "rmd_suts")
+@Entity(name = "suts")
 public class Sut {
 
 	// variables
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotNull
 	@NotEmpty
+	@Size(max = 255)
 	private String location;
 
+	@Size(max = 255)
 	private String host;
-	
+
+	@Size(max = 255)
 	private String basePath;
-	
-	private Integer port;
 
 	@OneToMany
 	private List<Action> actions;
@@ -64,14 +66,6 @@ public class Sut {
 		this.basePath = basePath;
 	}
 
-	public Integer getPort() {
-		return port;
-	}
-
-	public void setPort(Integer port) {
-		this.port = port;
-	}
-
 	public List<Action> getActions() {
 		return actions;
 	}
@@ -82,6 +76,6 @@ public class Sut {
 
 	// toString
 	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);		
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
 }

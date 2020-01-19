@@ -6,19 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import nl.ou.se.rest.fuzzer.data.rmd.dao.SutService;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.Sut;
-import nl.ou.se.rest.fuzzer.job.JobExecution;
+import nl.ou.se.rest.fuzzer.data.task.dao.TaskService;
+import nl.ou.se.rest.fuzzer.task.TaskExecution;
 
-public class ExtractorJob implements JobExecution {
+public class ExtractorTask implements TaskExecution {
 
 	@Autowired
 	private SutService sutService;
+	
+	@Autowired
+	private TaskService service;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-	public void run() {
-		logger.info("running ExtractorJob");
-		
-		// RmdProject project = new RmdProject("http://localhost/wordpress/rest-api/schema");
+	public void execute() {
+		logger.info("Running ExtractorTask");
+		logger.info("sdlkdsj: " + service.count());
+		// "http://localhost/wordpress/rest-api/schema"
     	Sut sut = new Sut("/ws/git/ou-prototype/rest-fuzzer/src/main/resources/schema.json");
  
     	sutService.save(sut);
@@ -26,9 +30,9 @@ public class ExtractorJob implements JobExecution {
         Extractor extractor = new Extractor(sut);
         extractor.processV2();
 
-        sut.setHost(extractor.getHost());
-        sut.setBasePath(extractor.getBasePath());
-        sut.setActions(extractor.getActions());
+//        sut.setHost(extractor.getHost());
+//        sut.setBasePath(extractor.getBasePath());
+//        sut.setActions(extractor.getActions());
 
         logger.info(sut.toString());
 	}

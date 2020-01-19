@@ -20,13 +20,13 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@Bean("JobExecutor")
+	@Bean("TaskExecutor")
 	public Executor taskExecutor() {
 		ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
 		threadPoolTaskExecutor.setCorePoolSize(2);
 		threadPoolTaskExecutor.setMaxPoolSize(10);
 		threadPoolTaskExecutor.setQueueCapacity(20);
-		threadPoolTaskExecutor.setThreadNamePrefix("job-executor-");
+		threadPoolTaskExecutor.setThreadNamePrefix("task-executor-");
 		threadPoolTaskExecutor.initialize();
 		return threadPoolTaskExecutor;
 	}
