@@ -1,7 +1,8 @@
 package nl.ou.se.rest.fuzzer.data.rmd.factory;
 
+import java.util.Map;
+
 import nl.ou.se.rest.fuzzer.data.rmd.domain.Parameter;
-import nl.ou.se.rest.fuzzer.data.rmd.domain.ParameterMeta;
 
 public class ParameterFactory {
 
@@ -15,11 +16,10 @@ public class ParameterFactory {
         return this;
     }
 
-    public ParameterFactory addMeta(ParameterMeta parameterMeta) {
-        parameter.getMetas().add(parameterMeta);
+    public ParameterFactory setMetaDataTuples(Map<String, Object> metaDataTuples) {
+        parameter.setMetaDataTuples(metaDataTuples);
         return this;
     }
-
     public Parameter build() {
         return parameter;
     }

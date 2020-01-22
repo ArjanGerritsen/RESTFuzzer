@@ -2,12 +2,12 @@ package nl.ou.se.rest.fuzzer.data.rmd.factory;
 
 import nl.ou.se.rest.fuzzer.data.rmd.domain.Action;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.Parameter;
+import nl.ou.se.rest.fuzzer.data.rmd.domain.Response;
 
 public class ActionFactory {
 
     // variables
     private Action action;
-    private ResponseFactory responseFactory = new ResponseFactory();
 
     // constructor
     public ActionFactory create(String url, String httpMethod) {
@@ -18,12 +18,12 @@ public class ActionFactory {
     // methods
     public ActionFactory addParameter(Parameter parameter) {
         parameter.setPosition(action.getParameters().size() + 1);
-        action.getParameters().add(parameter);
+        action.addParameter(parameter);
         return this;
     }
 
-    public ActionFactory addResponse(String statusCode, String description) {
-        action.getResponses().add(responseFactory.create(Integer.valueOf(statusCode), description).build());
+    public ActionFactory addResponse(Response response) {
+        action.addResponse(response); 
         return this;
     }
 

@@ -2,6 +2,8 @@ package nl.ou.se.rest.fuzzer.task;
 
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -12,25 +14,27 @@ import nl.ou.se.rest.fuzzer.data.task.domain.Task;
 @Service
 public class TasksExecutor {
 
-	@Autowired
-	private TaskService taskService;
+    @Autowired
+    private TaskService taskService;
 
-	@Async("TaskExecutor")
-	public void run(Task task, TaskExecution execution) {
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-		task.setStartedAt(LocalDateTime.now());
-		taskService.save(task);
+    @Async("TaskExecutor")
+    public void run(Task task, TaskExecution execution) {
 
-		try {
-			execution.execute();
-			
-			task.setFinishedAt(LocalDateTime.now());
-			taskService.save(task);
-		} catch (Exception e) {
-			// TODO logger.error();
+        task.setStartedAt(LocalDateTime.now());
+        taskService.save(task);
 
-			task.setCrashedAt(LocalDateTime.now());
-			taskService.save(task);		
-		}
-	}
+        try {
+            execution.execute();
+
+            task.setFinishedAt(LocalDateTime.now());
+            taskService.save(task);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+
+            task.setCrashedAt(LocalDateTime.now());
+            taskService.save(task);
+        }
+    }
 }

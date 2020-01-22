@@ -1,7 +1,6 @@
 package nl.ou.se.rest.fuzzer.data.rmd.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,7 +8,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -17,43 +17,62 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import nl.ou.se.rest.fuzzer.JsonUtil;
+
 @Entity(name = "rmd_parameters")
 public class Parameter implements Comparable<Parameter> {
 
+    public static final String META_DATA_PATTERN = "PATTERN";
+    public static final String META_DATA_FORMAT = "FORMAT";
+
+    public static final String META_DATA_MIN_VALUE = "MIN_VALUE";
+    public static final String META_DATA_MAX_VALUE = "MAX_VALUE";
+
+    public static final String META_DATA_MIN_LENGTH = "MIN_LENGTH";
+    public static final String META_DATA_MAX_LENGTH = "MAX_LENGTH";
+
+    public static final String META_DATA_MIN_ITEMS = "MIN_ITEMS";
+    public static final String META_DATA_MAX_ITEMS = "MAX_ITEMS";
+
+    public static final String META_DATA_ENUM = "ENUM";
+    public static final String META_DATA_DEFAULT = "DEFAULT";
+
     // variables
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)	
-	private Long id;
-	
-	@NotNull
-	@NotEmpty
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
     private Integer position;
 
-	@NotNull
-	@NotEmpty
-	@Size(min = 1, max = 64)
-	private String name;
+    @NotNull
+    @NotEmpty
+    @Size(min = 1, max = 64)
+    private String name;
 
-	@NotNull
-	@NotEmpty
-	private Boolean required;
+    @NotNull
+    private Boolean required;
 
-	@NotNull
-	@NotEmpty
     private String description;
 
-	@NotNull
-	@Enumerated(EnumType.STRING)
-	private ParameterType type;
-	
-	@NotNull
-	@Enumerated(EnumType.STRING)
-    private ParameterContext context;
-	
-	@OneToMany
-    private List<ParameterMeta> metas = new ArrayList<>();
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private ParameterType type;
 
-    // constructor
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private ParameterContext context;
+
+    private String metaDataTuplesJson;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "action_id")
+    private Action action;
+
+    // constructors
+    public Parameter() {
+    }
+
     public Parameter(int position, String name, Boolean required, String description, String type, String context) {
         this.position = position;
         this.name = name;
@@ -68,7 +87,23 @@ public class Parameter implements Comparable<Parameter> {
         return this.getPosition().compareTo(other.getPosition());
     }
 
+    public Map<String, Object> getMetaDataTuples() {
+        return JsonUtil.stringToMap(this.metaDataTuplesJson);
+    }
+
+    public void setMetaDataTuples(Map<String, Object> metaDataTuples) {
+        this.metaDataTuplesJson = JsonUtil.mapToString(metaDataTuples);
+    }
+    
     // getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Integer getPosition() {
         return position;
     }
@@ -85,7 +120,7 @@ public class Parameter implements Comparable<Parameter> {
         this.name = name;
     }
 
-    public Boolean isRequired() {
+    public Boolean getRequired() {
         return required;
     }
 
@@ -117,12 +152,12 @@ public class Parameter implements Comparable<Parameter> {
         this.context = context;
     }
 
-    public List<ParameterMeta> getMetas() {
-        return metas;
+    public Action getAction() {
+        return action;
     }
 
-    public void setMetas(List<ParameterMeta> metas) {
-        this.metas = metas;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     // toString

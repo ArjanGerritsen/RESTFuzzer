@@ -1,6 +1,7 @@
 package nl.ou.se.rest.fuzzer.data.task.domain;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,73 +11,102 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import nl.ou.se.rest.fuzzer.JsonUtil;
+
 @Entity(name = "tasks")
 public class Task {
 
-	// variables
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    // variables
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotNull
-	@NotEmpty
-	private String canonicalName;
+    @NotNull
+    @NotEmpty
+    private String canonicalName;
 
-	@Column(columnDefinition = "TIMESTAMP")
-	private LocalDateTime startedAt;
+    private String metaDataTuplesJson;
 
-	@Column(columnDefinition = "TIMESTAMP")
-	private LocalDateTime crashedAt;
-	
-	@Column(columnDefinition = "TIMESTAMP")
-	private LocalDateTime finishedAt;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime startedAt;
 
-	// constructors
-	public Task() {
-	}
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime crashedAt;
 
-	public Task(String canonicalName) {
-		this.canonicalName = canonicalName;
-	}
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime finishedAt;
 
-	// getters and setters
-	public Long getId() {
-		return id;
-	}
+    // constructors
+    public Task() {
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Task(String canonicalName) {
+        this.canonicalName = canonicalName;
+    }
 
-	public String getCanonicalName() {
-		return canonicalName;
-	}
+    // methods
+    public Map<String, Object> getMetaDataTuples() {
+        return JsonUtil.stringToMap(this.metaDataTuplesJson);
+    }
 
-	public void setCanonicalName(String canonicalName) {
-		this.canonicalName = canonicalName;
-	}
+    public void setMetaDataTuples(Map<String, Object> metaDataTuples) {
+        this.metaDataTuplesJson = JsonUtil.mapToString(metaDataTuples);
+    }
 
-	public LocalDateTime getStartedAt() {
-		return startedAt;
-	}
+    // getters and setters
+    public Long getId() {
+        return id;
+    }
 
-	public void setStartedAt(LocalDateTime startedAt) {
-		this.startedAt = startedAt;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public LocalDateTime getCrashedAt() {
-		return crashedAt;
-	}
+    public String getCanonicalName() {
+        return canonicalName;
+    }
 
-	public void setCrashedAt(LocalDateTime crashedAt) {
-		this.crashedAt = crashedAt;
-	}
+    public void setCanonicalName(String canonicalName) {
+        this.canonicalName = canonicalName;
+    }
 
-	public LocalDateTime getFinishedAt() {
-		return finishedAt;
-	}
+    public LocalDateTime getStartedAt() {
+        return startedAt;
+    }
 
-	public void setFinishedAt(LocalDateTime finishedAt) {
-		this.finishedAt = finishedAt;
-	}
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public LocalDateTime getCrashedAt() {
+        return crashedAt;
+    }
+
+    public void setCrashedAt(LocalDateTime crashedAt) {
+        this.crashedAt = crashedAt;
+    }
+
+    public LocalDateTime getFinishedAt() {
+        return finishedAt;
+    }
+
+    public void setFinishedAt(LocalDateTime finishedAt) {
+        this.finishedAt = finishedAt;
+    }
+
+    public String getMetaDataTuplesJson() {
+        return metaDataTuplesJson;
+    }
+
+    public void setMetaDataTuplesJson(String metaDataTuplesJson) {
+        this.metaDataTuplesJson = metaDataTuplesJson;
+    }
+
+    // toString
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
 }
