@@ -53,12 +53,12 @@ CREATE TABLE IF NOT EXISTS rmd_responses (
 ) ENGINE=INNODB;
 
 truncate tasks;
-truncate suts;
-truncate actions;
-truncate parameters;
-truncate responses;
+truncate rmd_suts;
+truncate rmd_actions;
+truncate rmd_parameters;
+truncate rmd_responses;
 
 insert into rmd_suts values (1, "http://localhost/wordpress/rest-api/schema", null, null, null, null);
-insert into rmd_suts values (1, "/ws/git/ou-prototype/rest-fuzzer/src/main/resources/schema.json", null, null, null, null);
+insert into rmd_suts values (1, "/ws/git/ou-prototype/rest-fuzzer/backend/src/main/resources/schema.json", null, null, null, null);
 
 insert into tasks values (1, "nl.ou.se.rest.fuzzer.extractor.ExtractorTask", "{\"sut_id\":1}", NULL, NULL, NULL);
