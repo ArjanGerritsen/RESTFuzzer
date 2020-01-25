@@ -1,7 +1,6 @@
 package nl.ou.se.rest.fuzzer.service.sut;
 
 import java.util.List;
-import java.util.SortedSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +20,7 @@ public class SutController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody List<SutDto> list() {
-		SortedSet<Sut> suts = sutSerivce.findAll();
+		List<Sut> suts = sutSerivce.findAll();
 		return SutMapper.toDtos(suts);
 	}
 }

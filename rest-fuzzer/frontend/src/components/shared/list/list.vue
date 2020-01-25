@@ -1,6 +1,7 @@
 <template>
   <div>
-    <b-table id="list" 
+    <b-table id="list"
+      class="table-sm"
       show-empty
       :busy="isBusy"
       selectable select-mode="single" selectedVariant="primary" @row-selected="selectRow" @row-clicked="rowClicked" striped hover 

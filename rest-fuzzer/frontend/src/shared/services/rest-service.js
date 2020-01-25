@@ -15,7 +15,7 @@ export default class RestService {
         store.commit("suts_set", { suts: response.data });
       })
       .catch(error => {
-        RestService.handleError("Couldn't retrieve suts.", error);
+        RestService.handleError("Couldn't retrieve systems under test.", error);
         store.commit("suts_set", { suts: [] });
       });
   }

@@ -15,7 +15,7 @@
 <script>
 import List from "../shared/list/list";
 import Store from "../../store/index";
-import restService from "../../shared/services/rest-service";
+import RestService from "../../shared/services/rest-service";
 
 export default {
   components: { List },
@@ -39,8 +39,8 @@ export default {
   computed: { 
     suts() { return Store.getters.suts },
   },
-  created: function () { 
-	Store.commit("suts_set", { suts: restService.getSuts() } );
+  created: function () {
+	Store.commit("suts_set", { suts: this.restService.getSuts() } );
   },
 }
 </script>

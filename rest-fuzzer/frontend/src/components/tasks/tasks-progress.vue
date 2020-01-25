@@ -5,7 +5,7 @@
      <b-icon icon="list-task" font-scale="1"></b-icon>&nbsp;Tasks progress
     </span>
     <b-card-text>
-      <sut-list></sut-list>
+      TODO
     </b-card-text>
   </b-card>
 </div>

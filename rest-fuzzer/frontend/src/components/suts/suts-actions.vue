@@ -2,10 +2,12 @@
   <div>
 	<b-card header-tag="header">
 	  <span slot="header">
-	    <b-icon icon="hammer" font-scale="1"></b-icon>&nbsp;Actions
+	    <b-icon icon="hammer" font-scale="1"></b-icon>
+	    &nbsp;Actions
 	  </span>
 	  <b-button type="submit" variant="primary" v-b-modal.suts-add>
-	    <font-awesome-icon icon="plus" size="xs" />&nbsp;add system under test
+	  <b-icon icon="plus" font-scale="1"></b-icon>
+	  &nbsp;add system under test
 	  </b-button>
 	</b-card>
 	<suts-add></suts-add>
