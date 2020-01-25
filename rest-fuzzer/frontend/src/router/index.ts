@@ -1,14 +1,21 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+
+import Suts from "../components/suts/suts.vue";
+import Tasks from "../components/tasks/tasks.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
-    name: "home",
-    component: Home
+    path: "/suts",
+    name: "suts",
+    component: Suts
+  },
+  {
+    path: "/tasks",
+    name: "tasks",
+    component: Tasks
   },
   {
     path: "/about",
