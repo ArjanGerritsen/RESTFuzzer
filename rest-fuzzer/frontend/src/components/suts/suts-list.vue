@@ -15,7 +15,7 @@
 <script>
 import List from "../shared/list/list";
 import Store from "../../store/index";
-import restService from "../../shared/services/rest-service" 
+import restService from "../../shared/services/rest-service";
 
 export default {
   components: { List },
