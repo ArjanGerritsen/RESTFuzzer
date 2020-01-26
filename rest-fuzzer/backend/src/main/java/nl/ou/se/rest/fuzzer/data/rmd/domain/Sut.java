@@ -1,9 +1,11 @@
 package nl.ou.se.rest.fuzzer.data.rmd.domain;
 
+import java.time.LocalDateTime;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -44,6 +46,9 @@ public class Sut {
     @Size(max = 255)
     private String basePath;
 
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "sut_id")
     @SortNatural
@@ -72,6 +77,14 @@ public class Sut {
         this.id = id;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -88,14 +101,6 @@ public class Sut {
         this.description = description;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getHost() {
         return host;
     }
@@ -110,6 +115,14 @@ public class Sut {
 
     public void setBasePath(String basePath) {
         this.basePath = basePath;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public SortedSet<Action> getActions() {

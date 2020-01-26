@@ -22,13 +22,12 @@ export default {
   data() {
     return {
       formatters: [
- //       { field: 'createdAt', as: 'date' },
+        { field: 'createdAt', as: 'date' },
       ],
       fields: [
-        { key: 'title', thStyle: 'width: 100px;' },
-//        { key: 'oasUrl', label: 'OAS url', thStyle: 'width: 400px;' },
-        { key: 'description' }
-//        { key: 'createdAt', label: 'Created @', thStyle: 'width: 150px;' },
+        { key: 'id', label: '#', thStyle: 'width: 30px;' },
+        { key: 'location' },
+        { key: 'createdAt', label: 'Created @', thStyle: 'width: 150px;' }
       ],
       restService: new RestService(this.$bvToast)
     }
@@ -40,7 +39,7 @@ export default {
     suts() { return Store.getters.suts },
   },
   created: function () {
-	Store.commit("suts_set", { suts: this.restService.getSuts() } );
+	  Store.commit("suts_set", { suts: this.restService.getSuts() } );
   },
 }
 </script>

@@ -36,7 +36,7 @@
     data() {
        return {
          perPage: 18,
-         currentPage: 1
+         currentPage: 1,
        }
     },
     methods: {
@@ -61,10 +61,20 @@
         return this.items === null
       },
       displayPagination() {
-        if (this.items === null) { return false }
-        return this.items.length > this.perPage
+        if (this.items === null) {
+          return false;
+        } else {
+          console.log(this.items.length);
+          return false; //this.items.length > this.perPage
+        }
       },
     }, 
     created: function() { }
   }
 </script>
+
+<style scoped>
+  table td {
+    font-size: 10px;
+  }
+</style>
