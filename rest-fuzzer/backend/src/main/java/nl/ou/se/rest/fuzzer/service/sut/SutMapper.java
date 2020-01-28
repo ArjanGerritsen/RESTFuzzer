@@ -19,4 +19,10 @@ public abstract class SutMapper {
 		BeanUtils.copyProperties(sut, dto);
 		return dto;
 	}
+	
+    public static Sut toDomain(SutDto dto) {
+        Sut sut = new Sut();
+        BeanUtils.copyProperties(dto, sut);
+        return sut;
+    }	
 }

@@ -26,7 +26,8 @@ export default {
       ],
       fields: [
         { key: 'id', label: '#', thStyle: 'width: 30px;' },
-        { key: 'location' },
+        { key: 'title', thStyle: 'width: 200px;' },
+        { key: 'location', label: 'OAS location' },
         { key: 'createdAt', label: 'Created @', thStyle: 'width: 150px;' }
       ],
       restService: new RestService(this.$bvToast)

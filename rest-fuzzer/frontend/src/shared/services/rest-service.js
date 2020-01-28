@@ -20,6 +20,14 @@ export default class RestService {
       });
   }
 
+  addSut(sut) {
+    axios
+      .post('/rest/suts', sut)
+      .then(response => { RestService.displayToast("Sut added", "Sut added succesful") })
+      .catch(error => { RestService.handleError("Couldn't add sut.", error); }
+    )
+  }
+
   static handleError(text, error) {
     this.toast.toast(text, {
       title: `AJAX call failed: ${error}`,

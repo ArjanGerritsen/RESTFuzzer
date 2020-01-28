@@ -3,6 +3,7 @@ package nl.ou.se.rest.fuzzer.service.sut;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,4 +24,10 @@ public class SutController {
 		List<Sut> suts = sutSerivce.findAll();
 		return SutMapper.toDtos(suts);
 	}
+
+    @RequestMapping(method = RequestMethod.POST)
+    public @ResponseBody SutDto add(@RequestBody SutDto sutDto) {
+        Sut sut = sutSerivce.save(SutMapper.toDomain(sutDto));
+        return SutMapper.toDto(sut);
+    }
 }

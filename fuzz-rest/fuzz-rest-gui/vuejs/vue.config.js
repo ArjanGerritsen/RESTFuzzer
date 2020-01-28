@@ -6,8 +6,8 @@ module.exports = {
   // see https://cli.vuejs.org/config/#devserver-proxy
   devServer: {
     proxy: {
-      '/rest': {
-        target: 'http://localhost:8888', // this configuration needs to correspond to the Spring Boot backends' application.properties server.port
+      '/rest/': {
+        target: 'http://localhost:8888/rest/', // this configuration needs to correspond to the Spring Boot backends' application.properties server.port
         ws: true,
         changeOrigin: true
       }
