@@ -1,5 +1,6 @@
 package nl.ou.se.rest.fuzzer.service.task;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,24 @@ public class TaskController {
 	
     @Autowired
 	TaskService taskSerivce;
+
+    @RequestMapping(path = "status/queued", method = RequestMethod.GET)
+    public @ResponseBody List<TaskDto> findAllQueud() {
+        List<Task> tasks = taskSerivce.findQueued();
+        return TaskMapper.toDtos(tasks);
+    }
+
+    @RequestMapping(path = "status/running", method = RequestMethod.GET)
+    public @ResponseBody List<TaskDto> findAllRunning() {
+        List<Task> tasks = taskSerivce.findRunning();
+        return TaskMapper.toDtos(tasks);
+    }
+    
+    @RequestMapping(path = "status/completed", method = RequestMethod.GET)
+    public @ResponseBody List<TaskDto> findAllCompleted() {
+        List<Task> tasks = taskSerivce.findCompleted();
+        return TaskMapper.toDtos(tasks);
+    }
 
     @RequestMapping(path = "/{name}/start", method = RequestMethod.POST)
     public @ResponseBody TaskDto addExtractorTask(@PathVariable(value = "name") String name, @RequestBody Map<String, Object> metaDataTuples) {

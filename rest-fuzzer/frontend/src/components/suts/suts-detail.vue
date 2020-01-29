@@ -1,5 +1,5 @@
 <template>
-  <b-card v-if="this.sut !== null" no-body>
+  <b-card class="card-with-top-margin" v-if="this.sut !== null" no-body>
     <b-tabs nav-tabs card>
       <b-tab title="Information" active>
         <b-card-text>
@@ -61,7 +61,8 @@
     components: { SutsDelete },
     data() {
       return {
-        restService: new RestService()
+        restService: new RestService(),
+        messageService: new MessageService(this)
       }
     },
     computed: {
@@ -73,7 +74,7 @@
       addExtractorTask() {
         this.restService.addTask(Constants.TASK_EXTRACTOR, { sut_id : this.sut.id })
           .then(response => {
-            this.messageService.info("Add task", `Task (${name}) added succesful`);
+            this.messageService.info("Add task", `Task (extractor) added succesful`);
           })
           .catch(error => {
             this.messageService.error("Couldn't add task (extractor)", error);

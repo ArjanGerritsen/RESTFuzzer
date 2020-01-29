@@ -11,7 +11,7 @@ public abstract class TaskMapper {
 
 	// methods
 	public static List<TaskDto> toDtos(List<Task> tasks) {
-		return tasks.stream().map(s -> TaskMapper.toDto(s)).collect(Collectors.toList());
+		return tasks.stream().map(t -> TaskMapper.toDto(t)).collect(Collectors.toList());
 	}
 
 	public static TaskDto toDto(Task task) {

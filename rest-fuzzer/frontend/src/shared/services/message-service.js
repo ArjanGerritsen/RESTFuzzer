@@ -8,7 +8,6 @@ export default class MessageService {
     }
 
     info(title, text) {
-      console.log('hier?' + title + text)
       this.toast.toast(text, {
         title: title,
         variant: 'primary',

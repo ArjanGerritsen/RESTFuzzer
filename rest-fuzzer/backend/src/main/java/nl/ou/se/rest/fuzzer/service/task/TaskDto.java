@@ -6,67 +6,47 @@ public class TaskDto {
 
     // variables
     private Long id;
-    private String location;
-    private String title;
-    private String description;
-    private String host;
-    private String basePath;
-    private LocalDateTime createdAt;
+    private String canonicalName;
+    private String metaDataTuplesJson;
+    private LocalDateTime startedAt;
+    private LocalDateTime crashedAt;
+    private LocalDateTime finishedAt;
 
     // getters and setters
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
-    public String getLocation() {
-        return location;
+    public String getCanonicalName() {
+        return canonicalName;
     }
-
-    public void setLocation(String location) {
-        this.location = location;
+    public void setCanonicalName(String canonicalName) {
+        this.canonicalName = canonicalName;
     }
-
-    public String getTitle() {
-        return title;
+    public String getMetaDataTuplesJson() {
+        return metaDataTuplesJson;
     }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setMetaDataTuplesJson(String metaDataTuplesJson) {
+        this.metaDataTuplesJson = metaDataTuplesJson;
     }
-
-    public String getDescription() {
-        return description;
+    public LocalDateTime getStartedAt() {
+        return startedAt;
     }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
     }
-
-    public String getHost() {
-        return host;
+    public LocalDateTime getCrashedAt() {
+        return crashedAt;
     }
-
-    public void setHost(String host) {
-        this.host = host;
+    public void setCrashedAt(LocalDateTime crashedAt) {
+        this.crashedAt = crashedAt;
     }
-
-    public String getBasePath() {
-        return basePath;
+    public LocalDateTime getFinishedAt() {
+        return finishedAt;
     }
-
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setFinishedAt(LocalDateTime finishedAt) {
+        this.finishedAt = finishedAt;
     }
 }

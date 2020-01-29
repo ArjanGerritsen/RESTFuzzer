@@ -23,7 +23,7 @@ public class SutController {
 	SutService sutSerivce;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody List<SutDto> list() {
+	public @ResponseBody List<SutDto> findAll() {
 		List<Sut> suts = sutSerivce.findAll();
 		return SutMapper.toDtos(suts);
 	}

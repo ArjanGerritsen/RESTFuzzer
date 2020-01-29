@@ -29,6 +29,33 @@ export default class RestService {
     })
   }
 
+  getQueuedTasks() {
+    return new Promise( function (resolve, reject) {
+    axios
+      .get("/rest/tasks/status/queued")
+      .then(response => { resolve(response); })
+      .catch(error => { reject(error); } ) 
+    })
+  }
+
+  getRunningTasks() {
+    return new Promise( function (resolve, reject) {
+    axios
+      .get("/rest/tasks/status/running")
+      .then(response => { resolve(response); })
+      .catch(error => { reject(error); } ) 
+    })
+  }
+
+  getCompletedTasks() {
+    return new Promise( function (resolve, reject) {
+    axios
+      .get("/rest/tasks/status/completed")
+      .then(response => { resolve(response); })
+      .catch(error => { reject(error); } ) 
+    })
+  }  
+
   addTask(name, metaDataTuples) {
     return new Promise( function (resolve, reject) {
       axios

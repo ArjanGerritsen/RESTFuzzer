@@ -21,13 +21,17 @@ export default {
 </script>
 
 <style scoped>
-#container {
-  margin: auto;
-  width: 98%;
-}
+  #container {
+    margin: auto;
+    width: 98%;
+  }
 </style>
 
 <style lang="scss">
+  .card-with-top-margin {
+    margin-top: 35px;
+  }
+
   // $font-size-base: 0.875rem;
   $body-bg: #dddddd;
 

@@ -64,8 +64,7 @@
         if (this.items === null) {
           return false;
         } else {
-          console.log(this.items.length);
-          return false; //this.items.length > this.perPage
+          return this.items.length > this.perPage
         }
       },
     }, 

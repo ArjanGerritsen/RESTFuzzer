@@ -7,7 +7,11 @@ const store = new Vuex.Store({
   state: {
     suts: null,
     sut: null,
-    tasks: null,
+    tasks: {
+      queued: null,
+      running: null,
+      completed: null
+    }
   },
   getters: {
     suts: state => {
@@ -27,8 +31,14 @@ const store = new Vuex.Store({
     sut_set (state, payload) {
       state.sut = payload.sut
     },
-    tasks_set (state, payload) {
-      state.tasks = payload.tasks
+    tasks_queued_set (state, payload) {
+      state.tasks.queued = payload.tasks
+    },
+    tasks_running_set (state, payload) {
+      state.tasks.running = payload.tasks
+    },
+    tasks_completed_set (state, payload) {
+      state.tasks.completed = payload.tasks
     }
   }
 })

@@ -14,8 +14,10 @@
 
 <script>
 import List from "../shared/list/list";
+
 import Store from "../../store/index";
 import RestService from "../../shared/services/rest-service";
+import MessageService from "../../shared/services/message-service";
 
 export default {
   components: { List },
@@ -25,12 +27,13 @@ export default {
         { field: 'createdAt', as: 'date' },
       ],
       fields: [
-        { key: 'id', label: '#', thStyle: 'width: 30px;' },
+        { key: 'id', label: '#', thStyle: 'width: 50px;' },
         { key: 'title', thStyle: 'width: 200px;' },
         { key: 'location', label: 'OAS location' },
         { key: 'createdAt', label: 'Created @', thStyle: 'width: 150px;' }
       ],
-      restService: new RestService(this.$bvToast)
+      restService: new RestService(),
+      messageService: new MessageService(this)
     }
   },
   methods: { 

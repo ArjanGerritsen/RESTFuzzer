@@ -30,7 +30,7 @@ public class TasksSchedular {
 	// methods
 	@Scheduled(cron = "*/10 * * * * *")
 	public void runJobs() {
-	    List<Task> tasksToRun = taskService.tasksNotStarted();
+	    List<Task> tasksToRun = taskService.findQueued();
 		logger.info(String.format(Constants.INFO_TASK_SCHEDULAR_START, tasksToRun.size()));
 
 		tasksToRun.forEach(t -> executeTask(t));
