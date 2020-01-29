@@ -12,6 +12,7 @@ Vue.use(IconsPlugin)
 
 /* filters */
 import './filters/date'
+import './filters/other'
 
 /* other */
 Vue.config.productionTip = false;

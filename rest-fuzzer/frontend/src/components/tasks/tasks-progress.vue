@@ -2,17 +2,11 @@
 <div>
   <b-card header-tag="header">
     <span slot="header">
-     <b-icon icon="list-task" font-scale="1"></b-icon>&nbsp;Tasks progress
+      <b-icon icon="list-task" font-scale="1"></b-icon>
+      &nbsp;Tasks progress
     </span>
     <b-card-text>
-      Queued:
-      <list :fields="fields" :items="queuedTasks" :formatters="formatters"></list>
-
-      Running:
-      <list :fields="fields" :items="runningTasks" :formatters="formatters"></list>
-
-      Completed:
-      <list :fields="fields" :items="completedTasks" :formatters="formatters"></list>
+      <list :fields="fields" :items="tasksProgress" :formatters="formatters"></list>
     </b-card-text>
   </b-card>
 </div>
@@ -30,65 +24,40 @@
     data() {
       return {
         formatters: [
-          { field: 'createdAt', as: 'date' },
+          { field: 'startedAt', as: 'dateShort' },
+          { field: 'finishedAt', as: 'dateShort' }
         ],
         fields: [
           { key: 'id', label: '#', thStyle: 'width: 30px;' },
-          { key: 'name', thStyle: 'width: 200px;' },
-          { key: 'startedAt', label: 'Started @', thStyle: 'width: 150px;' },
-          { key: 'creashedAt', label: 'Crashed @', thStyle: 'width: 150px;' },
-          { key: 'finishedAt', label: 'Finished @', thStyle: 'width: 150px;' }
+          { key: 'name' },
+          { key: 'status', thStyle: 'width: 80px;' },
+          { key: 'startedAt', label: 'Started @', thStyle: 'width: 110px;' },
+          { key: 'finishedAt', label: 'Ended @', thStyle: 'width: 110px;' },
         ],
         restService: new RestService(),
         messageService: new MessageService(this)
       }
     },
     methods: { 
-      getQueuedTasks: function() {
-        this.restService.getQueuedTasks()
+      getTasksProgress: function() {
+        this.restService.getTasksProgress()
           .then(response => {
-            Store.commit('tasks_queued_set', { tasks: response.data });
+            Store.commit('tasks_progress_set', { tasks: response.data });
           })
           .catch(error => {
-            this.messageService.error("Couldn't retrieve queued tasks", error);
-            Store.commit('tasks_queued_set', { tasks: [] } );
+            this.messageService.error("Couldn't retrieve tasks (progress)", error);
+            Store.commit('tasks_progress_set', { tasks: [] } );
           }
         );
-      },
-      getRunningTasks: function() {
-        this.restService.getRunningTasks()
-          .then(response => {
-            Store.commit('tasks_running_set', { tasks: response.data });
-          })
-          .catch(error => {
-            this.messageService.error("Couldn't retrieve running tasks", error);
-            Store.commit('tasks_running_set', { tasks: [] } );
-          }
-        );
-      },
-      getCompletedTasks: function() {
-        this.restService.getCompletedTasks()
-          .then(response => {
-            Store.commit('tasks_completed_set', { tasks: response.data });
-          })
-          .catch(error => {
-            this.messageService.error("Couldn't retrieve completed tasks", error);
-            Store.commit('tasks_completed_set', { tasks: [] } );
-          }
-        );
-      },      
+      }    
     },
     computed: { 
-      queuedTasks() { return Store.getters.tasks.queued },
-      runningTasks() { return Store.getters.tasks.running },
-      completedTasks() { return Store.getters.tasks.completed },
+      tasksProgress() { return Store.getters.tasks.progress },
     },
     mounted: function () {
       setInterval(() => {
-        this.getQueuedTasks();
-        this.getRunningTasks();
-        this.getCompletedTasks();
-      }, 100)
+        this.getTasksProgress();
+      }, 2500)
     },
     created: function () { },
   }

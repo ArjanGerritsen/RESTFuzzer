@@ -15,9 +15,9 @@
         <span style="margin-left:10px;">Loading...</span>
       </div>
 
-      <template v-for="formatter in formatters" :slot="formatter.field" slot-scope="row">
-        <template v-if="formatter.as === 'date'">
-          {{ row.value | formatDate }}
+      <template v-for="formatter in formatters" v-slot:[`cell(${formatter.field})`]="data">
+        <template>
+          {{ data.value | dynamicFilter($options.filters[formatter.as])}}
         </template>
       </template>
 
@@ -64,7 +64,7 @@
         if (this.items === null) {
           return false;
         } else {
-          return this.items.length > this.perPage
+          return this.items.length > this.perPage;
         }
       },
     }, 

@@ -5,40 +5,32 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    suts: null,
-    sut: null,
+    suts: {
+      all: null,
+      current: null
+    },
     tasks: {
-      queued: null,
-      running: null,
-      completed: null
+      all: null,
+      progress: null,
     }
   },
   getters: {
     suts: state => {
       return state.suts
     },
-    sut: state => {
-      return state.sut
-    },    
     tasks: state => {
       return state.tasks
     }
   },
   mutations: {
     suts_set (state, payload) {
-      state.suts = payload.suts
+      state.suts.all = payload.suts
     },
     sut_set (state, payload) {
-      state.sut = payload.sut
+      state.suts.current = payload.sut
     },
-    tasks_queued_set (state, payload) {
-      state.tasks.queued = payload.tasks
-    },
-    tasks_running_set (state, payload) {
-      state.tasks.running = payload.tasks
-    },
-    tasks_completed_set (state, payload) {
-      state.tasks.completed = payload.tasks
+    tasks_progress_set (state, payload) {
+      state.tasks.progress = payload.tasks
     }
   }
 })

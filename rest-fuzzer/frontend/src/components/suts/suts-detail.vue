@@ -25,7 +25,7 @@
                 <dt>Description</dt>
                 <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
                 <dt>Created @</dt>
-                <dd>{{this.sut.createdAt | formatDate }}</dd>
+                <dd>{{this.sut.createdAt | date }}</dd>
               </dl>
             </div>
           </div>
@@ -67,7 +67,7 @@
     },
     computed: {
       sut() {
-        return Store.getters.sut;
+        return Store.getters.suts.current;
       }
     },
     methods: {

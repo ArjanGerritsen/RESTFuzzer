@@ -34,7 +34,7 @@
       }
     },
     computed: {
-      sut() { return Store.getters.sut; }
+      sut() { return Store.getters.suts.current; }
     },
     methods: {
       async deleteSut() {

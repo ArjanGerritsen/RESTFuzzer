@@ -1,5 +1,6 @@
 package nl.ou.se.rest.fuzzer.service.task;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,26 +20,19 @@ import nl.ou.se.rest.fuzzer.extractor.ExtractorTask;
 @RequestMapping("/rest/tasks")
 public class TaskController {
 
-	private static final String EXTRACTOR = "extractor";
-	
+    private static final String EXTRACTOR = "extractor";
+
     @Autowired
 	TaskService taskSerivce;
 
-    @RequestMapping(path = "status/queued", method = RequestMethod.GET)
-    public @ResponseBody List<TaskDto> findAllQueud() {
-        List<Task> tasks = taskSerivce.findQueued();
-        return TaskMapper.toDtos(tasks);
-    }
+    @RequestMapping(path = "progress", method = RequestMethod.GET)
+    public @ResponseBody List<TaskDto> findAllProgress() {
+        List<Task> tasks = new ArrayList<>();
 
-    @RequestMapping(path = "status/running", method = RequestMethod.GET)
-    public @ResponseBody List<TaskDto> findAllRunning() {
-        List<Task> tasks = taskSerivce.findRunning();
-        return TaskMapper.toDtos(tasks);
-    }
-    
-    @RequestMapping(path = "status/completed", method = RequestMethod.GET)
-    public @ResponseBody List<TaskDto> findAllCompleted() {
-        List<Task> tasks = taskSerivce.findCompleted();
+        tasks = taskSerivce.findQueued();
+        tasks.addAll(taskSerivce.findRunning());
+        tasks.addAll(taskSerivce.findEnded()); // TODO LIMIT!
+
         return TaskMapper.toDtos(tasks);
     }
 

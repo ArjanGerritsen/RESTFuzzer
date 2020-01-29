@@ -24,13 +24,13 @@ export default {
   data() {
     return {
       formatters: [
-        { field: 'createdAt', as: 'date' },
+        { field: 'createdAt', as: 'dateShort' }
       ],
       fields: [
         { key: 'id', label: '#', thStyle: 'width: 50px;' },
         { key: 'title', thStyle: 'width: 200px;' },
         { key: 'location', label: 'OAS location' },
-        { key: 'createdAt', label: 'Created @', thStyle: 'width: 150px;' }
+        { key: 'createdAt', label: 'Created @', thStyle: 'width: 110px;' }
       ],
       restService: new RestService(),
       messageService: new MessageService(this)
@@ -40,7 +40,7 @@ export default {
     selectSut(value) { Store.commit('sut_set', { sut: value } ) },
   },
   computed: { 
-    suts() { return Store.getters.suts },
+    suts() { return Store.getters.suts.all },
   },
   created: function () {
 	  this.restService.getSuts()
