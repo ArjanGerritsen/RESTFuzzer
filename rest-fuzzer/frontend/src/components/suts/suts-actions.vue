@@ -6,8 +6,8 @@
 	    &nbsp;Actions
 	  </span>
 	  <b-button type="submit" variant="primary" v-b-modal.suts-add>
-	  <b-icon icon="plus" font-scale="1"></b-icon>
-	  &nbsp;add system under test
+  	  <b-icon icon="plus" font-scale="1"></b-icon>
+	    &nbsp;add system under test
 	  </b-button>
 	</b-card>
 	<suts-add></suts-add>
@@ -20,11 +20,11 @@
   import SutsDetail from "./suts-detail";
 
   export default {
+    components: {
+      SutsAdd, SutsDetail
+    },
     data() {
       return { data: {} };
     },
-    components: {
-      SutsAdd, SutsDetail
-    }
   };
 </script>

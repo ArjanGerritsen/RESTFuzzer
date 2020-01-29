@@ -5,9 +5,8 @@
         <b-card-text>
           <div class="row">
             <div class="col" style="margin:5px 0px 15px 0px;">
-              <!-- <b-button style="margin-right:15px;" type="submit" v-b-modal.settings-edit variant="outline-primary"><b-icon icon="wrench" font-scale="1"></b-icon>&nbsp;edit</b-button> -->
-              <b-button type="submit" v-b-modal.settings-edit variant="primary" title="extract REST model description from OAS" style="margin-right:15px;"><b-icon icon="download" font-scale="1"></b-icon>&nbsp;extract</b-button>
-              <b-button type="submit" v-b-modal.settings-delete variant="outline-danger" title="delete this SUT"><b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete</b-button>
+              <b-button type="submit" variant="primary" title="start task to extract REST model description from OAS" style="margin-right:15px;" v-on:click="addExtractorTask"><b-icon icon="download" font-scale="1"></b-icon>&nbsp;start extract task</b-button>
+              <b-button type="submit" v-b-modal.suts-delete variant="outline-danger" title="delete this SUT"><b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete</b-button>
             </div>
           </div>
           <div class="row">
@@ -38,27 +37,49 @@
             <b-spinner type="border" class="align-middle" small></b-spinner>
             <span style="margin-left:10px;">Loading...</span>
           </div>
-        </b-card-text> -->
-      </b-tab>
+        </b-card-text>
+      </b-tab>-->
       <b-tab disabled title="REST model description">
         <b-card-text>
         </b-card-text>
       </b-tab>
     </b-tabs>
+    <suts-delete></suts-delete>
   </b-card>
+
 </template>
 
 <script>
-import Store from "../../store/index";
+  import Store from "../../store/index";
+  import Constants from '../../shared/constants';
+  import RestService from "../../shared/services/rest-service";
+  import MessageService from "../../shared/services/message-service";
 
-export default {
-  data() {
-     return { }
-  },
-  computed: {
-    sut() {
-      return Store.getters.sut
+  import SutsDelete from "./suts-delete";
+
+  export default {
+    components: { SutsDelete },
+    data() {
+      return {
+        restService: new RestService()
+      }
+    },
+    computed: {
+      sut() {
+        return Store.getters.sut;
+      }
+    },
+    methods: {
+      addExtractorTask() {
+        this.restService.addTask(Constants.TASK_EXTRACTOR, { sut_id : this.sut.id })
+          .then(response => {
+            this.messageService.info("Add task", `Task (${name}) added succesful`);
+          })
+          .catch(error => {
+            this.messageService.error("Couldn't add task (extractor)", error);
+          }
+        );
+      }
     }
   }
-}
 </script>

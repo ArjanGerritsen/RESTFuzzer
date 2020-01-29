@@ -40,7 +40,15 @@ export default {
     suts() { return Store.getters.suts },
   },
   created: function () {
-	  Store.commit("suts_set", { suts: this.restService.getSuts() } );
+	  this.restService.getSuts()
+      .then(response => {
+        Store.commit('suts_set', { suts: response.data });
+      })
+      .catch(error => {
+        this.messageService.error("Couldn't retrieve suts", error);
+        Store.commit('suts_set', { suts: [] } );
+      }
+    );
   },
 }
 </script>

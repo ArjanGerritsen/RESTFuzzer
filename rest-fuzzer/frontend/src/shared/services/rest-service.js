@@ -1,48 +1,40 @@
 import axios from "axios";
-import store from "../../store";
 
 export default class RestService {
-  static toast;
-
-  constructor(toast) {
-    RestService.toast = toast;
-  }
 
   getSuts() {
+    return new Promise( function (resolve, reject) {
     axios
       .get("/rest/suts")
-      .then(response => {
-        store.commit("suts_set", { suts: response.data });
-      })
-      .catch(error => {
-        RestService.handleError("Couldn't retrieve systems under test.", error);
-        store.commit("suts_set", { suts: [] });
-      });
+      .then(response => { resolve(response); })
+      .catch(error => { reject(error); } ) 
+    })
   }
 
   addSut(sut) {
-    axios
-      .post('/rest/suts', sut)
-      .then(response => { RestService.displayToast("Sut added", "Sut added succesful") })
-      .catch(error => { RestService.handleError("Couldn't add sut.", error); }
-    )
+    return new Promise( function (resolve, reject) {
+      axios
+        .post('/rest/suts', sut)
+        .then(response => { resolve(response); })
+        .catch(error => { reject(error); } ) 
+    })
   }
 
-  static handleError(text, error) {
-    this.toast.toast(text, {
-      title: `AJAX call failed: ${error}`,
-      variant: "danger",
-      noAutoHide: true,
-      appendToast: true
-    });
+  deleteSut(sut) {
+    return new Promise( function (resolve, reject) {
+      axios
+        .delete(`/rest/suts/${sut.id}`)
+        .then(response => { resolve(response); })
+        .catch(error => { reject(error); } )
+    })
   }
 
-  static displayToast(title, text) {
-    this.toast.toast(text, {
-      title: title,
-      variant: "primary",
-      noAutoHide: false,
-      appendToast: true
-    });
+  addTask(name, metaDataTuples) {
+    return new Promise( function (resolve, reject) {
+      axios
+        .post(`/rest/tasks/${name}/start`, metaDataTuples)
+        .then(response => { resolve(response); })
+        .catch(error => { reject(error); } )
+    })    
   }
 }

@@ -13,8 +13,10 @@ public abstract class JsonUtil {
 
         JSONObject jsonObject = new JSONObject(json);
         String keys[] = JSONObject.getNames(jsonObject);
-        for (String key : keys) {
-            result.put(key, jsonObject.get(key));
+        if (keys != null) {
+            for (String key : keys) {
+                result.put(key, jsonObject.get(key));
+            }
         }
 
         return result;
@@ -24,5 +26,5 @@ public abstract class JsonUtil {
         JSONObject jsonObject = new JSONObject(map);
         return jsonObject.toString();
     }
-    
+
 }

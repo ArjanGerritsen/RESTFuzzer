@@ -10,6 +10,9 @@ import { BootstrapVue, IconsPlugin }  from 'bootstrap-vue'
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
+/* filters */
+import './filters/date'
+
 /* other */
 Vue.config.productionTip = false;
 

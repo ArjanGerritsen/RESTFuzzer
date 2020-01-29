@@ -1,8 +1,11 @@
 package nl.ou.se.rest.fuzzer.service.sut;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,8 +29,18 @@ public class SutController {
 	}
 
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody SutDto add(@RequestBody SutDto sutDto) {
+    public @ResponseBody ResponseEntity<?> add(@RequestBody SutDto sutDto) {
         Sut sut = sutSerivce.save(SutMapper.toDomain(sutDto));
-        return SutMapper.toDto(sut);
+        return ResponseEntity.ok(SutMapper.toDto(sut));
+    }
+
+    @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
+    public @ResponseBody ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
+        Optional<Sut> sut = sutSerivce.findById(id);
+        if (!sut.isPresent()) {
+            return ResponseEntity.badRequest().body(new SutDto());         
+        }
+        sutSerivce.deleteById(id);
+        return ResponseEntity.ok(SutMapper.toDto(sut.get()));
     }
 }

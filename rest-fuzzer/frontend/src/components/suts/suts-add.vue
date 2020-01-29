@@ -18,7 +18,7 @@
     <b-form>
       <b-form-group
         id="input-group-1"
-        label="location:"
+        label="OAS location:"
         label-for="input-1"
         description="Url to OpenAPI specification"
       >
@@ -31,13 +31,18 @@
         <b-icon icon="plus" font-scale="1"></b-icon>
         &nbsp;add system under test
       </b-button>
-      <b-button type="cancel" variant="secondary" @click="cancel()">cancel</b-button>
+      <b-button type="cancel" variant="outline-secondary" @click="cancel()">
+        <b-icon icon="backspace" font-scale="1"></b-icon>
+        &nbsp;cancel
+      </b-button>
     </template>
   </b-modal>
 </template>
 
 <script>
+import Store from '../../store';
 import RestService from "../../shared/services/rest-service";
+import MessageService from "../../shared/services/message-service";
 
 export default {
   data() {
@@ -45,23 +50,44 @@ export default {
       sut: {
         location: ""
       },
-      display: true,
-      restService: new RestService(this.$bvToast)
+      restService: new RestService(),
+      messageService: new MessageService(this)
     };
   },
   methods: {
     reset() {
-      this.sut.location = ""
+      this.sut.location = "";
+    },
+    hide() {
+      this.$nextTick(() => {
+        this.$refs.modal.hide();
+      });
     },
     cancel() {
-      this.reset
-      this.display = false
+      this.reset();
+      this.hide();
     },
-    addSut() {
-      this.restService.addSut(this.sut)
-      this.$nextTick(() => {
-        this.$refs.modal.hide()
-      });
+    async addSut() {
+      await this.restService.addSut(this.sut)
+        .then(response => {
+          this.messageService.info("Add sut", `Sut ${response.data.location} added successful.`);
+        })
+         .catch(error => {
+          this.messageService.error("An error occured while adding sut", error); 
+        }
+      );
+
+      this.restService.getSuts()
+        .then(response => {
+          Store.commit('suts_set', { suts: response.data });
+        })
+        .catch(error => {
+          this.messageService.error("Couldn't retrieve suts", error);
+          Store.commit('suts_set', { suts: [] } );
+        }
+      );
+
+      this.cancel();
     },
   }
 };
