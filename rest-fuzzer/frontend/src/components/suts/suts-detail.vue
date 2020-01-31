@@ -6,7 +6,9 @@
           <div class="row">
             <div class="col" style="margin:5px 0px 15px 0px;">
               <b-button type="submit" variant="primary" title="start task to extract REST model description from OAS" style="margin-right:15px;" v-on:click="addExtractorTask"><b-icon icon="download" font-scale="1"></b-icon>&nbsp;start extract task</b-button>
-              <b-button type="submit" v-b-modal.suts-delete variant="outline-danger" title="delete this SUT"><b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete</b-button>
+              <b-button type="submit" v-b-modal.suts-delete variant="outline-danger" title="delete this SUT">
+                <b-icon icon="trash" font-scale="1"></b-icon>
+                &nbsp;delete</b-button>
             </div>
           </div>
           <div class="row">
@@ -31,15 +33,7 @@
           </div>
         </b-card-text>
       </b-tab>
-      <!-- <b-tab title="Running">
-        <b-card-text>
-          <div class="text-center text-primary my-2">
-            <b-spinner type="border" class="align-middle" small></b-spinner>
-            <span style="margin-left:10px;">Loading...</span>
-          </div>
-        </b-card-text>
-      </b-tab>-->
-      <b-tab disabled title="REST model description">
+      <b-tab title="REST model description">
         <b-card-text>
         </b-card-text>
       </b-tab>

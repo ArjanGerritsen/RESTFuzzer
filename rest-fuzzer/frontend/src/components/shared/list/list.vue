@@ -17,7 +17,7 @@
 
       <template v-for="formatter in formatters" v-slot:[`cell(${formatter.field})`]="data">
         <template>
-          {{ data.value | dynamicFilter($options.filters[formatter.as])}}
+          {{ data.value | dynamicFilter($options.filters[formatter.as]) }}
         </template>
       </template>
 
@@ -51,7 +51,7 @@
       },
       linkGen(pageNum) {
         return pageNum === 1 ? '?' : `?page=${pageNum}`
-      },
+      }
     },
     computed: {
       rows() {
@@ -71,9 +71,3 @@
     created: function() { }
   }
 </script>
-
-<style scoped>
-  table td {
-    font-size: 10px;
-  }
-</style>

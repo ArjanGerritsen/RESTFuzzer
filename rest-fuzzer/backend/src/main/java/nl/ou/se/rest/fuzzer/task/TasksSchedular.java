@@ -28,7 +28,7 @@ public class TasksSchedular {
 	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 	// methods
-	@Scheduled(cron = "*/10 * * * * *")
+	@Scheduled(cron = "*/20 * * * * *")
 	public void runJobs() {
 	    List<Task> tasksToRun = taskService.findQueued();
 		logger.info(String.format(Constants.INFO_TASK_SCHEDULAR_START, tasksToRun.size()));

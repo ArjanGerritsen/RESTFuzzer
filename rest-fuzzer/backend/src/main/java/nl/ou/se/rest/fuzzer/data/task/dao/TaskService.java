@@ -2,6 +2,7 @@ package nl.ou.se.rest.fuzzer.data.task.dao;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -16,5 +17,5 @@ public interface TaskService extends CrudRepository<Task, Long> {
     List<Task> findRunning();
 
     @Query("SELECT t FROM tasks t WHERE t.crashedAt IS NOT NULL OR t.finishedAt IS NOT NULL ORDER BY id DESC")
-    List<Task> findEnded();
+    List<Task> findEnded(Pageable pageable);
 }

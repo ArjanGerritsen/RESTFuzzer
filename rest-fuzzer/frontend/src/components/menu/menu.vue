@@ -7,6 +7,7 @@
         <b-nav-item href="#" to="/">Fuzzing</b-nav-item>
         <b-nav-item href="#" to="/">Tasks</b-nav-item>
         <b-nav-item href="#" to="/">Settings</b-nav-item>
+        <b-nav-item href="#" to="/about">About</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
   </div>

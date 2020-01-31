@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.service.sut;
+package nl.ou.se.rest.fuzzer.service.sut.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 
 import nl.ou.se.rest.fuzzer.data.rmd.domain.Sut;
+import nl.ou.se.rest.fuzzer.service.sut.domain.SutDto;
 
 public abstract class SutMapper {
 
@@ -17,9 +18,10 @@ public abstract class SutMapper {
 	public static SutDto toDto(Sut sut) {
 		SutDto dto = new SutDto();
 		BeanUtils.copyProperties(sut, dto);
+		dto.setActions(ActionMapper.toDtos(sut.getActions()));
 		return dto;
 	}
-	
+
     public static Sut toDomain(SutDto dto) {
         Sut sut = new Sut();
         BeanUtils.copyProperties(dto, sut);

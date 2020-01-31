@@ -49,7 +49,7 @@ public class Sut {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "sut_id")
     @SortNatural
     private SortedSet<Action> actions = new TreeSet<>();

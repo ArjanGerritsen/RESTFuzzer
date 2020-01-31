@@ -1,12 +1,19 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
+import Home from "../components/home/home.vue";
 import Suts from "../components/suts/suts.vue";
 import Tasks from "../components/tasks/tasks.vue";
+import About from "../components/about/about.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/",
+    name: "home",
+    component: Home
+  },
   {
     path: "/suts",
     name: "suts",
@@ -16,6 +23,11 @@ const routes = [
     path: "/tasks",
     name: "tasks",
     component: Tasks
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: About
   }
   // {
   //   path: "/about",

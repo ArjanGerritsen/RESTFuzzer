@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import nl.ou.se.rest.fuzzer.extractor.ExtractorTask;
 public class TaskController {
 
     private static final String EXTRACTOR = "extractor";
+    private static final int MAX_TASKS_ENDED = 10;
 
     @Autowired
 	TaskService taskSerivce;
@@ -31,7 +33,7 @@ public class TaskController {
 
         tasks = taskSerivce.findQueued();
         tasks.addAll(taskSerivce.findRunning());
-        tasks.addAll(taskSerivce.findEnded()); // TODO LIMIT!
+        tasks.addAll(taskSerivce.findEnded(PageRequest.of(0, MAX_TASKS_ENDED)));
 
         return TaskMapper.toDtos(tasks);
     }

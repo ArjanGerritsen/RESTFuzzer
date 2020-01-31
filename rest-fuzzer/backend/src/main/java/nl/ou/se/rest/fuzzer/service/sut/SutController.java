@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import nl.ou.se.rest.fuzzer.data.rmd.dao.SutService;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.Sut;
+import nl.ou.se.rest.fuzzer.service.sut.domain.SutDto;
+import nl.ou.se.rest.fuzzer.service.sut.mapper.SutMapper;
 
 @RestController()
 @RequestMapping("/rest/suts")

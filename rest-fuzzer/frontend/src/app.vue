@@ -28,6 +28,9 @@ export default {
 </style>
 
 <style lang="scss">
+  .button-spacer {
+    margin-right: 15px;
+  }
   .card-with-top-margin {
     margin-top: 35px;
   }
