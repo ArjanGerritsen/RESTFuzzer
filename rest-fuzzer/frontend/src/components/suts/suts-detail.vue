@@ -1,70 +1,82 @@
 <template>
-  <b-card class="card-with-top-margin" v-if="this.sut !== null" no-body>
-    <b-tabs nav-tabs card>
-      <b-tab title="Information" active>
-        <b-card-text>
-          <div class="row">
-            <div class="col" style="margin:5px 0px 15px 0px;">
-              <b-button type="submit" variant="primary" title="start task to extract REST model description from OAS" style="margin-right:15px;" v-on:click="addExtractorTask"><b-icon icon="download" font-scale="1"></b-icon>&nbsp;start extract task</b-button>
-              <b-button type="submit" v-b-modal.suts-delete variant="outline-danger" title="delete this SUT">
-                <b-icon icon="trash" font-scale="1"></b-icon>
-                &nbsp;delete</b-button>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <dl class="dl-horizontal">
-                <dt>Identifier</dt>
-                <dd>{{this.sut.id}}</dd>
-                <dt>Title</dt>
-                <dd>{{this.sut.title ? this.sut.title : '-'}}</dd>
-                <dt>OAS location</dt>
-                <dd><b-link :href="this.sut.location" target="_blank">{{this.sut.location}}</b-link></dd>
-              </dl>
-            </div>
-            <div class="col">
-              <dl class="dl-horizontal">
-                <dt>Description</dt>
-                <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
-                <dt>Created @</dt>
-                <dd>{{this.sut.createdAt | date }}</dd>
-              </dl>
-            </div>
-          </div>
-        </b-card-text>
-      </b-tab>
-      <b-tab title="REST model description">
-        <b-card-text>
-        </b-card-text>
-      </b-tab>
-    </b-tabs>
-    <suts-delete></suts-delete>
+  <b-card v-if="this.sut !== null" header-tag="header">
+    <span slot="header">
+      <b-icon icon="list-task" font-scale="1"></b-icon>
+      &nbsp;Selected systems under test: {{sut.location}}
+    </span>
+    <b-card-text>
+        <b-tabs nav-tabs card>
+          <b-tab title="Information" active>
+            <b-card-text>
+              <div class="row">
+                <div class="col" style="margin:5px 0px 15px 0px;">
+                  <b-button type="submit" variant="primary" title="start task to extract REST model description from OAS" style="margin-right:15px;" v-on:click="addExtractorTask"><b-icon icon="download" font-scale="1"></b-icon>&nbsp;start extract task</b-button>
+                  <b-button type="submit" v-b-modal.suts-delete variant="outline-danger" title="delete this SUT">
+                    <b-icon icon="trash" font-scale="1"></b-icon>
+                    &nbsp;delete</b-button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <dl class="dl-horizontal">
+                    <dt>Identifier</dt>
+                    <dd>{{this.sut.id}}</dd>
+                    <dt>Title</dt>
+                    <dd>{{this.sut.title ? this.sut.title : '-'}}</dd>
+                    <dt>OAS location</dt>
+                    <dd><b-link :href="this.sut.location" target="_blank">{{this.sut.location}}</b-link></dd>
+                  </dl>
+                </div>
+                <div class="col">
+                  <dl class="dl-horizontal">
+                    <dt>Description</dt>
+                    <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
+                    <dt>Created @</dt>
+                    <dd>{{this.sut.createdAt | date }}</dd>
+                  </dl>
+                </div>
+              </div>
+            </b-card-text>
+          </b-tab>
+          <b-tab title="REST model description">
+            <b-card-text>
+              <list @select-item="selectAction" :fields="fields" :items="sut.actions" :formatters="formatters"></list>
+            </b-card-text>
+          </b-tab>
+        </b-tabs>
+        <suts-delete></suts-delete>
+    </b-card-text>
   </b-card>
-
 </template>
 
 <script>
-  import Store from "../../store/index";
+  import Store from "../../store";
   import Constants from '../../shared/constants';
   import RestService from "../../shared/services/rest-service";
   import MessageService from "../../shared/services/message-service";
 
+  import List from "../shared/list/list";
+
   import SutsDelete from "./suts-delete";
 
   export default {
-    components: { SutsDelete },
+    components: { List, SutsDelete },
     data() {
       return {
+        formatters: [
+          // { field: 'createdAt', as: 'dateShort' }
+        ],
+        fields: [
+          { key: 'id', label: '#', thStyle: 'width: 50px;' },
+          { key: 'path', thStyle: 'width: 350px;' },
+          { key: 'httpMethod', label: 'Http method' }
+        ],        
         restService: new RestService(),
         messageService: new MessageService(this)
       }
     },
-    computed: {
-      sut() {
-        return Store.getters.suts.current;
-      }
-    },
     methods: {
+      selectAction(value) { console.log(value) },
       addExtractorTask() {
         this.restService.addTask(Constants.TASK_EXTRACTOR, { sut_id : this.sut.id })
           .then(response => {
@@ -75,6 +87,11 @@
           }
         );
       }
-    }
+    },
+    computed: {
+      sut() {
+        return Store.getters.suts.current;
+      }
+    },
   }
 </script>

@@ -3,12 +3,14 @@ package nl.ou.se.rest.fuzzer.service.sut.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.ou.se.rest.fuzzer.data.rmd.domain.HttpMethod;
+
 public class ActionDto {
 
     // variables
     private Long id;
     private String path;
-    private String httpMethod;
+    private HttpMethod httpMethod;
     private List<ParameterDto> parameters = new ArrayList<>();
     private List<ResponseDto> responses = new ArrayList<>();
 
@@ -29,11 +31,11 @@ public class ActionDto {
         this.path = path;
     }
 
-    public String getHttpMethod() {
+    public HttpMethod getHttpMethod() {
         return httpMethod;
     }
 
-    public void setHttpMethod(String httpMethod) {
+    public void setHttpMethod(HttpMethod httpMethod) {
         this.httpMethod = httpMethod;
     }
 

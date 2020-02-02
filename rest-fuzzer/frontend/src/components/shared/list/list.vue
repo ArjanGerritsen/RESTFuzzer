@@ -35,7 +35,7 @@
     props: ['items', 'fields', 'formatters'],
     data() {
        return {
-         perPage: 18,
+         perPage: 20,
          currentPage: 1,
        }
     },

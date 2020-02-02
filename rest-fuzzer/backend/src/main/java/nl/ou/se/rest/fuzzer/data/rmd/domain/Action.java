@@ -24,43 +24,43 @@ import org.hibernate.annotations.SortNatural;
 @Entity(name = "rmd_actions")
 public class Action implements Comparable<Action> {
 
-	// variables
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    // variables
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotNull
-	@NotEmpty
+    @NotNull
+    @NotEmpty
     private String path;
 
-	@NotNull
-	@Enumerated(EnumType.STRING)
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private HttpMethod httpMethod;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name =  "action_id")
-	@SortNatural	
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "action_id")
+    @SortNatural
     private SortedSet<Parameter> parameters = new TreeSet<>();
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name =  "action_id")
-	@SortNatural
-	private SortedSet<Response> responses = new TreeSet<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "action_id")
+    @SortNatural
+    private SortedSet<Response> responses = new TreeSet<>();
 
-	@ManyToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "sut_id")
     private Sut sut;
-	
+
     // constructors
     public Action() {
     }
 
-	public Action(String path, String httpMethod) {
+    public Action(String path, String httpMethod) {
         this.path = path;
         this.httpMethod = HttpMethod.valueOf(httpMethod);
     }
 
-	// methods
+    // methods
     public int compareTo(Action other) {
         int pathCompare = this.getPath().compareTo(other.getPath());
         if (pathCompare != 0) {
@@ -78,32 +78,49 @@ public class Action implements Comparable<Action> {
         response.setAction(this);
         this.getResponses().add(response);
     }
-    
+
     // getters and setters
-	public String getPath() {
-		return path;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public HttpMethod getHttpMethod() {
-		return httpMethod;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public void setHttpMethod(HttpMethod httpMethod) {
-		this.httpMethod = httpMethod;
-	}
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-	public SortedSet<Parameter> getParameters() {
-		return parameters;
-	}
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
 
-	public SortedSet<Response> getResponses() {
-		return responses;
-	}
-	public Sut getSut() {
+    public void setHttpMethod(HttpMethod httpMethod) {
+        this.httpMethod = httpMethod;
+    }
+
+    public SortedSet<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(SortedSet<Parameter> parameters) {
+        this.parameters = parameters;
+    }
+
+    public SortedSet<Response> getResponses() {
+        return responses;
+    }
+
+    public void setResponses(SortedSet<Response> responses) {
+        this.responses = responses;
+    }
+
+    public Sut getSut() {
         return sut;
     }
 
@@ -112,7 +129,7 @@ public class Action implements Comparable<Action> {
     }
 
     // toString
-	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);		
-	}
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

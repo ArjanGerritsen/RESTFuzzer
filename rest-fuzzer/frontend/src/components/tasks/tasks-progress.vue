@@ -74,7 +74,7 @@
     data() {
       return {
         fields: [
-          { key: 'id', label: '#', thStyle: 'width: 30px;' },
+          { key: 'id', label: '#', thStyle: 'width: 50px;' },
           { key: 'name' },
           { key: 'status', thStyle: 'text-align:center; width: 70px;' },
           { key: 'startedAt', label: 'Started @', thStyle: 'width: 100px;' },
@@ -82,7 +82,8 @@
         ],
         constants: Constants,
         restService: new RestService(),
-        messageService: new MessageService(this)
+        messageService: new MessageService(this),
+        timeoutTasks: null
       }
     },
     methods: { 
@@ -90,10 +91,12 @@
         this.restService.getTasksProgress()
           .then(response => {
             Store.commit('tasks_progress_set', { tasks: response.data });
+            this.timeoutTasks = setTimeout(this.getTasksProgress, 2500);
           })
           .catch(error => {
             this.messageService.error("Couldn't retrieve tasks (progress)", error);
             Store.commit('tasks_progress_set', { tasks: [] } );
+            clearTimeout(this.timeoutTasks);
           }
         );
       }    
@@ -101,11 +104,11 @@
     computed: { 
       tasksProgress() { return Store.getters.tasks.progress },
     },
-    mounted: function () {
-      setInterval(() => {
-        this.getTasksProgress();
-      }, 2500)
+    destroyed: function() {
+      clearTimeout(this.timeoutTasks);
     },
-    created: function () { },
+    created: function () { 
+      this.getTasksProgress();
+    },
   }
 </script>
