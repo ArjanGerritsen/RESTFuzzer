@@ -55,9 +55,12 @@ export default {
   td {
 	font-size: 0.875rem;	  
   }
+  
+  body {
+	background-image: url('assets/background.jpg');
+  }
 
   $font-size-base: 0.875rem;
-  $body-bg: #dddddd;
 
   @import '../node_modules/bootstrap/scss/bootstrap';
   @import '../node_modules/bootstrap-vue/src/index.scss';

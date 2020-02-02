@@ -53,7 +53,7 @@
             </template>
 
             <template slot="empty">
-              <h6>No data present.</h6>
+              No data present.
             </template>      
           </b-table>
         </div>
