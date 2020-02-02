@@ -2,11 +2,7 @@
   <b-modal
     id="suts-add"
     ref="modal"
-    scrollable
-    title="Scrollable Content"
     size="lg"
-    header-bg-variant="light"
-    footer-bg-variant="light"
   >
     <template slot="modal-header">
       <h6>
@@ -27,27 +23,29 @@
     </b-form>
 
     <template slot="modal-footer" slot-scope="{ cancel }">
-      <b-button type="submit" variant="primary" @click="addSut()">
-        <b-icon icon="plus" font-scale="1"></b-icon>
-        &nbsp;add system under test
-      </b-button>
-      <b-button type="cancel" variant="outline-secondary" @click="cancel()">
-        <b-icon icon="backspace" font-scale="1"></b-icon>
-        &nbsp;cancel
-      </b-button>
+      <div class="button-group-right">
+        <b-button size="sm" type="submit" variant="primary" @click="addSut()">
+          <b-icon icon="plus" font-scale="1"></b-icon>
+          &nbsp;add
+        </b-button>
+        <b-button size="sm" type="cancel" variant="outline-secondary" @click="cancel()">
+          <b-icon icon="backspace" font-scale="1"></b-icon>
+          &nbsp;cancel
+        </b-button>
+      </div>
     </template>
   </b-modal>
 </template>
 
 <script>
-import Store from '../../store';
-import RestService from "../../shared/services/rest-service";
-import MessageService from "../../shared/services/message-service";
+  import Store from '../../store';
+  import RestService from "../../shared/services/rest-service";
+  import MessageService from "../../shared/services/message-service";
 
-export default {
-  data() {
-    return {
-      sut: {
+  export default {
+    data() {
+      return {
+        sut: {
         location: ""
       },
       restService: new RestService(),
@@ -89,6 +87,6 @@ export default {
 
       this.cancel();
     },
-  }
-};
+    }
+  };
 </script>

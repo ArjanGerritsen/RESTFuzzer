@@ -1,10 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import Home from "../components/home/home.vue";
-import Suts from "../components/suts/suts.vue";
-import Tasks from "../components/tasks/tasks.vue";
-import About from "../components/about/about.vue";
+import Home from "../components/home/home";
+import Suts from "../components/suts/suts";
+import Fuzzing from "../components/fuzzing/fuzzing"
+import Tasks from "../components/tasks/tasks";
+import About from "../components/about/about";
 
 Vue.use(VueRouter);
 
@@ -18,6 +19,11 @@ const routes = [
     path: "/suts",
     name: "suts",
     component: Suts
+  },
+  {
+    path: "/fuzzing",
+    name: "fuzzing",
+    component: Fuzzing
   },
   {
     path: "/tasks",

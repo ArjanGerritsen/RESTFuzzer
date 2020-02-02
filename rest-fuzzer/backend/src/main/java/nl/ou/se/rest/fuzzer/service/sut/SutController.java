@@ -1,5 +1,6 @@
 package nl.ou.se.rest.fuzzer.service.sut;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +31,20 @@ public class SutController {
 		return SutMapper.toDtos(suts);
 	}
 
+    @RequestMapping(path = "{id}", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
+        Optional<Sut> sut = sutSerivce.findById(id);
+        if (!sut.isPresent()) {
+            return ResponseEntity.badRequest().body(new SutDto());         
+        }
+        return ResponseEntity.ok(SutMapper.toDto(sut.get()));
+    }	
+
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<?> add(@RequestBody SutDto sutDto) {
-        Sut sut = sutSerivce.save(SutMapper.toDomain(sutDto));
+        Sut sut = SutMapper.toDomain(sutDto);
+        sut.setCreatedAt(LocalDateTime.now());
+        sut = sutSerivce.save(sut);
         return ResponseEntity.ok(SutMapper.toDto(sut));
     }
 

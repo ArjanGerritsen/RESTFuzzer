@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-4">
+      <div class="col-8">
         <b-card header-tag="header">
           <span slot="header">
             <b-icon icon="list-task" font-scale="1"></b-icon>
@@ -54,9 +54,7 @@
             </b-list-group>              
           </b-card-text>
         </b-card>
-      </div>
-      <div class="col-4">
-      </div>      
+      </div>     
     </div>
   </div>
 </template>

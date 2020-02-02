@@ -25,7 +25,7 @@ const store = new Vuex.Store({
         // TODO
         state.tasks.progress.forEach(t => {
           let nameParts = t.canonicalName.split(".");
-          t["name"] = nameParts[nameParts.length - 1];
+          t["name"] = nameParts[nameParts.length - 1].replace('Task', '');
 
           let status = Constants.TASK_STATUS_QUEUED;
           if (t.startedAt != null && t.crashedAt == null && t.finishedAt == null) {

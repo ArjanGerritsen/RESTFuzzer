@@ -1,24 +1,24 @@
 <template>
-  <div>
-    <b-modal id="suts-delete" ref="modal" centered v-if="this.sut" size="xs">
-      <template slot="modal-header">
-        <h6><b-icon icon="trash" font-scale="1"></b-icon>&nbsp;Delete sut</h6>
-      </template>
+  <b-modal id="suts-delete" ref="modal" centered v-if="this.sut" size="xs">
+    <template slot="modal-header">
+      <h6><b-icon icon="trash" font-scale="1"></b-icon>&nbsp;Delete sut</h6>
+    </template>
 
-      <template slot="default">
-        Are you sure you want to delete sut '{{this.sut.location}}'.
-      </template>
+    <template slot="default">
+      Are you sure you want to delete sut '{{this.sut.location}}'.
+    </template>
 
-      <template slot="modal-footer" slot-scope="{ cancel }">
-        <b-button variant="outline-danger" @click="deleteSut()">
+    <template slot="modal-footer" slot-scope="{ cancel }">
+      <div class="button-group-right">
+        <b-button size="sm" variant="outline-danger" @click="deleteSut()">
           <b-icon icon="trash" font-scale="1"></b-icon>&nbsp; delete
         </b-button>
-        <b-button variant="outline-secondary" @click="cancel()">
+        <b-button size="sm" variant="outline-secondary" @click="cancel()">
           <b-icon icon="backspace" font-scale="1"></b-icon>&nbsp; cancel
         </b-button>
-      </template>
-    </b-modal>
-  </div>
+      </div>
+    </template>
+  </b-modal>
 </template>
 
 <script>

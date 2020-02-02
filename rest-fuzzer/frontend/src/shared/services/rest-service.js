@@ -11,6 +11,15 @@ export default class RestService {
     })
   }
 
+  getSut(id) {
+    return new Promise( function (resolve, reject) {
+	axios
+	  .get(`/rest/suts/${id}`)
+     .then(response => { resolve(response); })
+     .catch(error => { reject(error); } ) 
+	})
+  }
+  
   addSut(sut) {
     return new Promise( function (resolve, reject) {
       axios

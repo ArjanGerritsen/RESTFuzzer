@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS rmd_suts (
   description VARCHAR(128) NULL,  
   host VARCHAR(255) NULL,
   base_path VARCHAR(255) NULL,
-  created_at TIMESTAMP NOT NULL
+  created_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
 drop table rmd_actions;

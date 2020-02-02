@@ -28,14 +28,35 @@ export default {
 </style>
 
 <style lang="scss">
-  .button-spacer {
-    margin-right: 15px;
+  .button-group-left {
+    float: left;
+    margin-bottom: 15px;
   }
+  .button-group-left button, .button-group-left a {
+    margin-right: 10px;
+  }
+  
+  .button-group-right {
+    float: right;
+    margin-bottom: 15px;
+  }
+  .button-group-right button, .button-group-right a {
+	margin-left: 10px;
+  }
+
   .card-with-top-margin {
     margin-top: 35px;
   }
+ 
+  th {
+	font-size: 0.875rem;
+  }
+  
+  td {
+	font-size: 0.875rem;	  
+  }
 
-  // $font-size-base: 0.875rem;
+  $font-size-base: 0.875rem;
   $body-bg: #dddddd;
 
   @import '../node_modules/bootstrap/scss/bootstrap';

@@ -26,7 +26,7 @@
       </template>      
     </b-table>
 
-    <b-pagination v-if="displayPagination" style="float:right;" v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="list"></b-pagination>
+    <b-pagination v-if="displayPagination" size="sm" style="float:right;" v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="list"></b-pagination>
   </div>
 </template>
 
@@ -35,7 +35,7 @@
     props: ['items', 'fields', 'formatters'],
     data() {
        return {
-         perPage: 20,
+         perPage: 15,
          currentPage: 1,
        }
     },
@@ -47,7 +47,7 @@
         this.$emit('select-item', item[0]);
       },
       rowClicked(item) {
-        this.$emit('deselect-item');
+        this.$emit('click-item');
       },
       linkGen(pageNum) {
         return pageNum === 1 ? '?' : `?page=${pageNum}`

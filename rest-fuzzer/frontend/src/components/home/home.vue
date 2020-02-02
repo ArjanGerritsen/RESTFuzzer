@@ -16,8 +16,10 @@
         In vel maximus dolor.
         Curabitur at sagittis erat. 
       </p>
-      <b-button variant="primary" href="/suts" class="button-spacer">Start</b-button>
-      <b-button variant="primary" href="/about">More information</b-button>
+      <div class="button-group-left">
+        <b-button size="sm" variant="primary" href="/suts">Start</b-button>
+        <b-button size="sm" variant="primary" href="/about">More information</b-button>
+      </div>
     </b-jumbotron>
   </div>    
 </template>

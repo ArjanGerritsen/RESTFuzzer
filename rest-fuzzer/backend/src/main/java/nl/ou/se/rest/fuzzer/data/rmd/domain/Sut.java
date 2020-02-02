@@ -58,11 +58,7 @@ public class Sut {
     public Sut() {
     }
 
-    public Sut(String location) {
-        this.location = location;
-    }
-
-    // methods
+	// methods
     public void addAction(Action action) {
         action.setSut(this);
         this.actions.add(action);

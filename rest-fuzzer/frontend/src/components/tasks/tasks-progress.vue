@@ -3,8 +3,9 @@
   <b-card header-tag="header">
     <span slot="header">
       <b-icon icon="list-task" font-scale="1"></b-icon>
-      &nbsp;Tasks progress
+      Tasks progress
     </span>
+
     <b-card-text>
       <template>
         <div>
