@@ -12,6 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,6 +25,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.SortNatural;
 
 @Entity(name = "rmd_suts")
+@NamedEntityGraph(name = "suts.all_relations", attributeNodes = @NamedAttributeNode(value = "actions", subgraph = "suts.subgraph.actions"), subgraphs = {
+        @NamedSubgraph(name = "suts.subgraph.actions", attributeNodes = { @NamedAttributeNode(value = "parameters"),
+                @NamedAttributeNode(value = "responses") }) })
 public class Sut {
 
     // variables
@@ -49,7 +55,7 @@ public class Sut {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sut_id")
     @SortNatural
     private SortedSet<Action> actions = new TreeSet<>();
@@ -58,7 +64,7 @@ public class Sut {
     public Sut() {
     }
 
-	// methods
+    // methods
     public void addAction(Action action) {
         action.setSut(this);
         this.actions.add(action);

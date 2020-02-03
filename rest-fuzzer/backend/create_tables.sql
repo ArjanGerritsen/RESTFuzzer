@@ -9,6 +9,9 @@ CREATE TABLE IF NOT EXISTS tasks (
   finished_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
+drop table rmd_responses;
+drop table rmd_parameters;
+drop table rmd_actions;
 drop table rmd_suts;
 
 CREATE TABLE IF NOT EXISTS rmd_suts (
@@ -21,16 +24,15 @@ CREATE TABLE IF NOT EXISTS rmd_suts (
   created_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
-drop table rmd_actions;
 
 CREATE TABLE IF NOT EXISTS rmd_actions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   path VARCHAR(255) NOT NULL,
   http_method ENUM('GET', 'POST', 'PATCH', 'PUT', 'DELETE') NOT NULL,
-  sut_id INTEGER NOT NULL
+  sut_id INTEGER
 ) ENGINE=INNODB;
 
-drop table rmd_parameters;
+ALTER TABLE rmd_actions ADD CONSTRAINT rmd_actions_fk_sut FOREIGN KEY (sut_id) REFERENCES rmd_suts(id); 
 
 CREATE TABLE IF NOT EXISTS rmd_parameters (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -41,17 +43,19 @@ CREATE TABLE IF NOT EXISTS rmd_parameters (
   type ENUM('BOOLEAN', 'STRING', 'INTEGER', 'ARRAY') NOT NULL,
   context ENUM('FORMDATA', 'HEADER', 'PATH', 'QUERY') NOT NULL,
   meta_data_tuples_json TEXT,
-  action_id INTEGER NOT NULL
+  action_id INTEGER
 ) ENGINE=INNODB;
 
-drop table rmd_responses;
+ALTER TABLE rmd_parameters ADD CONSTRAINT rmd_actions_fk_action FOREIGN KEY (action_id) REFERENCES rmd_actions(id); 
 
 CREATE TABLE IF NOT EXISTS rmd_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
   status_code INT NOT NULL,
   description VARCHAR(255) NOT NULL,
-  action_id INT NOT NULL
+  action_id INT
 ) ENGINE=INNODB;
+
+ALTER TABLE rmd_responses ADD CONSTRAINT rmd_responses_fk_action FOREIGN KEY (action_id) REFERENCES rmd_actions(id);
 
 truncate tasks;
 truncate rmd_suts;

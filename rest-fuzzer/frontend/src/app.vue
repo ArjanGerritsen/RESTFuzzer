@@ -41,7 +41,7 @@ export default {
     margin-bottom: 15px;
   }
   .button-group-right button, .button-group-right a {
-	margin-left: 10px;
+	  margin-left: 10px;
   }
 
   .card-with-top-margin {
@@ -49,18 +49,16 @@ export default {
   }
  
   th {
-	font-size: 0.875rem;
+	  font-size: 0.875rem;
   }
   
   td {
-	font-size: 0.875rem;	  
+	  font-size: 0.875rem;	  
   }
   
   body {
 	background-image: url('assets/background.jpg');
   }
-
-  $font-size-base: 0.875rem;
 
   @import '../node_modules/bootstrap/scss/bootstrap';
   @import '../node_modules/bootstrap-vue/src/index.scss';

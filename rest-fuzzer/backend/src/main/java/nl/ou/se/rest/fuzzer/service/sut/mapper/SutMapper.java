@@ -12,19 +12,25 @@ public abstract class SutMapper {
 
 	// methods
 	public static List<SutDto> toDtos(List<Sut> suts) {
-		return suts.stream().map(s -> SutMapper.toDto(s)).collect(Collectors.toList());
+		return suts.stream().map(s -> SutMapper.toDto(s, false)).collect(Collectors.toList());
 	}
 
 	public static SutDto toDto(Sut sut) {
-		SutDto dto = new SutDto();
-		BeanUtils.copyProperties(sut, dto);
-		dto.setActions(ActionMapper.toDtos(sut.getActions()));
-		return dto;
+		return toDto(sut, true);
 	}
 
     public static Sut toDomain(SutDto dto) {
         Sut sut = new Sut();
         BeanUtils.copyProperties(dto, sut);
         return sut;
-    }	
+    }
+
+    private static SutDto toDto(Sut sut, boolean mapRelations) {
+        SutDto dto = new SutDto();
+        BeanUtils.copyProperties(sut, dto);
+        if (mapRelations) {
+            dto.setActions(ActionMapper.toDtos(sut.getActions()));
+        }
+        return dto;
+    }    
 }

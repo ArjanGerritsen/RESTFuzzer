@@ -37,12 +37,12 @@ public class Action implements Comparable<Action> {
     @Enumerated(EnumType.STRING)
     private HttpMethod httpMethod;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "action_id")
     @SortNatural
     private SortedSet<Parameter> parameters = new TreeSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "action_id")
     @SortNatural
     private SortedSet<Response> responses = new TreeSet<>();
