@@ -36,17 +36,12 @@
 </template>
 
 <script>
-import RestService from "../../shared/services/rest-service";
-import MessageService from "../../shared/services/message-service";
-
 export default {
   data() {
     return {
       sut: {
         location: ""
-      },
-      restService: new RestService(),
-      messageService: new MessageService(this)
+      }
     };
   },
   methods: {
@@ -62,30 +57,10 @@ export default {
       this.resetForm();
       this.hide();
     },
-    async addSut() {
-      await this.restService
-        .addSut(this.sut)
-        .then(response => {
-          this.messageService.info(
-            "Add sut",
-            `Sut ${response.data.location} added successful.`
-          );
-        })
-        .catch(error => {
-          this.messageService.error("An error occured while adding sut", error);
-        });
-
-      this.restService
-        .getSuts()
-        .then(response => {
-          this.$store.commit("suts_set", { suts: response.data });
-        })
-        .catch(error => {
-          this.messageService.error("Couldn't retrieve suts", error);
-          this.$store.commit("suts_set", { suts: [] });
-        });
-
-      this.cancel();
+    addSut() {
+      this.$store.dispatch("addSut", this.sut);
+      // TODO promise terug ... en dan verversen lijst met suts ...
+      // this.cancel();
     }
   }
 };

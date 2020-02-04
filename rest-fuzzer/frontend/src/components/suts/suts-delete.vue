@@ -22,15 +22,9 @@
 </template>
 
 <script>
-import RestService from "../../shared/services/rest-service";
-import MessageService from "../../shared/services/message-service";
-
 export default {
   data() {
-    return {
-      restService: new RestService(),
-      messageService: new MessageService(this)
-    };
+    return {};
   },
   computed: {
     sut() {
@@ -38,33 +32,36 @@ export default {
     }
   },
   methods: {
-    async deleteSut() {
-      await this.restService
-        .deleteSut(this.sut)
-        .then(response => {
-          this.messageService.info(
-            "Delete sut",
-            `Sut ${response.data.location} deleted successful.`
-          );
-          this.$bvModal.hide("suts-detail");
-          this.$store.commit("sut_set", { sut: null });
-        })
-        .catch(error => {
-          this.messageService.error(
-            "An error occured while deleting sut",
-            error
-          );
-        });
+    deleteSut() {
+      this.$store.dispatch("deleteSut", this.sut);
+      this.$bvModal.hide("suts-detail");
+      // TODO promise + reload suts ...
+      // await this.restService
+      //   .deleteSut(this.sut)
+      //   .then(response => {
+      //     this.messageService.info(
+      //       "Delete sut",
+      //       `Sut ${response.data.location} deleted successful.`
+      //     );
+      //     this.$bvModal.hide("suts-detail");
+      //     this.$store.commit("sut_set", { sut: null });
+      //   })
+      //   .catch(error => {
+      //     this.messageService.error(
+      //       "An error occured while deleting sut",
+      //       error
+      //     );
+      //   });
 
-      this.restService
-        .getSuts()
-        .then(response => {
-          this.$store.commit("suts_set", { suts: response.data });
-        })
-        .catch(error => {
-          this.messageService.error("Couldn't retrieve suts", error);
-          this.$store.commit("suts_set", { suts: [] });
-        });
+      // this.restService
+      //   .getSuts()
+      //   .then(response => {
+      //     this.$store.commit("suts_set", { suts: response.data });
+      //   })
+      //   .catch(error => {
+      //     this.messageService.error("Couldn't retrieve suts", error);
+      //     this.$store.commit("suts_set", { suts: [] });
+      //   });
     }
   }
 };

@@ -4,8 +4,7 @@ const suts = {
     state: {
         suts: {
             all: null,
-            current: null,
-            failures: []
+            current: null
         }
     },
     mutations: {
@@ -24,7 +23,7 @@ const suts = {
                     commit("suts_set", { suts: response.data });
                 })
                 .catch(error => {
-                    // TODO iets met failures ... this.messageService.error("Couldn't retrieve suts", error);
+                    commit("message_add", { message: { type: "error", text: "Couldn't retrieve suts", err: error } });
                     commit("suts_set", { suts: [] });
                 })
         },
@@ -35,8 +34,29 @@ const suts = {
                     commit("sut_set", { sut: response.data });
                 })
                 .catch(error => {
-                    // TODO iets met failures ... this.messageService.error("Couldn't retrieve sut", error);
+                    commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut with id ${id}`, err: error } });
                     commit("sut_set", { sut: null });
+                })
+        },
+        addSut({ commit }, sut) {
+            axios
+                .post('/rest/suts', sut)
+                .then(response => {
+                    commit("message_add", { message: { type: "info", title: "Add sut", text: `Sut ${response.data.location} added successful.`, err: error } });
+                })
+                .catch(error => {
+                    commit("message_add", { message: { type: "error", text: "An error occured while adding sut", err: error } });
+                })
+        },
+        deleteSut({ commit }, sut) {
+            axios
+                .delete(`/rest/suts/${sut.id}`)
+                .then(response => {
+                    commit("message_add", { message: { type: "info", title: "Delete sut", text: `Sut ${response.data.location} deleted successful.` } });
+                    commit("sut_set", { sut: null });
+                })
+                .catch(error => {
+                    commit("message_add", { message: { type: "error", text: `Couldn't delete sut with id ${sut.id}`, err: error } });
                 })
         }
     },
