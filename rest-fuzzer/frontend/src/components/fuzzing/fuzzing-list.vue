@@ -2,7 +2,7 @@
   <div>
     <b-card header-tag="header">
       <span slot="header">
-        <b-icon icon="display" font-scale="1"></b-icon>&nbsp;Systems under test
+        <b-icon icon="tools" font-scale="1"></b-icon>&nbsp;Fuzzing tasks
       </span>
       <b-card-text>
         <div class="button-group-left">

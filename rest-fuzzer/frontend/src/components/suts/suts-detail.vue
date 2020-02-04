@@ -83,8 +83,6 @@
 
 <script>
 import Constants from "../../shared/constants";
-import RestService from "../../shared/services/rest-service";
-import MessageService from "../../shared/services/message-service";
 
 import List from "../shared/list/list";
 
@@ -99,9 +97,7 @@ export default {
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "path", thStyle: "width: 350px;" },
         { key: "httpMethod", label: "Http method" }
-      ],
-      restService: new RestService(),
-      messageService: new MessageService(this)
+      ]
     };
   },
   methods: {
@@ -109,17 +105,7 @@ export default {
       console.log(value);
     },
     addExtractorTask() {
-      this.restService
-        .addTask(Constants.TASK_EXTRACTOR, { sut_id: this.sut.id })
-        .then(response => {
-          this.messageService.info(
-            "Add task",
-            `Task (extractor) added succesful`
-          );
-        })
-        .catch(error => {
-          this.messageService.error("Couldn't add task (extractor)", error);
-        });
+      this.$store.dispatch("addTask", { name: Constants.TASK_EXTRACTOR, metaDataTuples: { sut_id: this.sut.id } } );
     }
   },
   computed: {

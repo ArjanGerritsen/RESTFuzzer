@@ -9,7 +9,21 @@ export default {
     };
   },
   methods: {
+	displayMessage(message) {
+	  switch(message.type) {
+		case "info": this.displayInfo(message.title, message.text);
+		break;
+		case "error":
+			if (message.err.response.status === 400) {
+				this.displayWarning(message.text, message.err);				
+			} else {
+				this.displayError(message.text, message.err);
+			}
+		break;
+	  }
+	},
     displayInfo(title, text) {
+	  console.log('sdf');
       this.$bvToast.toast(text, {
         title: title,
         variant: "primary",
@@ -17,19 +31,17 @@ export default {
         appendToast: true
       });
     },
-    diaplayWarning(text, error) {
-      this.$toast.toast(
-        `${text} : ${error.response.status} - ${error.response.data}`,
-        {
-          title: "Attention",
+    displayWarning(title, error) {
+      this.$bvToast.toast(this.getMsg(error), {
+          title: title,
           variant: "warning",
-          noAutoHide: true,
+          noAutoHide: false,
           appendToast: true
         }
       );
     },
-    diaplayError(title, error) {
-      this.$toast.toast(this.getMsg(error), {
+    displayError(title, error) {
+      this.$bvToast.toast(this.getMsg(error), {
         title: title,
         variant: "danger",
         noAutoHide: false,
@@ -59,8 +71,7 @@ export default {
       return msg;
     },
     displayMessages() {
-      // TODO
-      this.messages.forEach(msg => this.displayInfo("Yo", msg.text));
+      this.messages.forEach(msg => this.displayMessage(msg));
       this.$store.commit('messages_clear');
       this.timeout = setTimeout(this.displayMessages, 500);
     }

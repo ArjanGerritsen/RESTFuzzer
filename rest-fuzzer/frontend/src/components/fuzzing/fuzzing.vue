@@ -5,7 +5,7 @@
         <tasks-progress></tasks-progress>
       </div>
       <div class="col-8">
-        TODO
+        <fuzzing-list></fuzzing-list>
       </div>
     </div>
   </div>
@@ -13,10 +13,11 @@
 
 <script>
   import TasksProgress from "../tasks/tasks-progress";
+  import FuzzingList from "./fuzzing-list";
 
   export default {
     components: {
-      TasksProgress
+      TasksProgress, FuzzingList
     },
     data() {
       return { data: {} };

@@ -42,7 +42,7 @@ const suts = {
             axios
                 .post('/rest/suts', sut)
                 .then(response => {
-                    commit("message_add", { message: { type: "info", title: "Add sut", text: `Sut ${response.data.location} added successful.`, err: error } });
+                    commit("message_add", { message: { type: "info", title: "Add sut", text: `Sut ${response.data.location} added successful.` } });
                 })
                 .catch(error => {
                     commit("message_add", { message: { type: "error", text: "An error occured while adding sut", err: error } });

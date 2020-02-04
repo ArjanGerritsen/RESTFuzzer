@@ -1,7 +1,7 @@
 <template>
   <b-card header-tag="header">
     <span slot="header">
-      <b-icon icon="list-task" font-scale="1"></b-icon>Tasks progress
+      <b-icon icon="list-task" font-scale="1"></b-icon>&nbsp;Tasks progress
     </span>
 
     <b-card-text>
@@ -57,8 +57,6 @@
 
 <script>
 import Constants from "../../shared/constants";
-import RestService from "../../shared/services/rest-service";
-import MessageService from "../../shared/services/message-service";
 
 export default {
   components: { Constants },
@@ -72,27 +70,15 @@ export default {
         { key: "endedAt", label: "Ended @", thStyle: "width: 100px;" }
       ],
       constants: Constants,
-      restService: new RestService(),
-      messageService: new MessageService(this),
       timeoutTasks: null
     };
   },
   methods: {
     getTasksProgress: function() {
-      this.restService
-        .getTasksProgress()
-        .then(response => {
-          this.$store.commit("tasks_progress_set", { tasks: response.data });
-          this.timeoutTasks = setTimeout(this.getTasksProgress, 2500);
-        })
-        .catch(error => {
-          this.messageService.error(
-            "Couldn't retrieve tasks (progress)",
-            error
-          );
-          this.$store.commit("tasks_progress_set", { tasks: [] });
-          clearTimeout(this.timeoutTasks);
-        });
+      this.$store.dispatch("findTasksProgress");
+      this.timeoutTasks = setTimeout(this.getTasksProgress, 2500);
+ 
+      // TODO clearTimeout(this.timeoutTasks);
     }
   },
   computed: {

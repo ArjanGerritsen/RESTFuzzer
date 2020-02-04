@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import Constants from "../../constants";
 
 const tasks = {
@@ -12,7 +14,29 @@ const tasks = {
             state.tasks.progress = payload.tasks
         }
     },
-    actions: {},
+    actions: {
+	  findTasksProgress({ commit }) {
+          axios
+              .get("/rest/tasks/progress")
+              .then(response => {
+                  commit("tasks_progress_set", { tasks: response.data });
+              })
+              .catch(error => {
+                  commit("message_add", { message: { type: "error", text: "Couldn't retrieve tasks (progress)", err: error } });
+                  commit("tasks_progress_set", { tasks: [] });
+              })
+      },
+      addTask({ commit }, data) {
+          axios
+          	  .post(`/rest/tasks/${data.name}/start`, data.metaDataTuples)
+	          .then(response => {
+	        	  commit("message_add", { message: { type: "info", title: "Add task", text: `Task (${data.name}) added successful.` } });
+	          })
+              .catch(error => {
+                  commit("message_add", { message: { type: "error", text: `Couldn't add task (${data.name})`, err: error } });
+              })
+      }
+    },
     getters: {
         tasks: state => {
             if (state.tasks.progress != null) {
