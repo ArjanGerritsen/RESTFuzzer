@@ -43,20 +43,32 @@
         </template>
       </template>
 
-      <template v-slot:cell(actions)="row">
-        <b-button size="sm" @click="row.toggleDetails">
-          Show/hide details
+      <template v-slot:cell(details)="row">
+        <b-button size="sm" variant="primary" @click="row.toggleDetails">
+          <b-icon v-if="row.detailsShowing" icon="x" font-scale="1"></b-icon>
+          <b-icon v-if="!row.detailsShowing" icon="plus" font-scale="1"></b-icon>
         </b-button>
       </template>
 
       <template v-slot:row-details="row">
         <b-card>
-          <ul>
-            <li v-for="(value, key) in row.item.parameters" :key="key">{{ value }}</li>
-          </ul>
-          <ul>
-            <li v-for="(value, key) in row.item.responses" :key="key">{{ value }}</li>
-          </ul>          
+          <h6>Parameters:</h6>
+          <li class="list-inline-item" style="vertical-align:top; margin:8px; width: 190px;" v-for="(value, key) in row.item.parameters" :key="key">
+            <b>#{{ value.id }}</b> <b-badge v-if="value.required" variant="primary">required</b-badge> <br>
+            name: {{ value.name}} <br>
+            context: {{ value.context }} <br>
+            type: {{ value.type }} <br>
+            extra: {{ value.metaDataTuplesJson === "{}" ? "-" : value.metaDataTuplesJson }}
+          </li>
+
+          <hr>
+
+          <h6>Responses:</h6>
+          <li class="list-inline-item" style="margin:8px; width: 190px;" v-for="(value, key) in row.item.responses" :key="key">
+            <b>#{{ value.id }}</b> <br>
+            http status: {{ value.statusCode }} <br>
+            description: {{ value.description }}
+          </li>
         </b-card>
       </template>
 

@@ -23,7 +23,6 @@ export default {
 	  }
 	},
     displayInfo(title, text) {
-	  console.log('sdf');
       this.$bvToast.toast(text, {
         title: title,
         variant: "primary",

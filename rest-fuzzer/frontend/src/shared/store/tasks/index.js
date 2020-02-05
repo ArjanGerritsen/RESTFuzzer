@@ -15,32 +15,40 @@ const tasks = {
         }
     },
     actions: {
-	  findTasksProgress({ commit }) {
-          axios
-              .get("/rest/tasks/progress")
-              .then(response => {
-                  commit("tasks_progress_set", { tasks: response.data });
-              })
-              .catch(error => {
-                  commit("message_add", { message: { type: "error", text: "Couldn't retrieve tasks (progress)", err: error } });
-                  commit("tasks_progress_set", { tasks: [] });
-              })
-      },
-      addTask({ commit }, data) {
-          axios
-          	  .post(`/rest/tasks/${data.name}/start`, data.metaDataTuples)
-	          .then(response => {
-	        	  commit("message_add", { message: { type: "info", title: "Add task", text: `Task (${data.name}) added successful.` } });
-	          })
-              .catch(error => {
-                  commit("message_add", { message: { type: "error", text: `Couldn't add task (${data.name})`, err: error } });
-              })
-      }
+        findTasksProgress({ commit }) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get("/rest/tasks/progress")
+                    .then(response => {
+                        commit("tasks_progress_set", { tasks: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: "Couldn't retrieve tasks (progress)", err: error } });
+                        commit("tasks_progress_set", { tasks: [] });
+                        reject(error);
+                    })
+            })
+        },
+        addTask({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .post(`/rest/tasks/${data.name}/start`, data.metaDataTuples)
+                    .then(response => {
+                        commit("message_add", { message: { type: "info", title: "Add task", text: `Task (${data.name}) added successful.` } });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't add task (${data.name})`, err: error } });
+                        reject(error);
+                    })
+            })
+
+        }
     },
     getters: {
         tasks: state => {
             if (state.tasks.progress != null) {
-                // TODO
                 state.tasks.progress.forEach(t => {
                     let nameParts = t.canonicalName.split(".");
                     t["name"] = nameParts[nameParts.length - 1].replace('Task', '');

@@ -33,35 +33,10 @@ export default {
   },
   methods: {
     deleteSut() {
-      this.$store.dispatch("deleteSut", this.sut);
-      this.$bvModal.hide("suts-detail");
-      // TODO promise + reload suts ...
-      // await this.restService
-      //   .deleteSut(this.sut)
-      //   .then(response => {
-      //     this.messageService.info(
-      //       "Delete sut",
-      //       `Sut ${response.data.location} deleted successful.`
-      //     );
-      //     this.$bvModal.hide("suts-detail");
-      //     this.$store.commit("sut_set", { sut: null });
-      //   })
-      //   .catch(error => {
-      //     this.messageService.error(
-      //       "An error occured while deleting sut",
-      //       error
-      //     );
-      //   });
-
-      // this.restService
-      //   .getSuts()
-      //   .then(response => {
-      //     this.$store.commit("suts_set", { suts: response.data });
-      //   })
-      //   .catch(error => {
-      //     this.messageService.error("Couldn't retrieve suts", error);
-      //     this.$store.commit("suts_set", { suts: [] });
-      //   });
+      this.$store.dispatch("deleteSut", this.sut).then(() => {
+        this.$bvModal.hide("suts-detail");
+        this.$store.dispatch("findAllSuts");
+      });
     }
   }
 };

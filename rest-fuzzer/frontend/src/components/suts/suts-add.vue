@@ -58,9 +58,10 @@ export default {
       this.hide();
     },
     addSut() {
-      this.$store.dispatch("addSut", this.sut);
-      // TODO promise terug ... en dan verversen lijst met suts ...
-      // this.cancel();
+      this.$store.dispatch("addSut", this.sut).then(() => {
+        this.cancel();
+        this.$store.dispatch("findAllSuts");
+      });
     }
   }
 };

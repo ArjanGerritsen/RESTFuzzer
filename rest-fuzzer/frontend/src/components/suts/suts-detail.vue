@@ -13,6 +13,7 @@
             <div class="col">
               <div class="button-group-left">
                 <b-button
+                  :disabled="extractTaskDisabled()"
                   size="sm"
                   type="submit"
                   variant="primary"
@@ -59,12 +60,13 @@
       </b-tab>
       <b-tab :disabled="this.sut.actions.length === 0" title="REST model description">
         <b-card-text>
-          <list
+          <SutsDetailActions
             @select-item="selectAction"
             :fields="fields"
             :items="sut.actions"
             :formatters="formatters"
-          ></list>
+            :displayFilter="true"
+          ></SutsDetailActions>
         </b-card-text>
       </b-tab>
     </b-tabs>
@@ -84,34 +86,70 @@
 <script>
 import Constants from "../../shared/constants";
 
-import List from "../shared/list/list";
-
 import SutsDelete from "./suts-delete";
+import SutsDetailActions from "./suts-detail-actions.vue";
 
 export default {
-  components: { List, SutsDelete },
+  components: { SutsDetailActions, SutsDelete },
   data() {
     return {
       formatters: [],
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
-        { key: "path", thStyle: "width: 350px;" },
-        { key: "httpMethod", label: "Http method" }
-      ]
+        { key: "path" },
+        { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" },
+        { key: "details", label: "Details", thStyle: "width: 60px;" }
+      ],
+      startedRefresh: null,
+      timeoutRefresh: null
     };
   },
   methods: {
     selectAction(value) {
-      console.log(value);
+      console.log("value: " + value);
+    },
+    extractTaskDisabled() {
+      return this.sut.actions.length !== 0 || this.startedRefresh !== null;
+    },
+    refreshData() {
+      if (
+        this.sut.actions.length !== 0 ||
+        new Date() - this.startedRefresh > 20000
+      ) {
+        this.startedRefresh = null;
+        clearTimeout(this.refreshTimeout);
+        return;
+      }
+
+      this.timeoutRefresh = setTimeout(this.refreshData, 1000);
+      this.$store.dispatch("findSut", this.sut.id).catch(error => {
+        this.startedRefresh = null;
+        clearTimeout(this.timeoutRefresh);
+      });
     },
     addExtractorTask() {
-      this.$store.dispatch("addTask", { name: Constants.TASK_EXTRACTOR, metaDataTuples: { sut_id: this.sut.id } } );
+      this.$store
+        .dispatch("addTask", {
+          name: Constants.TASK_EXTRACTOR,
+          metaDataTuples: { sut_id: this.sut.id }
+        })
+        .then(() => {
+          this.startedRefresh = new Date();
+          this.refreshData();
+        });
     }
   },
   computed: {
     sut() {
       return this.$store.getters.suts.current;
+    },
+    canExecuteTask() {
+      return this.sut.actions.length !== 0;
     }
+  },
+  created: function() {},
+  destroyed: function() {
+    clearTimeout(this.timeoutRefresh);
   }
 };
 </script>

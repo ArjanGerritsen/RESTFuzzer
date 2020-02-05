@@ -75,10 +75,10 @@ export default {
   },
   methods: {
     getTasksProgress: function() {
-      this.$store.dispatch("findTasksProgress");
       this.timeoutTasks = setTimeout(this.getTasksProgress, 2500);
- 
-      // TODO clearTimeout(this.timeoutTasks);
+      this.$store.dispatch("findTasksProgress").catch(error => {
+        clearTimeout(this.timeoutTasks);
+      });
     }
   },
   computed: {

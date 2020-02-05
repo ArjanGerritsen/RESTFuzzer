@@ -18,6 +18,7 @@ public class ParameterMapper {
     private static ParameterDto toDto(Parameter parameter) {
         ParameterDto dto = new ParameterDto();
         BeanUtils.copyProperties(parameter, dto);
+        dto.setMetaDataTuplesJson(parameter.getMetaDataTuples().toString());
         return dto;
     }
 }
