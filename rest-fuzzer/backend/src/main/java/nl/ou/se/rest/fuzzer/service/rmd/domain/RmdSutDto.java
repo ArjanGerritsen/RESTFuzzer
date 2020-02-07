@@ -1,10 +1,10 @@
-package nl.ou.se.rest.fuzzer.service.sut.domain;
+package nl.ou.se.rest.fuzzer.service.rmd.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SutDto {
+public class RmdSutDto {
 
     // variables
     private Long id;
@@ -14,7 +14,7 @@ public class SutDto {
     private String host;
     private String basePath;
     private LocalDateTime createdAt;
-    List<ActionDto> actions = new ArrayList<>();;
+    List<RmdActionDto> actions = new ArrayList<>();
 
     // getters and setters    
     public Long getId() {
@@ -59,10 +59,10 @@ public class SutDto {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-    public List<ActionDto> getActions() {
+    public List<RmdActionDto> getActions() {
         return actions;
     }
-    public void setActions(List<ActionDto> actions) {
+    public void setActions(List<RmdActionDto> actions) {
         this.actions = actions;
     }
 }

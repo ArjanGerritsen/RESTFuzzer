@@ -13,7 +13,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity(name = "rmd_responses")
-public class Response implements Comparable<Response> {
+public class RmdResponse implements Comparable<RmdResponse> {
 
     // variables
     @Id
@@ -29,19 +29,19 @@ public class Response implements Comparable<Response> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "action_id")
-    private Action action;
+    private RmdAction action;
 
     // constructor
-    public Response() {
+    public RmdResponse() {
     }
 
-    public Response(Integer statusCode, String description) {
+    public RmdResponse(Integer statusCode, String description) {
         this.statusCode = statusCode;
         this.description = description;
     }
 
     // methods
-    public int compareTo(Response other) {
+    public int compareTo(RmdResponse other) {
         return this.getStatusCode().compareTo(other.getStatusCode());
     }
 
@@ -70,11 +70,11 @@ public class Response implements Comparable<Response> {
         this.description = description;
     }
 
-    public Action getAction() {
+    public RmdAction getAction() {
         return action;
     }
 
-    public void setAction(Action action) {
+    public void setAction(RmdAction action) {
         this.action = action;
     }
 

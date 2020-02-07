@@ -12,29 +12,29 @@ import io.swagger.models.Response;
 import io.swagger.models.Swagger;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.parser.SwaggerParser;
-import nl.ou.se.rest.fuzzer.data.rmd.domain.Action;
-import nl.ou.se.rest.fuzzer.data.rmd.domain.Sut;
-import nl.ou.se.rest.fuzzer.data.rmd.factory.ActionFactory;
-import nl.ou.se.rest.fuzzer.data.rmd.factory.ParameterFactory;
-import nl.ou.se.rest.fuzzer.data.rmd.factory.ResponseFactory;
+import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdAction;
+import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
+import nl.ou.se.rest.fuzzer.data.rmd.factory.RmdActionFactory;
+import nl.ou.se.rest.fuzzer.data.rmd.factory.RmdParameterFactory;
+import nl.ou.se.rest.fuzzer.data.rmd.factory.RmdResponseFactory;
 
 public class Extractor {
 
     // variables
-    private Sut sut;
+    private RmdSut sut;
 
     private String title;
     private String description;
     private String host;
     private String basePath;
-    private List<Action> actions = new ArrayList<>();
+    private List<RmdAction> actions = new ArrayList<>();
 
-    private ActionFactory actionFactory = new ActionFactory();
-    private ParameterFactory parameterFactory = new ParameterFactory();
-    private ResponseFactory responseFactory = new ResponseFactory();
+    private RmdActionFactory actionFactory = new RmdActionFactory();
+    private RmdParameterFactory parameterFactory = new RmdParameterFactory();
+    private RmdResponseFactory responseFactory = new RmdResponseFactory();
 
     // constructor
-    public Extractor(Sut sut) {
+    public Extractor(RmdSut sut) {
         this.sut = sut;
     }
 
@@ -85,7 +85,7 @@ public class Extractor {
     }
 
     // getters and setters
-    public List<Action> getActions() {
+    public List<RmdAction> getActions() {
         return this.actions;
     }
 

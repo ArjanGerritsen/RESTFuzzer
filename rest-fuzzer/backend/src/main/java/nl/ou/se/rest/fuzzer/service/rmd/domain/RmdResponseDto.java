@@ -1,6 +1,6 @@
-package nl.ou.se.rest.fuzzer.service.sut.domain;
+package nl.ou.se.rest.fuzzer.service.rmd.domain;
 
-public class ResponseDto {
+public class RmdResponseDto {
 
     // variables
     private Long id;

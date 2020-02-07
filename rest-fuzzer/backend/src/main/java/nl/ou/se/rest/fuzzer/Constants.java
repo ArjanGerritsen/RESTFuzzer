@@ -14,4 +14,7 @@ public abstract class Constants {
     public static final String INFO_EXTRACTOR_TASK_START = "Task Extractor start";
     public static final String INFO_EXTRACTOR_TASK_STOP = "Task Extractor stop";
     
+    public static final String ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS = "rmd.suts.all_relations";
+    public static final String ENTITY_GRAPH_FUZ_PROJECTS_ALL_RELATIONS = "fuz.projects.all_relations";
+    
 }

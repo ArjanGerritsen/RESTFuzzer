@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.service.sut;
+package nl.ou.se.rest.fuzzer.service.rmd;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,47 +19,47 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import nl.ou.se.rest.fuzzer.data.rmd.dao.SutService;
-import nl.ou.se.rest.fuzzer.data.rmd.domain.Sut;
+import nl.ou.se.rest.fuzzer.data.rmd.dao.RmdSutService;
+import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
 import nl.ou.se.rest.fuzzer.service.HttpResponseDto;
 import nl.ou.se.rest.fuzzer.service.ValidatorUtil;
-import nl.ou.se.rest.fuzzer.service.sut.domain.SutDto;
-import nl.ou.se.rest.fuzzer.service.sut.mapper.SutMapper;
+import nl.ou.se.rest.fuzzer.service.rmd.domain.RmdSutDto;
+import nl.ou.se.rest.fuzzer.service.rmd.mapper.RmdSutMapper;
 
 @RestController()
 @RequestMapping("/rest/suts")
-public class SutController {
+public class RmdSutController {
 
-	private Logger logger = LoggerFactory.getLogger(SutController.class);
+	private Logger logger = LoggerFactory.getLogger(RmdSutController.class);
 
 	@Autowired
-	SutService sutSerivce;
+	RmdSutService sutSerivce;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody List<SutDto> findAll() {
-		List<Sut> suts = sutSerivce.findAll();
-		return SutMapper.toDtos(suts);
+	public @ResponseBody List<RmdSutDto> findAll() {
+		List<RmdSut> suts = sutSerivce.findAll();
+		return RmdSutMapper.toDtos(suts);
 	}
 
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
-        Optional<Sut> sut = sutSerivce.findById(id);
+        Optional<RmdSut> sut = sutSerivce.findById(id);
         if (!sut.isPresent()) {
-            return ResponseEntity.badRequest().body(new SutDto());         
+            return ResponseEntity.badRequest().body(new RmdSutDto());         
         }
-        return ResponseEntity.ok(SutMapper.toDto(sut.get()));
+        return ResponseEntity.ok(RmdSutMapper.toDto(sut.get()));
     }	
 
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> add(@RequestBody SutDto sutDto) {
-        Sut sut = SutMapper.toDomain(sutDto);
+    public @ResponseBody ResponseEntity<?> add(@RequestBody RmdSutDto sutDto) {
+        RmdSut sut = RmdSutMapper.toDomain(sutDto);
         sut.setCreatedAt(LocalDateTime.now());
         
     	List<String> violations = ValidatorUtil.getViolations(sut); 
 
 		if (violations.isEmpty()) {
 	        sut = sutSerivce.save(sut);
-	        return ResponseEntity.ok(SutMapper.toDto(sut));
+	        return ResponseEntity.ok(RmdSutMapper.toDto(sut));
 		} else {
 			String json = "";
 			try {
@@ -73,11 +73,11 @@ public class SutController {
 
     @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
     public @ResponseBody ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
-        Optional<Sut> sut = sutSerivce.findById(id);
+        Optional<RmdSut> sut = sutSerivce.findById(id);
         if (!sut.isPresent()) {
-            return ResponseEntity.badRequest().body(new SutDto());         
+            return ResponseEntity.badRequest().body(new RmdSutDto());         
         }
         sutSerivce.deleteById(id);
-        return ResponseEntity.ok(SutMapper.toDto(sut.get()));
+        return ResponseEntity.ok(RmdSutMapper.toDto(sut.get()));
     }
 }

@@ -20,7 +20,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import nl.ou.se.rest.fuzzer.JsonUtil;
 
 @Entity(name = "rmd_parameters")
-public class Parameter implements Comparable<Parameter> {
+public class RmdParameter implements Comparable<RmdParameter> {
 
     public static final String META_DATA_PATTERN = "PATTERN";
     public static final String META_DATA_FORMAT = "FORMAT";
@@ -67,13 +67,13 @@ public class Parameter implements Comparable<Parameter> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "action_id")
-    private Action action;
+    private RmdAction action;
 
     // constructors
-    public Parameter() {
+    public RmdParameter() {
     }
 
-    public Parameter(int position, String name, Boolean required, String description, String type, String context) {
+    public RmdParameter(int position, String name, Boolean required, String description, String type, String context) {
         this.position = position;
         this.name = name;
         this.required = required;
@@ -83,7 +83,7 @@ public class Parameter implements Comparable<Parameter> {
     }
 
     // methods
-    public int compareTo(Parameter other) {
+    public int compareTo(RmdParameter other) {
         return this.getPosition().compareTo(other.getPosition());
     }
 
@@ -152,11 +152,11 @@ public class Parameter implements Comparable<Parameter> {
         this.context = context;
     }
 
-    public Action getAction() {
+    public RmdAction getAction() {
         return action;
     }
 
-    public void setAction(Action action) {
+    public void setAction(RmdAction action) {
         this.action = action;
     }
 

@@ -2,15 +2,15 @@
   <div>
     <b-card header-tag="header">
       <span slot="header">
-        <b-icon icon="tools" font-scale="1"></b-icon>&nbsp;Fuzzing tasks
+        <b-icon icon="tools" font-scale="1"></b-icon>&nbsp;Fuzzing projects
       </span>
       <b-card-text>
         <div class="button-group-left">
-          <b-button size="sm" type="submit" variant="primary" v-b-modal.suts-add>
+          <b-button size="sm" type="submit" variant="primary" v-b-modal.projects-add>
             <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
           </b-button>
         </div>
-        <list @select-item="selectSut" :fields="fields" :items="suts" :formatters="formatters"></list>
+        <list @select-item="selectProject" :fields="fields" :items="projects" :formatters="formatters"></list>
       </b-card-text>
     </b-card>
   </div>
@@ -33,18 +33,18 @@ export default {
     };
   },
   methods: {
-    selectSut(sut) {
-      this.$store.dispatch("findSut", sut.id);
-      this.$bvModal.show("suts-detail");
+    selectProject(project) {
+      this.$store.dispatch("findProject", project.id);
+      this.$bvModal.show("project-detail");
     }
   },
   computed: {
-    suts() {
-      return this.$store.getters.suts.all;
+    projects() {
+      return this.$store.getters.projects.all;
     }
   },
   created: function() {
-    this.$store.dispatch("findAllSuts");
+    this.$store.dispatch("findAllProjects");
   }
 };
 </script>

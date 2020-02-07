@@ -1,9 +1,9 @@
-package nl.ou.se.rest.fuzzer.service.sut.domain;
+package nl.ou.se.rest.fuzzer.service.rmd.domain;
 
 import nl.ou.se.rest.fuzzer.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.ParameterType;
 
-public class ParameterDto {
+public class RmdParameterDto {
 
     // variables
     private Long id;

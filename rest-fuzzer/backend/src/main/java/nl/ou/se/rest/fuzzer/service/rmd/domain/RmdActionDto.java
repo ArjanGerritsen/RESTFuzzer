@@ -1,18 +1,18 @@
-package nl.ou.se.rest.fuzzer.service.sut.domain;
+package nl.ou.se.rest.fuzzer.service.rmd.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nl.ou.se.rest.fuzzer.data.rmd.domain.HttpMethod;
 
-public class ActionDto {
+public class RmdActionDto {
 
     // variables
     private Long id;
     private String path;
     private HttpMethod httpMethod;
-    private List<ParameterDto> parameters = new ArrayList<>();
-    private List<ResponseDto> responses = new ArrayList<>();
+    private List<RmdParameterDto> parameters = new ArrayList<>();
+    private List<RmdResponseDto> responses = new ArrayList<>();
 
     // getters and setters
     public Long getId() {
@@ -39,19 +39,19 @@ public class ActionDto {
         this.httpMethod = httpMethod;
     }
 
-    public List<ParameterDto> getParameters() {
+    public List<RmdParameterDto> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<ParameterDto> parameters) {
+    public void setParameters(List<RmdParameterDto> parameters) {
         this.parameters = parameters;
     }
 
-    public List<ResponseDto> getResponses() {
+    public List<RmdResponseDto> getResponses() {
         return responses;
     }
 
-    public void setResponses(List<ResponseDto> responses) {
+    public void setResponses(List<RmdResponseDto> responses) {
         this.responses = responses;
     }
 }

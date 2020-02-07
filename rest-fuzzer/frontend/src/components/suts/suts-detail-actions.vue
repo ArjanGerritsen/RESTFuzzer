@@ -24,7 +24,7 @@
       class="table-sm"
       show-empty
       :busy="isBusy"
-      selectable select-mode="single" selectedVariant="primary" @row-selected="selectRow" @row-clicked="rowClicked" striped hover 
+      striped 
       :items="items"
       :fields="fields"
       :borderless="true"

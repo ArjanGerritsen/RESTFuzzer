@@ -5,7 +5,7 @@
         <tasks-progress></tasks-progress>
       </div>
       <div class="col-8">
-        <fuzzing-list></fuzzing-list>
+        <projects-list></projects-list>
       </div>
     </div>
   </div>
@@ -13,11 +13,11 @@
 
 <script>
   import TasksProgress from "../tasks/tasks-progress";
-  import FuzzingList from "./fuzzing-list";
+  import ProjectsList from "./projects-list";
 
   export default {
     components: {
-      TasksProgress, FuzzingList
+      TasksProgress, ProjectsList
     },
     data() {
       return { data: {} };

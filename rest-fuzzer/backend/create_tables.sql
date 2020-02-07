@@ -9,6 +9,10 @@ CREATE TABLE IF NOT EXISTS tasks (
   finished_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
+
+
+
+
 drop table rmd_responses;
 drop table rmd_parameters;
 drop table rmd_actions;
@@ -43,7 +47,7 @@ CREATE TABLE IF NOT EXISTS rmd_parameters (
   type ENUM('BOOLEAN', 'STRING', 'INTEGER', 'ARRAY') NOT NULL,
   context ENUM('FORMDATA', 'HEADER', 'PATH', 'QUERY') NOT NULL,
   meta_data_tuples_json TEXT,
-  action_id INTEGER
+  action_id INT
 ) ENGINE=INNODB;
 
 ALTER TABLE rmd_parameters ADD CONSTRAINT rmd_actions_fk_action FOREIGN KEY (action_id) REFERENCES rmd_actions(id); 
@@ -56,6 +60,43 @@ CREATE TABLE IF NOT EXISTS rmd_responses (
 ) ENGINE=INNODB;
 
 ALTER TABLE rmd_responses ADD CONSTRAINT rmd_responses_fk_action FOREIGN KEY (action_id) REFERENCES rmd_actions(id);
+
+
+
+drop table fuz_responses;
+drop table fuz_requests;
+drop table fuz_projects;
+
+
+CREATE TABLE IF NOT EXISTS fuz_projects (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  type VARCHAR(64) NOT NULL,
+  meta_data_tuples_json TEXT, 
+  sut_id INT,
+  created_at TIMESTAMP NULL
+) ENGINE=INNODB;
+
+ALTER TABLE fuz_tasks ADD CONSTRAINT fuz_projects_fk_sut FOREIGN KEY (sut_id) REFERENCES rmd_suts(id);
+
+CREATE TABLE IF NOT EXISTS fuz_requests (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  project_id INT,
+  created_at TIMESTAMP NULL,
+  executed_at TIMESTAMP NULL  
+) ENGINE=INNODB;
+
+ALTER TABLE fuz_requests ADD CONSTRAINT fuz_requests_fk_task FOREIGN KEY (project_id) REFERENCES fuz_projects(id);
+
+CREATE TABLE IF NOT EXISTS fuz_responses (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  request_id INT,
+  created_at TIMESTAMP NULL,
+  executed_at TIMESTAMP NULL  
+) ENGINE=INNODB;
+
+ALTER TABLE fuz_responses ADD CONSTRAINT fuz_responses_fk_request FOREIGN KEY (request_id) REFERENCES fuz_requests(id);
+
+--------------------------- other ---------------------------
 
 truncate tasks;
 truncate rmd_suts;

@@ -24,11 +24,13 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.SortNatural;
 
+import nl.ou.se.rest.fuzzer.Constants;
+
 @Entity(name = "rmd_suts")
-@NamedEntityGraph(name = "suts.all_relations", attributeNodes = @NamedAttributeNode(value = "actions", subgraph = "suts.subgraph.actions"), subgraphs = {
+@NamedEntityGraph(name = Constants.ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS, attributeNodes = @NamedAttributeNode(value = "actions", subgraph = "suts.subgraph.actions"), subgraphs = {
         @NamedSubgraph(name = "suts.subgraph.actions", attributeNodes = { @NamedAttributeNode(value = "parameters"),
                 @NamedAttributeNode(value = "responses") }) })
-public class Sut {
+public class RmdSut {
 
     // variables
     @Id
@@ -58,14 +60,14 @@ public class Sut {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sut_id")
     @SortNatural
-    private SortedSet<Action> actions = new TreeSet<>();
+    private SortedSet<RmdAction> actions = new TreeSet<>();
 
     // constructors
-    public Sut() {
+    public RmdSut() {
     }
 
     // methods
-    public void addAction(Action action) {
+    public void addAction(RmdAction action) {
         action.setSut(this);
         this.actions.add(action);
     }
@@ -127,11 +129,11 @@ public class Sut {
         this.createdAt = createdAt;
     }
 
-    public SortedSet<Action> getActions() {
+    public SortedSet<RmdAction> getActions() {
         return actions;
     }
 
-    public void setActions(SortedSet<Action> actions) {
+    public void setActions(SortedSet<RmdAction> actions) {
         this.actions = actions;
     }
 

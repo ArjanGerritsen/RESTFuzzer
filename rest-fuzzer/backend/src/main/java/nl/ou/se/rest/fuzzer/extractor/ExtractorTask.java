@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.ou.se.rest.fuzzer.Constants;
-import nl.ou.se.rest.fuzzer.data.rmd.dao.SutService;
-import nl.ou.se.rest.fuzzer.data.rmd.domain.Sut;
+import nl.ou.se.rest.fuzzer.data.rmd.dao.RmdSutService;
+import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
 import nl.ou.se.rest.fuzzer.task.TaskExecution;
 
 @Service
@@ -23,7 +23,7 @@ public class ExtractorTask implements TaskExecution {
     private Map<String, Object> metaDataTuples = new HashMap<>();
 
 	@Autowired
-	private SutService sutService;
+	private RmdSutService sutService;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
@@ -37,14 +37,14 @@ public class ExtractorTask implements TaskExecution {
 		}
 
 		Long sutId = Long.valueOf((Integer) this.getMetaDataValue(KEY_SUT_ID));
-    	Optional<Sut> oSut = sutService.findById(sutId);
+    	Optional<RmdSut> oSut = sutService.findById(sutId);
 
     	if (!oSut.isPresent()) {
     	    logger.warn(String.format(Constants.WARN_TASK_SUT_NOT_FOUND, this.getClass().getName(), sutId));
     	    return;
     	}
 
-    	Sut sut = oSut.get();
+    	RmdSut sut = oSut.get();
 
         Extractor extractor = new Extractor(sut);
         extractor.processV2();

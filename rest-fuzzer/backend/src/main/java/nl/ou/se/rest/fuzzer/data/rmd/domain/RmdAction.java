@@ -22,7 +22,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.SortNatural;
 
 @Entity(name = "rmd_actions")
-public class Action implements Comparable<Action> {
+public class RmdAction implements Comparable<RmdAction> {
 
     // variables
     @Id
@@ -40,28 +40,28 @@ public class Action implements Comparable<Action> {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "action_id")
     @SortNatural
-    private SortedSet<Parameter> parameters = new TreeSet<>();
+    private SortedSet<RmdParameter> parameters = new TreeSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "action_id")
     @SortNatural
-    private SortedSet<Response> responses = new TreeSet<>();
+    private SortedSet<RmdResponse> responses = new TreeSet<>();
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "sut_id")
-    private Sut sut;
+    private RmdSut sut;
 
     // constructors
-    public Action() {
+    public RmdAction() {
     }
 
-    public Action(String path, String httpMethod) {
+    public RmdAction(String path, String httpMethod) {
         this.path = path;
         this.httpMethod = HttpMethod.valueOf(httpMethod);
     }
 
     // methods
-    public int compareTo(Action other) {
+    public int compareTo(RmdAction other) {
         int pathCompare = this.getPath().compareTo(other.getPath());
         if (pathCompare != 0) {
             return pathCompare;
@@ -69,12 +69,12 @@ public class Action implements Comparable<Action> {
         return this.getHttpMethod().compareTo(other.getHttpMethod());
     }
 
-    public void addParameter(Parameter parameter) {
+    public void addParameter(RmdParameter parameter) {
         parameter.setAction(this);
         this.getParameters().add(parameter);
     }
 
-    public void addResponse(Response response) {
+    public void addResponse(RmdResponse response) {
         response.setAction(this);
         this.getResponses().add(response);
     }
@@ -104,27 +104,27 @@ public class Action implements Comparable<Action> {
         this.httpMethod = httpMethod;
     }
 
-    public SortedSet<Parameter> getParameters() {
+    public SortedSet<RmdParameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(SortedSet<Parameter> parameters) {
+    public void setParameters(SortedSet<RmdParameter> parameters) {
         this.parameters = parameters;
     }
 
-    public SortedSet<Response> getResponses() {
+    public SortedSet<RmdResponse> getResponses() {
         return responses;
     }
 
-    public void setResponses(SortedSet<Response> responses) {
+    public void setResponses(SortedSet<RmdResponse> responses) {
         this.responses = responses;
     }
 
-    public Sut getSut() {
+    public RmdSut getSut() {
         return sut;
     }
 
-    public void setSut(Sut sut) {
+    public void setSut(RmdSut sut) {
         this.sut = sut;
     }
 
