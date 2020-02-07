@@ -46,20 +46,21 @@ const projects = {
         //             })
         //     })
         // },
-        // addSut({ commit }, sut) {
-        //     return new Promise((resolve, reject) => {
-        //         axios
-        //             .post('/rest/fuzzing_tasks', sut)
-        //             .then(response => {
-        //                 commit("message_add", { message: { type: "info", title: "Add sut", text: `Fuzzing task ${response.data.location} added successful.` } });
-        //                 resolve();
-        //             })
-        //             .catch(error => {
-        //                 commit("message_add", { message: { type: "error", text: "An error occured while adding sut", err: error } });
-        //                 reject(error);
-        //             })
-        //     })
-        // },
+        addProject({ commit }, project) {
+            return new Promise((resolve, reject) => {
+                console.log(project)
+                axios
+                    .post('/rest/projects', project)
+                    .then(response => {
+                        commit("message_add", { message: { type: "info", title: "Add fuzzing project", text: `Fuzzing project ${response.data.type} added successful.` } });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: "An error occured while adding fuzzing project", err: error } });
+                        reject(error);
+                    })
+            })
+        },
         // deleteSut({ commit }, sut) {
         //     return new Promise((resolve, reject) => {
         //         axios

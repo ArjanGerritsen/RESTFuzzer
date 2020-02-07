@@ -8,16 +8,22 @@
         <projects-list></projects-list>
       </div>
     </div>
+
+    <projects-detail></projects-detail>
+    <projects-add></projects-add>
   </div>
 </template>
 
 <script>
   import TasksProgress from "../tasks/tasks-progress";
+  
+  import ProjectsAdd from "./projects-add";
   import ProjectsList from "./projects-list";
+  import ProjectsDetail from "./projects-detail";
 
   export default {
     components: {
-      TasksProgress, ProjectsList
+      TasksProgress, ProjectsAdd, ProjectsList, ProjectsDetail
     },
     data() {
       return { data: {} };

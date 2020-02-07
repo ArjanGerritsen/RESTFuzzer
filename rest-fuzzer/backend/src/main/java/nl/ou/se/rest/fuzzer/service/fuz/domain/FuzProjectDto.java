@@ -2,13 +2,14 @@ package nl.ou.se.rest.fuzzer.service.fuz.domain;
 
 import java.time.LocalDateTime;
 
+import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzType;
 import nl.ou.se.rest.fuzzer.service.rmd.domain.RmdSutDto;
 
 public class FuzProjectDto {
 
     // variables
     private Long id;
-    private String type;
+    private FuzType type;
     private RmdSutDto sut;
     private LocalDateTime createdAt;
 
@@ -21,11 +22,11 @@ public class FuzProjectDto {
         this.id = id;
     }
 
-    public String getType() {
+    public FuzType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(FuzType type) {
         this.type = type;
     }
 

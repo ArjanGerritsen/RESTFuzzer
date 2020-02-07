@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="suts-add" ref="modal" size="lg">
+  <b-modal id="suts-add" ref="modal" size="md">
     <template slot="modal-header">
       <h6>
         <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;Add system under test
@@ -14,7 +14,7 @@
         description="Url to OpenAPI specification"
       >
         <b-form-input
-          id="input-2"
+          id="input-1"
           v-model="sut.location"
           required
           placeholder="enter url to OpenAPI specification"

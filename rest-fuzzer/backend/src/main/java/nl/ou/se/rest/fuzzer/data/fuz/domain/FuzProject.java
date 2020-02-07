@@ -9,12 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
 
-@Entity(name = "fuz_tasks")
+@Entity(name = "fuz_projects")
 public class FuzProject implements Comparable<FuzProject> {
 
     // variables
@@ -23,11 +22,11 @@ public class FuzProject implements Comparable<FuzProject> {
     private Long id;
 
     @NotNull
-    @NotEmpty
     private FuzType type;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "sut_id")
+    @NotNull
     private RmdSut sut;
 
     @Column(columnDefinition = "TIMESTAMP")

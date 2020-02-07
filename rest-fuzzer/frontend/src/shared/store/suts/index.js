@@ -74,12 +74,29 @@ const suts = {
                         reject(error);
                     })
             })
-        }
+        },
     },
     getters: {
         suts: state => {
             return state.suts
-        }
+        },
+        sutsForPullDown: state => {
+            // if (this.getters.suts.all == null) {
+            //     TODO hmmm.
+            // }
+
+            return [];
+            // const sutsForPullDown = this.getters.suts.all.map(
+            //     sut => {
+            //         const newSut = {};
+            //         newSut["value"] = sut.id;
+            //         newSut["text"] = `${sut.title}`;
+            //         return newSut;
+            //     }
+            // );
+            // console.log(sutsForPullDown); 
+            // return sutsForPullDown;
+        },        
     }
 }
 

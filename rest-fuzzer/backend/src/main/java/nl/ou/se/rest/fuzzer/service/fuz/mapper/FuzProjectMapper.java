@@ -22,6 +22,7 @@ public class FuzProjectMapper {
     public static FuzProject toDomain(FuzProjectDto dto) {
         FuzProject task = new FuzProject();
         BeanUtils.copyProperties(dto, task);
+        task.setType(dto.getType());
         return task;
     }
 
