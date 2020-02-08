@@ -81,22 +81,21 @@ const suts = {
             return state.suts
         },
         sutsForPullDown: state => {
-            // if (this.getters.suts.all == null) {
-            //     TODO hmmm.
-            // }
+            let sutsForPullDown = []
 
-            return [];
-            // const sutsForPullDown = this.getters.suts.all.map(
-            //     sut => {
-            //         const newSut = {};
-            //         newSut["value"] = sut.id;
-            //         newSut["text"] = `${sut.title}`;
-            //         return newSut;
-            //     }
-            // );
-            // console.log(sutsForPullDown); 
-            // return sutsForPullDown;
-        },        
+            if (state.suts.all !== null) {
+                state.suts.all.map(
+                    sut => {
+                        const newSut = {};
+                        newSut["value"] = sut.id;
+                        newSut["text"] = `${sut.title}`;
+                        return newSut;
+                    }
+                );
+            }
+
+            return sutsForPullDown;
+        },
     }
 }
 

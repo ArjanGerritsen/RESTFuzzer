@@ -73,11 +73,17 @@ export default {
         this.cancel();
         this.$store.dispatch("findAllProjects");
       });
+    },
+    async populateSuts() {
+      if (this.$store.getters.suts.all == null) {
+        await (this.$store.dispatch("findAllSuts"));
+      }
     }
   },
   computed: {
     suts() {
-      return this.$store.getters.sutsForPullDown();
+      this.populateSuts();
+      return this.$store.getters.sutsForPullDown;
     }
   }
 };
