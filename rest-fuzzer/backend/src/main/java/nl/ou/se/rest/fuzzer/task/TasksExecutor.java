@@ -14,11 +14,13 @@ import nl.ou.se.rest.fuzzer.data.task.domain.Task;
 @Service
 public class TasksExecutor {
 
+	// variables
     @Autowired
     private TaskService taskService;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
+    // methods
     @Async("TaskExecutor")
     public void run(Task task, TaskExecution execution) {
 

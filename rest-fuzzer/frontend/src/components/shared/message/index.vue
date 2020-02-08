@@ -72,7 +72,7 @@ export default {
     displayMessages() {
       this.messages.forEach(msg => this.displayMessage(msg));
       this.$store.commit('messages_clear');
-      this.timeout = setTimeout(this.displayMessages, 500);
+      this.timeout = setTimeout(this.displayMessages, 100);
     }
   },
   computed: {

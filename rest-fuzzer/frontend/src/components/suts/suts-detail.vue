@@ -20,7 +20,7 @@
                   title="start task to extract REST model description from OAS"
                   v-on:click="addExtractorTask"
                 >
-                  <b-icon icon="download" font-scale="1"></b-icon>&nbsp;start extract task
+                  <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start extract task
                 </b-button>
                 <b-button
                   size="sm"

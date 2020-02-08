@@ -15,17 +15,13 @@ public abstract class RmdSutMapper {
 		return suts.stream().map(s -> RmdSutMapper.toDto(s, false)).collect(Collectors.toList());
 	}
 
-	public static RmdSutDto toDto(RmdSut sut) {
-		return toDto(sut, true);
-	}
-
     public static RmdSut toDomain(RmdSutDto dto) {
         RmdSut sut = new RmdSut();
         BeanUtils.copyProperties(dto, sut);
         return sut;
     }
 
-    private static RmdSutDto toDto(RmdSut sut, boolean mapRelations) {
+    public static RmdSutDto toDto(RmdSut sut, boolean mapRelations) {
         RmdSutDto dto = new RmdSutDto();
         BeanUtils.copyProperties(sut, dto);
         if (mapRelations) {

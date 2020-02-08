@@ -9,43 +9,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.ou.se.rest.fuzzer.Constants;
+import nl.ou.se.rest.fuzzer.executor.ExecutorTask;
 import nl.ou.se.rest.fuzzer.extractor.ExtractorTask;
+import nl.ou.se.rest.fuzzer.generator.GeneratorTask;
 
 @Service
 public class TaskExecutionFactory {
 
-    // variables
-    private Map<String, Object> metaDataTuples = new HashMap<>();
+	// variables
+	private Map<String, Object> metaDataTuples = new HashMap<>();
 
-    @Autowired
-    private ExtractorTask extractorTask;
+	@Autowired
+	private ExtractorTask extractorTask;
 
-    private String taskExecutionCanonicalName;
+	@Autowired
+	private GeneratorTask generatorTask;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+	@Autowired
+	private ExecutorTask executorTask;
 
-    public TaskExecutionFactory create(String taskExecutionCanonicalName) {
-        this.taskExecutionCanonicalName = taskExecutionCanonicalName;
-        return this;
-    }
-    
-    public TaskExecutionFactory setMetaDataTuples(Map<String, Object> metaDataTuples) {
-        this.metaDataTuples = metaDataTuples;
-        return this;
-    }
-    
-    public TaskExecution build() {
-        TaskExecution taskExecution = null;
+	private String taskExecutionCanonicalName;
 
-        if (ExtractorTask.class.getCanonicalName().equals(taskExecutionCanonicalName)) {
-            taskExecution = extractorTask;            
-        } else {
-            logger.error(String.format(Constants.ERROR_TASK_EXECUTION_FACTORY_UNKNOWN, taskExecutionCanonicalName));
-            return null;
-        }
+	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-        taskExecution.setMetaDataTuples(this.metaDataTuples);
+	public TaskExecutionFactory create(String taskExecutionCanonicalName) {
+		this.taskExecutionCanonicalName = taskExecutionCanonicalName;
+		return this;
+	}
 
-        return taskExecution;
-    }
+	public TaskExecutionFactory setMetaDataTuples(Map<String, Object> metaDataTuples) {
+		this.metaDataTuples = metaDataTuples;
+		return this;
+	}
+
+	public TaskExecution build() {
+		TaskExecution taskExecution = null;
+
+		if (ExtractorTask.class.getCanonicalName().equals(taskExecutionCanonicalName)) {
+			taskExecution = extractorTask;
+		} else if (GeneratorTask.class.getCanonicalName().equals(taskExecutionCanonicalName)) {
+			taskExecution = generatorTask;
+		} else if (ExecutorTask.class.getCanonicalName().equals(taskExecutionCanonicalName)) {
+			taskExecution = executorTask;
+		} else {
+			logger.error(String.format(Constants.ERROR_TASK_EXECUTION_FACTORY_UNKNOWN, taskExecutionCanonicalName));
+			return null;
+		}
+
+		taskExecution.setMetaDataTuples(this.metaDataTuples);
+
+		return taskExecution;
+	}
 }

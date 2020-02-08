@@ -7,31 +7,28 @@ import org.springframework.beans.BeanUtils;
 
 import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.service.fuz.domain.FuzProjectDto;
+import nl.ou.se.rest.fuzzer.service.rmd.mapper.RmdSutMapper;
 
 public class FuzProjectMapper {
 
     // methods
     public static List<FuzProjectDto> toDtos(List<FuzProject> tasks) {
-        return tasks.stream().map(ft -> FuzProjectMapper.toDto(ft, false)).collect(Collectors.toList());
+        return tasks.stream().map(ft -> FuzProjectMapper.toDto(ft, true)).collect(Collectors.toList());
     }
 
-    public static FuzProjectDto toDto(FuzProject fuzTask) {
-        return toDto(fuzTask, true);
+    public static FuzProjectDto toDto(FuzProject project, boolean mapRelations) {
+        FuzProjectDto dto = new FuzProjectDto();
+        BeanUtils.copyProperties(project, dto);
+        if (mapRelations) {
+            dto.setSut(RmdSutMapper.toDto(project.getSut(), false));
+        }
+        return dto;
     }
 
     public static FuzProject toDomain(FuzProjectDto dto) {
-        FuzProject task = new FuzProject();
-        BeanUtils.copyProperties(dto, task);
-        task.setType(dto.getType());
-        return task;
-    }
-
-    private static FuzProjectDto toDto(FuzProject task, boolean mapRelations) {
-        FuzProjectDto dto = new FuzProjectDto();
-        BeanUtils.copyProperties(task, dto);
-        if (mapRelations) {
-            // TODO
-        }
-        return dto;
+        FuzProject project = new FuzProject();
+        BeanUtils.copyProperties(dto, project);
+        project.setType(dto.getType());
+        return project;
     }
 }

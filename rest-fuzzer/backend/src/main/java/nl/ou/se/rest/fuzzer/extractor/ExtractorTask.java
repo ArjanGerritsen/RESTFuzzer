@@ -1,7 +1,5 @@
 package nl.ou.se.rest.fuzzer.extractor;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -13,14 +11,13 @@ import nl.ou.se.rest.fuzzer.Constants;
 import nl.ou.se.rest.fuzzer.data.rmd.dao.RmdSutService;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
 import nl.ou.se.rest.fuzzer.task.TaskExecution;
+import nl.ou.se.rest.fuzzer.task.TaskExecutionBase;
 
 @Service
-public class ExtractorTask implements TaskExecution {
-
-	public static final String KEY_SUT_ID = "sut_id";
+public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
 
 	// variables
-    private Map<String, Object> metaDataTuples = new HashMap<>();
+	public static final String KEY_SUT_ID = "sut_id";
 
 	@Autowired
 	private RmdSutService sutService;
@@ -29,7 +26,7 @@ public class ExtractorTask implements TaskExecution {
 
 	// methods
 	public void execute() {
-		logger.info(Constants.INFO_EXTRACTOR_TASK_START);
+		logger.info(String.format(Constants.INFO_TASK_START, this.getClass().getName()));
 
 		if (this.getMetaDataValue(KEY_SUT_ID) == null) {
             logger.warn(String.format(Constants.WARN_TASK_VALUE_FOR_KEY_NOT_Present, this.getClass().getName(), KEY_SUT_ID));
@@ -57,14 +54,6 @@ public class ExtractorTask implements TaskExecution {
 
         sutService.save(sut);
 
-        logger.info(Constants.INFO_EXTRACTOR_TASK_STOP);        
+		logger.info(String.format(Constants.INFO_TASK_STOP, this.getClass().getName()));
 	}
-
-    public void setMetaDataTuples(Map<String, Object> metaDataTuples) {
-        this.metaDataTuples = metaDataTuples;
-    }
-
-    public Object getMetaDataValue(String key) {
-        return this.metaDataTuples.get(key);
-    }
 }

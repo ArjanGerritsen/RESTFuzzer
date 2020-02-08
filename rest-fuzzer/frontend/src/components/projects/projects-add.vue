@@ -21,7 +21,7 @@
         label-for="input-2"
         description="Select system under test"
       >
-        <b-form-select id="input-2" :options="suts" v-model="project.sut" required>
+        <b-form-select id="input-2" :options="suts" v-model="project.sut.id" required>
           <template v-slot:first>
             <b-form-select-option :value="null" disabled>-- select a system under test --</b-form-select-option>
           </template>
@@ -48,7 +48,9 @@ export default {
     return {
       project: {
         type: null,
-        sut: null
+        sut: {
+        	id: null
+        }
       },
       types: [{ value: "SIMPLE_FUZZER", text: "SimpleFuzzer" }]
     };
@@ -56,7 +58,7 @@ export default {
   methods: {
     resetForm() {
       this.project.type = null;
-      this.project.sut = null;
+      this.project.sut = { id: null };
     },
     hide() {
       this.$nextTick(() => {
@@ -68,13 +70,12 @@ export default {
       this.hide();
     },
     addProject() {
-      console.log(this.project);
       this.$store.dispatch("addProject", this.project).then(() => {
         this.cancel();
         this.$store.dispatch("findAllProjects");
       });
     },
-    async populateSuts() {
+    async findAllSuts() {
       if (this.$store.getters.suts.all == null) {
         await (this.$store.dispatch("findAllSuts"));
       }
@@ -82,7 +83,7 @@ export default {
   },
   computed: {
     suts() {
-      this.populateSuts();
+      this.findAllSuts();
       return this.$store.getters.sutsForPullDown;
     }
   }

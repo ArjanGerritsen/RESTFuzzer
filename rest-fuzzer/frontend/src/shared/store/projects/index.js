@@ -31,24 +31,23 @@ const projects = {
                     })
             })
         },
-        // findSut({ commit }, id) {
-        //     return new Promise((resolve, reject) => {
-        //         axios
-        //             .get(`/rest/fuzzing_tasks/${id}`)
-        //             .then(response => {
-        //                 commit("fuzzing_task_set", { sut: response.data });
-        //                 resolve();
-        //             })
-        //             .catch(error => {
-        //                 commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut with id ${id}`, err: error } });
-        //                 commit("fuzzing_task_set", { fuzzing_task: null });
-        //                 reject(error);
-        //             })
-        //     })
-        // },
+        findProject({ commit }, id) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/rest/projects/${id}`)
+                    .then(response => {
+                        commit("project_set", { project: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                    	commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project with id ${id}`, err: error } });
+                        commit("project_set", { project: null });
+                        reject(error);
+                    })
+            })
+        },
         addProject({ commit }, project) {
             return new Promise((resolve, reject) => {
-                console.log(project)
                 axios
                     .post('/rest/projects', project)
                     .then(response => {
@@ -61,21 +60,21 @@ const projects = {
                     })
             })
         },
-        // deleteSut({ commit }, sut) {
-        //     return new Promise((resolve, reject) => {
-        //         axios
-        //             .delete(`/rest/fuzzing_tasks/${sut.id}`)
-        //             .then(response => {
-        //                 commit("message_add", { message: { type: "info", title: "Delete sut", text: `Sut ${response.data.location} deleted successful.` } });
-        //                 commit("sut_set", { sut: null });
-        //                 resolve();
-        //             })
-        //             .catch(error => {
-        //                 commit("message_add", { message: { type: "error", text: `Couldn't delete sut with id ${sut.id}`, err: error } });
-        //                 reject(error);
-        //             })
-        //     })
-        // }
+        deleteProject({ commit }, project) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .delete(`/rest/projects/${project.id}`)
+                    .then(response => {
+                        commit("message_add", { message: { type: "info", title: "Delete fuzzing project", text: `Fuzzing project ${response.data.type} with id ${response.data.id} deleted successful.` } });
+                        commit("project_set", { project: null });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't delete fuzzing project with id ${project.id}`, err: error } });
+                        reject(error);
+                    })
+            })
+        }
     },
     getters: {
         projects: state => {

@@ -13,6 +13,10 @@ public class HttpResponseDto {
 		this.violations = violations;
 	}
 
+	public HttpResponseDto(String violation) {
+		this.violations.add(violation);
+	}
+
 	// getters and setters
 	public List<String> getViolations() {
 		return violations;

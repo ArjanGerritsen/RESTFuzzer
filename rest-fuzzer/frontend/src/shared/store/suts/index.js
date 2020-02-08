@@ -65,12 +65,12 @@ const suts = {
                 axios
                     .delete(`/rest/suts/${sut.id}`)
                     .then(response => {
-                        commit("message_add", { message: { type: "info", title: "Delete sut", text: `Sut ${response.data.location} deleted successful.` } });
+                        commit("message_add", { message: { type: "info", title: "Delete system under test", text: `System under test ${response.data.location} deleted successful.` } });
                         commit("sut_set", { sut: null });
                         resolve();
                     })
                     .catch(error => {
-                        commit("message_add", { message: { type: "error", text: `Couldn't delete sut with id ${sut.id}`, err: error } });
+                        commit("message_add", { message: { type: "error", text: `Couldn't delete system under test with id ${sut.id}`, err: error } });
                         reject(error);
                     })
             })
@@ -84,11 +84,11 @@ const suts = {
             let sutsForPullDown = []
 
             if (state.suts.all !== null) {
-                state.suts.all.map(
+            	sutsForPullDown = state.suts.all.map(
                     sut => {
                         const newSut = {};
                         newSut["value"] = sut.id;
-                        newSut["text"] = `${sut.title}`;
+                        newSut["text"] = `#${sut.id} ${sut.title === null ? '' : '- ' + sut.title}`;
                         return newSut;
                     }
                 );

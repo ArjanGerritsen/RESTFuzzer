@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,21 +32,21 @@ public class RmdSutController {
 	private Logger logger = LoggerFactory.getLogger(RmdSutController.class);
 
 	@Autowired
-	RmdSutService sutSerivce;
+	RmdSutService sutService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody List<RmdSutDto> findAll() {
-		List<RmdSut> suts = sutSerivce.findAll();
+		List<RmdSut> suts = sutService.findAll();
 		return RmdSutMapper.toDtos(suts);
 	}
 
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
-        Optional<RmdSut> sut = sutSerivce.findById(id);
+        Optional<RmdSut> sut = sutService.findById(id);
         if (!sut.isPresent()) {
             return ResponseEntity.badRequest().body(new RmdSutDto());         
         }
-        return ResponseEntity.ok(RmdSutMapper.toDto(sut.get()));
+        return ResponseEntity.ok(RmdSutMapper.toDto(sut.get(), true));
     }	
 
     @RequestMapping(method = RequestMethod.POST)
@@ -58,8 +57,8 @@ public class RmdSutController {
     	List<String> violations = ValidatorUtil.getViolations(sut); 
 
 		if (violations.isEmpty()) {
-	        sut = sutSerivce.save(sut);
-	        return ResponseEntity.ok(RmdSutMapper.toDto(sut));
+	        sut = sutService.save(sut);
+	        return ResponseEntity.ok(RmdSutMapper.toDto(sut, false));
 		} else {
 			String json = "";
 			try {
@@ -67,17 +66,17 @@ public class RmdSutController {
 			} catch (JsonProcessingException e) {
 				logger.warn(e.getMessage());
 			}
-			return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
+			return ResponseEntity.badRequest().body(json);
 		}
     }
 
     @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
     public @ResponseBody ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
-        Optional<RmdSut> sut = sutSerivce.findById(id);
+        Optional<RmdSut> sut = sutService.findById(id);
         if (!sut.isPresent()) {
             return ResponseEntity.badRequest().body(new RmdSutDto());         
         }
-        sutSerivce.deleteById(id);
-        return ResponseEntity.ok(RmdSutMapper.toDto(sut.get()));
+        sutService.deleteById(id);
+        return ResponseEntity.ok(RmdSutMapper.toDto(sut.get(), false));
     }
 }

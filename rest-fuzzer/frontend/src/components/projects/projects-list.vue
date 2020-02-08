@@ -23,11 +23,14 @@ export default {
   components: { List },
   data() {
     return {
-      formatters: [{ field: "createdAt", as: "dateShort" }],
+      formatters: [
+    	{ field: "type", as: "enumToHuman" },
+    	{ field: "createdAt", as: "dateShort" }
+      ],
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
-        { key: "title", thStyle: "width: 250px;" },
-        { key: "location", label: "OAS location" },
+        { key: "type", thStyle: "width: 250px;" },
+        { key: "sut.title", label: "System under test" },
         { key: "createdAt", label: "Created @", thStyle: "width: 110px;" }
       ]
     };
@@ -35,7 +38,7 @@ export default {
   methods: {
     selectProject(project) {
       this.$store.dispatch("findProject", project.id);
-      this.$bvModal.show("project-detail");
+      this.$bvModal.show("projects-detail");
     }
   },
   computed: {

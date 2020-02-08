@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,45 +31,64 @@ import nl.ou.se.rest.fuzzer.service.fuz.mapper.FuzProjectMapper;
 @RequestMapping("/rest/projects")
 public class FuzProjectController {
 
-    private Logger logger = LoggerFactory.getLogger(FuzProjectController.class);
+	private Logger logger = LoggerFactory.getLogger(FuzProjectController.class);
 
-    @Autowired
-    FuzProjectService projectService;
+	@Autowired
+	FuzProjectService projectService;
 
-    @Autowired
-    RmdSutService sutService;
+	@Autowired
+	RmdSutService sutService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody List<FuzProjectDto> findAll() {
-        List<FuzProject> projects = projectService.findAll();
-        return FuzProjectMapper.toDtos(projects);
-    }
+	@RequestMapping(method = RequestMethod.GET)
+	public @ResponseBody List<FuzProjectDto> findAll() {
+		List<FuzProject> projects = projectService.findAll();
+		return FuzProjectMapper.toDtos(projects);
+	}
 
-    @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> add(@RequestBody FuzProjectDto projectDto) {
-        FuzProject project = FuzProjectMapper.toDomain(projectDto);
-        project.setCreatedAt(LocalDateTime.now());
+	@RequestMapping(path = "{id}", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
+		Optional<FuzProject> project = projectService.findById(id);
+		if (!project.isPresent()) {
+			return ResponseEntity.badRequest().body(new FuzProjectDto());
+		}
+		return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), true));
+	}
 
-        if (projectDto.getSut() != null && projectDto.getSut().getId() != null) {
-            Optional<RmdSut> sut = sutService.findById(projectDto.getSut().getId());
-            if (sut.isPresent()) {
-                project.setSut(sut.get());
-            }
-        }
+	@RequestMapping(method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> add(@RequestBody FuzProjectDto projectDto) {
+		FuzProject project = FuzProjectMapper.toDomain(projectDto);
+		project.setCreatedAt(LocalDateTime.now());
 
-        List<String> violations = ValidatorUtil.getViolations(project);
+		if (projectDto.getSut() != null && projectDto.getSut().getId() != null) {
+			Optional<RmdSut> sut = sutService.findById(projectDto.getSut().getId());
+			if (sut.isPresent()) {
+				project.setSut(sut.get());
+			}
+		}
 
-        if (violations.isEmpty()) {
-            project = projectService.save(project);
-            return ResponseEntity.ok(FuzProjectMapper.toDto(project));
-        } else {
-            String json = "";
-            try {
-                json = new ObjectMapper().writeValueAsString(new HttpResponseDto(violations));
-            } catch (JsonProcessingException e) {
-                logger.warn(e.getMessage());
-            }
-            return new ResponseEntity<>(json, HttpStatus.BAD_REQUEST);
-        }
-    }
+		List<String> violations = ValidatorUtil.getViolations(project);
+
+		if (violations.isEmpty()) {
+			project = projectService.save(project);
+			return ResponseEntity.ok(FuzProjectMapper.toDto(project, false));
+		} else {
+			String json = "";
+			try {
+				json = new ObjectMapper().writeValueAsString(new HttpResponseDto(violations));
+			} catch (JsonProcessingException e) {
+				logger.warn(e.getMessage());
+			}
+			return ResponseEntity.badRequest().body(json);
+		}
+	}
+
+	@RequestMapping(path = "{id}", method = RequestMethod.DELETE)
+	public @ResponseBody ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
+		Optional<FuzProject> project = projectService.findById(id);
+		if (!project.isPresent()) {
+			return ResponseEntity.badRequest().body(new FuzProjectDto());
+		}
+		projectService.deleteById(id);
+		return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
+	}
 }

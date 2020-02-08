@@ -17,3 +17,14 @@ Vue.filter('statusToIcon', function(status) {
       return status;
   }
 })
+
+Vue.filter('enumToHuman', function(string) {
+	string = string.split("_").map(
+		s => {
+			return s[0].toUpperCase() + 
+				s.substring(1).toLowerCase(); 
+		}
+	).join("");
+
+	return string;
+})

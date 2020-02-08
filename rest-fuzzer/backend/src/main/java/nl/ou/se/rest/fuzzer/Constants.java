@@ -11,10 +11,10 @@ public abstract class Constants {
     public static final String WARN_TASK_SUT_NOT_FOUND = "Task %s: Sut with id %s not found";
     public static final String WARN_TASK_VALUE_FOR_KEY_NOT_Present = "Task %s: no value for key %s";
 
-    public static final String INFO_EXTRACTOR_TASK_START = "Task Extractor start";
-    public static final String INFO_EXTRACTOR_TASK_STOP = "Task Extractor stop";
-    
-    public static final String ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS = "rmd.suts.all_relations";
+    public static final String INFO_TASK_START = "Task %s start";
+    public static final String INFO_TASK_STOP = "Task %s stop";
+
+	public static final String ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS = "rmd.suts.all_relations";
     public static final String ENTITY_GRAPH_FUZ_PROJECTS_ALL_RELATIONS = "fuz.projects.all_relations";
     
 }
