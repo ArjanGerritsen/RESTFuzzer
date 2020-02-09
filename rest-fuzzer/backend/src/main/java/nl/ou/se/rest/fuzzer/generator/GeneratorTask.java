@@ -19,13 +19,13 @@ public class GeneratorTask extends TaskExecutionBase implements TaskExecution {
 	// variables
 	public static final String KEY_PROJECT_ID = "project_id";
 
+	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
 	@Autowired
 	private FuzProjectService projectService;
 
 	@Autowired
 	private GeneratorSimple generatorSimple;
-
-	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 	@Override
 	public void execute() {
@@ -50,10 +50,13 @@ public class GeneratorTask extends TaskExecutionBase implements TaskExecution {
 		switch (project.getType()) {
 		case SIMPLE_FUZZER:
 			generatorSimple.start(project);
+			project.setRequests(generatorSimple.getRequests());
 			break;
 		default:
 			break;
 		}
+		
+		projectService.save(project);
 
 		logger.info(String.format(Constants.INFO_TASK_STOP, this.getClass().getName()));
 	}

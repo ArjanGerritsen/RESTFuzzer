@@ -81,6 +81,12 @@ ALTER TABLE fuz_tasks ADD CONSTRAINT fuz_projects_fk_sut FOREIGN KEY (sut_id) RE
 CREATE TABLE IF NOT EXISTS fuz_requests (
   id INT AUTO_INCREMENT PRIMARY KEY,
   project_id INT,
+  path VARCHAR(255) NOT NULL,
+  http_method ENUM('GET', 'POST', 'PATCH', 'PUT', 'DELETE') NOT NULL,
+  formdata_parameters_json TEXT,
+  header_parameters_json TEXT,
+  path_parameters_json TEXT,
+  query_parameters_json TEXT,
   created_at TIMESTAMP NULL,
   executed_at TIMESTAMP NULL  
 ) ENGINE=INNODB;

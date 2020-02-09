@@ -1,7 +1,9 @@
 package nl.ou.se.rest.fuzzer.data.rmd.domain;
 
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -77,6 +79,10 @@ public class RmdAction implements Comparable<RmdAction> {
     public void addResponse(RmdResponse response) {
         response.setAction(this);
         this.getResponses().add(response);
+    }
+    
+    public List<RmdParameter> getParametersByContext(ParameterContext context) {
+    	return this.getParameters().stream().filter(p -> context.equals(p.getContext())).collect(Collectors.toList());
     }
 
     // getters and setters

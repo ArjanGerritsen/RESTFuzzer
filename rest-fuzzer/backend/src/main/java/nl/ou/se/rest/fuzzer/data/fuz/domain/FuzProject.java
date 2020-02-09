@@ -1,19 +1,53 @@
 package nl.ou.se.rest.fuzzer.data.fuz.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import nl.ou.se.rest.fuzzer.Constants;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
 
 @Entity(name = "fuz_projects")
+@NamedEntityGraph(
+	name = Constants.ENTITY_GRAPH_FUZ_PROJECTS_ALL_RELATIONS, 
+	attributeNodes = {
+		@NamedAttributeNode(value = "sut", subgraph = "sut"),
+		@NamedAttributeNode(value = "requests"),
+	},
+	subgraphs = {
+		@NamedSubgraph(
+			name = "sut",
+			attributeNodes = {
+				@NamedAttributeNode(value = "actions", subgraph = "sut.actions") 
+			}
+		), 	
+		@NamedSubgraph(
+			name = "sut.actions",
+			attributeNodes = {
+		        @NamedAttributeNode(value = "parameters"),
+		        @NamedAttributeNode(value = "responses")						        
+		    }
+		)
+	}
+)
 public class FuzProject implements Comparable<FuzProject> {
 
     // variables
@@ -29,6 +63,11 @@ public class FuzProject implements Comparable<FuzProject> {
     @NotNull
     private RmdSut sut;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id")
+    // @SortNatural TODO omzetten naar SortedSet ... over volgorde nadenken.
+    private List<FuzRequest> requests = new ArrayList<>();
+ 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
@@ -38,35 +77,48 @@ public class FuzProject implements Comparable<FuzProject> {
     }
 
     // getters and setters
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public FuzType getType() {
-        return type;
-    }
+	public FuzType getType() {
+		return type;
+	}
 
-    public void setType(FuzType type) {
-        this.type = type;
-    }
+	public void setType(FuzType type) {
+		this.type = type;
+	}
 
-    public RmdSut getSut() {
-        return sut;
-    }
+	public RmdSut getSut() {
+		return sut;
+	}
 
-    public void setSut(RmdSut sut) {
-        this.sut = sut;
-    }
+	public void setSut(RmdSut sut) {
+		this.sut = sut;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public List<FuzRequest> getRequests() {
+		return requests;
+	}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+	public void setRequests(List<FuzRequest> requests) {
+		this.requests = requests;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	// toString
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 }
