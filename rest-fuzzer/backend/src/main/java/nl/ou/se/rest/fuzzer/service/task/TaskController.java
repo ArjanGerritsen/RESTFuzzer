@@ -30,6 +30,7 @@ import nl.ou.se.rest.fuzzer.service.HttpResponseDto;
 @RequestMapping("/rest/tasks")
 public class TaskController {
 
+	// variables
 	private Logger logger = LoggerFactory.getLogger(TaskController.class);
 	
     private static final String EXTRACTOR = "extractor";
@@ -40,6 +41,7 @@ public class TaskController {
     @Autowired
 	TaskService taskSerivce;
 
+    // methods
     @RequestMapping(path = "progress", method = RequestMethod.GET)
     public @ResponseBody List<TaskDto> findAllProgress() {
         List<Task> tasks = new ArrayList<>();
