@@ -3,6 +3,7 @@ package nl.ou.se.rest.fuzzer.executor;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -10,6 +11,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -28,12 +30,13 @@ public class ExecutorUtil {
 	// variables
 	private Logger logger = LoggerFactory.getLogger(TaskController.class);
 
+	private static final int TIMEOUT_MS = 5 * 1000;
+	private static final String PLACEHOLDER_PATH_VARIABLE = "{%s}";
+
+	private static CloseableHttpClient httpClient;
 	private static ExecutorUtil instance = null;
 
-	private static int TIMEOUT_MS = 5 * 1000;
-	private static CloseableHttpClient httpClient;
-
-	private FuzResponseFactory responseFactory;
+	private FuzResponseFactory responseFactory = new FuzResponseFactory();
 
 	// constructors
 	private ExecutorUtil() {
@@ -120,6 +123,9 @@ public class ExecutorUtil {
 		case PATCH:
 			httpUriRequest = getPatchRequest(request);
 			break;
+		case PUT:
+			httpUriRequest = getPutRequest(request);
+			break;
 		case DELETE:
 			httpUriRequest = getDeleteRequest(request);
 			break;
@@ -155,6 +161,12 @@ public class ExecutorUtil {
 		return patch;
 	}
 
+	private HttpUriRequest getPutRequest(FuzRequest request) {
+		HttpPut put = new HttpPut(getUri(request));
+
+		return put;
+	}
+
 	private HttpUriRequest getDeleteRequest(FuzRequest request) {
 		HttpDelete delete = new HttpDelete(getUri(request));
 
@@ -169,8 +181,10 @@ public class ExecutorUtil {
 			uriBuilder.setHost(request.getProject().getSut().getHost());
 			uriBuilder.setPath(getPath(request));
 
-			// request.getParameterMap(ParameterContext.QUERY)
-			// .setParameter("q", "httpclient")
+			// add query parameters
+			for (Map.Entry<String, Object> entry : request.getParameterMap(ParameterContext.QUERY).entrySet()) {
+				uriBuilder.setParameter(entry.getKey(), entry.getValue().toString());
+			}
 
 			uri = uriBuilder.build();
 		} catch (URISyntaxException e) {
@@ -183,13 +197,11 @@ public class ExecutorUtil {
 	private String getPath(FuzRequest request) {
 		StringBuilder path = new StringBuilder(request.getProject().getSut().getBasePath());
 
+		// replace path parameters
 		String updatedPath = request.getPath();
-		request.getParameterMap(ParameterContext.PATH).forEach(
-			(name, value) -> {
-				//				TODO
-				//				updatedPath = updatedPath.replaceAll(String.format("#{%s}", name), value.toString()); 
-			} 
-		);
+		for (Map.Entry<String, Object> entry : request.getParameterMap(ParameterContext.PATH).entrySet()) {
+			updatedPath = updatedPath.replaceAll(String.format(PLACEHOLDER_PATH_VARIABLE, entry.getKey()), entry.getValue().toString());
+		}
 		path.append(updatedPath);
 
 		return path.toString();

@@ -1,48 +1,69 @@
 package nl.ou.se.rest.fuzzer.service.fuz.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzRequest;
+import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzResponse;
 import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzType;
 import nl.ou.se.rest.fuzzer.service.rmd.domain.RmdSutDto;
 
 public class FuzProjectDto {
 
-    // variables
-    private Long id;
-    private FuzType type;
-    private RmdSutDto sut;
-    private LocalDateTime createdAt;
+	// variables
+	private Long id;
+	private FuzType type;
+	private RmdSutDto sut;
+	private List<FuzRequest> requests;
+	private List<FuzResponse> responses;
+	private LocalDateTime createdAt;
 
-    // getters and setters
-    public Long getId() {
-        return id;
-    }
+	// getters and setters
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public FuzType getType() {
-        return type;
-    }
+	public FuzType getType() {
+		return type;
+	}
 
-    public void setType(FuzType type) {
-        this.type = type;
-    }
+	public void setType(FuzType type) {
+		this.type = type;
+	}
 
-    public RmdSutDto getSut() {
-        return sut;
-    }
+	public RmdSutDto getSut() {
+		return sut;
+	}
 
-    public void setSut(RmdSutDto sut) {
-        this.sut = sut;
-    }
+	public void setSut(RmdSutDto sut) {
+		this.sut = sut;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public List<FuzRequest> getRequests() {
+		return requests;
+	}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	public void setRequests(List<FuzRequest> requests) {
+		this.requests = requests;
+	}
+
+	public List<FuzResponse> getResponses() {
+		return responses;
+	}
+
+	public void setResponses(List<FuzResponse> responses) {
+		this.responses = responses;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 }

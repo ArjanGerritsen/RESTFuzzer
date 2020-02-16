@@ -62,10 +62,17 @@
           </div>
         </b-card-text>
       </b-tab>
-      <b-tab :disabled="true" title="Http requests">
-        <b-card-text>
-          TODO
-        </b-card-text>
+      <b-tab :disabled="this.project.requests.length === 0" title="Http requests">
+      <b-card-text>
+        <ProjectDetailRequests
+          @select-item="selectAction"
+          :fields="fields"
+          :items="project.requests"
+          :formatters="formatters"
+          :displayFilter="true"
+        ></ProjectDetailRequests>
+      </b-card-text>
+    </b-tab>
       </b-tab>
       <b-tab :disabled="true" title="Http responses">
         <b-card-text>
@@ -90,10 +97,10 @@
 import Constants from "../../shared/constants";
 
 import ProjectsDelete from "./projects-delete";
-//import SutsDetailActions from "./suts-detail-actions.vue";
+import ProjectsDetailRequests from "./projects-detail-requests";
 
 export default {
-  components: { ProjectsDelete },
+  components: { ProjectsDelete, ProjectsDetailRequests },
   data() {
     return {
       startedRefresh: null,

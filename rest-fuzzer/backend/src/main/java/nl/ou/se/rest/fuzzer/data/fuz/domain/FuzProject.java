@@ -31,6 +31,7 @@ import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
 	attributeNodes = {
 		@NamedAttributeNode(value = "sut", subgraph = "sut"),
 		@NamedAttributeNode(value = "requests"),
+		@NamedAttributeNode(value = "responses")
 	},
 	subgraphs = {
 		@NamedSubgraph(
@@ -67,7 +68,12 @@ public class FuzProject implements Comparable<FuzProject> {
     @JoinColumn(name = "project_id")
     // @SortNatural TODO omzetten naar SortedSet ... over volgorde nadenken.
     private List<FuzRequest> requests = new ArrayList<>();
- 
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id")
+    // @SortNatural TODO omzetten naar SortedSet ... over volgorde nadenken.
+    private List<FuzResponse> responses = new ArrayList<>();
+
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
@@ -107,6 +113,14 @@ public class FuzProject implements Comparable<FuzProject> {
 
 	public void setRequests(List<FuzRequest> requests) {
 		this.requests = requests;
+	}
+
+	public List<FuzResponse> getResponses() {
+		return responses;
+	}
+
+	public void setResponses(List<FuzResponse> responses) {
+		this.responses = responses;
 	}
 
 	public LocalDateTime getCreatedAt() {

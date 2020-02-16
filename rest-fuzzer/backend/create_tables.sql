@@ -95,11 +95,15 @@ ALTER TABLE fuz_requests ADD CONSTRAINT fuz_requests_fk_task FOREIGN KEY (projec
 
 CREATE TABLE IF NOT EXISTS fuz_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  status_code INT NOT NULL,
+  status_description VARCHAR(255) NOT NULL,
+  body TEXT,
+  project_id INT,
   request_id INT,
-  created_at TIMESTAMP NULL,
-  executed_at TIMESTAMP NULL  
+  recieved_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
+ALTER TABLE fuz_responses ADD CONSTRAINT fuz_responses_fk_project FOREIGN KEY (project_id) REFERENCES fuz_projects(id);
 ALTER TABLE fuz_responses ADD CONSTRAINT fuz_responses_fk_request FOREIGN KEY (request_id) REFERENCES fuz_requests(id);
 
 --------------------------- other ---------------------------
