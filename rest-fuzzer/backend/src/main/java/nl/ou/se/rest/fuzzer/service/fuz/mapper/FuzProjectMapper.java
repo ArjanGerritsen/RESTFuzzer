@@ -21,7 +21,7 @@ public class FuzProjectMapper {
         BeanUtils.copyProperties(project, dto);
         if (mapRelations) {
             dto.setSut(RmdSutMapper.toDto(project.getSut(), false));
-            dto.setRequests(FuzRequestMapper.toDto(project.getRequests()));
+            dto.setRequests(FuzRequestMapper.toDtos(project.getRequests()));
             dto.setResponses(FuzResponseMapper.toDtos(project.getResponses()));
         }
         return dto;

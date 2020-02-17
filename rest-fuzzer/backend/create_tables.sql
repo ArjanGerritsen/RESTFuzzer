@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS fuz_responses (
   status_code INT NOT NULL,
   status_description VARCHAR(255) NOT NULL,
   body TEXT,
+  failure_reason VARCHAR(255),
   project_id INT,
   request_id INT,
   recieved_at TIMESTAMP NULL

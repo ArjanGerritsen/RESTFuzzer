@@ -1,14 +1,20 @@
 package nl.ou.se.rest.fuzzer.service.fuz.mapper;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzResponse;
+import nl.ou.se.rest.fuzzer.service.fuz.domain.FuzResponseDto;
 
 public class FuzResponseMapper {
 
-	public static List<FuzResponse> toDtos(List<FuzResponse> responses) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public static List<FuzResponseDto> toDtos(Set<FuzResponse> responses) {
+        return responses.stream().map(r -> FuzResponseMapper.toDto(r)).collect(Collectors.toList());
+    }
+
+    private static FuzResponseDto toDto(FuzResponse response) {
+        return null;
+    }
 
 }

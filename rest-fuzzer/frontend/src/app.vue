@@ -62,8 +62,16 @@ td {
   font-size: 0.875rem;
 }
 
+html {
+  background: url("assets/background.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
 body {
-  background-image: url("assets/background.jpg");
+  background-color: transparent !important;
 }
 
 @import "../node_modules/bootstrap/scss/bootstrap";

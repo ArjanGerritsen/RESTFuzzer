@@ -1,9 +1,10 @@
 package nl.ou.se.rest.fuzzer.generator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdParameter;
 public class GeneratorSimple {
 
 	// variables
-	private List<FuzRequest> requests = new ArrayList<>();
+	private SortedSet<FuzRequest> requests = new TreeSet<>();
 
 	private FuzRequestFactory requestFactory = new FuzRequestFactory();
 
@@ -61,11 +62,11 @@ public class GeneratorSimple {
 	}
 
 	// getters and setters
-	public List<FuzRequest> getRequests() {
+	public SortedSet<FuzRequest> getRequests() {
 		return requests;
 	}
 
-	public void setRequests(List<FuzRequest> requests) {
+	public void setRequests(SortedSet<FuzRequest> requests) {
 		this.requests = requests;
 	}
 }

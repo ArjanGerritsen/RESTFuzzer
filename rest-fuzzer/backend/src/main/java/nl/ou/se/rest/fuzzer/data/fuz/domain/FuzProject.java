@@ -1,8 +1,8 @@
 package nl.ou.se.rest.fuzzer.data.fuz.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.SortNatural;
 
 import nl.ou.se.rest.fuzzer.Constants;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
@@ -66,13 +67,13 @@ public class FuzProject implements Comparable<FuzProject> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
-    // @SortNatural TODO omzetten naar SortedSet ... over volgorde nadenken.
-    private List<FuzRequest> requests = new ArrayList<>();
+    @SortNatural
+    private SortedSet<FuzRequest> requests = new TreeSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
-    // @SortNatural TODO omzetten naar SortedSet ... over volgorde nadenken.
-    private List<FuzResponse> responses = new ArrayList<>();
+    @SortNatural
+    private SortedSet<FuzResponse> responses = new TreeSet<>();
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
@@ -107,19 +108,19 @@ public class FuzProject implements Comparable<FuzProject> {
 		this.sut = sut;
 	}
 
-	public List<FuzRequest> getRequests() {
+	public SortedSet<FuzRequest> getRequests() {
 		return requests;
 	}
 
-	public void setRequests(List<FuzRequest> requests) {
+	public void setRequests(SortedSet<FuzRequest> requests) {
 		this.requests = requests;
 	}
 
-	public List<FuzResponse> getResponses() {
+	public SortedSet<FuzResponse> getResponses() {
 		return responses;
 	}
 
-	public void setResponses(List<FuzResponse> responses) {
+	public void setResponses(SortedSet<FuzResponse> responses) {
 		this.responses = responses;
 	}
 

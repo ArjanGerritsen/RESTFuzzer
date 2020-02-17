@@ -24,7 +24,7 @@ import nl.ou.se.rest.fuzzer.data.rmd.domain.ParameterContext;
 
 @Entity(name = "fuz_requests")
 public class FuzRequest implements Comparable<FuzRequest> {
-	
+
     // variables
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public class FuzRequest implements Comparable<FuzRequest> {
     private String headerParametersJson;
     private String pathParametersJson;
     private String queryParametersJson;
-  
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "project_id")
     private FuzProject project;
@@ -62,104 +62,105 @@ public class FuzRequest implements Comparable<FuzRequest> {
         this.httpMethod = HttpMethod.valueOf(httpMethod);
     }
 
-    // methods	
-	public int compareTo(FuzRequest other) {
-		return this.getId().compareTo(other.getId());
-	}
+    // methods
+    public int compareTo(FuzRequest other) {
+        return new String(this.getPath() + this.getHttpMethod())
+                .compareTo(new String(other.getPath() + other.getHttpMethod()));
+    }
 
     public Map<String, Object> getParameterMap(ParameterContext context) {
-    	String json = null;
-    	
-    	switch(context) {
-    	case FORMDATA:
-    		json = this.formdataParametersJson;
-    		break;
-    	case HEADER:
-    		json = this.headerParametersJson;
-    		break;
-    	case PATH:
-    		json = this.pathParametersJson;
-    		break;
-    	case QUERY:
-    		json = this.queryParametersJson;
-    		break;
-		default:
-			break;
-    	}
+        String json = null;
+
+        switch (context) {
+        case FORMDATA:
+            json = this.formdataParametersJson;
+            break;
+        case HEADER:
+            json = this.headerParametersJson;
+            break;
+        case PATH:
+            json = this.pathParametersJson;
+            break;
+        case QUERY:
+            json = this.queryParametersJson;
+            break;
+        default:
+            break;
+        }
         return JsonUtil.stringToMap(json);
     }
 
     public void setParameterMap(ParameterContext context, Map<String, Object> parameters) {
-    	String json = JsonUtil.mapToString(parameters);
-    	
-    	switch(context) {
-    	case FORMDATA:
-    		this.formdataParametersJson = json;
-    		break;
-       	case HEADER:
-    		this.headerParametersJson = json;
-    		break;
-       	case PATH:
-    		this.pathParametersJson = json;
-    		break;
-       	case QUERY:
-    		this.queryParametersJson = json;
-    		break;
-		default:
-			break;
-    	}
+        String json = JsonUtil.mapToString(parameters);
+
+        switch (context) {
+        case FORMDATA:
+            this.formdataParametersJson = json;
+            break;
+        case HEADER:
+            this.headerParametersJson = json;
+            break;
+        case PATH:
+            this.pathParametersJson = json;
+            break;
+        case QUERY:
+            this.queryParametersJson = json;
+            break;
+        default:
+            break;
+        }
     }
 
     // getters and setters
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-	public HttpMethod getHttpMethod() {
-		return httpMethod;
-	}
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
 
-	public void setHttpMethod(HttpMethod httpMethod) {
-		this.httpMethod = httpMethod;
-	}
+    public void setHttpMethod(HttpMethod httpMethod) {
+        this.httpMethod = httpMethod;
+    }
 
-	public FuzProject getProject() {
-		return project;
-	}
+    public FuzProject getProject() {
+        return project;
+    }
 
-	public void setProject(FuzProject project) {
-		this.project = project;
-	}
+    public void setProject(FuzProject project) {
+        this.project = project;
+    }
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public LocalDateTime getExecutedAt() {
-		return executedAt;
-	}
+    public LocalDateTime getExecutedAt() {
+        return executedAt;
+    }
 
-	public void setExecutedAt(LocalDateTime executedAt) {
-		this.executedAt = executedAt;
-	}
+    public void setExecutedAt(LocalDateTime executedAt) {
+        this.executedAt = executedAt;
+    }
 
-	// toString
+    // toString
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
