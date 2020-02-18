@@ -31,7 +31,7 @@ public class ExecutorUtil {
 	private Logger logger = LoggerFactory.getLogger(TaskController.class);
 
 	private static final int TIMEOUT_MS = 5 * 1000;
-	private static final String PLACEHOLDER_PATH_VARIABLE = "{%s}";
+	private static final String PLACEHOLDER_PATH_VARIABLE = "\\{%s\\}";
 
 	private static CloseableHttpClient httpClient;
 	private static ExecutorUtil instance = null;
@@ -84,9 +84,8 @@ public class ExecutorUtil {
 				response.close();
 			}
 
-			Thread.sleep(1000);
-
 		} catch (Exception e) {
+			e.printStackTrace(); // TODO
 			failureReason = e.getMessage();
 		}
 
@@ -94,7 +93,7 @@ public class ExecutorUtil {
 	}
 
 	private FuzResponse createFuzResponse(FuzRequest request, CloseableHttpResponse response, String failureReason) {
-		responseFactory.create(request);
+		responseFactory.create(request.getProject(), request);
 
 		if (response != null) {
 			responseFactory.setCode(response.getStatusLine().getStatusCode());
@@ -106,7 +105,7 @@ public class ExecutorUtil {
 		if (failureReason != null) {
 			responseFactory.setFailureReason(failureReason);
 		}
-
+		
 		return responseFactory.build();
 	}
 

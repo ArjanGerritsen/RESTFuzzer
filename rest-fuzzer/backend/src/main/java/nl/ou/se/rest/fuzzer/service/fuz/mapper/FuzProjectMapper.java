@@ -11,26 +11,24 @@ import nl.ou.se.rest.fuzzer.service.rmd.mapper.RmdSutMapper;
 
 public class FuzProjectMapper {
 
-    // methods
-    public static List<FuzProjectDto> toDtos(List<FuzProject> tasks) {
-        return tasks.stream().map(ft -> FuzProjectMapper.toDto(ft, true)).collect(Collectors.toList());
-    }
+	// methods
+	public static List<FuzProjectDto> toDtos(List<FuzProject> tasks) {
+		return tasks.stream().map(ft -> FuzProjectMapper.toDto(ft, true)).collect(Collectors.toList());
+	}
 
-    public static FuzProjectDto toDto(FuzProject project, boolean mapRelations) {
-        FuzProjectDto dto = new FuzProjectDto();
-        BeanUtils.copyProperties(project, dto);
-        if (mapRelations) {
-            dto.setSut(RmdSutMapper.toDto(project.getSut(), false));
-            dto.setRequests(FuzRequestMapper.toDtos(project.getRequests()));
-            dto.setResponses(FuzResponseMapper.toDtos(project.getResponses()));
-        }
-        return dto;
-    }
+	public static FuzProjectDto toDto(FuzProject project, boolean mapRelations) {
+		FuzProjectDto dto = new FuzProjectDto();
+		BeanUtils.copyProperties(project, dto);
+		if (mapRelations) {
+			dto.setSut(RmdSutMapper.toDto(project.getSut(), false));
+		}
+		return dto;
+	}
 
-    public static FuzProject toDomain(FuzProjectDto dto) {
-        FuzProject project = new FuzProject();
-        BeanUtils.copyProperties(dto, project);
-        project.setType(dto.getType());
-        return project;
-    }
+	public static FuzProject toDomain(FuzProjectDto dto) {
+		FuzProject project = new FuzProject();
+		BeanUtils.copyProperties(dto, project);
+		project.setType(dto.getType());
+		return project;
+	}
 }

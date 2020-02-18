@@ -19,6 +19,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nl.ou.se.rest.fuzzer.data.fuz.dao.FuzProjectService;
+import nl.ou.se.rest.fuzzer.data.fuz.dao.FuzRequestService;
+import nl.ou.se.rest.fuzzer.data.fuz.dao.FuzResponseService;
 import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.data.rmd.dao.RmdSutService;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
@@ -26,6 +28,8 @@ import nl.ou.se.rest.fuzzer.service.HttpResponseDto;
 import nl.ou.se.rest.fuzzer.service.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.service.fuz.domain.FuzProjectDto;
 import nl.ou.se.rest.fuzzer.service.fuz.mapper.FuzProjectMapper;
+import nl.ou.se.rest.fuzzer.service.fuz.mapper.FuzRequestMapper;
+import nl.ou.se.rest.fuzzer.service.fuz.mapper.FuzResponseMapper;
 
 @RestController()
 @RequestMapping("/rest/projects")
@@ -35,6 +39,12 @@ public class FuzProjectController {
 
 	@Autowired
 	FuzProjectService projectService;
+
+	@Autowired
+	FuzRequestService requestService;
+	
+	@Autowired
+	FuzResponseService responseService;
 
 	@Autowired
 	RmdSutService sutService;
@@ -52,6 +62,16 @@ public class FuzProjectController {
 			return ResponseEntity.badRequest().body(new FuzProjectDto());
 		}
 		return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), true));
+	}
+	
+	@RequestMapping(path = "{id}/requests", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> findRequestsById(@PathVariable(name = "id") Long id) {
+		return ResponseEntity.ok(FuzRequestMapper.toDtos(requestService.findByProjectId(id)));
+	}
+	
+	@RequestMapping(path = "{id}/responses", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> findResponsesById(@PathVariable(name = "id") Long id) {
+		return ResponseEntity.ok(FuzResponseMapper.toDtos(responseService.findByProjectId(id)));
 	}
 
 	@RequestMapping(method = RequestMethod.POST)

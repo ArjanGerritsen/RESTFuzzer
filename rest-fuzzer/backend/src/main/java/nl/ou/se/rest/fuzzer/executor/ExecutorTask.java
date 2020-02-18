@@ -48,6 +48,10 @@ public class ExecutorTask extends TaskExecutionBase implements TaskExecution {
 		FuzProject project = oProject.get();
 
 		executor.start(project);
+		
+		project.setResponses(executor.getResponses());
+		
+		projectService.save(project);
 
 		logger.info(String.format(Constants.INFO_TASK_STOP, this.getClass().getName()));
 	}

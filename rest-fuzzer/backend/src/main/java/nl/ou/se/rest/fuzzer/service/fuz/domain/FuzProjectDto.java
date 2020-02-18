@@ -1,8 +1,6 @@
 package nl.ou.se.rest.fuzzer.service.fuz.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzType;
 import nl.ou.se.rest.fuzzer.service.rmd.domain.RmdSutDto;
@@ -13,8 +11,8 @@ public class FuzProjectDto {
 	private Long id;
 	private FuzType type;
 	private RmdSutDto sut;
-	private List<FuzRequestDto> requests = new ArrayList<>();
-	private List<FuzResponseDto> responses = new ArrayList<>();
+	private Long requestsCount;
+	private Long responsesCount;
 	private LocalDateTime createdAt;
 
 	// getters and setters
@@ -42,20 +40,20 @@ public class FuzProjectDto {
 		this.sut = sut;
 	}
 
-	public List<FuzRequestDto> getRequests() {
-		return requests;
+	public Long getRequestsCount() {
+		return requestsCount;
 	}
 
-	public void setRequests(List<FuzRequestDto> requests) {
-		this.requests = requests;
+	public void setRequestsCount(Long requestsCount) {
+		this.requestsCount = requestsCount;
 	}
 
-	public List<FuzResponseDto> getResponses() {
-		return responses;
+	public Long getResponsesCount() {
+		return responsesCount;
 	}
 
-	public void setResponses(List<FuzResponseDto> responses) {
-		this.responses = responses;
+	public void setResponsesCount(Long responsesCount) {
+		this.responsesCount = responsesCount;
 	}
 
 	public LocalDateTime getCreatedAt() {

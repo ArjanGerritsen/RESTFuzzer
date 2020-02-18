@@ -62,7 +62,7 @@
           </div>
         </b-card-text>
       </b-tab>
-      <b-tab :disabled="requests.size === 0" title="Http requests">
+      <b-tab :disabled="requests.length === 0" v-bind:title="[requests.length === 0 ? 'Http requests' : `Http requests [${requests.length}]`]">
       <b-card-text>
         <ProjectsDetailRequests
           @select-item="selectAction"
@@ -74,9 +74,16 @@
       </b-card-text>
     </b-tab>
       </b-tab>
-      <b-tab :disabled="true" title="Http responses">
+      <b-tab :disabled="responses.length === 0" v-bind:title="[responses.length === 0 ? 'Http responses' : `Http responses [${responses.length}]`]">
         <b-card-text>
-          TODO
+        <ProjectsDetailRequests
+        @select-item="selectAction"
+        :fields="responseFields"
+        :items="responses"
+        :formatters="responseFormatters"
+        :displayFilter="true"
+      ></ProjectsDetailRequests>
+    </b-card-text>
         </b-card-text>
       </b-tab>
     </b-tabs>
@@ -105,6 +112,12 @@ export default {
     return {
       requestFormatters: [],
       requestFields: [
+        { key: "id", label: "#", thStyle: "width: 50px;" },
+        { key: "path" },
+        { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" }
+      ],
+      responseFormatters: [],
+      responseFields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "path" },
         { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" }
@@ -145,7 +158,10 @@ export default {
       return this.$store.getters.projects.current;
     },
     requests() {
-      return this.$store.getters.projects.current.requests;
+      return []; // this.$store.getters.projects.current.requests;
+    },
+    responses() {
+      return []; // this.$store.getters.projects.current.responses;
     },
     canExecuteTask() {
       return true;
