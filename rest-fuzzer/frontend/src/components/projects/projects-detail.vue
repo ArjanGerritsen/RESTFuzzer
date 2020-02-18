@@ -62,15 +62,15 @@
           </div>
         </b-card-text>
       </b-tab>
-      <b-tab :disabled="this.project.requests.length === 0" title="Http requests">
+      <b-tab :disabled="requests.size === 0" title="Http requests">
       <b-card-text>
-        <ProjectDetailRequests
+        <ProjectsDetailRequests
           @select-item="selectAction"
-          :fields="fields"
-          :items="project.requests"
-          :formatters="formatters"
+          :fields="requestFields"
+          :items="requests"
+          :formatters="requestFormatters"
           :displayFilter="true"
-        ></ProjectDetailRequests>
+        ></ProjectsDetailRequests>
       </b-card-text>
     </b-tab>
       </b-tab>
@@ -103,6 +103,12 @@ export default {
   components: { ProjectsDelete, ProjectsDetailRequests },
   data() {
     return {
+      requestFormatters: [],
+      requestFields: [
+        { key: "id", label: "#", thStyle: "width: 50px;" },
+        { key: "path" },
+        { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" }
+      ],
       startedRefresh: null,
       timeoutRefresh: null
     };
@@ -137,6 +143,9 @@ export default {
   computed: {
     project() {
       return this.$store.getters.projects.current;
+    },
+    requests() {
+      return this.$store.getters.projects.current.requests;
     },
     canExecuteTask() {
       return true;
