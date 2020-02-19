@@ -6,6 +6,11 @@
       </h6>
     </template>
 
+    <div v-if="this.sut === null" class="text-center text-primary my-2">
+      <b-spinner type="border" class="align-middle" small></b-spinner>
+      <span style="margin-left:10px;">Loading...</span>
+    </div>
+
     <b-tabs v-if="this.sut !== null" nav-tabs card>
       <b-tab title="Information" active>
         <b-card-text>

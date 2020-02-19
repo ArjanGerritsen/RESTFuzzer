@@ -31,7 +31,7 @@ import nl.ou.se.rest.fuzzer.service.HttpResponseDto;
 public class TaskController {
 
 	// variables
-	private Logger logger = LoggerFactory.getLogger(TaskController.class);
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
     private static final String EXTRACTOR = "extractor";
     private static final String GENERATOR = "generator";

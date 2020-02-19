@@ -6,6 +6,11 @@
       </h6>
     </template>
 
+    <div v-if="this.project === null" class="text-center text-primary my-2">
+      <b-spinner type="border" class="align-middle" small></b-spinner>
+      <span style="margin-left:10px;">Loading...</span>
+    </div>
+
     <b-tabs v-if="this.project !== null" nav-tabs card>
       <b-tab title="Information" active>
         <b-card-text>
@@ -22,7 +27,7 @@
                 >
                   <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start generate task
                 </b-button>
-                  <b-button
+                <b-button
                   :disabled="extractTaskDisabled()"
                   size="sm"
                   type="submit"
@@ -31,7 +36,7 @@
                   v-on:click="addExecutorTask"
                 >
                   <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start execute task
-                </b-button>                
+                </b-button>
                 <b-button
                   size="sm"
                   type="submit"
@@ -53,37 +58,38 @@
                 <dd>{{this.project.type | enumToHuman }}</dd>
                 <dt>System under test</dt>
                 <dd>
-                  <b-link :href="this.project.sut.location" target="_blank">{{this.project.sut.location}}</b-link>
+                  <b-link
+                    :href="this.project.sut.location"
+                    target="_blank"
+                  >{{this.project.sut.location}}</b-link>
                 </dd>
               </dl>
             </div>
-            <div class="col">
-            </div>
+            <div class="col"></div>
           </div>
         </b-card-text>
       </b-tab>
-      <b-tab :disabled="requests.length === 0" v-bind:title="[requests.length === 0 ? 'Http requests' : `Http requests [${requests.length}]`]">
-      <b-card-text>
-        <ProjectsDetailRequests
-          @select-item="selectAction"
-          :fields="requestFields"
-          :items="requests"
-          :formatters="requestFormatters"
-          :displayFilter="true"
-        ></ProjectsDetailRequests>
-      </b-card-text>
-    </b-tab>
+      <b-tab :disabled="requests === null || requests.length === 0" title="Http requests">
+        <b-card-text v-if="requests !== null  && requests.length !== 0">
+          <ProjectsDetailRequests
+            @select-item="selectAction"
+            :fields="requestFields"
+            :items="requests"
+            :formatters="requestFormatters"
+            :displayFilter="true"
+          ></ProjectsDetailRequests>
+        </b-card-text>
       </b-tab>
-      <b-tab :disabled="responses.length === 0" v-bind:title="[responses.length === 0 ? 'Http responses' : `Http responses [${responses.length}]`]">
-        <b-card-text>
-        <ProjectsDetailRequests
-        @select-item="selectAction"
-        :fields="responseFields"
-        :items="responses"
-        :formatters="responseFormatters"
-        :displayFilter="true"
-      ></ProjectsDetailRequests>
-    </b-card-text>
+      <b-tab :disabled="responses === null || responses.length === 0" title="Http responses">
+        <!-- v-bind:title="[responses.length === 0 ? 'Http responses' : `Http responses [${responses.length}]`]"> -->
+        <b-card-text v-if="responses !== null  && responses.length !== 0">
+          <ProjectsDetailResponses
+            @select-item="selectAction"
+            :fields="responseFields"
+            :items="responses"
+            :formatters="responseFormatters"
+            :displayFilter="true"
+          ></ProjectsDetailResponses>
         </b-card-text>
       </b-tab>
     </b-tabs>
@@ -105,9 +111,14 @@ import Constants from "../../shared/constants";
 
 import ProjectsDelete from "./projects-delete";
 import ProjectsDetailRequests from "./projects-detail-requests";
+import ProjectsDetailResponses from "./projects-detail-responses";
 
 export default {
-  components: { ProjectsDelete, ProjectsDetailRequests },
+  components: {
+    ProjectsDelete,
+    ProjectsDetailRequests,
+    ProjectsDetailResponses
+  },
   data() {
     return {
       requestFormatters: [],
@@ -119,8 +130,18 @@ export default {
       responseFormatters: [],
       responseFields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
-        { key: "path" },
-        { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" }
+        { key: "request.path" },
+        {
+          key: "request.httpMethod",
+          label: "Http method",
+          thStyle: "width: 80px;"
+        },
+        { key: "statusCode", label: "Http status", thStyle: "width: 80px;" },
+        {
+          key: "statusDescription",
+          label: "Http description",
+          thStyle: "width: 110px;"
+        }
       ],
       startedRefresh: null,
       timeoutRefresh: null
@@ -133,8 +154,7 @@ export default {
     extractTaskDisabled() {
       return this.startedRefresh !== null;
     },
-    refreshData() {
-    },
+    refreshData() {},
     addGeneratorTask() {
       this.addTask(Constants.TASK_GENERATOR);
     },
@@ -150,18 +170,18 @@ export default {
         .then(() => {
           this.startedRefresh = new Date();
           this.refreshData();
-      });
-    },
+        });
+    }
   },
   computed: {
     project() {
       return this.$store.getters.projects.current;
     },
     requests() {
-      return []; // this.$store.getters.projects.current.requests;
+      return this.$store.getters.projects.current_requests;
     },
     responses() {
-      return []; // this.$store.getters.projects.current.responses;
+      return this.$store.getters.projects.current_responses;
     },
     canExecuteTask() {
       return true;

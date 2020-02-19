@@ -95,8 +95,8 @@ ALTER TABLE fuz_requests ADD CONSTRAINT fuz_requests_fk_task FOREIGN KEY (projec
 
 CREATE TABLE IF NOT EXISTS fuz_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  status_code INT NOT NULL,
-  status_description VARCHAR(255) NOT NULL,
+  status_code INT,
+  status_description VARCHAR(255),
   body TEXT,
   failure_reason VARCHAR(255),
   project_id INT,

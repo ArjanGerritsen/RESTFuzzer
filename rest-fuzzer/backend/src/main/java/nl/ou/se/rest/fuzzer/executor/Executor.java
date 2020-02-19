@@ -15,31 +15,32 @@ import nl.ou.se.rest.fuzzer.service.task.TaskController;
 @Service
 public class Executor {
 
-	// variables
-	private Logger logger = LoggerFactory.getLogger(TaskController.class);
+    // variables
+    private Logger logger = LoggerFactory.getLogger(TaskController.class);
 
-	private ExecutorUtil executorUtil;
-	private SortedSet<FuzResponse> responses = new TreeSet<>();
+    private ExecutorUtil executorUtil;
+    private SortedSet<FuzResponse> responses = new TreeSet<>();
 
-	// methods
-	public void start(FuzProject project) {
-		executorUtil = ExecutorUtil.getInstance();
-		project.getRequests().forEach(r -> processRequest(r));
-		executorUtil.destroy();
-	}
+    // methods
+    public void start(FuzProject project) {
+        executorUtil = ExecutorUtil.getInstance();
+        project.getRequests().forEach(r -> processRequest(r));
+        executorUtil.destroy();
+    }
 
-	private void processRequest(FuzRequest request) {
-		FuzResponse response = executorUtil.processRequest(request);
-		logger.info("TODO: " + response.getFailureReason() + " / " + response.getStatusCode());
-		this.responses.add(response);
-	}
+    private void processRequest(FuzRequest request) {
+        FuzResponse response = executorUtil.processRequest(request);
+        logger.info(String.format("HttpStatus: %s - HttpDescription: %s - FailureReasons: %s", response.getStatusCode(),
+                response.getStatusDescription(), response.getFailureReason()));
+        this.responses.add(response);
+    }
 
-	// getters and setters
-	public SortedSet<FuzResponse> getResponses() {
-		return responses;
-	}
+    // getters and setters
+    public SortedSet<FuzResponse> getResponses() {
+        return responses;
+    }
 
-	public void setResponses(SortedSet<FuzResponse> responses) {
-		this.responses = responses;
-	}
+    public void setResponses(SortedSet<FuzResponse> responses) {
+        this.responses = responses;
+    }
 }
