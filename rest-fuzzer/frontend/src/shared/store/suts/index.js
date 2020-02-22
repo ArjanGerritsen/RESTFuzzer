@@ -33,6 +33,7 @@ const suts = {
         },
         findSut({ commit }, id) {
             return new Promise((resolve, reject) => {
+                commit("sut_set", { sut: null });
                 axios
                     .get(`/rest/suts/${id}`)
                     .then(response => {
@@ -47,7 +48,7 @@ const suts = {
             })
         },
         addSut({ commit }, sut) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {               
                 axios
                     .post('/rest/suts', sut)
                     .then(response => {

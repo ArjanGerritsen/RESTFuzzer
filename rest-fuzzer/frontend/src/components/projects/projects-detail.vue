@@ -69,20 +69,17 @@
           </div>
         </b-card-text>
       </b-tab>
-      <b-tab :disabled="requests === null || requests.length === 0" title="Http requests">
-        <b-card-text v-if="requests !== null  && requests.length !== 0">
+      <b-tab :disabled="!requestsPresent" :title="requestsTitle">
+        <b-card-text v-if="requestsPresent">
           <ProjectsDetailRequests
-            @select-item="selectAction"
+            :project="this.project"
             :fields="requestFields"
-            :items="requests"
             :formatters="requestFormatters"
-            :displayFilter="true"
           ></ProjectsDetailRequests>
         </b-card-text>
       </b-tab>
-      <b-tab :disabled="responses === null || responses.length === 0" title="Http responses">
-        <!-- v-bind:title="[responses.length === 0 ? 'Http responses' : `Http responses [${responses.length}]`]"> -->
-        <b-card-text v-if="responses !== null  && responses.length !== 0">
+      <b-tab :disabled="!responsesPresent" title="Http responses">
+        <b-card-text v-if="responsesPresent">
           <ProjectsDetailResponses
             @select-item="selectAction"
             :fields="responseFields"
@@ -183,8 +180,26 @@ export default {
     responses() {
       return this.$store.getters.projects.current_responses;
     },
+    requestsPresent() {
+      return this.requestsCount > 0;
+    },
+    requestsTitle() {
+      let title = 'Http Requests';
+      if (this.requestsCount > 0) {
+        title += ` [${this.requestsCount}]`;
+      }
+      return title;
+    },
+    responsesPresent() {
+      const count = this.$store.getters.projects.current.responsesCount;
+      return (count !== null && count > 0);
+    }, 
     canExecuteTask() {
       return true;
+    },
+    requestsCount() {
+      const count = this.$store.getters.projects.current.requestsCount;
+      return (count !== null && count > 0) ? count : 0;
     }
   },
   created: function() {},

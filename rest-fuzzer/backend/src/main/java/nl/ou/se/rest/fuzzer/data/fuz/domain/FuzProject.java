@@ -13,9 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -23,33 +20,32 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.SortNatural;
 
-import nl.ou.se.rest.fuzzer.Constants;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
 
 @Entity(name = "fuz_projects")
-@NamedEntityGraph(
-	name = Constants.ENTITY_GRAPH_FUZ_PROJECTS_ALL_RELATIONS, 
-	attributeNodes = {
-		@NamedAttributeNode(value = "sut", subgraph = "sut"),
-		@NamedAttributeNode(value = "requests")
-//		@NamedAttributeNode(value = "responses")
-	},
-	subgraphs = {
-		@NamedSubgraph(
-			name = "sut",
-			attributeNodes = {
-				@NamedAttributeNode(value = "actions", subgraph = "sut.actions") 
-			}
-		), 	
-		@NamedSubgraph(
-			name = "sut.actions",
-			attributeNodes = {
-		        @NamedAttributeNode(value = "parameters"),
-		        @NamedAttributeNode(value = "responses")						        
-		    }
-		)
-	}
-)
+//@NamedEntityGraph(
+//	name = Constants.ENTITY_GRAPH_FUZ_PROJECTS_ALL_RELATIONS, 
+//	attributeNodes = {
+//		@NamedAttributeNode(value = "sut", subgraph = "sut")
+////		@NamedAttributeNode(value = "requests")
+////		@NamedAttributeNode(value = "responses")
+//	},
+//	subgraphs = {
+//		@NamedSubgraph(
+//			name = "sut",
+//			attributeNodes = {
+//				@NamedAttributeNode(value = "actions", subgraph = "sut.actions") 
+//			}
+//		), 	
+//		@NamedSubgraph(
+//			name = "sut.actions",
+//			attributeNodes = {
+//		        @NamedAttributeNode(value = "parameters"),
+//		        @NamedAttributeNode(value = "responses")						        
+//		    }
+//		)
+//	}
+//)
 public class FuzProject implements Comparable<FuzProject> {
 
     // variables
