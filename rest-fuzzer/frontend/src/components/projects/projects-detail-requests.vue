@@ -97,7 +97,7 @@
       size="sm"
       style="float:right;"
       v-model="currentPage"
-      :total-rows="rows"
+      :total-rows="totalRows"
       :per-page="perPage"
       aria-controls="list"
     ></b-pagination>
@@ -112,8 +112,7 @@ export default {
       isBusy: false,
       filter: null,
       perPage: 15,
-      currentPage: 1,
-      totalRows: null
+      currentPage: 1
     };
   },
   methods: {
@@ -124,30 +123,26 @@ export default {
           context: context
         })
         .then(() => {
-          return this.$store.getters.projects.current_requests;
+          return this.$store.getters.projects.current_requests.visible;
         })
         .catch(() => {
-          return this.$store.getters.projects.current_requests;
+          return this.$store.getters.projects.current_requests.visible;
         });
     },
     linkGen(pageNum) {
       return pageNum === 1 ? "?" : `?page=${pageNum}`;
     },
     onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length;
       this.currentPage = 1;
     }
   },
   computed: {
-    rows() {
-      return this.totalRows;
+    totalRows() {
+      return this.$store.getters.projects.current_requests.count;
     },
     displayPagination() {
       return this.totalRows > this.perPage;
     }
-  },
-  mounted() {
-    this.totalRows = 90;
   },
   created: function() {}
 };

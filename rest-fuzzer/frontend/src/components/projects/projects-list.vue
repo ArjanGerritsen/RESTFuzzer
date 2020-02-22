@@ -10,7 +10,12 @@
             <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
           </b-button>
         </div>
-        <list @select-item="selectProject" :fields="fields" :items="projects" :formatters="formatters"></list>
+        <list
+          @select-item="selectProject"
+          :fields="fields"
+          :items="projects"
+          :formatters="formatters"
+        ></list>
       </b-card-text>
     </b-card>
   </div>
@@ -24,8 +29,8 @@ export default {
   data() {
     return {
       formatters: [
-    	{ field: "type", as: "enumToHuman" },
-    	{ field: "createdAt", as: "dateShort" }
+        { field: "type", as: "enumToHuman" },
+        { field: "createdAt", as: "dateShort" }
       ],
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
@@ -37,7 +42,7 @@ export default {
   },
   methods: {
     selectProject(project) {
-      this.$store.dispatch("findProject", project.id);
+      this.$store.dispatch("findProject", { project_id: project.id });
       this.$bvModal.show("projects-detail");
     }
   },
