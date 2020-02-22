@@ -28,7 +28,7 @@ import nl.ou.se.rest.fuzzer.Constants;
 
 @Entity(name = "rmd_suts")
 @NamedEntityGraph(name = Constants.ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS, attributeNodes = @NamedAttributeNode(value = "actions", subgraph = "suts.subgraph.actions"), subgraphs = {
-        @NamedSubgraph(name = "suts.subgraph.actions", attributeNodes = { @NamedAttributeNode(value = "parameters"),
+		@NamedSubgraph(name = "suts.subgraph.actions", attributeNodes = { @NamedAttributeNode(value = "parameters"),
                 @NamedAttributeNode(value = "responses") }) })
 public class RmdSut {
 

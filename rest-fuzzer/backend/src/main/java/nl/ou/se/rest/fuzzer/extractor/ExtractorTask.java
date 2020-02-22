@@ -42,7 +42,7 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
     	}
 
     	RmdSut sut = oSut.get();
-
+    	
         Extractor extractor = new Extractor(sut);
         extractor.processV2();
 

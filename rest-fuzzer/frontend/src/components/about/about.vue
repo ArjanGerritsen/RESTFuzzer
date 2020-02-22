@@ -22,22 +22,36 @@
           </span>
           <b-card-text>
             <b-list-group>
-              <b-list-group-item href="#" disabled class="flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-1">Release v0.02</h5>
-                  <small class="text-muted">xx-02-2020</small>
-                </div>
-                <p class="mb-1">
-                  <ul>
-                    <li>Display REST model description information.</li>
-                    <li>Backend validations.</li>
-                    <li>Start (simple) fuzzing task.</li>
-                    <li>Fix: Delete SUT.</li>
-                    <li>Fix: Lazy loading for relations.</li>
-                    <li>Fix: Apply store pattern correctly.</li>
-                  </ul>
-                </p>
-              </b-list-group-item>
+            <b-list-group-item href="#" disabled class="flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Release v0.03</h5>
+              <small class="text-muted">xx-03-2020</small>
+            </div>
+            <p class="mb-1">
+              <ul>
+                <li>TODO Finialize (simple) fuzzing task (displaying requests and responses).</li>
+                <li>TODO Start Creating dependencies between REST actions (graph)</li>
+                <li>TODO Fix: Display Fuzzing project detail correctly.</li>
+                <li>TODO Fix: Use of EntityGraph for FuzProject.</li>
+              </ul>
+            </p>
+          </b-list-group-item>
+          <b-list-group-item href="#" disabled class="flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">Release v0.02</h5>
+            <small class="text-muted">19-02-2020</small>
+          </div>
+          <p class="mb-1">
+            <ul>
+              <li>Display REST model description information.</li>
+              <li>Backend validations.</li>
+              <li>Start (simple) fuzzing task.</li>
+              <li>Fix: Delete SUT.</li>
+              <li>Fix: Lazy loading for relations.</li>
+              <li>Fix: Apply store pattern correctly.</li>
+            </ul>
+          </p>
+        </b-list-group-item>
               <b-list-group-item href="#" disabled class="flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">Release v0.01</h5>
