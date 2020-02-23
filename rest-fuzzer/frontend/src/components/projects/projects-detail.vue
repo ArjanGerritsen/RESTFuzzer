@@ -122,7 +122,8 @@ export default {
       requestFields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "path" },
-        { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" }
+        { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" },
+        { key: "details", label: "Details", thStyle: "width: 60px;" }
       ],
       responseFormatters: [],
       responseFields: [

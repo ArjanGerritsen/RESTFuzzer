@@ -136,6 +136,38 @@ public class FuzRequest implements Comparable<FuzRequest> {
         this.httpMethod = httpMethod;
     }
 
+    public String getFormdataParametersJson() {
+        return formdataParametersJson;
+    }
+
+    public void setFormdataParametersJson(String formdataParametersJson) {
+        this.formdataParametersJson = formdataParametersJson;
+    }
+
+    public String getHeaderParametersJson() {
+        return headerParametersJson;
+    }
+
+    public void setHeaderParametersJson(String headerParametersJson) {
+        this.headerParametersJson = headerParametersJson;
+    }
+
+    public String getPathParametersJson() {
+        return pathParametersJson;
+    }
+
+    public void setPathParametersJson(String pathParametersJson) {
+        this.pathParametersJson = pathParametersJson;
+    }
+
+    public String getQueryParametersJson() {
+        return queryParametersJson;
+    }
+
+    public void setQueryParametersJson(String queryParametersJson) {
+        this.queryParametersJson = queryParametersJson;
+    }
+
     public FuzProject getProject() {
         return project;
     }

@@ -52,40 +52,32 @@
 
       <template v-slot:row-details="row">
         <b-card>
-          <h6>Parameters:</h6>
-          <li
-            class="list-inline-item"
-            style="vertical-align:top; margin:8px; width: 190px;"
-            v-for="(value, key) in row.item.parameters"
-            :key="key"
-          >
-            <b>#{{ value.id }}</b>
-            <b-badge v-if="value.required" variant="primary">required</b-badge>
-            <br />
-            name: {{ value.name}}
-            <br />
-            context: {{ value.context }}
-            <br />
-            type: {{ value.type }}
-            <br />
-            extra: {{ value.metaDataTuplesJson === "{}" ? "-" : value.metaDataTuplesJson }}
-          </li>
-
-          <hr />
-
-          <h6>Responses:</h6>
-          <li
-            class="list-inline-item"
-            style="margin:8px; width: 190px;"
-            v-for="(value, key) in row.item.responses"
-            :key="key"
-          >
-            <b>#{{ value.id }}</b>
-            <br />
-            http status: {{ value.statusCode }}
-            <br />
-            description: {{ value.description }}
-          </li>
+          <div class="row">
+            <div class="col" style="margin-bottom:20px">
+              <h6>Form data parameters:</h6>
+              <div class="json" :inner-html.prop="row.item.formdataParametersJson | json"></div>
+            </div>
+            <div class="col">
+              <h6>Header parameters:</h6>
+              <div class="json" :inner-html.prop="row.item.headerParametersJson | json"></div>
+            </div>
+          </div>
+          <div class="row" style="margin-bottom:20px">
+            <div class="col">
+              <h6>Path parameters:</h6>
+              <div class="json" :inner-html.prop="row.item.pathParametersJson | json"></div>
+            </div>
+            <div class="col">
+              <h6>Query parameters:</h6>
+              <div class="json" :inner-html.prop="row.item.queryParametersJson | json"></div>
+            </div>
+          </div>
+          <dl class="dl-horizontal">
+            <dt>Created @:</dt>
+            <dd>{{row.item.createdAt | date}}</dd>
+            <dt>Executed @:</dt>
+            <dd>{{row.item.executedAt | date}}</dd>
+          </dl>
         </b-card>
       </template>
 

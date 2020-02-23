@@ -62,8 +62,36 @@ td {
   font-size: 0.875rem;
 }
 
+.json {
+  border: 1px solid #dddddd;
+  padding: 10px;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+}
+
+.json .key {
+  font-weight: 525;
+}
+
+.json .string {
+  color: #0056b3;
+  font-style: italic;
+}
+
+.json .number {
+  color: #0056b3;
+}
+
+.json .true {
+  color: #165b33;
+}
+
+.json .false {
+  color: #bb2528;
+}
+
 html {
-  background: url("assets/background.jpg") no-repeat center center fixed; 
+  background: url("assets/background.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
