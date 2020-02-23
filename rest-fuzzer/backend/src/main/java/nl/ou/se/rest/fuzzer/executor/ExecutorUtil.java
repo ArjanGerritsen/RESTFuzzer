@@ -5,8 +5,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
@@ -16,6 +17,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +70,7 @@ public class ExecutorUtil {
 	}
 
 	public FuzResponse processRequest(FuzRequest request) {
-		CloseableHttpResponse response = null;
+		HttpResponse response = null;
 		String failureReason = null;
 
 		try {
@@ -80,8 +82,6 @@ public class ExecutorUtil {
 				response = httpClient.execute(httpUriRequest);
 
 				logger.debug(response.getStatusLine().toString());
-
-				response.close();
 			}
 
 		} catch (Exception e) {
@@ -92,14 +92,24 @@ public class ExecutorUtil {
 		return createFuzResponse(request, response, failureReason);
 	}
 
-	private FuzResponse createFuzResponse(FuzRequest request, CloseableHttpResponse response, String failureReason) {
+	private FuzResponse createFuzResponse(FuzRequest request, HttpResponse response, String failureReason) {
 		responseFactory.create(request.getProject(), request);
 
 		if (response != null) {
 			responseFactory.setCode(response.getStatusLine().getStatusCode());
 			responseFactory.setDescription(response.getStatusLine().getReasonPhrase());
 
-			responseFactory.setBody("TODO save the JSON response");
+			String body = null;
+            try {
+                body = EntityUtils.toString(response.getEntity());
+//                String responseContent = EntityUtils.toString(
+//                        response.getEntity(), StandardCharsets.UTF_8.name());
+
+            } catch (ParseException | IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+			responseFactory.setBody(body);
 		}
 
 		if (failureReason != null) {

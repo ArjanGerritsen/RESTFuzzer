@@ -87,8 +87,7 @@ CREATE TABLE IF NOT EXISTS fuz_requests (
   header_parameters_json TEXT,
   path_parameters_json TEXT,
   query_parameters_json TEXT,
-  created_at TIMESTAMP NULL,
-  executed_at TIMESTAMP NULL  
+  created_at TIMESTAMP NULL  
 ) ENGINE=INNODB;
 
 ALTER TABLE fuz_requests ADD CONSTRAINT fuz_requests_fk_task FOREIGN KEY (project_id) REFERENCES fuz_projects(id);
@@ -101,7 +100,7 @@ CREATE TABLE IF NOT EXISTS fuz_responses (
   failure_reason VARCHAR(255),
   project_id INT,
   request_id INT,
-  recieved_at TIMESTAMP NULL
+  created_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
 ALTER TABLE fuz_responses ADD CONSTRAINT fuz_responses_fk_project FOREIGN KEY (project_id) REFERENCES fuz_projects(id);

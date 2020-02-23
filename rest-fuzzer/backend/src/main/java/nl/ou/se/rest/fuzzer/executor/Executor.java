@@ -24,7 +24,9 @@ public class Executor {
     // methods
     public void start(FuzProject project) {
         executorUtil = ExecutorUtil.getInstance();
-        project.getRequests().forEach(r -> processRequest(r));
+        for (int i = 0; i < 500; i++) { // TODO TEMP ...
+            project.getRequests().forEach(r -> processRequest(r));
+        }
         executorUtil.destroy();
     }
 

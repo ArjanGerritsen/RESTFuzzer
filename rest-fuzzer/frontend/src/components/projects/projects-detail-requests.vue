@@ -52,32 +52,7 @@
 
       <template v-slot:row-details="row">
         <b-card>
-          <div class="row">
-            <div class="col" style="margin-bottom:20px">
-              <h6>Form data parameters:</h6>
-              <div class="json" :inner-html.prop="row.item.formdataParametersJson | json"></div>
-            </div>
-            <div class="col">
-              <h6>Header parameters:</h6>
-              <div class="json" :inner-html.prop="row.item.headerParametersJson | json"></div>
-            </div>
-          </div>
-          <div class="row" style="margin-bottom:20px">
-            <div class="col">
-              <h6>Path parameters:</h6>
-              <div class="json" :inner-html.prop="row.item.pathParametersJson | json"></div>
-            </div>
-            <div class="col">
-              <h6>Query parameters:</h6>
-              <div class="json" :inner-html.prop="row.item.queryParametersJson | json"></div>
-            </div>
-          </div>
-          <dl class="dl-horizontal">
-            <dt>Created @:</dt>
-            <dd>{{row.item.createdAt | date}}</dd>
-            <dt>Executed @:</dt>
-            <dd>{{row.item.executedAt | date}}</dd>
-          </dl>
+          <ProjectDetailRequest :item="row.item"></ProjectDetailRequest>
         </b-card>
       </template>
 
@@ -97,7 +72,10 @@
 </template>
 
 <script>
+import ProjectDetailRequest from "./projects-detail-request";
+
 export default {
+  components: { ProjectDetailRequest },
   props: ["project", "fields", "formatters"],
   data() {
     return {

@@ -1,5 +1,7 @@
 package nl.ou.se.rest.fuzzer.data.fuz.factory;
 
+import java.time.LocalDateTime;
+
 import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzRequest;
 import nl.ou.se.rest.fuzzer.data.fuz.domain.FuzResponse;
@@ -12,6 +14,7 @@ public class FuzResponseFactory {
 		response = new FuzResponse();
 		response.setProject(project);
 		response.setRequest(request);
+        response.setCreatedAt(LocalDateTime.now());
 
 		return this;
 	}
@@ -27,7 +30,7 @@ public class FuzResponseFactory {
 	}
 
 	public FuzResponseFactory setBody(String body) {
-		// TODO Auto-generated method stub
+		response.setBody(body);
 		return this;
 	}
 

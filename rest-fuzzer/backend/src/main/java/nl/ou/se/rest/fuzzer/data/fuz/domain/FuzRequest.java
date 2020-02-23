@@ -50,9 +50,6 @@ public class FuzRequest implements Comparable<FuzRequest> {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @Column(columnDefinition = "TIMESTAMP")
-    private LocalDateTime executedAt;
-
     // constructors
     public FuzRequest() {
     }
@@ -182,14 +179,6 @@ public class FuzRequest implements Comparable<FuzRequest> {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getExecutedAt() {
-        return executedAt;
-    }
-
-    public void setExecutedAt(LocalDateTime executedAt) {
-        this.executedAt = executedAt;
     }
 
     // toString

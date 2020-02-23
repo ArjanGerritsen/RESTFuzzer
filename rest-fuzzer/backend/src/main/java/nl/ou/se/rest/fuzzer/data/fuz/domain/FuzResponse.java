@@ -45,7 +45,7 @@ public class FuzResponse implements Comparable<FuzResponse> {
     private FuzRequest request;
 
     @Column(columnDefinition = "TIMESTAMP")
-    private LocalDateTime recievedAt;
+    private LocalDateTime createdAt;
 
     // methods
     public int compareTo(FuzResponse other) {
@@ -111,12 +111,12 @@ public class FuzResponse implements Comparable<FuzResponse> {
         this.request = request;
     }
 
-    public LocalDateTime getRecievedAt() {
-        return recievedAt;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setRecievedAt(LocalDateTime recievedAt) {
-        this.recievedAt = recievedAt;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     // toString

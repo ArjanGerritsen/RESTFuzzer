@@ -38,7 +38,7 @@ public class ExecutorTask extends TaskExecutionBase implements TaskExecution {
 		}
 
 		Long projectId = Long.valueOf((Integer) this.getMetaDataValue(KEY_PROJECT_ID));
-		Optional<FuzProject> oProject = projectService.findById(projectId);
+		Optional<FuzProject> oProject = projectService.findByIdWithRelations(projectId);
 
 		if (!oProject.isPresent()) {
 			logger.warn(String.format(Constants.WARN_TASK_SUT_NOT_FOUND, this.getClass().getName(), projectId));

@@ -2,45 +2,45 @@
   <div>
     <b-row style="margin-bottom:5px;">
       <b-col lg="6" class="my-1">
-        <div v-if="displayFilter">
-          <b-input-group size="sm">
-            <b-form-input
-              v-model="filter"
-              type="search"
-              id="filterInput"
-              placeholder="type to filter table"
-            ></b-form-input>
-            <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''">clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </div>
-      </b-col>      
-      <b-col lg="6" class="my-1">
+        <b-input-group size="sm">
+          <b-form-input
+            v-model="filter"
+            type="search"
+            id="filterInput"
+            placeholder="type to filter table"
+          ></b-form-input>
+          <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">clear</b-button>
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
+      <b-col lg="6" class="my-1"></b-col>
     </b-row>
 
-    <b-table id="list"
+    <b-table
+      id="responses"
       class="table-sm"
       show-empty
-      :busy="isBusy"
-      striped 
-      :items="items"
+      striped
+      :busy.sync="isBusy"
+      :items="restProvider"
       :fields="fields"
       :borderless="true"
       :filter="filter"
       @filtered="onFiltered"
-      :current-page="currentPage" :per-page="perPage">
-
+      :current-page="currentPage"
+      :per-page="perPage"
+    >
       <div slot="table-busy" class="text-center text-primary my-2">
         <b-spinner type="border" class="align-middle" small></b-spinner>
         <span style="margin-left:10px;">Loading...</span>
       </div>
 
-      <template v-for="formatter in formatters" v-slot:[`cell(${formatter.field})`]="data">
-        <template>
-          {{ data.value | dynamicFilter($options.filters[formatter.as]) }}
-        </template>
+      <template
+        v-for="formatter in formatters"
+        v-slot:[`cell(${formatter.field})`]="data"
+      >
+        <template>{{ data.value | dynamicFilter($options.filters[formatter.as]) }}</template>
       </template>
 
       <template v-slot:cell(details)="row">
@@ -52,82 +52,89 @@
 
       <template v-slot:row-details="row">
         <b-card>
-          <h6>Parameters:</h6>
-          <li class="list-inline-item" style="vertical-align:top; margin:8px; width: 190px;" v-for="(value, key) in row.item.parameters" :key="key">
-            <b>#{{ value.id }}</b> <b-badge v-if="value.required" variant="primary">required</b-badge> <br>
-            name: {{ value.name}} <br>
-            context: {{ value.context }} <br>
-            type: {{ value.type }} <br>
-            extra: {{ value.metaDataTuplesJson === "{}" ? "-" : value.metaDataTuplesJson }}
-          </li>
+          <h6>Response data:</h6>
+          <dl class="dl-horizontal">
+            <dt>Created @:</dt>
+            <dd>{{row.item.createdAt | date}}</dd>
+            <dt>HTTP status:</dt>
+            <dd>{{row.item.statusCode}}</dd>
+            <dt>HTTP status description:</dt>
+            <dd>{{row.item.statusDescription}}</dd>
+            <dt>Exception:</dt>
+            <dd>{{row.item.failureReason === null ? '-' : row.item.failureReason}}</dd>
+          </dl>
+          <div class="row">
+            <div class="col" style="margin-bottom:20px">
+              <h6>Body:</h6>
+              <div class="json" :inner-html.prop="row.item.body | json"></div>
+            </div>
+          </div>
 
           <hr>
+          <h6>Request data:</h6>
 
-          <h6>Responses:</h6>
-          <li class="list-inline-item" style="margin:8px; width: 190px;" v-for="(value, key) in row.item.responses" :key="key">
-            <b>#{{ value.id }}</b> <br>
-            http status: {{ value.statusCode }} <br>
-            description: {{ value.description }}
-          </li>
+          <ProjectDetailRequest :item="row.item.request"></ProjectDetailRequest>
         </b-card>
       </template>
 
-      <template slot="empty">
-        No data present.
-      </template>      
+      <template slot="empty">No data present.</template>
     </b-table>
 
-    <b-pagination v-if="displayPagination" size="sm" style="float:right;" v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="list"></b-pagination>
+    <b-pagination
+      v-if="displayPagination"
+      size="sm"
+      style="float:right;"
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage"
+      aria-controls="list"
+    ></b-pagination>
   </div>
 </template>
 
 <script>
-  export default {
-    props: ['items', 'fields', 'formatters', 'displayFilter'],
-    data() {
-       return {
-         filter: null,
-         perPage: 15,
-         currentPage: 1,
-         totalRows: null
-       }
+import ProjectDetailRequest from "./projects-detail-request";
+
+export default {
+  components: { ProjectDetailRequest },
+  props: ["project", "fields", "formatters"],
+  data() {
+    return {
+      isBusy: false,
+      filter: null,
+      perPage: 15,
+      currentPage: 1
+    };
+  },
+  methods: {
+    restProvider(context, callback) {
+      return this.$store
+        .dispatch("findProjectResponses", {
+          project_id: this.project.id,
+          context: context
+        })
+        .then(() => {
+          return this.$store.getters.projects.current_responses.visible;
+        })
+        .catch(() => {
+          return this.$store.getters.projects.current_responses.visible;
+        });
     },
-    methods: {
-      selectRow(item) {
-        if (item.length == 0) { 
-          return; 
-        }
-        this.$emit('select-item', item[0]);
-      },
-      rowClicked(item) {
-        this.$emit('click-item');
-      },
-      linkGen(pageNum) {
-        return pageNum === 1 ? '?' : `?page=${pageNum}`
-      },
-      onFiltered(filteredItems) {
-        this.totalRows = filteredItems.length
-        this.currentPage = 1
-      }      
+    linkGen(pageNum) {
+      return pageNum === 1 ? "?" : `?page=${pageNum}`;
     },
-    computed: {
-      rows() {
-        return (this.items === null ? 0 : (this.totalRows !== null ? this.totalRows : this.items.length))
-      },
-      isBusy() {
-        return this.items === null
-      },
-      displayPagination() {
-        if (this.items === null) {
-          return false;
-        } else {
-          return this.rows > this.perPage;
-        }
-      },      
+    onFiltered(filteredItems) {
+      this.currentPage = 1;
+    }
+  },
+  computed: {
+    totalRows() {
+      return this.$store.getters.projects.current_responses.count;
     },
-    mounted() {
-      this.totalRows = (this.items === null ? 0 : this.items.length);
-    },    
-    created: function() { }
-  }
+    displayPagination() {
+      return this.totalRows > this.perPage;
+    }
+  },
+  created: function() {}
+};
 </script>

@@ -84,13 +84,17 @@ public class FuzProjectController {
     }
 
     @RequestMapping(path = "{id}/responses", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findResponsesById(@PathVariable(name = "id") Long id) {
-        return ResponseEntity.ok(FuzResponseMapper.toDtos(responseService.findByProjectId(id)));
+    public @ResponseBody ResponseEntity<?> findResponsesById(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(FuzResponseMapper
+                .toDtos(responseService.findByProjectIdAndPath(id, toLike(path), toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/responses/count", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> countResponsesById(@PathVariable(name = "id") Long id) {
-        return ResponseEntity.ok(responseService.countByProjectId(id));
+    public @ResponseBody ResponseEntity<?> countResponsesById(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(responseService.countByProjectIdAndByPath(id, toLike(path)));
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -133,9 +137,10 @@ public class FuzProjectController {
 
     private String toLike(String query) {
         if (StringUtils.isAllBlank(query)) {
-            query = "%";
+            return "%";
+        } else {
+            return String.format("%%%s%%", query);
         }
-        return query;
     }
 
     private PageRequest toPageRequest(int curPage, int perPage) {

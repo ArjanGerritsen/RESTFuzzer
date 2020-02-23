@@ -78,14 +78,12 @@
           ></ProjectsDetailRequests>
         </b-card-text>
       </b-tab>
-      <b-tab :disabled="!responsesPresent" title="Http responses">
+      <b-tab :disabled="!responsesPresent" :title="responsesTitle">
         <b-card-text v-if="responsesPresent">
           <ProjectsDetailResponses
-            @select-item="selectAction"
+            :project="this.project"
             :fields="responseFields"
-            :items="responses"
             :formatters="responseFormatters"
-            :displayFilter="true"
           ></ProjectsDetailResponses>
         </b-card-text>
       </b-tab>
@@ -128,18 +126,10 @@ export default {
       responseFormatters: [],
       responseFields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
-        { key: "request.path" },
-        {
-          key: "request.httpMethod",
-          label: "Http method",
-          thStyle: "width: 80px;"
-        },
-        { key: "statusCode", label: "Http status", thStyle: "width: 80px;" },
-        {
-          key: "statusDescription",
-          label: "Http description",
-          thStyle: "width: 110px;"
-        }
+        { key: "request.path", label: "Path" },
+        { key: "request.httpMethod", label: "HTTP method", thStyle: "width: 110px;" },
+        { key: "statusCode", label: "HTTP status", thStyle: "width: 110px;" },
+        { key: "details", label: "Details", thStyle: "width: 60px;" }
       ],
       startedRefresh: null,
       timeoutRefresh: null
@@ -178,29 +168,39 @@ export default {
     requests() {
       return this.$store.getters.projects.current_requests;
     },
-    responses() {
-      return this.$store.getters.projects.current_responses;
-    },
     requestsPresent() {
       return this.requestsCount > 0;
     },
     requestsTitle() {
-      let title = 'Http Requests';
+      let title = 'Requests';
       if (this.requestsCount > 0) {
         title += ` [${this.requestsCount}]`;
       }
       return title;
     },
-    responsesPresent() {
-      const count = this.$store.getters.projects.current.responsesCount;
-      return (count !== null && count > 0);
-    }, 
-    canExecuteTask() {
-      return true;
-    },
     requestsCount() {
       const count = this.$store.getters.projects.current.requestsCount;
       return (count !== null && count > 0) ? count : 0;
+    },    
+    responses() {
+      return this.$store.getters.projects.current_responses;
+    },
+    responsesPresent() {
+      return this.responsesCount > 0;
+    },
+    responsesTitle() {
+      let title = 'Responses';
+      if (this.responsesCount > 0) {
+        title += ` [${this.responsesCount}]`;
+      }
+      return title;
+    },
+    responsesCount() {
+      const count = this.$store.getters.projects.current.responsesCount;
+      return (count !== null && count > 0) ? count : 0;
+    },     
+    canExecuteTask() {
+      return true;
     }
   },
   created: function() {},

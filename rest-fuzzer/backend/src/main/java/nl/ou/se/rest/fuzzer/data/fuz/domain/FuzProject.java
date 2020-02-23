@@ -23,29 +23,6 @@ import org.hibernate.annotations.SortNatural;
 import nl.ou.se.rest.fuzzer.data.rmd.domain.RmdSut;
 
 @Entity(name = "fuz_projects")
-//@NamedEntityGraph(
-//	name = Constants.ENTITY_GRAPH_FUZ_PROJECTS_ALL_RELATIONS, 
-//	attributeNodes = {
-//		@NamedAttributeNode(value = "sut", subgraph = "sut")
-////		@NamedAttributeNode(value = "requests")
-////		@NamedAttributeNode(value = "responses")
-//	},
-//	subgraphs = {
-//		@NamedSubgraph(
-//			name = "sut",
-//			attributeNodes = {
-//				@NamedAttributeNode(value = "actions", subgraph = "sut.actions") 
-//			}
-//		), 	
-//		@NamedSubgraph(
-//			name = "sut.actions",
-//			attributeNodes = {
-//		        @NamedAttributeNode(value = "parameters"),
-//		        @NamedAttributeNode(value = "responses")						        
-//		    }
-//		)
-//	}
-//)
 public class FuzProject implements Comparable<FuzProject> {
 
     // variables

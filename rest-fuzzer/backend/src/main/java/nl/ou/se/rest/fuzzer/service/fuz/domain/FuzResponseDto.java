@@ -11,7 +11,7 @@ public class FuzResponseDto {
     private String body;
     private String failureReason;
     private FuzRequestDto request;
-    private LocalDateTime recievedAt;
+    private LocalDateTime createdAt;
 
     // getters and setters
     public Long getId() {
@@ -62,11 +62,11 @@ public class FuzResponseDto {
         this.request = request;
     }
 
-    public LocalDateTime getRecievedAt() {
-        return recievedAt;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setRecievedAt(LocalDateTime recievedAt) {
-        this.recievedAt = recievedAt;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

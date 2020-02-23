@@ -15,7 +15,6 @@ public class FuzRequestDto {
     private String pathParametersJson;
     private String queryParametersJson;
     private LocalDateTime createdAt;
-    private LocalDateTime executedAt;
 
     // getters and setters
     public Long getId() {
@@ -80,13 +79,5 @@ public class FuzRequestDto {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getExecutedAt() {
-        return executedAt;
-    }
-
-    public void setExecutedAt(LocalDateTime executedAt) {
-        this.executedAt = executedAt;
     }
 }
