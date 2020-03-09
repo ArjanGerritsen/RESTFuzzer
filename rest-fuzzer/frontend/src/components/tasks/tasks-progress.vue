@@ -11,7 +11,7 @@
             id="progress-tasks"
             class="table-sm"
             show-empty
-            :busy="this.tasksProgress === null"
+            :busy="tasksProgress === null"
             striped
             :items="tasksProgress"
             :fields="fields"

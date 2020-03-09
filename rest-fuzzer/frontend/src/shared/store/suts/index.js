@@ -4,15 +4,19 @@ const suts = {
     state: {
         suts: {
             all: null,
-            current: null
+            current: null,
+            currentQueuedOrRunningTasksCount: null
         }
     },
     mutations: {
-        suts_set(state, payload) {
+        set_suts(state, payload) {
             state.suts.all = payload.suts
         },
-        sut_set(state, payload) {
+        set_sut(state, payload) {
             state.suts.current = payload.sut
+        },
+        set_sut_running_or_queued_tasks_count(state, payload) {
+            state.suts.currentQueuedOrRunningTasksCount = payload.count
         }
     },
     actions: {
@@ -21,28 +25,43 @@ const suts = {
                 axios
                     .get("/rest/suts")
                     .then(response => {
-                        commit("suts_set", { suts: response.data });
+                        commit("set_suts", { suts: response.data });
                         resolve();
                     })
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: "Couldn't retrieve suts", err: error } });
-                        commit("suts_set", { suts: [] });
+                        commit("set_suts", { suts: [] });
                         reject(error);
                     })
             })
         },
-        findSut({ commit }, id) {
+        findSut({ commit, dispatch }, id) {
             return new Promise((resolve, reject) => {
-                commit("sut_set", { sut: null });
                 axios
                     .get(`/rest/suts/${id}`)
                     .then(response => {
-                        commit("sut_set", { sut: response.data });
+                        commit("set_sut", { sut: response.data });
+                        dispatch("countSutRunningOrQueuedTasks", id);
                         resolve();
                     })
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut with id ${id}`, err: error } });
-                        commit("sut_set", { sut: null });
+                        commit("set_sut", { sut: null });
+                        reject(error);
+                    })
+            })
+        },
+        countSutRunningOrQueuedTasks({ commit }, id)  {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/rest/tasks/running_or_queued/suts/${id}/count`)
+                    .then(response => {
+                        commit("set_sut_running_or_queued_tasks_count", { count: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve tasks count (running or queued) for sut with id ${id}`, err: error } });
+                        commit("set_sut_running_or_queued_tasks_count", { count: null });
                         reject(error);
                     })
             })
@@ -85,11 +104,11 @@ const suts = {
             let sutsForPullDown = []
 
             if (state.suts.all !== null) {
-            	sutsForPullDown = state.suts.all.map(
+            	sutsForPullDown = state.suts.all.filter(sut => sut.title !== null).map(
                     sut => {
                         const newSut = {};
                         newSut["value"] = sut.id;
-                        newSut["text"] = `#${sut.id} ${sut.title === null ? '' : '- ' + sut.title}`;
+                        newSut["text"] = `${sut.title} (${sut.location})`;
                         return newSut;
                     }
                 );

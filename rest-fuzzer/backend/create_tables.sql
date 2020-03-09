@@ -1,4 +1,4 @@
-drop table tasks;
+--------------------------- creating all --------------------
 
 CREATE TABLE IF NOT EXISTS tasks (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -10,13 +10,6 @@ CREATE TABLE IF NOT EXISTS tasks (
 ) ENGINE=INNODB;
 
 
-
-
-
-drop table rmd_responses;
-drop table rmd_parameters;
-drop table rmd_actions;
-drop table rmd_suts;
 
 CREATE TABLE IF NOT EXISTS rmd_suts (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,7 +29,7 @@ CREATE TABLE IF NOT EXISTS rmd_actions (
   sut_id INTEGER
 ) ENGINE=INNODB;
 
-ALTER TABLE rmd_actions ADD CONSTRAINT rmd_actions_fk_sut FOREIGN KEY (sut_id) REFERENCES rmd_suts(id); 
+CREATE INDEX idx_rmd_actions_sut_id ON rmd_actions (sut_id); 
 
 CREATE TABLE IF NOT EXISTS rmd_parameters (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,7 +43,8 @@ CREATE TABLE IF NOT EXISTS rmd_parameters (
   action_id INT
 ) ENGINE=INNODB;
 
-ALTER TABLE rmd_parameters ADD CONSTRAINT rmd_actions_fk_action FOREIGN KEY (action_id) REFERENCES rmd_actions(id); 
+ 
+CREATE INDEX idx_rmd_parameters_action_id ON rmd_parameters (action_id);
 
 CREATE TABLE IF NOT EXISTS rmd_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,13 +53,8 @@ CREATE TABLE IF NOT EXISTS rmd_responses (
   action_id INT
 ) ENGINE=INNODB;
 
-ALTER TABLE rmd_responses ADD CONSTRAINT rmd_responses_fk_action FOREIGN KEY (action_id) REFERENCES rmd_actions(id);
 
-
-
-drop table fuz_responses;
-drop table fuz_requests;
-drop table fuz_projects;
+CREATE INDEX idx_rmd_responses_action_id ON rmd_responses (action_id);
 
 
 CREATE TABLE IF NOT EXISTS fuz_projects (
@@ -76,21 +65,22 @@ CREATE TABLE IF NOT EXISTS fuz_projects (
   created_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
-ALTER TABLE fuz_tasks ADD CONSTRAINT fuz_projects_fk_sut FOREIGN KEY (sut_id) REFERENCES rmd_suts(id);
+CREATE INDEX idx_fuz_projects_sut_id ON fuz_projects (sut_id);
 
 CREATE TABLE IF NOT EXISTS fuz_requests (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  project_id INT,
   path VARCHAR(255) NOT NULL,
   http_method ENUM('GET', 'POST', 'PATCH', 'PUT', 'DELETE') NOT NULL,
   formdata_parameters_json TEXT,
   header_parameters_json TEXT,
   path_parameters_json TEXT,
   query_parameters_json TEXT,
+  project_id INT,
   created_at TIMESTAMP NULL  
 ) ENGINE=INNODB;
 
-ALTER TABLE fuz_requests ADD CONSTRAINT fuz_requests_fk_task FOREIGN KEY (project_id) REFERENCES fuz_projects(id);
+CREATE INDEX idx_fuz_requests_project_id ON fuz_requests (project_id);
+
 
 CREATE TABLE IF NOT EXISTS fuz_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -103,8 +93,21 @@ CREATE TABLE IF NOT EXISTS fuz_responses (
   created_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
-ALTER TABLE fuz_responses ADD CONSTRAINT fuz_responses_fk_project FOREIGN KEY (project_id) REFERENCES fuz_projects(id);
-ALTER TABLE fuz_responses ADD CONSTRAINT fuz_responses_fk_request FOREIGN KEY (request_id) REFERENCES fuz_requests(id);
+CREATE INDEX idx_fuz_responses_project_id ON fuz_responses (project_id);
+CREATE INDEX idx_fuz_responses_request_id ON fuz_responses (request_id);
+
+--------------------------- dropping all --------------------
+
+drop table fuz_responses;
+drop table fuz_requests;
+drop table fuz_projects;
+
+drop table rmd_responses;
+drop table rmd_parameters;
+drop table rmd_actions;
+drop table rmd_suts;
+
+drop table tasks;
 
 --------------------------- other ---------------------------
 

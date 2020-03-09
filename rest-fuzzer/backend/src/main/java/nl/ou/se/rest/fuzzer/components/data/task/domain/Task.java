@@ -20,6 +20,9 @@ import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 public class Task {
 
     // variables
+    public static final String META_DATA_SUT_ID = "sut_id";
+    public static final String META_DATA_PROJECT_ID = "project_id";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,6 +57,22 @@ public class Task {
 
     public void setMetaDataTuples(Map<String, Object> metaDataTuples) {
         this.metaDataTuplesJson = JsonUtil.mapToString(metaDataTuples);
+    }
+
+    public boolean isForSut(Long sutId) {
+        if (this.getMetaDataTuples().containsKey(META_DATA_SUT_ID)) {
+            Integer value = (Integer) this.getMetaDataTuples().get(META_DATA_SUT_ID);
+            return value.equals(sutId.intValue());
+        }
+        return false;
+    }
+
+    public boolean isForProject(Long projectId) {
+        if (this.getMetaDataTuples().containsKey(META_DATA_PROJECT_ID)) {
+            Integer value = (Integer) this.getMetaDataTuples().get(META_DATA_PROJECT_ID);
+            return value.equals(projectId.intValue());
+        }
+        return false;
     }
 
     // getters and setters

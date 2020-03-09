@@ -18,7 +18,7 @@
             <div class="col">
               <div class="button-group-left">
                 <b-button
-                  :disabled="extractTaskDisabled()"
+                  :disabled="tasksQueuedOrRunning"
                   size="sm"
                   type="submit"
                   variant="primary"
@@ -63,10 +63,9 @@
           </div>
         </b-card-text>
       </b-tab>
-      <b-tab :disabled="this.sut.actions.length === 0" title="REST model description">
+      <b-tab :disabled="this.sut.actions.length === 0" :title="actionsTitle">
         <b-card-text>
           <SutsDetailActions
-            @select-item="selectAction"
             :fields="fields"
             :items="sut.actions"
             :formatters="formatters"
@@ -110,27 +109,21 @@ export default {
     };
   },
   methods: {
-    selectAction(value) {
-      console.log("value: " + value);
-    },
-    extractTaskDisabled() {
-      return this.sut.actions.length !== 0 || this.startedRefresh !== null;
-    },
     refreshData() {
-      if (
-        this.sut.actions.length !== 0 ||
-        new Date() - this.startedRefresh > 20000
-      ) {
+      if (!this.tasksQueuedOrRunning) {
         this.startedRefresh = null;
         clearTimeout(this.refreshTimeout);
+        this.$store.dispatch("findSut", this.sut.id);
         return;
-      }
+      }        
 
-      this.timeoutRefresh = setTimeout(this.refreshData, 1000);
-      this.$store.dispatch("findSut", this.sut.id).catch(error => {
-        this.startedRefresh = null;
-        clearTimeout(this.timeoutRefresh);
-      });
+      this.timeoutRefresh = setTimeout(this.refreshData, 500);
+      this.$store
+        .dispatch("countSutRunningOrQueuedTasks", this.sut.id)
+        .catch(error => {
+          this.startedRefresh = null;
+          clearTimeout(this.timeoutRefresh);
+        });
     },
     addExtractorTask() {
       this.$store
@@ -139,8 +132,12 @@ export default {
           metaDataTuples: { sut_id: this.sut.id }
         })
         .then(() => {
-          this.startedRefresh = new Date();
-          this.refreshData();
+          this.$store
+            .dispatch("countSutRunningOrQueuedTasks", this.sut.id)
+            .then(() => {
+              this.startedRefresh = new Date();
+              this.refreshData();
+            });
         });
     }
   },
@@ -148,8 +145,18 @@ export default {
     sut() {
       return this.$store.getters.suts.current;
     },
-    canExecuteTask() {
-      return this.sut.actions.length !== 0;
+    tasksQueuedOrRunning() {
+      return (
+        this.$store.getters.suts.currentQueuedOrRunningTasksCount !== null &&
+        this.$store.getters.suts.currentQueuedOrRunningTasksCount > 0
+      );
+    },
+    actionsTitle() {
+      let title = "REST model description";
+      if (this.sut.actions.length > 0) {
+        title += ` [${this.sut.actions.length}]`;
+      }
+      return title;
     }
   },
   created: function() {},

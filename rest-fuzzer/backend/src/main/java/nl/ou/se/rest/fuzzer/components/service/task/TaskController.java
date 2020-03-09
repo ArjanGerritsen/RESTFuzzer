@@ -53,6 +53,22 @@ public class TaskController {
         return TaskMapper.toDtos(tasks);
     }
 
+    @RequestMapping(path = "running_or_queued/suts/{sut_id}/count", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> countRunningForSut(@PathVariable(value = "sut_id") Long sutId) {
+        List<Task> tasks = taskSerivce.findQueuedAndRunning();
+        Long count = tasks.stream().filter(t ->  t.isForSut(sutId)).count();
+
+        return ResponseEntity.ok().body(count);
+    }
+
+    @RequestMapping(path = "running_or_queued/projects/{project_id}/count", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> countRunningForProject(@PathVariable(value = "project_id") Long projectId) {
+        List<Task> tasks = taskSerivce.findQueuedAndRunning();
+        Long count = tasks.stream().filter(t ->  t.isForProject(projectId)).count();
+
+        return ResponseEntity.ok().body(count);
+    }
+
     @RequestMapping(path = "/{name}/start", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<?> addExtractorTask(@PathVariable(value = "name") String name, @RequestBody Map<String, Object> metaDataTuples) {
         Task task = null;
