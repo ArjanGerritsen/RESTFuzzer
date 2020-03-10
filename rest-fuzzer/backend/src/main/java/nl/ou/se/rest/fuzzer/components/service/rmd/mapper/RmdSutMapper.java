@@ -24,9 +24,6 @@ public abstract class RmdSutMapper {
     public static RmdSutDto toDto(RmdSut sut, boolean mapRelations) {
         RmdSutDto dto = new RmdSutDto();
         BeanUtils.copyProperties(sut, dto);
-        if (mapRelations) {
-            dto.setActions(RmdActionMapper.toDtos(sut.getActions()));
-        }
         return dto;
     }
 }

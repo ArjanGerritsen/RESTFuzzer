@@ -2,19 +2,17 @@
   <div>
     <b-row style="margin-bottom:5px;">
       <b-col lg="6" class="my-1">
-        <div v-if="displayFilter">
-          <b-input-group size="sm">
-            <b-form-input
-              v-model="filter"
-              type="search"
-              id="filterInput"
-              placeholder="type to filter table"
-            ></b-form-input>
-            <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''">clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </div>
+        <b-input-group size="sm">
+          <b-form-input
+            v-model="filter"
+            type="search"
+            id="filterInput"
+            placeholder="type to filter table"
+          ></b-form-input>
+          <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">clear</b-button>
+          </b-input-group-append>
+        </b-input-group>
       </b-col>      
       <b-col lg="6" class="my-1">
       </b-col>
@@ -25,7 +23,7 @@
       show-empty
       :busy="isBusy"
       striped 
-      :items="items"
+      :items="restProvider"
       :fields="fields"
       :borderless="true"
       :filter="filter"
@@ -82,52 +80,93 @@
 </template>
 
 <script>
-  export default {
-    props: ['items', 'fields', 'formatters', 'displayFilter'],
-    data() {
-       return {
-         filter: null,
-         perPage: 15,
-         currentPage: 1,
-         totalRows: null
-       }
+export default {
+  props: ["sut", "fields", "formatters"],
+  data() {
+    return {
+      isBusy: false,
+      filter: null,
+      perPage: 15,
+      currentPage: 1
+    };
+  },
+  methods: {
+    restProvider(context, callback) {
+      return this.$store
+        .dispatch("findSutActions", {
+          sut_id: this.sut.id,
+          context: context
+        })
+        .then(() => {
+          return this.$store.getters.sut.current_actions.list;
+        })
+        .catch(() => {
+          return [];
+        });
     },
-    methods: {
-      selectRow(item) {
-        if (item.length == 0) { 
-          return; 
-        }
-        this.$emit('select-item', item[0]);
-      },
-      rowClicked(item) {
-        this.$emit('click-item');
-      },
-      linkGen(pageNum) {
-        return pageNum === 1 ? '?' : `?page=${pageNum}`
-      },
-      onFiltered(filteredItems) {
-        this.totalRows = filteredItems.length
-        this.currentPage = 1
-      }      
+    linkGen(pageNum) {
+      return pageNum === 1 ? "?" : `?page=${pageNum}`;
     },
-    computed: {
-      rows() {
-        return (this.items === null ? 0 : (this.totalRows !== null ? this.totalRows : this.items.length))
-      },
-      isBusy() {
-        return this.items === null
-      },
-      displayPagination() {
-        if (this.items === null) {
-          return false;
-        } else {
-          return this.rows > this.perPage;
-        }
-      },      
+    onFiltered(filteredItems) {
+      this.currentPage = 1;
+    }
+  },
+  computed: {
+    totalRows() {
+      return this.$store.getters.suts.current_actions.count;
     },
-    mounted() {
-      this.totalRows = (this.items === null ? 0 : this.items.length);
-    },    
-    created: function() { }
-  }
+    displayPagination() {
+      return this.totalRows > this.perPage;
+    }
+  },
+  created: function() {}
+};
+  // export default {
+  //   props: ['items', 'fields', 'formatters', 'displayFilter'],
+  //   data() {
+  //      return {
+  //        filter: null,
+  //        perPage: 15,
+  //        currentPage: 1,
+  //        totalRows: null
+  //      }
+  //   },
+  //   methods: {
+  //     selectRow(item) {
+  //       if (item.length == 0) { 
+  //         return; 
+  //       }
+  //       this.$emit('select-item', item[0]);
+  //     },
+  //     rowClicked(item) {
+  //       this.$emit('click-item');
+  //     },
+  //     linkGen(pageNum) {
+  //       return pageNum === 1 ? '?' : `?page=${pageNum}`
+  //     },
+  //     onFiltered(filteredItems) {
+  //       this.totalRows = filteredItems.length
+  //       this.currentPage = 1
+  //     }      
+  //   },
+  //   computed: {
+  //     rows() {
+  //       return (this.items === null ? 0 : (this.totalRows !== null ? this.totalRows : this.items.length))
+  //     },
+  //     isBusy() {
+  //       return this.items === null
+  //     },
+  //     displayPagination() {
+  //       if (this.items === null) {
+  //         return false;
+  //       } else {
+  //         return this.rows > this.perPage;
+  //       }
+  //     },      
+  //   },
+  //   mounted() {
+  //     this.totalRows = (this.items === null ? 0 : this.items.length);
+  //   },    
+  //   created: function() { }
+  // }
 </script>

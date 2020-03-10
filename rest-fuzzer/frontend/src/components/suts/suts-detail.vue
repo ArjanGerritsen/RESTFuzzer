@@ -63,13 +63,12 @@
           </div>
         </b-card-text>
       </b-tab>
-      <b-tab :disabled="this.sut.actions.length === 0" :title="actionsTitle">
+      <b-tab :disabled="this.actionsCount === 0" :title="actionsTitle">
         <b-card-text>
           <SutsDetailActions
+            :sut="sut"
             :fields="fields"
-            :items="sut.actions"
             :formatters="formatters"
-            :displayFilter="true"
           ></SutsDetailActions>
         </b-card-text>
       </b-tab>
@@ -147,17 +146,21 @@ export default {
     },
     tasksQueuedOrRunning() {
       return (
-        this.$store.getters.suts.currentQueuedOrRunningTasksCount !== null &&
-        this.$store.getters.suts.currentQueuedOrRunningTasksCount > 0
+        this.$store.getters.suts.current_queued_or_running_tasks_count !== null &&
+        this.$store.getters.suts.current_queued_or_running_tasks_count > 0
       );
     },
     actionsTitle() {
-      let title = "REST model description";
-      if (this.sut.actions.length > 0) {
-        title += ` [${this.sut.actions.length}]`;
+      let title = 'REST model description';
+      if (this.actionsCount > 0) {
+        title += ` [${this.actionsCount}]`;
       }
       return title;
-    }
+    },
+    actionsCount() {
+      const count = this.$store.getters.suts.current_actions.total;
+      return (count !== null && count > 0) ? count : 0;
+    },
   },
   created: function() {},
   destroyed: function() {

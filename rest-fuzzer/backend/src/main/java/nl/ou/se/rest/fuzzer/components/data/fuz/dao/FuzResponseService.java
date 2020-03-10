@@ -10,9 +10,9 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
 
 public interface FuzResponseService extends CrudRepository<FuzResponse, Long> {
 
-    @Query(value = "SELECT COUNT(r) FROM fuz_responses r WHERE r.project.id = :project_id AND r.request.path LIKE :path")
-    long countByProjectIdAndByPath(Long project_id, String path);
+    @Query(value = "SELECT COUNT(r) FROM fuz_responses r WHERE r.project.id = :projectId AND r.request.path LIKE :path")
+    long countByProjectIdAndPath(Long projectId, String path);
 
-    @Query(value = "SELECT r FROM fuz_responses r WHERE r.project.id = :project_id AND r.request.path LIKE :path")
-    List<FuzResponse> findByProjectIdAndPath(Long project_id, String path, Pageable pageable);
+    @Query(value = "SELECT r FROM fuz_responses r WHERE r.project.id = :projectId AND r.request.path LIKE :path")
+    List<FuzResponse> findByProjectIdAndPath(Long projectId, String path, Pageable pageable);
 }

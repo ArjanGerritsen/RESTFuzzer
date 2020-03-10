@@ -4,11 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +31,7 @@ import nl.ou.se.rest.fuzzer.components.service.fuz.domain.FuzProjectDto;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzProjectMapper;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzRequestMapper;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzResponseMapper;
+import nl.ou.se.rest.fuzzer.components.shared.QueryUtil;
 
 @RestController()
 @RequestMapping("/rest/projects")
@@ -74,13 +73,13 @@ public class FuzProjectController {
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
             @RequestParam(name = "filter", required = false) String path) {
         return ResponseEntity.ok(FuzRequestMapper
-                .toDtos(requestService.findByProjectIdAndPath(id, toLike(path), toPageRequest(curPage, perPage))));
+                .toDtos(requestService.findByProjectIdAndPath(id, QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/requests/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> countRequestsById(@PathVariable(name = "id") Long id,
             @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(requestService.countByProjectIdAndByPath(id, toLike(path)));
+        return ResponseEntity.ok(requestService.countByProjectIdAndPath(id, QueryUtil.toLike(path)));
     }
 
     @RequestMapping(path = "{id}/responses", method = RequestMethod.GET)
@@ -88,13 +87,13 @@ public class FuzProjectController {
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
             @RequestParam(name = "filter", required = false) String path) {
         return ResponseEntity.ok(FuzResponseMapper
-                .toDtos(responseService.findByProjectIdAndPath(id, toLike(path), toPageRequest(curPage, perPage))));
+                .toDtos(responseService.findByProjectIdAndPath(id, QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/responses/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> countResponsesById(@PathVariable(name = "id") Long id,
             @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(responseService.countByProjectIdAndByPath(id, toLike(path)));
+        return ResponseEntity.ok(responseService.countByProjectIdAndPath(id, QueryUtil.toLike(path)));
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -133,17 +132,5 @@ public class FuzProjectController {
         }
         projectService.deleteById(id);
         return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
-    }
-
-    private String toLike(String query) {
-        if (StringUtils.isAllBlank(query)) {
-            return "%";
-        } else {
-            return String.format("%%%s%%", query);
-        }
-    }
-
-    private PageRequest toPageRequest(int curPage, int perPage) {
-        return PageRequest.of(curPage - 1, perPage);
     }
 }

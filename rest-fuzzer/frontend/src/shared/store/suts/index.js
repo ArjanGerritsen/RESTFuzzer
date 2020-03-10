@@ -1,11 +1,32 @@
 import axios from "axios";
 
+function getCountActions({ commit }, data) {
+    return new Promise((resolve, reject) => {
+        let queryParams = '';
+        if (data.context && data.context.filter !== null) { queryParams += `?filter=${data.context.filter}`; }
+        axios
+            .get(`/rest/suts/${data.sut_id}/actions/count${queryParams}`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut action count for sut with id ${data.sut_id}`, err: error } });
+                reject(error);
+            })
+    });
+}
+
 const suts = {
     state: {
         suts: {
             all: null,
             current: null,
-            currentQueuedOrRunningTasksCount: null
+            current_queued_or_running_tasks_count: null,
+            current_actions: {
+                total: null,
+                count: null,
+                list: null
+            }
         }
     },
     mutations: {
@@ -16,7 +37,16 @@ const suts = {
             state.suts.current = payload.sut
         },
         set_sut_running_or_queued_tasks_count(state, payload) {
-            state.suts.currentQueuedOrRunningTasksCount = payload.count
+            state.suts.current_queued_or_running_tasks_count = payload.count
+        },
+        set_sut_actions_total(state, payload) {
+            state.suts.current_actions.total = payload.total
+        },
+        set_sut_actions_count(state, payload) {
+            state.suts.current_actions.count = payload.count
+        },
+        set_sut_actions_list(state, payload) {
+            state.suts.current_actions.list = payload.list
         }
     },
     actions: {
@@ -41,7 +71,7 @@ const suts = {
                     .get(`/rest/suts/${id}`)
                     .then(response => {
                         commit("set_sut", { sut: response.data });
-                        dispatch("countSutRunningOrQueuedTasks", id);
+                        dispatch("countAllSutActions", { sut_id: id });
                         resolve();
                     })
                     .catch(error => {
@@ -51,7 +81,37 @@ const suts = {
                     })
             })
         },
-        countSutRunningOrQueuedTasks({ commit }, id)  {
+        findSutActions({ commit, dispatch }, data) {
+            return new Promise((resolve, reject) => {
+                let queryParams = `?curPage=${data.context.currentPage}&perPage=${data.context.perPage}`;
+                if (data.context.filter !== null) { queryParams += `&filter=${data.context.filter}`; }
+                axios
+                    .get(`/rest/suts/${data.sut_id}/actions${queryParams}`)
+                    .then(response => {
+                        commit("set_sut_actions_list", { actions: response.data });
+                        dispatch("countSutActions", data);
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("set_sut_actions_list", { actions: null });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut actions for sut with id ${data.sut_id}`, err: error } });
+                        reject(error);
+                    })
+            })
+        },
+        countAllSutActions({ commit }, data) {
+            getCountActions({ commit }, data)
+                .then(total => {
+                    commit("set_sut_actions_total", { total: total });
+                });
+        },
+        countSutActions({ commit }, data) {
+            getCountActions({ commit }, data)
+                .then(count => {
+                    commit("set_sut_actions_count", { counnt: count });
+                });
+        },
+        countSutRunningOrQueuedTasks({ commit }, id) {
             return new Promise((resolve, reject) => {
                 axios
                     .get(`/rest/tasks/running_or_queued/suts/${id}/count`)
@@ -67,7 +127,7 @@ const suts = {
             })
         },
         addSut({ commit }, sut) {
-            return new Promise((resolve, reject) => {               
+            return new Promise((resolve, reject) => {
                 axios
                     .post('/rest/suts', sut)
                     .then(response => {
@@ -86,7 +146,7 @@ const suts = {
                     .delete(`/rest/suts/${sut.id}`)
                     .then(response => {
                         commit("message_add", { message: { type: "info", title: "Delete system under test", text: `System under test ${response.data.location} deleted successful.` } });
-                        commit("sut_set", { sut: null });
+                        commit("set_sut", { sut: null });
                         resolve();
                     })
                     .catch(error => {
@@ -104,7 +164,7 @@ const suts = {
             let sutsForPullDown = []
 
             if (state.suts.all !== null) {
-            	sutsForPullDown = state.suts.all.filter(sut => sut.title !== null).map(
+                sutsForPullDown = state.suts.all.filter(sut => sut.title !== null).map(
                     sut => {
                         const newSut = {};
                         newSut["value"] = sut.id;
