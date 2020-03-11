@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.components.fuzzer.executor;
+package nl.ou.se.rest.fuzzer.components.fuzzer.util;
 
 import java.io.IOException;
 import java.net.URI;
@@ -102,8 +102,6 @@ public class ExecutorUtil {
 			String body = null;
             try {
                 body = EntityUtils.toString(response.getEntity());
-//                String responseContent = EntityUtils.toString(
-//                        response.getEntity(), StandardCharsets.UTF_8.name());
 
             } catch (ParseException | IOException e) {
                 // TODO Auto-generated catch block
@@ -154,10 +152,11 @@ public class ExecutorUtil {
 	private HttpUriRequest getPostRequest(FuzRequest request) {
 		HttpPost post = new HttpPost(getUri(request));
 
+		// TODO ...
 //		post.setHeader("Accept", "application/json");
 //		post.setHeader("Content-type", "application/json");
 
-		String json = "{\"id\":1,\"name\":\"John\"}";
+//		String json = "{\"id\":1,\"name\":\"John\"}";
 //		StringEntity entity = new StringEntity(json);
 //		post.setEntity(entity);
 

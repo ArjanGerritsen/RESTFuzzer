@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.components.fuzzer.executor;
+package nl.ou.se.rest.fuzzer.components.fuzzer;
 
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ import nl.ou.se.rest.fuzzer.components.task.TaskExecution;
 import nl.ou.se.rest.fuzzer.components.task.TaskExecutionBase;
 
 @Service
-public class ExecutorTask extends TaskExecutionBase implements TaskExecution {
+public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 
 	// variables
 	public static final String KEY_PROJECT_ID = "project_id";
@@ -23,9 +23,9 @@ public class ExecutorTask extends TaskExecutionBase implements TaskExecution {
 
 	@Autowired
 	private FuzProjectService projectService;
-
+	
 	@Autowired
-	private Executor executor;
+	private FuzzerBasic fuzzerBasic;
 
 	@Override
 	public void execute() {
@@ -38,23 +38,25 @@ public class ExecutorTask extends TaskExecutionBase implements TaskExecution {
 		}
 
 		Long projectId = Long.valueOf((Integer) this.getMetaDataValue(KEY_PROJECT_ID));
-		Optional<FuzProject> oProject = projectService.findByIdWithRelations(projectId);
+		Optional<FuzProject> oProject = projectService.findById(projectId);
 
 		if (!oProject.isPresent()) {
-			logger.warn(String.format(Constants.WARN_TASK_SUT_NOT_FOUND, this.getClass().getName(), projectId));
+			logger.warn(String.format(Constants.WARN_TASK_PROJECT_NOT_FOUND, this.getClass().getName(), projectId));
 			return;
 		}
 
 		FuzProject project = oProject.get();
 
-		executor.start(project);
-		
-		project.setResponses(executor.getResponses());
-		
+		switch (project.getType()) {
+		case BASIC_FUZZER:
+		    fuzzerBasic.start(project);
+			break;
+		default:
+			break;
+		}
+
 		projectService.save(project);
 
 		logger.info(String.format(Constants.INFO_TASK_STOP, this.getClass().getName()));
 	}
-
-
 }

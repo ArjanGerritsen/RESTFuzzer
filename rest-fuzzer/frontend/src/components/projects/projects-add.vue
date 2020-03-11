@@ -52,7 +52,12 @@ export default {
         	id: null
         }
       },
-      types: [{ value: "SIMPLE_FUZZER", text: "SimpleFuzzer" }]
+      types: [
+        { value: "BASIC_FUZZER", text: "Basic" },
+        { value: "MBT_FUZZER", text: "ModelBased" },
+        { value: "DICTIONARY_FUZZER", text: "Dictionary" },
+        { value: "MBT_DICTIONARY_FUZZER", text: "ModelBasedDictionary" }
+      ]
     };
   },
   methods: {

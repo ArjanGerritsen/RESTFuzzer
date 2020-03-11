@@ -3,6 +3,7 @@ package nl.ou.se.rest.fuzzer.components.data.fuz.factory;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
@@ -11,8 +12,9 @@ public class FuzRequestFactory {
 
 	private FuzRequest request;
 
-	public FuzRequestFactory create(String path, HttpMethod httpMethod) {
+	public FuzRequestFactory create(FuzProject project, String path, HttpMethod httpMethod) {
 		request = new FuzRequest();
+		request.setProject(project);
 		request.setPath(path);
 		request.setHttpMethod(httpMethod);
 		request.setCreatedAt(LocalDateTime.now());

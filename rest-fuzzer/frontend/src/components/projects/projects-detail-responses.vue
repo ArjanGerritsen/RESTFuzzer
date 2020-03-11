@@ -18,7 +18,7 @@
     </b-row>
 
     <b-table
-      id="responses"
+      id="project-responses"
       class="table-sm"
       show-empty
       striped
@@ -114,7 +114,7 @@ export default {
           context: context
         })
         .then(() => {
-          return this.$store.getters.project.responses.list;
+          return this.$store.getters.projects.current_responses.list;
         })
         .catch(() => {
           return [];
@@ -129,7 +129,7 @@ export default {
   },
   computed: {
     totalRows() {
-      return this.$store.getters.project.responses.count;
+      return this.$store.getters.projects.current_responses.count;
     },
     displayPagination() {
       return this.totalRows > this.perPage;

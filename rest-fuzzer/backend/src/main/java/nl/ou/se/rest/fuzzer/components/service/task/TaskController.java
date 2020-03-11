@@ -22,8 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.ou.se.rest.fuzzer.components.data.task.dao.TaskService;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.extractor.ExtractorTask;
-import nl.ou.se.rest.fuzzer.components.fuzzer.executor.ExecutorTask;
-import nl.ou.se.rest.fuzzer.components.fuzzer.generator.GeneratorTask;
+import nl.ou.se.rest.fuzzer.components.fuzzer.FuzzerTask;
 import nl.ou.se.rest.fuzzer.components.service.HttpResponseDto;
 
 @RestController()
@@ -34,8 +33,7 @@ public class TaskController {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
     private static final String EXTRACTOR = "extractor";
-    private static final String GENERATOR = "generator";
-    private static final String EXECUTOR = "executor";    
+    private static final String FUZZER = "fuzzer";
     private static final int MAX_TASKS_ENDED = 10;
 
     @Autowired
@@ -77,11 +75,8 @@ public class TaskController {
         case EXTRACTOR:
             task = new Task(ExtractorTask.class.getCanonicalName());           
             break;
-        case GENERATOR:
-            task = new Task(GeneratorTask.class.getCanonicalName());           
-            break;
-        case EXECUTOR:
-            task = new Task(ExecutorTask.class.getCanonicalName());           
+        case FUZZER:
+            task = new Task(FuzzerTask.class.getCanonicalName());           
             break;
         default:
 			String json = "";

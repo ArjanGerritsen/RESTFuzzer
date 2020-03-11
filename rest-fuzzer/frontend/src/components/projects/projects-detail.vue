@@ -18,24 +18,14 @@
             <div class="col">
               <div class="button-group-left">
                 <b-button
-                  :disabled="extractTaskDisabled()"
+                  :disabled="tasksQueuedOrRunning"
                   size="sm"
                   type="submit"
                   variant="primary"
-                  title="start task to genereate http requests"
-                  v-on:click="addGeneratorTask"
+                  title="start task to fuzz SUT"
+                  v-on:click="addFuzzerTask"
                 >
-                  <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start generate task
-                </b-button>
-                <b-button
-                  :disabled="extractTaskDisabled()"
-                  size="sm"
-                  type="submit"
-                  variant="primary"
-                  title="start task to execute http requests and capture responses"
-                  v-on:click="addExecutorTask"
-                >
-                  <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start execute task
+                  <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start fuzzing
                 </b-button>
                 <b-button
                   size="sm"
@@ -127,7 +117,11 @@ export default {
       responseFields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "request.path", label: "Path" },
-        { key: "request.httpMethod", label: "HTTP method", thStyle: "width: 110px;" },
+        {
+          key: "request.httpMethod",
+          label: "HTTP method",
+          thStyle: "width: 110px;"
+        },
         { key: "statusCode", label: "HTTP status", thStyle: "width: 110px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ],
@@ -139,25 +133,37 @@ export default {
     selectAction(value) {
       console.log("value: " + value);
     },
-    extractTaskDisabled() {
-      return this.startedRefresh !== null;
+    refreshData() {
+      if (!this.tasksQueuedOrRunning) {
+        this.startedRefresh = null;
+        clearTimeout(this.refreshTimeout);
+        this.$store.dispatch("findProject", { project_id: this.project.id });
+        this.$root.$emit("bv::refresh::table", "project-requests");
+        this.$root.$emit("bv::refresh::table", "project-responses");
+        return;
+      }
+
+      this.timeoutRefresh = setTimeout(this.refreshData, 1000);
+      this.$store
+        .dispatch("countProjectRunningOrQueuedTasks", { project_id: this.project.id })
+        .catch(error => {
+          this.startedRefresh = null;
+          clearTimeout(this.timeoutRefresh);
+        });
     },
-    refreshData() {},
-    addGeneratorTask() {
-      this.addTask(Constants.TASK_GENERATOR);
-    },
-    addExecutorTask() {
-      this.addTask(Constants.TASK_EXECUTOR);
-    },
-    addTask(name) {
+    addFuzzerTask() {
       this.$store
         .dispatch("addTask", {
-          name: name,
+          name: Constants.TASK_FUZZER,
           metaDataTuples: { project_id: this.project.id }
         })
         .then(() => {
-          this.startedRefresh = new Date();
-          this.refreshData();
+          this.$store
+            .dispatch("countProjectRunningOrQueuedTasks", { project_id: this.project.id})
+            .then(() => {
+              this.startedRefresh = new Date();
+              this.refreshData();
+            });
         });
     }
   },
@@ -165,40 +171,40 @@ export default {
     project() {
       return this.$store.getters.projects.current;
     },
-    requests() {
-      return this.$store.getters.projects.current_requests;
+    tasksQueuedOrRunning() {
+      return (
+        this.$store.getters.projects.current_queued_or_running_tasks_count !== null &&
+        this.$store.getters.projects.current_queued_or_running_tasks_count > 0
+      );
     },
     requestsPresent() {
       return this.requestsCount > 0;
     },
     requestsTitle() {
-      let title = 'Requests';
+      let title = "Requests";
       if (this.requestsCount > 0) {
         title += ` [${this.requestsCount}]`;
       }
       return title;
     },
     requestsCount() {
-      const count = this.$store.getters.projects.current.requestsCount;
-      return (count !== null && count > 0) ? count : 0;
-    },    
-    responses() {
-      return this.$store.getters.projects.current_responses;
+      const count = this.$store.getters.projects.current_requests.total;
+      return count !== null && count > 0 ? count : 0;
     },
     responsesPresent() {
       return this.responsesCount > 0;
     },
     responsesTitle() {
-      let title = 'Responses';
+      let title = "Responses";
       if (this.responsesCount > 0) {
         title += ` [${this.responsesCount}]`;
       }
       return title;
     },
     responsesCount() {
-      const count = this.$store.getters.projects.current.responsesCount;
-      return (count !== null && count > 0) ? count : 0;
-    },     
+      const count = this.$store.getters.projects.current_responses.total;
+      return count !== null && count > 0 ? count : 0;
+    },
     canExecuteTask() {
       return true;
     }
