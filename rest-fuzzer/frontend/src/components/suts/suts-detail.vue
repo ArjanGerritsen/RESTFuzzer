@@ -113,10 +113,12 @@ export default {
         this.startedRefresh = null;
         clearTimeout(this.refreshTimeout);
         this.$store.dispatch("findSut", this.sut.id);
+        this.$store.dispatch("findAllSuts");
+        this.$root.$emit('bv::refresh::table', 'sut-actions');
         return;
-      }        
+      }
 
-      this.timeoutRefresh = setTimeout(this.refreshData, 500);
+      this.timeoutRefresh = setTimeout(this.refreshData, 1000);
       this.$store
         .dispatch("countSutRunningOrQueuedTasks", this.sut.id)
         .catch(error => {

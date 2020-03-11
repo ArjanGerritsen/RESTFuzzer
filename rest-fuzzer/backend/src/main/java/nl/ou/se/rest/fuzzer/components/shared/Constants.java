@@ -9,6 +9,7 @@ public abstract class Constants {
     public static final String ERROR_TASK_EXECUTION_FACTORY_UNKNOWN = "Unkown execution type %s in task table in database";
     
     public static final String WARN_TASK_SUT_NOT_FOUND = "Task %s: Sut with id %s not found";
+    public static final String WARN_TASK_PROJECT_NOT_FOUND = "Task %s: Project with id %s not found";    
     public static final String WARN_TASK_VALUE_FOR_KEY_NOT_Present = "Task %s: no value for key %s";
 
     public static final String INFO_TASK_START = "Task %s start";

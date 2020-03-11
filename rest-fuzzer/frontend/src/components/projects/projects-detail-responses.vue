@@ -114,10 +114,10 @@ export default {
           context: context
         })
         .then(() => {
-          return this.$store.getters.projects.current_responses.visible;
+          return this.$store.getters.project.responses.list;
         })
         .catch(() => {
-          return this.$store.getters.projects.current_responses.visible;
+          return [];
         });
     },
     linkGen(pageNum) {
@@ -129,7 +129,7 @@ export default {
   },
   computed: {
     totalRows() {
-      return this.$store.getters.projects.current_responses.count;
+      return this.$store.getters.project.responses.count;
     },
     displayPagination() {
       return this.totalRows > this.perPage;

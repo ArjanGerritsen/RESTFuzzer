@@ -33,6 +33,7 @@
                 <li>TODO Start Creating dependencies between REST actions (graph)</li>
                 <li>TODO Fix: Display Fuzzing project detail correctly.</li>
                 <li>TODO Fix: Use of EntityGraph for FuzProject.</li>
+                <li>TODO Fix: Delete SUT - add validation, used by FuzProject.</li>
               </ul>
             </p>
           </b-list-group-item>

@@ -93,10 +93,10 @@ export default {
           context: context
         })
         .then(() => {
-          return this.$store.getters.projects.current_requests.visible;
+          return this.$store.getters.projects.requests.list;
         })
         .catch(() => {
-          return this.$store.getters.projects.current_requests.visible;
+          return [];
         });
     },
     linkGen(pageNum) {
@@ -108,7 +108,7 @@ export default {
   },
   computed: {
     totalRows() {
-      return this.$store.getters.projects.current_requests.count;
+      return this.$store.getters.projects.requests.count;
     },
     displayPagination() {
       return this.totalRows > this.perPage;

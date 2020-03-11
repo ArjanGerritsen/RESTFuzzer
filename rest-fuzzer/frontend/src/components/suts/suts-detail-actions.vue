@@ -13,32 +13,34 @@
             <b-button :disabled="!filter" @click="filter = ''">clear</b-button>
           </b-input-group-append>
         </b-input-group>
-      </b-col>      
-      <b-col lg="6" class="my-1">
       </b-col>
+      <b-col lg="6" class="my-1"></b-col>
     </b-row>
 
-    <b-table id="list"
+    <b-table
+      id="sut-actions"
       class="table-sm"
       show-empty
       :busy="isBusy"
-      striped 
+      striped
       :items="restProvider"
       :fields="fields"
       :borderless="true"
       :filter="filter"
       @filtered="onFiltered"
-      :current-page="currentPage" :per-page="perPage">
-
+      :current-page="currentPage"
+      :per-page="perPage"
+    >
       <div slot="table-busy" class="text-center text-primary my-2">
         <b-spinner type="border" class="align-middle" small></b-spinner>
         <span style="margin-left:10px;">Loading...</span>
       </div>
 
-      <template v-for="formatter in formatters" v-slot:[`cell(${formatter.field})`]="data">
-        <template>
-          {{ data.value | dynamicFilter($options.filters[formatter.as]) }}
-        </template>
+      <template
+        v-for="formatter in formatters"
+        v-slot:[`cell(${formatter.field})`]="data"
+      >
+        <template>{{ data.value | dynamicFilter($options.filters[formatter.as]) }}</template>
       </template>
 
       <template v-slot:cell(details)="row">
@@ -51,31 +53,54 @@
       <template v-slot:row-details="row">
         <b-card>
           <h6>Parameters:</h6>
-          <li class="list-inline-item" style="vertical-align:top; margin:8px; width: 190px;" v-for="(value, key) in row.item.parameters" :key="key">
-            <b>#{{ value.id }}</b> <b-badge v-if="value.required" variant="primary">required</b-badge> <br>
-            name: {{ value.name}} <br>
-            context: {{ value.context }} <br>
-            type: {{ value.type }} <br>
+          <li
+            class="list-inline-item"
+            style="vertical-align:top; margin:8px; width: 190px;"
+            v-for="(value, key) in row.item.parameters"
+            :key="key"
+          >
+            <b>#{{ value.id }}</b>
+            <b-badge v-if="value.required" variant="primary">required</b-badge>
+            <br />
+            name: {{ value.name}}
+            <br />
+            context: {{ value.context }}
+            <br />
+            type: {{ value.type }}
+            <br />
             extra: {{ value.metaDataTuplesJson === "{}" ? "-" : value.metaDataTuplesJson }}
           </li>
 
-          <hr>
+          <hr />
 
           <h6>Responses:</h6>
-          <li class="list-inline-item" style="margin:8px; width: 190px;" v-for="(value, key) in row.item.responses" :key="key">
-            <b>#{{ value.id }}</b> <br>
-            http status: {{ value.statusCode }} <br>
+          <li
+            class="list-inline-item"
+            style="margin:8px; width: 190px;"
+            v-for="(value, key) in row.item.responses"
+            :key="key"
+          >
+            <b>#{{ value.id }}</b>
+            <br />
+            http status: {{ value.statusCode }}
+            <br />
             description: {{ value.description }}
           </li>
         </b-card>
       </template>
 
-      <template slot="empty">
-        No data present.
-      </template>      
+      <template slot="empty">No data present.</template>
     </b-table>
 
-    <b-pagination v-if="displayPagination" size="sm" style="float:right;" v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="list"></b-pagination>
+    <b-pagination
+      v-if="displayPagination"
+      size="sm"
+      style="float:right;"
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage"
+      aria-controls="list"
+    ></b-pagination>
   </div>
 </template>
 
@@ -98,7 +123,7 @@ export default {
           context: context
         })
         .then(() => {
-          return this.$store.getters.sut.current_actions.list;
+          return this.$store.getters.suts.current_actions.list;
         })
         .catch(() => {
           return [];
@@ -121,52 +146,4 @@ export default {
   },
   created: function() {}
 };
-  // export default {
-  //   props: ['items', 'fields', 'formatters', 'displayFilter'],
-  //   data() {
-  //      return {
-  //        filter: null,
-  //        perPage: 15,
-  //        currentPage: 1,
-  //        totalRows: null
-  //      }
-  //   },
-  //   methods: {
-  //     selectRow(item) {
-  //       if (item.length == 0) { 
-  //         return; 
-  //       }
-  //       this.$emit('select-item', item[0]);
-  //     },
-  //     rowClicked(item) {
-  //       this.$emit('click-item');
-  //     },
-  //     linkGen(pageNum) {
-  //       return pageNum === 1 ? '?' : `?page=${pageNum}`
-  //     },
-  //     onFiltered(filteredItems) {
-  //       this.totalRows = filteredItems.length
-  //       this.currentPage = 1
-  //     }      
-  //   },
-  //   computed: {
-  //     rows() {
-  //       return (this.items === null ? 0 : (this.totalRows !== null ? this.totalRows : this.items.length))
-  //     },
-  //     isBusy() {
-  //       return this.items === null
-  //     },
-  //     displayPagination() {
-  //       if (this.items === null) {
-  //         return false;
-  //       } else {
-  //         return this.rows > this.perPage;
-  //       }
-  //     },      
-  //   },
-  //   mounted() {
-  //     this.totalRows = (this.items === null ? 0 : this.items.length);
-  //   },    
-  //   created: function() { }
-  // }
 </script>

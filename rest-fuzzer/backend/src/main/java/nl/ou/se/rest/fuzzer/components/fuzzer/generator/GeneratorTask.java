@@ -41,7 +41,7 @@ public class GeneratorTask extends TaskExecutionBase implements TaskExecution {
 		Optional<FuzProject> oProject = projectService.findByIdWithRelations(projectId);
 
 		if (!oProject.isPresent()) {
-			logger.warn(String.format(Constants.WARN_TASK_SUT_NOT_FOUND, this.getClass().getName(), projectId));
+			logger.warn(String.format(Constants.WARN_TASK_PROJECT_NOT_FOUND, this.getClass().getName(), projectId));
 			return;
 		}
 
