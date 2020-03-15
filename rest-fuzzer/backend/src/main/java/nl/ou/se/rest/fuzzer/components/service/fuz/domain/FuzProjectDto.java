@@ -12,7 +12,7 @@ public class FuzProjectDto {
 	private FuzType type;
 	private RmdSutDto sut;
 	private Long requestsCount;
-	private Long responsesCount;
+	private Long responsesCount; // TODO Gelijk trekken met Suts.
 	private LocalDateTime createdAt;
 
 	// getters and setters

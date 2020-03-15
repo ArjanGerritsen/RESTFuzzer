@@ -1,0 +1,58 @@
+<template>
+  <div>
+    <b-card header-tag="header">
+      <span slot="header">
+        <b-icon icon="book" font-scale="1"></b-icon>&nbsp;Dictionaries
+      </span>
+      <b-card-text>
+        <div class="button-group-left">
+          <b-button size="sm" type="submit" variant="primary" v-b-modal.projects-add>
+            <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
+          </b-button>
+        </div>
+        <list
+          @select-item="selectProject"
+          :fields="fields"
+          :items="projects"
+          :formatters="formatters"
+        ></list>
+      </b-card-text>
+    </b-card>
+  </div>
+</template>
+
+<script>
+import List from "../shared/list/list";
+
+export default {
+  components: { List },
+  data() {
+    return {
+      formatters: [
+        { field: "type", as: "enumToHuman" },
+        { field: "createdAt", as: "dateShort" }
+      ],
+      fields: [
+        { key: "id", label: "#", thStyle: "width: 50px;" },
+        { key: "type", thStyle: "width: 250px;" },
+        { key: "sut.title", label: "System under test" },
+        { key: "createdAt", label: "Created @", thStyle: "width: 110px;" }
+      ]
+    };
+  },
+  methods: {
+    selectProject(project) {
+      this.$store.dispatch("findProject", { project_id: project.id });
+      this.$bvModal.show("projects-detail");
+    }
+  },
+  computed: {
+    projects() {
+      return this.$store.getters.projects.all;
+    }
+  },
+  created: function() {
+    this.$store.dispatch("findAllProjects");
+  }
+};
+</script>

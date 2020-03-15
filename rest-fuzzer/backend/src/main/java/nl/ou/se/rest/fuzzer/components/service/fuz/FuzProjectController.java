@@ -25,12 +25,12 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzResponseService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
-import nl.ou.se.rest.fuzzer.components.service.HttpResponseDto;
-import nl.ou.se.rest.fuzzer.components.service.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.components.service.fuz.domain.FuzProjectDto;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzProjectMapper;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzRequestMapper;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzResponseMapper;
+import nl.ou.se.rest.fuzzer.components.service.util.HttpResponseDto;
+import nl.ou.se.rest.fuzzer.components.service.util.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.components.shared.QueryUtil;
 
 @RestController()

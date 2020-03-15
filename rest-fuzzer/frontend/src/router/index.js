@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import Home from "../components/home/home";
 import Suts from "../components/suts/suts";
 import Projects from "../components/projects/projects"
+import Dictionaries from "../components/dictionaries/dictionaries";
 import Tasks from "../components/tasks/tasks";
 import About from "../components/about/about";
 
@@ -25,6 +26,11 @@ const routes = [
     name: "projects",
     component: Projects
   },
+  {
+    path: "/dictionaries",
+    name: "dictionaries",
+    component: Dictionaries
+  },  
   {
     path: "/tasks",
     name: "tasks",

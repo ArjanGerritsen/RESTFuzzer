@@ -16,17 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
-import nl.ou.se.rest.fuzzer.components.service.HttpResponseDto;
-import nl.ou.se.rest.fuzzer.components.service.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionMapper;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdSutMapper;
+import nl.ou.se.rest.fuzzer.components.service.util.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.components.shared.QueryUtil;
 
 @RestController()
@@ -81,13 +77,7 @@ public class RmdSutController {
             sut = sutService.save(sut);
             return ResponseEntity.ok(RmdSutMapper.toDto(sut, false));
         } else {
-            String json = "";
-            try {
-                json = new ObjectMapper().writeValueAsString(new HttpResponseDto(violations));
-            } catch (JsonProcessingException e) {
-                logger.warn(e.getMessage());
-            }
-            return ResponseEntity.badRequest().body(json);
+        	return ValidatorUtil.getResponseForViolations(violations);
         }
     }
 

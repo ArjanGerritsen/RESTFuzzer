@@ -1,0 +1,80 @@
+<template>
+  <div>
+  <b-card header-tag="header">
+  <span slot="header">
+  <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;Add dictionary
+  </span>
+  <b-card-text>
+    <b-form>
+	    <b-form-group
+	    id="input-group-1"
+	    label="Name:"
+	    label-for="input-1"
+	    description="Name"
+	  >
+	    <b-form-input
+	      id="input-1"
+	      v-model="dictionary.name"
+	      placeholder="enter the name"
+	    ></b-form-input>
+	  </b-form-group>
+
+	    <b-form-group
+	    id="input-group-2"
+	    label="Items:"
+	    label-for="input-2"
+	    description="Items for the dictionary (comma seperated values)"
+	  >
+	    <b-form-textarea
+	      id="input-2"
+	      v-model="dictionary.items"
+	      placeholder="enter the items"
+	      rows="8"
+	    ></b-form-textarea>
+	  </b-form-group>
+	  
+      <div class="button-group-right">
+      <b-button size="sm" variant="primary" @click="addDictionary()">
+        <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
+      </b-button>
+      <b-button size="sm" variant="outline-secondary" @click="cancel()">
+        <b-icon icon="backspace" font-scale="1"></b-icon>&nbsp;cancel
+      </b-button>
+    </div>
+	</b-form>
+    </b-card-text>
+    </b-card>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      dictionary: {
+        name: null,
+        items_csv: null
+      }
+    };
+  },
+  methods: {
+    resetForm() {
+      this.dictionary.name = null;
+      this.dictionary.items_csv = null;
+    },
+    hide() {
+    },
+    cancel() {
+      this.resetForm();
+      this.hide();
+    },
+    addDictionary() {
+      this.$store.dispatch("addDictionary", this.dictionary).then(() => {
+        this.cancel();
+        this.$store.dispatch("findAllDictionaries");
+      });
+    }
+  },
+  computed: { }
+};
+</script>

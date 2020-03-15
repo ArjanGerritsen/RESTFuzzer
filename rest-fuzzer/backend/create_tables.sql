@@ -96,11 +96,18 @@ CREATE TABLE IF NOT EXISTS fuz_responses (
 CREATE INDEX idx_fuz_responses_project_id ON fuz_responses (project_id);
 CREATE INDEX idx_fuz_responses_request_id ON fuz_responses (request_id);
 
+CREATE TABLE IF NOT EXISTS fuz_dictionaries (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255),
+  items_csv TEXT
+) ENGINE=INNODB;
+
 --------------------------- dropping all --------------------
 
 drop table fuz_responses;
 drop table fuz_requests;
 drop table fuz_projects;
+drop table fuz_dictionaries;
 
 drop table rmd_responses;
 drop table rmd_parameters;
