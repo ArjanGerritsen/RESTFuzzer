@@ -32,6 +32,10 @@ export default {
 </style>
 
 <style lang="scss">
+.table-hover tr {
+  cursor: pointer;
+}
+
 .button-group-left {
   float: left;
   margin-bottom: 15px;
@@ -60,6 +64,13 @@ th {
 
 td {
   font-size: 0.875rem;
+}
+
+.code {
+  font-family: Consolas, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
 }
 
 .json {

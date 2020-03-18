@@ -24,7 +24,8 @@
       class="table-sm"
       show-empty
       :busy="isBusy"
-      selectable select-mode="single" selectedVariant="primary" @row-selected="selectRow" @row-clicked="rowClicked" striped hover 
+      :selectable="select"
+      select-mode="single" selectedVariant="primary" @row-selected="selectRow" @row-clicked="rowClicked" striped hover 
       :items="items"
       :fields="fields"
       :borderless="true"
@@ -71,7 +72,7 @@
 
 <script>
   export default {
-    props: ['items', 'fields', 'formatters', 'displayFilter'],
+    props: ['items', 'fields', 'formatters', 'displayFilter', 'select'],
     data() {
        return {
          filter: null,
@@ -88,7 +89,7 @@
         this.$emit('select-item', item[0]);
       },
       rowClicked(item) {
-        this.$emit('click-item');
+        this.$emit('click-item', item);
       },
       linkGen(pageNum) {
         return pageNum === 1 ? '?' : `?page=${pageNum}`

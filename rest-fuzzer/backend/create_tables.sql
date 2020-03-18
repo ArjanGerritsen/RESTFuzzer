@@ -99,7 +99,8 @@ CREATE INDEX idx_fuz_responses_request_id ON fuz_responses (request_id);
 CREATE TABLE IF NOT EXISTS fuz_dictionaries (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255),
-  items_csv TEXT
+  items_text TEXT,
+  created_at TIMESTAMP NULL  
 ) ENGINE=INNODB;
 
 --------------------------- dropping all --------------------

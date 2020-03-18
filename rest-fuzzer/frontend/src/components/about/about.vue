@@ -29,11 +29,11 @@
             </div>
             <p class="mb-1">
               <ul>
-                <li>TODO Finialize (simple) fuzzing task (displaying requests and responses).</li>
                 <li>TODO Start Creating dependencies between REST actions (graph)</li>
-                <li>TODO Fix: Display Fuzzing project detail correctly.</li>
                 <li>TODO Fix: Use of EntityGraph for FuzProject.</li>
-                <li>TODO Fix: Delete SUT - add validation, used by FuzProject.</li>
+                <li>Finialize (simple) fuzzing task (displaying requests and responses + repetitions).</li>
+                <li>Display Fuzzing project detail correctly.</li>
+                <li>Delete SUT is only possible if not connected to FuzProject.</li>
               </ul>
             </p>
           </b-list-group-item>

@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzProjectService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzRequestService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzResponseService;
@@ -29,8 +26,8 @@ import nl.ou.se.rest.fuzzer.components.service.fuz.domain.FuzProjectDto;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzProjectMapper;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzRequestMapper;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzResponseMapper;
-import nl.ou.se.rest.fuzzer.components.service.util.HttpResponseDto;
 import nl.ou.se.rest.fuzzer.components.service.util.ValidatorUtil;
+import nl.ou.se.rest.fuzzer.components.shared.Constants;
 import nl.ou.se.rest.fuzzer.components.shared.QueryUtil;
 
 @RestController()
@@ -62,38 +59,13 @@ public class FuzProjectController {
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
         Optional<FuzProject> project = projectService.findById(id);
+
         if (!project.isPresent()) {
+            logger.warn(String.format(Constants.VALIDATION_OBJECT_NOT_FOUND, FuzProject.class, id));
             return ResponseEntity.badRequest().body(new FuzProjectDto());
         }
+
         return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), true));
-    }
-
-    @RequestMapping(path = "{id}/requests", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findRequestsById(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(FuzRequestMapper
-                .toDtos(requestService.findByProjectIdAndPath(id, QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
-    }
-
-    @RequestMapping(path = "{id}/requests/count", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> countRequestsById(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(requestService.countByProjectIdAndPath(id, QueryUtil.toLike(path)));
-    }
-
-    @RequestMapping(path = "{id}/responses", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findResponsesById(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(FuzResponseMapper
-                .toDtos(responseService.findByProjectIdAndPath(id, QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
-    }
-
-    @RequestMapping(path = "{id}/responses/count", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> countResponsesById(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(responseService.countByProjectIdAndPath(id, QueryUtil.toLike(path)));
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -109,28 +81,53 @@ public class FuzProjectController {
         }
 
         List<String> violations = ValidatorUtil.getViolations(project);
-
-        if (violations.isEmpty()) {
-            project = projectService.save(project);
-            return ResponseEntity.ok(FuzProjectMapper.toDto(project, false));
-        } else {
-            String json = "";
-            try {
-                json = new ObjectMapper().writeValueAsString(new HttpResponseDto(violations));
-            } catch (JsonProcessingException e) {
-                logger.warn(e.getMessage());
-            }
-            return ResponseEntity.badRequest().body(json);
+        if (!violations.isEmpty()) {
+            logger.warn(String.format(Constants.VALIDATION_OBJECT_FAILED, FuzProject.class, violations.size()));
+            return ValidatorUtil.getResponseForViolations(violations);
         }
+
+        project = projectService.save(project);
+        return ResponseEntity.ok(FuzProjectMapper.toDto(project, false));
     }
 
     @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
     public @ResponseBody ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         Optional<FuzProject> project = projectService.findById(id);
+
         if (!project.isPresent()) {
+            logger.warn(String.format(Constants.VALIDATION_OBJECT_NOT_FOUND, FuzProject.class, id));
             return ResponseEntity.badRequest().body(new FuzProjectDto());
         }
+
         projectService.deleteById(id);
         return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
+    }
+
+    @RequestMapping(path = "{id}/requests", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> findRequestsById(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(FuzRequestMapper.toDtos(requestService.findByProjectIdAndPath(id,
+                QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
+    }
+
+    @RequestMapping(path = "{id}/requests/count", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> countRequestsById(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(requestService.countByProjectIdAndPath(id, QueryUtil.toLike(path)));
+    }
+
+    @RequestMapping(path = "{id}/responses", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> findResponsesById(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(FuzResponseMapper.toDtos(responseService.findByProjectIdAndPath(id,
+                QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
+    }
+
+    @RequestMapping(path = "{id}/responses/count", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> countResponsesById(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(responseService.countByProjectIdAndPath(id, QueryUtil.toLike(path)));
     }
 }

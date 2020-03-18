@@ -1,6 +1,7 @@
 package nl.ou.se.rest.fuzzer.components.data.fuz.domain;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -23,6 +24,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.SortNatural;
 
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
+import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 
 @Entity(name = "fuz_projects")
 public class FuzProject implements Comparable<FuzProject> {
@@ -36,10 +38,15 @@ public class FuzProject implements Comparable<FuzProject> {
     @Enumerated(EnumType.STRING)
     private FuzType type;
 
+    private String metaDataTuplesJson;
+    
     @ManyToOne(optional = false)
     @JoinColumn(name = "sut_id")
     @NotNull
     private RmdSut sut;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
@@ -51,64 +58,77 @@ public class FuzProject implements Comparable<FuzProject> {
     @SortNatural
     private SortedSet<FuzResponse> responses = new TreeSet<>();
 
-    @Column(columnDefinition = "TIMESTAMP")
-    private LocalDateTime createdAt;
-
     // methods
     public int compareTo(FuzProject other) {
         return this.getId().compareTo(other.getId());
     }
 
+    public Map<String, Object> getMetaDataTuples() {
+        return JsonUtil.stringToMap(this.metaDataTuplesJson);
+    }
+
+    public void setMetaDataTuples(Map<String, Object> metaDataTuples) {
+        this.metaDataTuplesJson = JsonUtil.mapToString(metaDataTuples);
+    }
+
     // getters and setters
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public FuzType getType() {
-		return type;
-	}
+    public FuzType getType() {
+        return type;
+    }
 
-	public void setType(FuzType type) {
-		this.type = type;
-	}
+    public void setType(FuzType type) {
+        this.type = type;
+    }
 
-	public RmdSut getSut() {
-		return sut;
-	}
+    public RmdSut getSut() {
+        return sut;
+    }
 
-	public void setSut(RmdSut sut) {
-		this.sut = sut;
-	}
+    public void setSut(RmdSut sut) {
+        this.sut = sut;
+    }
 
-	public SortedSet<FuzRequest> getRequests() {
-		return requests;
-	}
+    public String getMetaDataTuplesJson() {
+        return metaDataTuplesJson;
+    }
 
-	public void setRequests(SortedSet<FuzRequest> requests) {
-		this.requests = requests;
-	}
+    public void setMetaDataTuplesJson(String metaDataTuplesJson) {
+        this.metaDataTuplesJson = metaDataTuplesJson;
+    }
 
-	public SortedSet<FuzResponse> getResponses() {
-		return responses;
-	}
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-	public void setResponses(SortedSet<FuzResponse> responses) {
-		this.responses = responses;
-	}
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
+    public SortedSet<FuzRequest> getRequests() {
+        return requests;
+    }
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+    public void setRequests(SortedSet<FuzRequest> requests) {
+        this.requests = requests;
+    }
 
-	// toString
+    public SortedSet<FuzResponse> getResponses() {
+        return responses;
+    }
+
+    public void setResponses(SortedSet<FuzResponse> responses) {
+        this.responses = responses;
+    }
+
+    // toString
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
     }

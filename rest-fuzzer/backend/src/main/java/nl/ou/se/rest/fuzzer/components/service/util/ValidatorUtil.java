@@ -1,5 +1,6 @@
 package nl.ou.se.rest.fuzzer.components.service.util;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,15 +19,15 @@ public class ValidatorUtil {
 
     private static Logger logger = LoggerFactory.getLogger(ValidatorUtil.class);
 
-	// methods
-	public static List<String> getViolations(Object o) {
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
-		return validator.validate(o).stream().map(v -> String.format("%s: %s", v.getPropertyPath(), v.getMessage()))
-				.collect(Collectors.toList());
-	}
+    // methods
+    public static List<String> getViolations(Object o) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        return validator.validate(o).stream().map(v -> String.format("%s: %s", v.getPropertyPath(), v.getMessage()))
+                .collect(Collectors.toList());
+    }
 
-	public static ResponseEntity<?> getResponseForViolations(List<String> violations) {
+    public static ResponseEntity<?> getResponseForViolations(List<String> violations) {
         String json = "";
         try {
             json = new ObjectMapper().writeValueAsString(new HttpResponseDto(violations));
@@ -34,5 +35,9 @@ public class ValidatorUtil {
             logger.warn("Building response for violations failed: " + e.getMessage());
         }
         return ResponseEntity.badRequest().body(json);
-	}
+    }
+
+    public static ResponseEntity<?> getResponseForViolation(String violation) {
+        return getResponseForViolations(Arrays.asList(violation));
+    }
 }

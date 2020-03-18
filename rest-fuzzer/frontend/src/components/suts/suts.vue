@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-4">
-        <tasks-progress></tasks-progress>
-      </div>
       <div class="col-8">
         <suts-list></suts-list>
+      </div>
+      <div class="col-4">
+        <tasks-progress></tasks-progress>
       </div>
     </div>
 

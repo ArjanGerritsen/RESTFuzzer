@@ -13,69 +13,63 @@
 
     <b-tabs v-if="this.project !== null" nav-tabs card>
       <b-tab title="Information" active>
-        <b-card-text>
-          <div class="row">
-            <div class="col">
-              <div class="button-group-left">
-                <b-button
-                  :disabled="tasksQueuedOrRunning"
-                  size="sm"
-                  type="submit"
-                  variant="primary"
-                  title="start task to fuzz SUT"
-                  v-on:click="addFuzzerTask"
-                >
-                  <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start fuzzing
-                </b-button>
-                <b-button
-                  size="sm"
-                  type="submit"
-                  v-b-modal.projects-delete
-                  variant="outline-danger"
-                  title="delete this fuzzing project"
-                >
-                  <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
-                </b-button>
-              </div>
+        <div class="row">
+          <div class="col">
+            <div class="button-group-left">
+              <b-button
+                :disabled="tasksQueuedOrRunning"
+                size="sm"
+                type="submit"
+                variant="primary"
+                title="start task to fuzz SUT"
+                v-on:click="addFuzzerTask"
+              >
+                <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start fuzzing
+              </b-button>
+              <b-button
+                size="sm"
+                type="submit"
+                v-b-modal.projects-delete
+                variant="outline-danger"
+                title="delete this fuzzing project"
+              >
+                <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
+              </b-button>
             </div>
           </div>
-          <div class="row">
-            <div class="col">
-              <dl class="dl-horizontal">
-                <dt>Identifier</dt>
-                <dd>{{this.project.id}}</dd>
-                <dt>Type</dt>
-                <dd>{{this.project.type | enumToHuman }}</dd>
-                <dt>System under test</dt>
-                <dd>
-                  <b-link
-                    :href="this.project.sut.location"
-                    target="_blank"
-                  >{{this.project.sut.location}}</b-link>
-                </dd>
-              </dl>
-            </div>
-            <div class="col"></div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <dl class="dl-horizontal">
+              <dt>Identifier</dt>
+              <dd>{{this.project.id}}</dd>
+              <dt>Type</dt>
+              <dd>{{this.project.type | enumToHuman }}</dd>
+              <dt>System under test</dt>
+              <dd>
+                <b-link
+                  :href="this.project.sut.location"
+                  target="_blank"
+                >{{this.project.sut.location}}</b-link>
+              </dd>
+            </dl>
           </div>
-        </b-card-text>
+          <div class="col"></div>
+        </div>
       </b-tab>
       <b-tab :disabled="!requestsPresent" :title="requestsTitle">
-        <b-card-text v-if="requestsPresent">
-          <ProjectsDetailRequests
-            :project="this.project"
-            :fields="requestFields"
-            :formatters="requestFormatters"
-          ></ProjectsDetailRequests>
-        </b-card-text>
+        <ProjectsDetailRequests
+          :project="this.project"
+          :fields="requestFields"
+          :formatters="requestFormatters"
+        ></ProjectsDetailRequests>
       </b-tab>
       <b-tab :disabled="!responsesPresent" :title="responsesTitle">
-        <b-card-text v-if="responsesPresent">
-          <ProjectsDetailResponses
-            :project="this.project"
-            :fields="responseFields"
-            :formatters="responseFormatters"
-          ></ProjectsDetailResponses>
-        </b-card-text>
+        <ProjectsDetailResponses
+          :project="this.project"
+          :fields="responseFields"
+          :formatters="responseFormatters"
+        ></ProjectsDetailResponses>
       </b-tab>
     </b-tabs>
 
@@ -145,7 +139,9 @@ export default {
 
       this.timeoutRefresh = setTimeout(this.refreshData, 1000);
       this.$store
-        .dispatch("countProjectRunningOrQueuedTasks", { project_id: this.project.id })
+        .dispatch("countProjectRunningOrQueuedTasks", {
+          project_id: this.project.id
+        })
         .catch(error => {
           this.startedRefresh = null;
           clearTimeout(this.timeoutRefresh);
@@ -159,7 +155,9 @@ export default {
         })
         .then(() => {
           this.$store
-            .dispatch("countProjectRunningOrQueuedTasks", { project_id: this.project.id})
+            .dispatch("countProjectRunningOrQueuedTasks", {
+              project_id: this.project.id
+            })
             .then(() => {
               this.startedRefresh = new Date();
               this.refreshData();
@@ -173,7 +171,8 @@ export default {
     },
     tasksQueuedOrRunning() {
       return (
-        this.$store.getters.projects.current_queued_or_running_tasks_count !== null &&
+        this.$store.getters.projects.current_queued_or_running_tasks_count !==
+          null &&
         this.$store.getters.projects.current_queued_or_running_tasks_count > 0
       );
     },

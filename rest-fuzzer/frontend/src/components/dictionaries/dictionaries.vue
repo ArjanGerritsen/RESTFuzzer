@@ -7,22 +7,27 @@
       <div class="col-4">
         <dictionaries-add></dictionaries-add>
         <dictionaries-detail></dictionaries-detail>
+        <dictionaries-delete></dictionaries-delete>
       </div>
     </div>
   </div>
 </template>
 
-<script> 
-  import DictionariesList from "./dictionaries-list";
-  import DictionariesAdd from "./dictionaries-add";
-  import DictionariesDetail from "./dictionaries-detail";
+<script>
+import DictionariesList from "./dictionaries-list";
+import DictionariesAdd from "./dictionaries-add";
+import DictionariesDetail from "./dictionaries-detail";
+import DictionariesDelete from "./dictionaries-delete";
 
-  export default {
-    components: {
-    	DictionariesList, DictionariesAdd, DictionariesDetail
-    },
-    data() {
-      return { data: {} };
-    },
-  };
+export default {
+  components: {
+    DictionariesList,
+    DictionariesAdd,
+    DictionariesDetail,
+    DictionariesDelete
+  },
+  data() {
+    return { data: {} };
+  }
+};
 </script>

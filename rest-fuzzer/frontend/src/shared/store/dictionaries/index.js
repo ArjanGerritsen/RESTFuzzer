@@ -31,7 +31,7 @@ const dictionaries = {
                     })
             })
         },
-        findDictionary({ commit, dispatch }, id) {
+        findDictionary({ commit }, id) {
             return new Promise((resolve, reject) => {
                 commit("set_dictionary", { dictionary: null });
                 axios

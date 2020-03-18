@@ -13,64 +13,56 @@
 
     <b-tabs v-if="this.sut !== null" nav-tabs card>
       <b-tab title="Information" active>
-        <b-card-text>
-          <div class="row">
-            <div class="col">
-              <div class="button-group-left">
-                <b-button
-                  :disabled="tasksQueuedOrRunning"
-                  size="sm"
-                  type="submit"
-                  variant="primary"
-                  title="start task to extract REST model description from OAS"
-                  v-on:click="addExtractorTask"
-                >
-                  <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start extract task
-                </b-button>
-                <b-button
-                  size="sm"
-                  type="submit"
-                  v-b-modal.suts-delete
-                  variant="outline-danger"
-                  title="delete this SUT"
-                >
-                  <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
-                </b-button>
-              </div>
+        <div class="row">
+          <div class="col">
+            <div class="button-group-left">
+              <b-button
+                :disabled="tasksQueuedOrRunning"
+                size="sm"
+                type="submit"
+                variant="primary"
+                title="start task to extract REST model description from OAS"
+                v-on:click="addExtractorTask"
+              >
+                <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start extract task
+              </b-button>
+              <b-button
+                size="sm"
+                type="submit"
+                v-b-modal.suts-delete
+                variant="outline-danger"
+                title="delete this SUT"
+              >
+                <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
+              </b-button>
             </div>
           </div>
-          <div class="row">
-            <div class="col">
-              <dl class="dl-horizontal">
-                <dt>Identifier</dt>
-                <dd>{{this.sut.id}}</dd>
-                <dt>Title</dt>
-                <dd>{{this.sut.title ? this.sut.title : '-'}}</dd>
-                <dt>OAS location</dt>
-                <dd>
-                  <b-link :href="this.sut.location" target="_blank">{{this.sut.location}}</b-link>
-                </dd>
-              </dl>
-            </div>
-            <div class="col">
-              <dl class="dl-horizontal">
-                <dt>Description</dt>
-                <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
-                <dt>Created @</dt>
-                <dd>{{this.sut.createdAt | date }}</dd>
-              </dl>
-            </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <dl class="dl-horizontal">
+              <dt>Identifier</dt>
+              <dd>{{this.sut.id}}</dd>
+              <dt>Title</dt>
+              <dd>{{this.sut.title ? this.sut.title : '-'}}</dd>
+              <dt>OAS location</dt>
+              <dd>
+                <b-link :href="this.sut.location" target="_blank">{{this.sut.location}}</b-link>
+              </dd>
+            </dl>
           </div>
-        </b-card-text>
+          <div class="col">
+            <dl class="dl-horizontal">
+              <dt>Description</dt>
+              <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
+              <dt>Created @</dt>
+              <dd>{{this.sut.createdAt | date }}</dd>
+            </dl>
+          </div>
+        </div>
       </b-tab>
       <b-tab :disabled="this.actionsCount === 0" :title="actionsTitle">
-        <b-card-text>
-          <SutsDetailActions
-            :sut="sut"
-            :fields="fields"
-            :formatters="formatters"
-          ></SutsDetailActions>
-        </b-card-text>
+        <SutsDetailActions :sut="sut" :fields="fields" :formatters="formatters"></SutsDetailActions>
       </b-tab>
     </b-tabs>
 
@@ -114,7 +106,7 @@ export default {
         clearTimeout(this.refreshTimeout);
         this.$store.dispatch("findSut", this.sut.id);
         this.$store.dispatch("findAllSuts");
-        this.$root.$emit('bv::refresh::table', 'sut-actions');
+        this.$root.$emit("bv::refresh::table", "sut-actions");
         return;
       }
 
@@ -148,12 +140,13 @@ export default {
     },
     tasksQueuedOrRunning() {
       return (
-        this.$store.getters.suts.current_queued_or_running_tasks_count !== null &&
+        this.$store.getters.suts.current_queued_or_running_tasks_count !==
+          null &&
         this.$store.getters.suts.current_queued_or_running_tasks_count > 0
       );
     },
     actionsTitle() {
-      let title = 'REST model description';
+      let title = "REST model description";
       if (this.actionsCount > 0) {
         title += ` [${this.actionsCount}]`;
       }
@@ -161,8 +154,8 @@ export default {
     },
     actionsCount() {
       const count = this.$store.getters.suts.current_actions.total;
-      return (count !== null && count > 0) ? count : 0;
-    },
+      return count !== null && count > 0 ? count : 0;
+    }
   },
   created: function() {},
   destroyed: function() {

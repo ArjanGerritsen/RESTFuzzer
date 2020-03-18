@@ -21,4 +21,5 @@ public interface FuzProjectService extends CrudRepository<FuzProject, Long> {
 
     Optional<FuzProject> findById(Long id);
 
+    Long countBySutId(Long id);
 }

@@ -59,7 +59,7 @@
             v-for="(value, key) in row.item.parameters"
             :key="key"
           >
-            <b>#{{ value.id }}</b>
+            <b>#{{ value.id }} </b>
             <b-badge v-if="value.required" variant="primary">required</b-badge>
             <br />
             name: {{ value.name}}

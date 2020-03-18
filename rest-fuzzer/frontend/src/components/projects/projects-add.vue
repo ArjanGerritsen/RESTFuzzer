@@ -15,6 +15,18 @@
         </b-form-select>
       </b-form-group>
 
+      <div v-if="project.type === 'BASIC_FUZZER'">
+        <b-form-group
+          id="input-group-2"
+          label="Repetitions:"
+          label-for="input-2"
+          description="Set number of repetitions (0 means, run once)"
+        >
+          <b-form-input id="range-1" v-model="metaDataTuplesJson.repetitions" type="range" min="0" max="25000" step="50"></b-form-input>
+          <div class="mt-2">Repetitions: {{ metaDataTuplesJson.repetitions }}</div>
+        </b-form-group>
+      </div>
+
       <b-form-group
         id="input-group-2"
         label="System under test:"
@@ -26,7 +38,7 @@
             <b-form-select-option :value="null" disabled>-- select a system under test --</b-form-select-option>
           </template>
         </b-form-select>
-      </b-form-group>
+      </b-form-group>      
     </b-form>
 
     <template slot="modal-footer" slot-scope="{ cancel }">
@@ -50,7 +62,11 @@ export default {
         type: null,
         sut: {
         	id: null
-        }
+        },
+        metaDataTuplesJson: null
+      },
+      metaDataTuplesJson: {
+        repetitions: 0
       },
       types: [
         { value: "BASIC_FUZZER", text: "Basic" },
@@ -75,6 +91,7 @@ export default {
       this.hide();
     },
     addProject() {
+      this.project.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);
       this.$store.dispatch("addProject", this.project).then(() => {
         this.cancel();
         this.$store.dispatch("findAllProjects");

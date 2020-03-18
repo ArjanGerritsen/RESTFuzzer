@@ -6,14 +6,15 @@
       </span>
       <b-card-text>
         <div class="button-group-left">
-          <b-button size="sm" type="submit" variant="primary" v-b-modal.projects-add>
+          <b-button size="sm" type="submit" variant="primary" @click="addDictionary()">
             <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
           </b-button>
         </div>
         <list
-          @select-item="selectProject"
+          @click-item="selectDictionary"
+          :select="false"
           :fields="fields"
-          :items="projects"
+          :items="dictionaries"
           :formatters="formatters"
         ></list>
       </b-card-text>
@@ -34,25 +35,27 @@ export default {
       ],
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
-        { key: "type", thStyle: "width: 250px;" },
-        { key: "sut.title", label: "System under test" },
+        { key: "name", thStyle: "width: 250px;" },
+        { key: "items.length", label: "# Items" },
         { key: "createdAt", label: "Created @", thStyle: "width: 110px;" }
       ]
     };
   },
   methods: {
-    selectProject(project) {
-      this.$store.dispatch("findProject", { project_id: project.id });
-      this.$bvModal.show("projects-detail");
+    selectDictionary(dictionary) {
+      this.$store.commit("set_dictionary", { dictionary: dictionary });
+    },
+    addDictionary() {
+      this.$store.commit("set_dictionary", { dictionary: null });      
     }
   },
   computed: {
-    projects() {
-      return this.$store.getters.projects.all;
+    dictionaries() {
+      return this.$store.getters.dictionaries.all;
     }
   },
   created: function() {
-    this.$store.dispatch("findAllProjects");
+    this.$store.dispatch("findAllDictionaries");
   }
 };
 </script>

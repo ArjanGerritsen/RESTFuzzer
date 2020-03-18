@@ -11,7 +11,8 @@
           </b-button>
         </div>
         <list
-          @select-item="selectProject"
+          @click-item="selectProject"
+          :select="false"
           :fields="fields"
           :items="projects"
           :formatters="formatters"

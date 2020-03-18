@@ -10,7 +10,13 @@
             <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
           </b-button>
         </div>
-        <list @select-item="selectSut" :fields="fields" :items="suts" :formatters="formatters"></list>
+        <list
+          @click-item="selectSut"
+          :select="false"
+          :fields="fields"
+          :items="suts"
+          :formatters="formatters"
+        ></list>
       </b-card-text>
     </b-card>
   </div>

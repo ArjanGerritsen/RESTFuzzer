@@ -1,5 +1,10 @@
 package nl.ou.se.rest.fuzzer.components.data.fuz.domain;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,9 +18,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity(name = "fuz_dictionaries")
 public class FuzDictionary {
-	
 
-	// variables
+    private static final String ITEM_SEPERATOR = "\n";
+
+    // variables
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,43 +33,59 @@ public class FuzDictionary {
 
     @NotNull
     @NotEmpty
-    private String itemsCsv;
+    private String itemsText;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
 
     // constructors
-    public FuzDictionary(String name, String itemsCsv) {
-    	this.name = name;
-    	this.itemsCsv = itemsCsv;
+    public FuzDictionary() {
+    }
+
+    public FuzDictionary(String name, String itemsText) {
+        this.name = name;
+        this.itemsText = itemsText;
     }
 
     // methods
-    
-    
+    public List<String> getItems() {
+        return Arrays.asList(this.itemsText.split(ITEM_SEPERATOR));
+    }
+
     // getters and setters
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getItemsCsv() {
-		return itemsCsv;
-	}
+    public String getItemsText() {
+        return itemsText;
+    }
 
-	public void setItemsCsv(String itemsCsv) {
-		this.itemsCsv = itemsCsv;
-	}
-    
-	// toString
+    public void setItemsText(String itemsText) {
+        this.itemsText = itemsText;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    // toString
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
     }

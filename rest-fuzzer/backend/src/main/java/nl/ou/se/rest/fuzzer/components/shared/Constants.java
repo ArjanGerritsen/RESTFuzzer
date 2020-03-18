@@ -17,4 +17,9 @@ public abstract class Constants {
 
 	public static final String ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS = "rmd.suts.all_relations";
     public static final String ENTITY_GRAPH_FUZ_PROJECTS_RELATIONS = "fuz.projects.sut_and_actions";
+    
+    public static final String VALIDATION_OBJECT_NOT_FOUND = "Object %s with id %s does not exist";
+    public static final String VALIDATION_OBJECT_FAILED = "Object %s not saved, because of %s validation error(s)";    
+    
+    public static final String VALIDATION_SUT_USED_BY_PROJECTS = "Sut with id %s is connected to one or more project(s)";
 }
