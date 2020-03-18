@@ -16,24 +16,24 @@ import nl.ou.se.rest.fuzzer.components.task.TaskExecutionBase;
 @Service
 public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
 
-	// variables
-	public static final String KEY_SUT_ID = "sut_id";
+    // variables
+    public static final String KEY_SUT_ID = "sut_id";
 
-	@Autowired
-	private RmdSutService sutService;
+    @Autowired
+    private RmdSutService sutService;
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-	// methods
-	public void execute() {
+    // methods
+    public void execute() {
 		logger.info(String.format(Constants.INFO_TASK_START, this.getClass().getName()));
 
-		if (this.getMetaDataValue(KEY_SUT_ID) == null) {
+		if (!this.getTask().getMetaDataTuples().containsKey(KEY_SUT_ID)) {
             logger.warn(String.format(Constants.WARN_TASK_VALUE_FOR_KEY_NOT_Present, this.getClass().getName(), KEY_SUT_ID));
             return;		    
 		}
 
-		Long sutId = Long.valueOf((Integer) this.getMetaDataValue(KEY_SUT_ID));
+		Long sutId = Long.valueOf((Integer) this.getTask().getMetaDataTuples().get(KEY_SUT_ID));
     	Optional<RmdSut> oSut = sutService.findById(sutId);
 
     	if (!oSut.isPresent()) {
@@ -42,7 +42,7 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
     	}
 
     	RmdSut sut = oSut.get();
-    	
+
         Extractor extractor = new Extractor(sut);
         extractor.processV2();
 

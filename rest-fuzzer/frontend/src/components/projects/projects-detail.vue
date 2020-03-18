@@ -52,6 +52,10 @@
                   target="_blank"
                 >{{this.project.sut.location}}</b-link>
               </dd>
+              <dt>Meta data</dt>
+              <dd>
+                <div class="json" :inner-html.prop="this.project.metaDataTuplesJson | json"></div>
+              </dd>
             </dl>
           </div>
           <div class="col"></div>
@@ -124,9 +128,6 @@ export default {
     };
   },
   methods: {
-    selectAction(value) {
-      console.log("value: " + value);
-    },
     refreshData() {
       if (!this.tasksQueuedOrRunning) {
         this.startedRefresh = null;

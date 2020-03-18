@@ -1,19 +1,18 @@
 package nl.ou.se.rest.fuzzer.components.task;
 
-import java.util.HashMap;
-import java.util.Map;
+import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 
 public class TaskExecutionBase {
 
 	// variables
-    private Map<String, Object> metaDataTuples = new HashMap<>();
+    private Task task;
 
     // getters and setters
-    public void setMetaDataTuples(Map<String, Object> metaDataTuples) {
-        this.metaDataTuples = metaDataTuples;
+    public Task getTask() {
+        return task;
     }
 
-    public Object getMetaDataValue(String key) {
-        return this.metaDataTuples.get(key);
+    public void setTask(Task task) {
+        this.task = task;
     }
 }

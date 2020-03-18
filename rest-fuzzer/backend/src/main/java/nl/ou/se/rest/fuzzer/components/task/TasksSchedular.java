@@ -21,7 +21,7 @@ public class TasksSchedular {
 
 	@Autowired 
 	private TaskService taskService;
-	
+
 	@Autowired
 	private TaskExecutionFactory taskExecutionFactory;
 
@@ -37,7 +37,7 @@ public class TasksSchedular {
 	}
 
 	private void executeTask(Task task) {
-	    TaskExecution execution = taskExecutionFactory.create(task.getCanonicalName()).setMetaDataTuples(task.getMetaDataTuples()).build();
+	    TaskExecution execution = taskExecutionFactory.create(task.getCanonicalName()).setTask(task).build();
 	    if (execution == null) {
 	        logger.warn(String.format(Constants.WARN_TASK_SCHEDULAR_TASK_NOT_STARTED, task.getCanonicalName(), task.getId()));
 	        return;

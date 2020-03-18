@@ -31,13 +31,13 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 	public void execute() {
 		logger.info(String.format(Constants.INFO_TASK_START, this.getClass().getName()));
 
-		if (this.getMetaDataValue(KEY_PROJECT_ID) == null) {
+		if (!this.getTask().getMetaDataTuples().containsKey(KEY_PROJECT_ID)) {
 			logger.warn(String.format(Constants.WARN_TASK_VALUE_FOR_KEY_NOT_Present, this.getClass().getName(),
 					KEY_PROJECT_ID));
 			return;
 		}
 
-		Long projectId = Long.valueOf((Integer) this.getMetaDataValue(KEY_PROJECT_ID));
+		Long projectId = Long.valueOf((Integer) this.getTask().getMetaDataTuples().get(KEY_PROJECT_ID));
 		Optional<FuzProject> oProject = projectService.findById(projectId);
 
 		if (!oProject.isPresent()) {

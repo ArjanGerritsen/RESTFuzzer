@@ -1,13 +1,11 @@
 package nl.ou.se.rest.fuzzer.components.task;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.extractor.ExtractorTask;
 import nl.ou.se.rest.fuzzer.components.fuzzer.FuzzerTask;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
@@ -16,7 +14,7 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 public class TaskExecutionFactory {
 
     // variables
-    private Map<String, Object> metaDataTuples = new HashMap<>();
+    private Task task;
 
     @Autowired
     private ExtractorTask extractorTask;
@@ -33,8 +31,8 @@ public class TaskExecutionFactory {
         return this;
     }
 
-    public TaskExecutionFactory setMetaDataTuples(Map<String, Object> metaDataTuples) {
-        this.metaDataTuples = metaDataTuples;
+    public TaskExecutionFactory setTask(Task task) {
+        this.task = task;
         return this;
     }
 
@@ -50,7 +48,7 @@ public class TaskExecutionFactory {
             return null;
         }
 
-        taskExecution.setMetaDataTuples(this.metaDataTuples);
+        taskExecution.setTask(this.task);
 
         return taskExecution;
     }

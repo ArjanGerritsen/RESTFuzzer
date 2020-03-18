@@ -20,6 +20,8 @@ public abstract class Constants {
     
     public static final String VALIDATION_OBJECT_NOT_FOUND = "Object %s with id %s does not exist";
     public static final String VALIDATION_OBJECT_FAILED = "Object %s not saved, because of %s validation error(s)";    
-    
+
     public static final String VALIDATION_SUT_USED_BY_PROJECTS = "Sut with id %s is connected to one or more project(s)";
+    
+    public static final String FUZZER_META_DATA_MISSING = "Fuzzer %s misses metadata to run: %s";
 }

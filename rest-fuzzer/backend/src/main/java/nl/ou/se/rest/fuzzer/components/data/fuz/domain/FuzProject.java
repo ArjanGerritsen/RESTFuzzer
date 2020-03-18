@@ -48,12 +48,12 @@ public class FuzProject implements Comparable<FuzProject> {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "project_id")
     @SortNatural
     private SortedSet<FuzRequest> requests = new TreeSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "project_id")
     @SortNatural
     private SortedSet<FuzResponse> responses = new TreeSet<>();

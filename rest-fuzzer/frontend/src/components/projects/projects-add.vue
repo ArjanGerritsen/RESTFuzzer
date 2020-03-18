@@ -90,8 +90,12 @@ export default {
       this.resetForm();
       this.hide();
     },
-    addProject() {
+    setMetaDataTuplesJson() {
+      this.metaDataTuplesJson.repetitions = Number(this.metaDataTuplesJson.repetitions);
       this.project.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);
+    },
+    addProject() {
+      this.setMetaDataTuplesJson();
       this.$store.dispatch("addProject", this.project).then(() => {
         this.cancel();
         this.$store.dispatch("findAllProjects");

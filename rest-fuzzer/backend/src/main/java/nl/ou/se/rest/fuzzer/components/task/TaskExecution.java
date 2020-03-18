@@ -1,13 +1,12 @@
 package nl.ou.se.rest.fuzzer.components.task;
 
-import java.util.Map;
+import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 
 public interface TaskExecution {
 
 	public void execute();
-
-	public void setMetaDataTuples(Map<String, Object> metaDataTuples);
-
-	public Object getMetaDataValue(String key);
+	
+	public void setTask(Task task);
+	public Task getTask();
 
 }
