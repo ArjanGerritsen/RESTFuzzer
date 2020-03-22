@@ -53,7 +53,7 @@ public class RmdSutController {
         Optional<RmdSut> sut = sutService.findById(id);
 
         if (!sut.isPresent()) {
-            logger.warn(String.format(Constants.VALIDATION_OBJECT_NOT_FOUND, RmdSut.class, id));
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdSut.class, id));
             return ResponseEntity.badRequest().body(new RmdSutDto());
         }
 
@@ -67,7 +67,7 @@ public class RmdSutController {
 
         List<String> violations = ValidatorUtil.getViolations(sut);
         if (!violations.isEmpty()) {
-            logger.warn(String.format(Constants.VALIDATION_OBJECT_FAILED, RmdSut.class, violations.size()));
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_FAILED, RmdSut.class, violations.size()));
             return ValidatorUtil.getResponseForViolations(violations);
         }
 
@@ -80,13 +80,13 @@ public class RmdSutController {
         Optional<RmdSut> sut = sutService.findById(id);
 
         if (!sut.isPresent()) {
-            logger.warn(String.format(Constants.VALIDATION_OBJECT_NOT_FOUND, RmdSut.class, id));
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdSut.class, id));
             return ResponseEntity.badRequest().body(new RmdSutDto());
         }
 
         if (projectService.countBySutId(id) > 0) {
-            logger.warn(String.format(Constants.VALIDATION_SUT_USED_BY_PROJECTS, id));
-            return ValidatorUtil.getResponseForViolation(String.format(Constants.VALIDATION_SUT_USED_BY_PROJECTS, id));
+            logger.warn(String.format(Constants.Service.VALIDATION_SUT_USED_BY_PROJECTS, id));
+            return ValidatorUtil.getResponseForViolation(String.format(Constants.Service.VALIDATION_SUT_USED_BY_PROJECTS, id));
         }
 
         sutService.deleteById(id);

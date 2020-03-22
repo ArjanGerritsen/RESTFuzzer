@@ -15,11 +15,11 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @Service
 public class TasksSchedular {
 
-    // variables
+	// variables
 	@Autowired
 	private TasksExecutor executor;
 
-	@Autowired 
+	@Autowired
 	private TaskService taskService;
 
 	@Autowired
@@ -28,23 +28,24 @@ public class TasksSchedular {
 	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 	// methods
-	@Scheduled(cron = "*/20 * * * * *")
+	@Scheduled(cron = "*/10 * * * * *")
 	public void runJobs() {
-	    List<Task> tasksToRun = taskService.findQueued();
-		logger.info(String.format(Constants.INFO_TASK_SCHEDULAR_START, tasksToRun.size()));
+		List<Task> tasksToRun = taskService.findQueued();
+		logger.info(String.format(Constants.Task.SCHEDULAR_START, tasksToRun.size()));
 
 		tasksToRun.forEach(t -> executeTask(t));
 	}
 
 	private void executeTask(Task task) {
-	    TaskExecution execution = taskExecutionFactory.create(task.getCanonicalName()).setTask(task).build();
-	    if (execution == null) {
-	        logger.warn(String.format(Constants.WARN_TASK_SCHEDULAR_TASK_NOT_STARTED, task.getCanonicalName(), task.getId()));
-	        return;
-	    }
+		TaskExecution execution = taskExecutionFactory.create(task.getCanonicalName()).setTask(task).build();
+		if (execution == null) {
+			logger.warn(
+					String.format(Constants.Task.SCHEDULAR_TASK_NOT_STARTED, task.getCanonicalName(), task.getId()));
+			return;
+		}
 
-        logger.info(String.format(Constants.INFO_TASK_SCHEDULAR_START_TASK, task.getCanonicalName(), task.getId()));
+		logger.info(String.format(Constants.Task.SCHEDULAR_START_TASK, task.getCanonicalName(), task.getId()));
 
-	    executor.run(task, execution);
+		executor.run(task, execution);
 	}
 }

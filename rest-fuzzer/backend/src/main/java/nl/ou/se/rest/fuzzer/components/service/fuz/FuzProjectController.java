@@ -61,7 +61,7 @@ public class FuzProjectController {
         Optional<FuzProject> project = projectService.findById(id);
 
         if (!project.isPresent()) {
-            logger.warn(String.format(Constants.VALIDATION_OBJECT_NOT_FOUND, FuzProject.class, id));
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, FuzProject.class, id));
             return ResponseEntity.badRequest().body(new FuzProjectDto());
         }
 
@@ -82,7 +82,7 @@ public class FuzProjectController {
 
         List<String> violations = ValidatorUtil.getViolations(project);
         if (!violations.isEmpty()) {
-            logger.warn(String.format(Constants.VALIDATION_OBJECT_FAILED, FuzProject.class, violations.size()));
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_FAILED, FuzProject.class, violations.size()));
             return ValidatorUtil.getResponseForViolations(violations);
         }
 
@@ -95,7 +95,7 @@ public class FuzProjectController {
         Optional<FuzProject> project = projectService.findById(id);
 
         if (!project.isPresent()) {
-            logger.warn(String.format(Constants.VALIDATION_OBJECT_NOT_FOUND, FuzProject.class, id));
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, FuzProject.class, id));
             return ResponseEntity.badRequest().body(new FuzProjectDto());
         }
 

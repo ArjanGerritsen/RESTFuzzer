@@ -13,43 +13,43 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @Service
 public class TaskExecutionFactory {
 
-    // variables
-    private Task task;
+	// variables
+	private Task task;
 
-    @Autowired
-    private ExtractorTask extractorTask;
+	@Autowired
+	private ExtractorTask extractorTask;
 
-    @Autowired
-    private FuzzerTask fuzzerTask;
+	@Autowired
+	private FuzzerTask fuzzerTask;
 
-    private String executionName;
+	private String executionName;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    public TaskExecutionFactory create(String executionName) {
-        this.executionName = executionName;
-        return this;
-    }
+	public TaskExecutionFactory create(String executionName) {
+		this.executionName = executionName;
+		return this;
+	}
 
-    public TaskExecutionFactory setTask(Task task) {
-        this.task = task;
-        return this;
-    }
+	public TaskExecutionFactory setTask(Task task) {
+		this.task = task;
+		return this;
+	}
 
-    public TaskExecution build() {
-        TaskExecution taskExecution = null;
+	public TaskExecution build() {
+		TaskExecution taskExecution = null;
 
-        if (ExtractorTask.class.getCanonicalName().equals(executionName)) {
-            taskExecution = extractorTask;
-        } else if (FuzzerTask.class.getCanonicalName().equals(executionName)) {
-            taskExecution = fuzzerTask;
-        } else {
-            logger.error(String.format(Constants.ERROR_TASK_EXECUTION_FACTORY_UNKNOWN, executionName));
-            return null;
-        }
+		if (ExtractorTask.class.getCanonicalName().equals(executionName)) {
+			taskExecution = extractorTask;
+		} else if (FuzzerTask.class.getCanonicalName().equals(executionName)) {
+			taskExecution = fuzzerTask;
+		} else {
+			logger.error(String.format(Constants.Task.EXECUTION_FACTORY_UNKNOWN, executionName));
+			return null;
+		}
 
-        taskExecution.setTask(this.task);
+		taskExecution.setTask(this.task);
 
-        return taskExecution;
-    }
+		return taskExecution;
+	}
 }

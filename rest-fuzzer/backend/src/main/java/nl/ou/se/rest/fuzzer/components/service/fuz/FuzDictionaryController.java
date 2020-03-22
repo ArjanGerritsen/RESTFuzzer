@@ -45,7 +45,7 @@ public class FuzDictionaryController {
         Optional<FuzDictionary> dictionary = dictionaryService.findById(id);
 
         if (!dictionary.isPresent()) {
-            logger.warn(String.format(Constants.VALIDATION_OBJECT_NOT_FOUND, FuzDictionary.class, id));
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, FuzDictionary.class, id));
             return ResponseEntity.badRequest().body(new FuzProjectDto());
         }
 
@@ -59,7 +59,7 @@ public class FuzDictionaryController {
 
         List<String> violations = ValidatorUtil.getViolations(dictionary);
         if (!violations.isEmpty()) {
-            logger.warn(String.format(Constants.VALIDATION_OBJECT_FAILED, FuzDictionary.class, violations.size()));
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_FAILED, FuzDictionary.class, violations.size()));
             return ValidatorUtil.getResponseForViolations(violations);
         }
 
@@ -72,7 +72,7 @@ public class FuzDictionaryController {
         Optional<FuzDictionary> dictionary = dictionaryService.findById(id);
 
         if (!dictionary.isPresent()) {
-            logger.warn(String.format(Constants.VALIDATION_OBJECT_NOT_FOUND, FuzDictionary.class, id));
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, FuzDictionary.class, id));
             return ResponseEntity.badRequest().body(new FuzDictionaryDto());
         }
 

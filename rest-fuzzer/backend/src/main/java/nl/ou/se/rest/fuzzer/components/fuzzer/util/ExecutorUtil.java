@@ -1,10 +1,12 @@
 package nl.ou.se.rest.fuzzer.components.fuzzer.util;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.client.config.RequestConfig;
@@ -15,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -26,6 +29,8 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
 import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzResponseFactory;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.service.task.TaskController;
+import nl.ou.se.rest.fuzzer.components.shared.Constants;
+import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 
 public class ExecutorUtil {
 
@@ -34,6 +39,9 @@ public class ExecutorUtil {
 
 	private static final int TIMEOUT_MS = 5 * 1000;
 	private static final String PLACEHOLDER_PATH_VARIABLE = "\\{%s\\}";
+
+	private static final String HEADER_ACCEPT = "Accept";
+	private static final String HEADER_CONTENT_TYPE = "Content-type";
 
 	private static CloseableHttpClient httpClient;
 	private static ExecutorUtil instance = null;
@@ -145,21 +153,14 @@ public class ExecutorUtil {
 
 	private HttpUriRequest getGetRequest(FuzRequest request) {
 		HttpGet get = new HttpGet(getUri(request));
-
+		setHeaders(get);
 		return get;
 	}
 
 	private HttpUriRequest getPostRequest(FuzRequest request) {
 		HttpPost post = new HttpPost(getUri(request));
-
-		// TODO ...
-//		post.setHeader("Accept", "application/json");
-//		post.setHeader("Content-type", "application/json");
-
-//		String json = "{\"id\":1,\"name\":\"John\"}";
-//		StringEntity entity = new StringEntity(json);
-//		post.setEntity(entity);
-
+		setHeaders(post);
+		setFormDataParameters(post, request);
 		return post;
 	}
 
@@ -179,6 +180,27 @@ public class ExecutorUtil {
 		HttpDelete delete = new HttpDelete(getUri(request));
 
 		return delete;
+	}
+
+	private void setHeaders(HttpUriRequest httpUriRequest) {
+		httpUriRequest.setHeader(HEADER_ACCEPT, "application/json");
+		httpUriRequest.setHeader(HEADER_CONTENT_TYPE, "application/json");
+	}
+
+	private void setFormDataParameters(HttpPost post, FuzRequest request) {
+		Map<String, Object> parameters = request.getParameterMap(ParameterContext.FORMDATA);
+		String json = JsonUtil.mapToString(parameters);
+		post.setEntity(jsonToEntity(json));
+	}
+	
+	private HttpEntity jsonToEntity(String json) {
+		StringEntity entity = null;
+		try {
+			entity = new StringEntity(json);
+		} catch (UnsupportedEncodingException e) {
+			logger.warn(String.format(Constants.Fuzzer.ENCODING_UNSUPPORTED, e.getMessage()));
+		}
+		return entity;
 	}
 
 	private URI getUri(FuzRequest request) {
