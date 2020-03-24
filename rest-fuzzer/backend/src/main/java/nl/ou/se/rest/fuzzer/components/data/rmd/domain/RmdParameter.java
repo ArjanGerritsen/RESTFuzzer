@@ -37,6 +37,10 @@ public class RmdParameter implements Comparable<RmdParameter> {
     public static final String META_DATA_ENUM = "ENUM";
     public static final String META_DATA_DEFAULT = "DEFAULT";
 
+    public static final String META_DATA_ARRAY_FORMAT = "ARRAY_FORMAT";
+    public static final String META_DATA_ARRAY_TYPE = "ARRAY_TYPE";
+    public static final String META_DATA_ARRAY_ENUM = "ARRAY_ENUM";
+
     // variables
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,7 +98,14 @@ public class RmdParameter implements Comparable<RmdParameter> {
     public void setMetaDataTuples(Map<String, Object> metaDataTuples) {
         this.metaDataTuplesJson = JsonUtil.mapToString(metaDataTuples);
     }
-    
+
+    public Object getMetaDataTupleValue(String key, Object defaultValue) {
+        if (this.getMetaDataTuples().containsKey(key)) {
+            return this.getMetaDataTuples().get(key);
+        }
+        return defaultValue;
+    }
+
     // getters and setters
     public Long getId() {
         return id;

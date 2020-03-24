@@ -15,7 +15,7 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.ExecutorUtil;
-import nl.ou.se.rest.fuzzer.components.fuzzer.util.ParameterUtil;
+import nl.ou.se.rest.fuzzer.components.fuzzer.util.RequestUtil;
 import nl.ou.se.rest.fuzzer.components.service.fuz.FuzDictionaryController;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
@@ -39,6 +39,12 @@ public class FuzzerBasic {
 
 	@Autowired
 	private FuzResponseService responseService;
+	
+	@Autowired
+	private RequestUtil requestUtil;
+	
+	@Autowired
+	private ExecutorUtil executorUtil;
 
 	public void start(FuzProject project) {
 		this.project = project;
@@ -53,10 +59,10 @@ public class FuzzerBasic {
 		Integer repititions = (Integer) project.getMetaDataTuples().get(META_DATA_REPITITIONS);
 		for (int i = 0; i < repititions; i++) {
 			actions.forEach(a -> {
-				FuzRequest request = ParameterUtil.requestFromAction(project, a);
+				FuzRequest request = requestUtil.getRequestFromAction(project, a);
 				requestService.save(request);
 
-				FuzResponse response = ExecutorUtil.getInstance().processRequest(request);
+				FuzResponse response = executorUtil.processRequest(request);
 				responseService.save(response);
 			});
 		}

@@ -8,13 +8,19 @@ import io.swagger.models.parameters.FormParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
 import io.swagger.models.parameters.QueryParameter;
+import io.swagger.models.properties.BaseIntegerProperty;
+import io.swagger.models.properties.Property;
+import io.swagger.models.properties.StringProperty;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
+import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 public abstract class ExtractorUtil {
 
     // constants
     public static final String KEY_TYPE = "TYPE";
+
+    private static final String TYPE_ARRAY = "array";
 
     private static final String ERROR_UNKOWN_PARAM_TYPE = "Unknown parametertype: %s";
 
@@ -58,12 +64,21 @@ public abstract class ExtractorUtil {
 
         putIfNotNull(values, RmdParameter.META_DATA_MIN_ITEMS, queryParameter.getMinItems());
         putIfNotNull(values, RmdParameter.META_DATA_MAX_ITEMS, queryParameter.getMaxItems());
-        
+
         if (queryParameter.getEnum() != null) {
-            putIfNotNull(values, RmdParameter.META_DATA_ENUM, queryParameter.getEnum().stream().collect(Collectors.joining(", ")));
+            putIfNotNull(values, RmdParameter.META_DATA_ENUM,
+                    queryParameter.getEnum().stream().collect(Collectors.joining(", ")));
         }
 
         putIfNotNull(values, RmdParameter.META_DATA_DEFAULT, queryParameter.getDefaultValue());
+
+        if (TYPE_ARRAY.equals(getTypeForParameter(queryParameter.getType()))) {
+            putIfNotNull(values, RmdParameter.META_DATA_ARRAY_FORMAT, queryParameter.getCollectionFormat());
+            if (queryParameter.getItems() != null) {
+                putIfNotNull(values, RmdParameter.META_DATA_ARRAY_TYPE, queryParameter.getItems().getType());
+            }
+            putIfNotNull(values, RmdParameter.META_DATA_ARRAY_ENUM, getEnumFromCollection(queryParameter.getItems()));
+        }
 
         return values;
     }
@@ -83,12 +98,21 @@ public abstract class ExtractorUtil {
 
         putIfNotNull(values, RmdParameter.META_DATA_MIN_ITEMS, pathParameter.getMinItems());
         putIfNotNull(values, RmdParameter.META_DATA_MAX_ITEMS, pathParameter.getMaxItems());
-        
+
         if (pathParameter.getEnum() != null) {
-            putIfNotNull(values, RmdParameter.META_DATA_ENUM, pathParameter.getEnum().stream().collect(Collectors.joining(", ")));
+            putIfNotNull(values, RmdParameter.META_DATA_ENUM,
+                    pathParameter.getEnum().stream().collect(Collectors.joining(", ")));
         }
 
-        putIfNotNull(values, RmdParameter.META_DATA_DEFAULT, pathParameter.getDefaultValue());       
+        putIfNotNull(values, RmdParameter.META_DATA_DEFAULT, pathParameter.getDefaultValue());
+
+        if (TYPE_ARRAY.equals(getTypeForParameter(pathParameter.getType()))) {
+            putIfNotNull(values, RmdParameter.META_DATA_ARRAY_FORMAT, pathParameter.getCollectionFormat());
+            if (pathParameter.getItems() != null) {
+                putIfNotNull(values, RmdParameter.META_DATA_ARRAY_TYPE, pathParameter.getItems().getType());
+            }
+            putIfNotNull(values, RmdParameter.META_DATA_ARRAY_ENUM, getEnumFromCollection(pathParameter.getItems()));
+        }
 
         return values;
     }
@@ -110,15 +134,47 @@ public abstract class ExtractorUtil {
         putIfNotNull(values, RmdParameter.META_DATA_MAX_ITEMS, formParameter.getMaxItems());
 
         if (formParameter.getEnum() != null) {
-            putIfNotNull(values, RmdParameter.META_DATA_ENUM, formParameter.getEnum().stream().collect(Collectors.joining(", ")));
+            putIfNotNull(values, RmdParameter.META_DATA_ENUM,
+                    formParameter.getEnum().stream().collect(Collectors.joining(", ")));
         }
 
         putIfNotNull(values, RmdParameter.META_DATA_DEFAULT, formParameter.getDefaultValue());
 
+        if (TYPE_ARRAY.equals(getTypeForParameter(formParameter.getType()))) {
+            putIfNotNull(values, RmdParameter.META_DATA_ARRAY_FORMAT, formParameter.getCollectionFormat());
+            if (formParameter.getItems() != null) {
+                putIfNotNull(values, RmdParameter.META_DATA_ARRAY_TYPE, formParameter.getItems().getType());
+            }
+            putIfNotNull(values, RmdParameter.META_DATA_ARRAY_ENUM, getEnumFromCollection(formParameter.getItems()));
+        }
+
         return values;
     }
 
-    protected static String getTypeForParameter(String type) {
+    private static String getEnumFromCollection(Property property) {
+        if (property == null || property.getType() == null) {
+            return null;
+        }
+        String result = null;
+
+        switch (property.getType()) {
+        case StringProperty.TYPE:
+            StringProperty stringProperty = (StringProperty) property;
+            if (stringProperty.getEnum() != null) {
+                result = stringProperty.getEnum().stream().collect(Collectors.joining(Constants.VALUE_SEPERATOR));
+            }
+            break;
+        case BaseIntegerProperty.TYPE:
+            // no enum
+            break;
+        default:
+            // TODO log error !!!
+            break;
+        }
+        return result;
+    }
+
+    private static String getTypeForParameter(String type) {
         if (type == null) {
             // default to String, for date/datetime types it may not be set
             type = ParameterType.STRING.toString();

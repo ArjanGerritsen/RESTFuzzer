@@ -43,8 +43,6 @@
             <dl class="dl-horizontal">
               <dt>Identifier</dt>
               <dd>{{this.project.id}}</dd>
-              <dt>Type</dt>
-              <dd>{{this.project.type | enumToHuman }}</dd>
               <dt>System under test</dt>
               <dd>
                 <b-link
@@ -52,6 +50,8 @@
                   target="_blank"
                 >{{this.project.sut.location}}</b-link>
               </dd>
+              <dt>Type</dt>
+              <dd>{{this.project.type | enumToHuman }}</dd>
               <dt>Meta data</dt>
               <dd>
                 <div class="json" :inner-html.prop="this.project.metaDataTuplesJson | json"></div>

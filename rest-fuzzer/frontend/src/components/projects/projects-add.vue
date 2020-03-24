@@ -22,7 +22,7 @@
           label-for="input-2"
           description="Set number of repetitions (0 means, run once)"
         >
-          <b-form-input id="range-1" v-model="metaDataTuplesJson.repetitions" type="range" min="0" max="25000" step="50"></b-form-input>
+          <b-form-input id="range-1" v-model="metaDataTuplesJson.repetitions" type="range" min="1" max="25000"></b-form-input>
           <div class="mt-2">Repetitions: {{ metaDataTuplesJson.repetitions }}</div>
         </b-form-group>
       </div>
@@ -66,7 +66,7 @@ export default {
         metaDataTuplesJson: null
       },
       metaDataTuplesJson: {
-        repetitions: 0
+        repetitions: 1
       },
       types: [
         { value: "BASIC_FUZZER", text: "Basic" },

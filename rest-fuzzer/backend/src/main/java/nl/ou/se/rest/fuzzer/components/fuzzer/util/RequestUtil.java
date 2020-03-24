@@ -10,13 +10,13 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 
 @Service
-public class RequestService {
+public class RequestUtil {
 
 	// variables
 	private static FuzRequestFactory requestFactory = new FuzRequestFactory();
 
 	@Autowired
-	private ParameterService parameterService;
+	private ParameterUtil parameterService;
 
 	public FuzRequest getRequestFromAction(FuzProject project, RmdAction action) {
 		requestFactory.create(project, action.getPath(), action.getHttpMethod());

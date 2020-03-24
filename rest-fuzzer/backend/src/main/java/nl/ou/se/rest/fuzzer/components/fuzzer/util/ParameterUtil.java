@@ -4,28 +4,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
-import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
-import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzRequestFactory;
-import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
-import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
-import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
+import org.apache.commons.lang3.RandomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
+import nl.ou.se.rest.fuzzer.components.shared.Constants;
+
+@Service
 public class ParameterUtil {
 
-    private static FuzRequestFactory requestFactory = new FuzRequestFactory();
+    // variables
+    private static Logger logger = LoggerFactory.getLogger(ParameterUtil.class);
 
-    public static FuzRequest requestFromAction(FuzProject project, RmdAction action) {
-        requestFactory.create(project, action.getPath(), action.getHttpMethod());
+    private static final String FORMAT_IP = "ip";
+    private static final String FORMAT_URI = "uri";
+    private static final String FORMAT_EMAIL = "email";
+    private static final String FORMAT_DATETIME = "date-time";
 
-        for (ParameterContext context : ParameterContext.values()) {
-            requestFactory.addParameterMap(context, createParameterMap(action.getParametersByContext(context)));
-        }
+    private static final String FORMAT_INT64 = "int64";
 
-        return requestFactory.build();
-    }
-
-    private static Map<String, Object> createParameterMap(List<RmdParameter> parameters) {
+    // methods
+    public Map<String, Object> createParameterMap(List<RmdParameter> parameters) {
         Map<String, Object> parameterMap = new HashMap<>();
 
         parameters.forEach(parameter -> parameterMap.put(parameter.getName(), getValueForParameter(parameter)));
@@ -33,18 +34,82 @@ public class ParameterUtil {
         return parameterMap;
     }
 
-    private static Object getValueForParameter(RmdParameter parameter) {
+    private Object getValueForParameter(RmdParameter parameter) {
         switch (parameter.getType()) {
         case BOOLEAN:
-            return true;
+            return getBooleanValue(parameter);
         case STRING:
-            return "abc";
+            return getStringValue(parameter);
         case INTEGER:
-            return 1;
+            return getIntegerValue(parameter);
         case ARRAY:
-            return null;
+            return getArrayValue(parameter);
         default:
-            return "?"; // TODO dit zou niet voor mogen komen + zinvolle waarden fuzzen ...
+            logger.error(String.format(Constants.Fuzzer.PARAMETER_TYPE_UNKNOWN, parameter.getType()));
+            return "?";
         }
+    }
+
+    private Object getBooleanValue(RmdParameter parameter) {
+        return RandomUtils.nextBoolean();
+    }
+
+    private Object getStringValue(RmdParameter parameter) {
+        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_FORMAT)) {
+            String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_FORMAT);
+
+            switch (format) {
+            case FORMAT_IP:
+                return "127.0.0.1";
+            case FORMAT_URI:
+                return "/uri";
+            case FORMAT_EMAIL:
+                return "test@test.nl";
+            case FORMAT_DATETIME:
+                return "2020-01-01 00:00:00";
+            default:
+                logger.error(String.format(Constants.Fuzzer.META_DATA_INVALID, RmdParameter.META_DATA_FORMAT, format));
+            }
+        }
+
+        return "abc";
+    }
+
+    private Object getIntegerValue(RmdParameter parameter) {
+        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_FORMAT)) {
+            String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_FORMAT);
+            int min = (int) parameter.getMetaDataTupleValue(RmdParameter.META_DATA_MIN_VALUE, 1);
+            int max = (int) parameter.getMetaDataTupleValue(RmdParameter.META_DATA_MAX_VALUE, 1) + 1;
+
+            switch (format) {
+            case FORMAT_INT64:
+                return RandomUtils.nextInt(min, max);
+            default:
+                logger.error(String.format(Constants.Fuzzer.META_DATA_INVALID, RmdParameter.META_DATA_FORMAT, format));
+            }
+        }
+
+        return 1;
+    }
+    
+    private Object getArrayValue(RmdParameter parameter) {
+        // TODO
+        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_TYPE)) {
+            String type = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_TYPE);
+        }
+
+        // TODO
+        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_FORMAT)) {
+            String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_FORMAT);
+        }
+
+        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_ENUM)) {
+            String values = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_ENUM);
+            String[] valuesArray = values.split(Constants.VALUE_SEPERATOR);
+            String value = valuesArray[RandomUtils.nextInt(0, valuesArray.length)];
+            return value;
+        }
+
+        return "abc";
     }
 }

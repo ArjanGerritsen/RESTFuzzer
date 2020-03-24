@@ -16,12 +16,12 @@ public class TaskExecutionBase {
 	private Task task;
 
 	// methods
-	public void logStart(Class<?> clazz) {
-		logger.info(String.format(Constants.Task.START, clazz.getClass().getName()));
+	public void logStart(String className) {
+		logger.info(String.format(Constants.Task.START, className));
 	}
 
-	public void logStop(Class<?> clazz) {
-		logger.info(String.format(Constants.Task.STOP, clazz.getClass().getName()));
+	public void logStop(String className) {
+		logger.info(String.format(Constants.Task.STOP, className));
 	}
 
 	public Object getValueForKey(Class<?> clazz, String key) {

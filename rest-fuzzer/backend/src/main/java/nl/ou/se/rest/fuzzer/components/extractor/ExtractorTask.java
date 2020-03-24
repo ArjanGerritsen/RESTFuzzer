@@ -21,7 +21,7 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
 
     // methods
     public void execute() {
-    	this.logStart(ExtractorTask.class);
+    	this.logStart(ExtractorTask.class.getTypeName());
 
     	Object objSutId = this.getValueForKey(ExtractorTask.class, KEY_SUT_ID);
     	if (objSutId == null) {
@@ -48,6 +48,6 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
 
         sutService.save(sut);
 
-    	this.logStop(ExtractorTask.class);
+    	this.logStop(ExtractorTask.class.getTypeName());
 	}
 }

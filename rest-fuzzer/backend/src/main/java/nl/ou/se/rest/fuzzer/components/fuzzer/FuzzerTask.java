@@ -24,7 +24,7 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 
 	@Override
 	public void execute() {
-    	this.logStart(FuzzerTask.class);
+    	this.logStart(FuzzerTask.class.getTypeName());
 
     	Object objProjectId = this.getValueForKey(FuzzerTask.class, KEY_PROJECT_ID);
     	if (objProjectId == null) {
@@ -50,6 +50,6 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 
 		projectService.save(project);
 
-    	this.logStop(FuzzerTask.class);
+    	this.logStop(FuzzerTask.class.getTypeName());
 	}
 }

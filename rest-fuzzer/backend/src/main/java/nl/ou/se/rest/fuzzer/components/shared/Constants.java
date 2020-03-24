@@ -2,10 +2,13 @@ package nl.ou.se.rest.fuzzer.components.shared;
 
 public abstract class Constants {
 
-	// Relations
-	public static final String ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS = "rmd.suts.all_relations";
-	public static final String ENTITY_GRAPH_FUZ_PROJECTS_RELATIONS = "fuz.projects.sut_and_actions";
+    // Various
+    public static final String VALUE_SEPERATOR = ",";
 
+	// Relations
+    public static final String ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS = "rmd.suts.all_relations";
+	public static final String ENTITY_GRAPH_FUZ_PROJECTS_RELATIONS = "fuz.projects.sut_and_actions";
+    
 	// Extractor
 	public abstract class Extractor {
 	}
@@ -14,6 +17,9 @@ public abstract class Constants {
 	public abstract class Fuzzer {
 		public static final String META_DATA_MISSING = "Fuzzer %s misses metadata to run: %s";
 		public static final String ENCODING_UNSUPPORTED = "Encoding is unsupported: %s";
+        public static final String INVALID_HTTP_METHOD = "Http method %s is unknown";
+        public static final String META_DATA_INVALID = "Meta data value %s is invalid for %s";
+        public static final String PARAMETER_TYPE_UNKNOWN = "Parameter type %s is unknown";
 	}
 
 	// Service
