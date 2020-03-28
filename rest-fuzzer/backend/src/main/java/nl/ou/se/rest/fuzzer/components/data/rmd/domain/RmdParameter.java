@@ -40,7 +40,7 @@ public class RmdParameter implements Comparable<RmdParameter> {
     public static final String META_DATA_ARRAY_FORMAT = "ARRAY_FORMAT";
     public static final String META_DATA_ARRAY_TYPE = "ARRAY_TYPE";
     public static final String META_DATA_ARRAY_ENUM = "ARRAY_ENUM";
-
+    
     // variables
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

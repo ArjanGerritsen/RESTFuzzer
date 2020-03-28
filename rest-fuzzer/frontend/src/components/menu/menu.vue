@@ -6,7 +6,7 @@
         <b-nav-item href="#" to="/suts">Systems under test</b-nav-item>
         <b-nav-item href="#" to="/projects">Fuzzing projects</b-nav-item>
         <b-nav-item href="#" to="/dictionaries">Dictionaries</b-nav-item>
-<!--        <b-nav-item href="#" to="/">Settings</b-nav-item> -->
+        <b-nav-item href="#" to="/tasks">Tasks</b-nav-item>
         <b-nav-item href="#" to="/about">About</b-nav-item>
       </b-navbar-nav>
     </b-navbar>

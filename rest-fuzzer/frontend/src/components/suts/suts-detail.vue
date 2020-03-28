@@ -62,8 +62,11 @@
         </div>
       </b-tab>
       <b-tab :disabled="this.actionsCount === 0" :title="actionsTitle">
-        <SutsDetailActions :sut="sut" :fields="fields" :formatters="formatters"></SutsDetailActions>
+        <SutsActions :sut="sut" :fields="fields" :formatters="formatters"></SutsActions>
       </b-tab>
+      <b-tab :disabled="this.actionsCount === 0" title="Dependencies">
+        <SutsActionsDependencies></SutsActionsDependencies>
+      </b-tab>      
     </b-tabs>
 
     <suts-delete></suts-delete>
@@ -82,10 +85,11 @@
 import Constants from "../../shared/constants";
 
 import SutsDelete from "./suts-delete";
-import SutsDetailActions from "./suts-detail-actions.vue";
+import SutsActions from "./suts-actions";
+import SutsActionsDependencies from "./suts-actions-dependencies.vue";
 
 export default {
-  components: { SutsDetailActions, SutsDelete },
+  components: { SutsDelete, SutsActions, SutsActionsDependencies },
   data() {
     return {
       formatters: [],

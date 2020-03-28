@@ -47,6 +47,9 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
         extractor.getActions().forEach(a -> sut.addAction(a));
 
         sutService.save(sut);
+        
+        RelationFinder relator = new RelationFinder(sut);
+        relator.process();
 
     	this.logStop(ExtractorTask.class.getTypeName());
 	}

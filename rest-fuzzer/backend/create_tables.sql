@@ -31,6 +31,15 @@ CREATE TABLE IF NOT EXISTS rmd_actions (
 
 CREATE INDEX idx_rmd_actions_sut_id ON rmd_actions (sut_id); 
 
+CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  action_id INTEGER,
+  action_depends_on_id INTEGER
+) ENGINE=INNODB;
+
+CREATE INDEX idx_rmd_actions_dependencies_action_id ON rmd_actions_dependencies (action_id);
+CREATE INDEX idx_rmd_actions_dependencies_action_depends_on_id ON rmd_actions_dependencies (action_depends_on_id);
+
 CREATE TABLE IF NOT EXISTS rmd_parameters (
   id INT AUTO_INCREMENT PRIMARY KEY,
   position INT NOT NULL,

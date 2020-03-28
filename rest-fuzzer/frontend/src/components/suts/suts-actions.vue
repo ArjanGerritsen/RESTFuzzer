@@ -112,11 +112,19 @@ export default {
       isBusy: false,
       filter: null,
       perPage: 15,
-      currentPage: 1
+      currentPage: 1,
+      filterShadow: null
     };
   },
   methods: {
     restProvider(context, callback) {
+      if (this.filter !== this.filterShadow) {
+        this.currentPage = 1;
+      } else {
+        this.currentPage = context.currentPage;
+      }
+      this.filterShadow = this.filter;
+
       return this.$store
         .dispatch("findSutActions", {
           sut_id: this.sut.id,

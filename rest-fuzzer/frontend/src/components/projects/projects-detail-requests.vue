@@ -27,7 +27,6 @@
       :fields="fields"
       :borderless="true"
       :filter="filter"
-      @filtered="onFiltered"
       :current-page="currentPage"
       :per-page="perPage"
     >
@@ -82,11 +81,19 @@ export default {
       isBusy: false,
       filter: null,
       perPage: 15,
-      currentPage: 1
+      currentPage: 1,
+      filterShadow: null
     };
   },
   methods: {
     restProvider(context, callback) {
+      if (this.filter !== this.filterShadow) {
+        this.currentPage = 1;
+      } else {
+        this.currentPage = context.currentPage;
+      }
+      this.filterShadow = this.filter;
+
       return this.$store
         .dispatch("findProjectRequests", {
           project_id: this.project.id,
@@ -98,12 +105,6 @@ export default {
         .catch(() => {
           return [];
         });
-    },
-    linkGen(pageNum) {
-      return pageNum === 1 ? "?" : `?page=${pageNum}`;
-    },
-    onFiltered(filteredItems) {
-      this.currentPage = 1;
     }
   },
   computed: {
