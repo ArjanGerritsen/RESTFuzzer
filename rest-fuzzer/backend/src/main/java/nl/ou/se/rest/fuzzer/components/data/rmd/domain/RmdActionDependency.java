@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity(name = "rmd_actions_dependencies")
-public class RmdActionDependency {
+public class RmdActionDependency implements Comparable<RmdActionDependency> {
 
     // variables
     @Id
@@ -22,6 +22,24 @@ public class RmdActionDependency {
 
     @ManyToOne
     private RmdAction actionDependsOn;
+
+    // constructors
+    public RmdActionDependency() {
+    }
+
+    public RmdActionDependency(RmdAction action, RmdAction actionDependsOn) {
+        this.action = action;
+        this.actionDependsOn = actionDependsOn;
+    }
+    
+    // methods
+    public int compareTo(RmdActionDependency other) {
+        int compareAction = this.getAction().compareTo(other.getAction());
+        if (compareAction != 0) {
+            return compareAction;
+        }
+        return this.getActionDependsOn().compareTo(other.getActionDependsOn());
+    }
 
     // getters and setters
     public Long getId() {

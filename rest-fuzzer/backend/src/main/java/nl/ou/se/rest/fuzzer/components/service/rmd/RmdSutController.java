@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzProjectService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
 import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
+import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionDependencyMapper;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionMapper;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdSutMapper;
 import nl.ou.se.rest.fuzzer.components.service.util.ValidatorUtil;
@@ -38,6 +40,9 @@ public class RmdSutController {
 
     @Autowired
     RmdActionService actionService;
+
+    @Autowired
+    RmdActionDependencyService actionDependencyService;
 
     @Autowired
     FuzProjectService projectService;
@@ -94,11 +99,8 @@ public class RmdSutController {
     }
 
     @RequestMapping(path = "{id}/actions", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findActionsById(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findBySutIdAndPath(id, QueryUtil.toLike(path),
-                QueryUtil.toPageRequest(curPage, perPage))));
+    public @ResponseBody ResponseEntity<?> findActionsById(@PathVariable(name = "id") Long id) {
+        return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findBySutId(id)));
     }
 
     @RequestMapping(path = "{id}/actions/count", method = RequestMethod.GET)
@@ -106,4 +108,17 @@ public class RmdSutController {
             @RequestParam(name = "filter", required = false) String path) {
         return ResponseEntity.ok(actionService.countBySutIdAndPath(id, QueryUtil.toLike(path)));
     }
+
+    @RequestMapping(path = "{id}/actions/paginated", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> findActionsById(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findBySutIdAndPath(id, QueryUtil.toLike(path),
+                QueryUtil.toPageRequest(curPage, perPage))));
+    }
+    
+    @RequestMapping(path = "{id}/actions/dependencies", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> findActionsDependenciesById(@PathVariable(name = "id") Long id) {
+        return ResponseEntity.ok(RmdActionDependencyMapper.toDtos(actionDependencyService.findBySutId(id)));
+    }    
 }
