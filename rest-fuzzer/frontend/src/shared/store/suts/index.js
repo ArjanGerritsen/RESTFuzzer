@@ -16,6 +16,21 @@ function getCountActions({ commit }, data) {
     });
 }
 
+function getCommonStart(paths) {
+    const sortedPaths = paths.concat().sort();
+
+    const first = sortedPaths[0];
+    const last = sortedPaths[sortedPaths.length - 1];
+    const lengthShortestString = Math.min(first.length, last.length) - 1;
+
+    let common = "";
+    for (let i = 0; i < lengthShortestString; i++) {
+        if (first[i] !== last[i]) { continue; }
+        common += first[i];
+    }
+    return common;
+}
+
 const suts = {
     state: {
         suts: {
@@ -171,7 +186,7 @@ const suts = {
                         reject(error);
                     })
             })
-        },            
+        },
         addSut({ commit }, sut) {
             return new Promise((resolve, reject) => {
                 axios
@@ -225,12 +240,15 @@ const suts = {
         sutNodes: state => {
             let nodes = []
 
+            const commonStart = getCommonStart(state.suts.current_dependencies.nodes.map(n => n.path));
+
             if (state.suts.current_dependencies.nodes !== null) {
                 nodes = state.suts.current_dependencies.nodes.map(
                     node => {
                         let newNode = {};
                         newNode["id"] = node.id;
-                        newNode["title"] = `${node.path} (${node.httpMethod})`;
+                        newNode["title"] = node.path.replace(commonStart, "");
+                        newNode["httpMethod"] = node.httpMethod;
                         return newNode;
                     }
                 );
@@ -254,7 +272,7 @@ const suts = {
             }
 
             return links;
-        },        
+        },
     }
 }
 

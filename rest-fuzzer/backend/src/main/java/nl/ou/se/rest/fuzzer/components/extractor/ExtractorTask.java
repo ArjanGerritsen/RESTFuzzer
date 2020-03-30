@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
@@ -43,7 +44,14 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
 
     	RmdSut sut = oSut.get();
 
-    	// REST model extraction
+    	extract(sut);
+
+        relate(sut);
+
+    	this.logStop(ExtractorTask.class.getTypeName());
+	}
+
+    private void extract(RmdSut sut) {
         Extractor extractor = new Extractor(sut);
         extractor.processV2();
 
@@ -54,14 +62,15 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
         extractor.getActions().forEach(a -> sut.addAction(a));
 
         sutService.save(sut);
+    }
 
-        // dependencies between actions
+    private void relate(RmdSut sut) {
+        sut = sutService.findById(sut.getId()).get(); // refresh needed
+
         DependencyFinder dependencyFinder = new DependencyFinder(sut);
         dependencyFinder.process();
         Set<RmdActionDependency> actionDependencies = dependencyFinder.getActionDepencies();
 
         actionDependencyService.saveAll(actionDependencies);
-
-    	this.logStop(ExtractorTask.class.getTypeName());
-	}
+    }    
 }

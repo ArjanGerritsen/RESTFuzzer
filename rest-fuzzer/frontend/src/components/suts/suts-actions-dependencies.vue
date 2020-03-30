@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <svg width="720" height="500" />
-  </div>
+  <svg id="relations" width="960" height="600" />
 </template>
 
 <script>
@@ -9,7 +7,7 @@ import * as d3 from "d3";
 
 export default {
   data() {
-    return {};
+    return { };
   },
   computed: {
     nodes: function() {
@@ -21,19 +19,14 @@ export default {
   },
   methods: {
     drawIt: function() {
-      console.log(this.nodes);
-      console.log(this.links);
-
-      // console.log(this.nodes.length);
-      // console.log(this.links.length);
-
-      var svg = d3.select("svg"),
-        width = +svg.attr("width"),
-        height = +svg.attr("height");
+      var svg = d3.select("#relations");
+      var width = 720;
+      var height = 600;
+      var radius = 12;
 
       var color = d3.scaleOrdinal(d3["schemeDark2"]);
 
-      var simulation = d3
+      let simulation = d3
         .forceSimulation()
         .force(
           "link",
@@ -41,8 +34,10 @@ export default {
             return d.id;
           })
         )
-        .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(width / 2, height / 2));
+        .force("charge", d3.forceManyBody().strength(-50))
+        .force("x", d3.forceX(width / 2).strength(0.05))
+        .force("y", d3.forceY(height / 2).strength(0.05))
+        .force("center", d3.forceCenter(width / 2 - 50, height / 2));
 
       var all_links = svg
         .append("g")
@@ -51,11 +46,12 @@ export default {
         .data(this.links)
         .enter()
         .append("line")
+        .attr("stroke", function(d) {
+          return d3.rgb(0, 0, 0);
+        })
         .attr("stroke-width", function(d) {
-          return Math.sqrt(d.value);
+          return 1; // return Math.sqrt(d.value);
         });
-
-      console.log(all_links);
 
       var all_nodes = svg
         .append("g")
@@ -65,13 +61,11 @@ export default {
         .enter()
         .append("g");
 
-      console.log(all_nodes);
-
       var circles = all_nodes
         .append("circle")
         .attr("r", 5)
         .attr("fill", function(d) {
-          return color(1); // TODO
+          return colorForHttpMethod(d.httpMethod);
         })
         .call(
           d3
@@ -81,20 +75,19 @@ export default {
             .on("end", dragended)
         );
 
-      var lables = all_nodes
+      var labels = all_nodes
         .append("text")
         .text(function(d) {
-          return d.id;
+          return d.title;
         })
         .attr("x", 6)
         .attr("y", 3);
 
       all_nodes.append("title").text(function(d) {
-        return d.id;
+        return `hoi ${d.id}`;
       });
 
       simulation.nodes(this.nodes).on("tick", ticked);
-
       simulation.force("link").links(this.links);
 
       function ticked() {
@@ -112,9 +105,16 @@ export default {
             return d.target.y;
           });
 
-        all_nodes.attr("transform", function(d) {
-          return "translate(" + d.x + "," + d.y + ")";
-        });
+        all_nodes
+          .attr("transform", function(d) {
+            return "translate(" + d.x + "," + d.y + ")";
+          })
+          .attr("cx", function(d) {
+            return (d.x = Math.max(radius, Math.min(width - radius, d.x)));
+          })
+          .attr("cy", function(d) {
+            return (d.y = Math.max(radius, Math.min(height - radius, d.y)));
+          });
       }
 
       function dragstarted(d) {
@@ -128,43 +128,48 @@ export default {
         d.fy = d3.event.y;
       }
 
-      function dragended(d) {
+      function dragended(d, simulation) {
         if (!d3.event.active) simulation.alphaTarget(0);
         d.fx = null;
         d.fy = null;
       }
 
-      console.log("DONE");
+      function colorForHttpMethod(httpMethod) {
+        switch (httpMethod) {
+          case "GET":
+            return d3.rgb(0, 255, 0);
+          case "POST":
+            return d3.rgb(0, 255, 255);
+          case "PATCH":
+            return d3.rgb(0, 128, 128);
+          case "PUT":
+            return d3.rgb(0, 255, 128);
+          case "DELETE":
+            return d3.rgb(255, 0, 0);
+          default:
+            return d3.rgb(255, 255, 0);
+        }
+      }
     }
   },
   mounted: function() {
     setTimeout(() => {
       this.drawIt();
-    }, 7500);
+    }, 1500);
   }
 };
 </script>
 
-<style scoped>
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.6;
-}
-
-.nodes circle {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-
-text {
-  font-family: sans-serif;
-  font-size: 10px;
+<style>
+#relations rect {
+  stroke: #dddddd;
+  stroke-width: 1;
 }
 
 #relations {
   border: 1px solid #dddddd;
   width: 720px;
-  height: 500px;
+  height: 600px;
   margin: auto;
 }
 </style>
