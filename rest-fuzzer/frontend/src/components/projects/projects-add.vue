@@ -20,9 +20,15 @@
           id="input-group-2"
           label="Repetitions:"
           label-for="input-2"
-          description="Set number of repetitions (0 means, run once)"
+          description="Set number of repetitions"
         >
-          <b-form-input id="range-1" v-model="metaDataTuplesJson.repetitions" type="range" min="1" max="25000"></b-form-input>
+          <b-form-input
+            id="range-1"
+            v-model="metaDataTuplesJson.repetitions"
+            type="range"
+            min="1"
+            max="25000"
+          ></b-form-input>
           <div class="mt-2">Repetitions: {{ metaDataTuplesJson.repetitions }}</div>
         </b-form-group>
       </div>
@@ -38,7 +44,7 @@
             <b-form-select-option :value="null" disabled>-- select a system under test --</b-form-select-option>
           </template>
         </b-form-select>
-      </b-form-group>      
+      </b-form-group>
     </b-form>
 
     <template slot="modal-footer" slot-scope="{ cancel }">
@@ -55,19 +61,21 @@
 </template>
 
 <script>
+const DEFAULT_META = {
+  repetitions: 1
+};
+
 export default {
   data() {
     return {
       project: {
         type: null,
         sut: {
-        	id: null
+          id: null
         },
         metaDataTuplesJson: null
       },
-      metaDataTuplesJson: {
-        repetitions: 1
-      },
+      metaDataTuplesJson: DEFAULT_META,
       types: [
         { value: "BASIC_FUZZER", text: "Basic" },
         { value: "MBT_FUZZER", text: "ModelBased" },
@@ -79,7 +87,7 @@ export default {
   methods: {
     resetForm() {
       this.project.type = null;
-      this.project.sut = { id: null };
+      this.metaDataTuplesJson = DEFAULT_META;
     },
     hide() {
       this.$nextTick(() => {
@@ -91,7 +99,9 @@ export default {
       this.hide();
     },
     setMetaDataTuplesJson() {
-      this.metaDataTuplesJson.repetitions = Number(this.metaDataTuplesJson.repetitions);
+      this.metaDataTuplesJson.repetitions = Number(
+        this.metaDataTuplesJson.repetitions
+      );
       this.project.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);
     },
     addProject() {
@@ -103,7 +113,7 @@ export default {
     },
     async findAllSuts() {
       if (this.$store.getters.suts.all == null) {
-        await (this.$store.dispatch("findAllSuts"));
+        await this.$store.dispatch("findAllSuts");
       }
     }
   },

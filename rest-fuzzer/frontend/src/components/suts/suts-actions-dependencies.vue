@@ -7,7 +7,9 @@ import * as d3 from "d3";
 
 export default {
   data() {
-    return { };
+    return {
+      svg_links: null
+    };
   },
   computed: {
     nodes: function() {
@@ -20,11 +22,26 @@ export default {
   methods: {
     drawIt: function() {
       var svg = d3.select("#relations");
+
       var width = 720;
       var height = 600;
-      var radius = 12;
+      var radius = 6;
 
       var color = d3.scaleOrdinal(d3["schemeDark2"]);
+
+      svg.attr("viewBox", [0, 0, width, height]);
+      svg.call(
+        d3
+          .zoom()
+          .extent([
+            [0, 0],
+            [width, height]
+          ])
+          .scaleExtent([1, 8])
+          .on("zoom", zoomed)
+      );
+
+      const g = svg.append("g").attr("cursor", "grab");
 
       let simulation = d3
         .forceSimulation()
@@ -39,21 +56,16 @@ export default {
         .force("y", d3.forceY(height / 2).strength(0.05))
         .force("center", d3.forceCenter(width / 2 - 50, height / 2));
 
-      var all_links = svg
+      var all_links = g
         .append("g")
         .attr("class", "links")
         .selectAll("line")
         .data(this.links)
         .enter()
         .append("line")
-        .attr("stroke", function(d) {
-          return d3.rgb(0, 0, 0);
-        })
-        .attr("stroke-width", function(d) {
-          return 1; // return Math.sqrt(d.value);
-        });
+        .attr("stroke", d3.rgb(0, 0, 0));
 
-      var all_nodes = svg
+      var all_nodes = g
         .append("g")
         .attr("class", "nodes")
         .selectAll("g")
@@ -63,7 +75,7 @@ export default {
 
       var circles = all_nodes
         .append("circle")
-        .attr("r", 5)
+        .attr("r", radius)
         .attr("fill", function(d) {
           return colorForHttpMethod(d.httpMethod);
         })
@@ -118,7 +130,7 @@ export default {
       }
 
       function dragstarted(d) {
-        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        // if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
       }
@@ -129,7 +141,7 @@ export default {
       }
 
       function dragended(d, simulation) {
-        if (!d3.event.active) simulation.alphaTarget(0);
+        // if (!d3.event.active) simulation.alphaTarget(0);
         d.fx = null;
         d.fy = null;
       }
@@ -150,6 +162,10 @@ export default {
             return d3.rgb(255, 255, 0);
         }
       }
+
+      function zoomed() {
+        g.attr("transform", d3.event.transform);
+      }
     }
   },
   mounted: function() {
@@ -161,12 +177,14 @@ export default {
 </script>
 
 <style>
-#relations rect {
-  stroke: #dddddd;
+#relation rect .get {
+  stroke: #000;
   stroke-width: 1;
 }
 
 #relations {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.8em;
   border: 1px solid #dddddd;
   width: 720px;
   height: 600px;

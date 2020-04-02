@@ -27,7 +27,6 @@
       :fields="fields"
       :borderless="true"
       :filter="filter"
-      @filtered="onFiltered"
       :current-page="currentPage"
       :per-page="perPage"
     >
