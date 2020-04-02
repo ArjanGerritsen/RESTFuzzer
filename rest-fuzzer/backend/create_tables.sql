@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS rmd_actions (
   sut_id INTEGER
 ) ENGINE=INNODB;
 
-CREATE INDEX idx_rmd_actions_sut_id ON rmd_actions (sut_id); 
+ALTER TABLE rmd_actions ADD FOREIGN KEY(sut_id) REFERENCES rmd_suts(id); 
+
 
 CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -37,8 +38,9 @@ CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
   action_depends_on_id INTEGER
 ) ENGINE=INNODB;
 
-CREATE INDEX idx_rmd_actions_dependencies_action_id ON rmd_actions_dependencies (action_id);
-CREATE INDEX idx_rmd_actions_dependencies_action_depends_on_id ON rmd_actions_dependencies (action_depends_on_id);
+ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
+ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_depends_on_id) REFERENCES rmd_actions(id);
+
 
 CREATE TABLE IF NOT EXISTS rmd_parameters (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -52,8 +54,8 @@ CREATE TABLE IF NOT EXISTS rmd_parameters (
   action_id INT
 ) ENGINE=INNODB;
 
- 
-CREATE INDEX idx_rmd_parameters_action_id ON rmd_parameters (action_id);
+ALTER TABLE rmd_parameters ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
+
 
 CREATE TABLE IF NOT EXISTS rmd_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -63,7 +65,7 @@ CREATE TABLE IF NOT EXISTS rmd_responses (
 ) ENGINE=INNODB;
 
 
-CREATE INDEX idx_rmd_responses_action_id ON rmd_responses (action_id);
+ALTER TABLE rmd_responses ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
 
 
 CREATE TABLE IF NOT EXISTS fuz_projects (
@@ -74,7 +76,8 @@ CREATE TABLE IF NOT EXISTS fuz_projects (
   created_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
-CREATE INDEX idx_fuz_projects_sut_id ON fuz_projects (sut_id);
+ALTER TABLE fuz_projects ADD FOREIGN KEY(sut_id) REFERENCES rmd_suts(id);
+
 
 CREATE TABLE IF NOT EXISTS fuz_requests (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,7 +91,7 @@ CREATE TABLE IF NOT EXISTS fuz_requests (
   created_at TIMESTAMP NULL  
 ) ENGINE=INNODB;
 
-CREATE INDEX idx_fuz_requests_project_id ON fuz_requests (project_id);
+ALTER TABLE fuz_requests ADD FOREIGN KEY(project_id) REFERENCES fuz_projects(id);
 
 
 CREATE TABLE IF NOT EXISTS fuz_responses (
@@ -102,8 +105,8 @@ CREATE TABLE IF NOT EXISTS fuz_responses (
   created_at TIMESTAMP NULL
 ) ENGINE=INNODB;
 
-CREATE INDEX idx_fuz_responses_project_id ON fuz_responses (project_id);
-CREATE INDEX idx_fuz_responses_request_id ON fuz_responses (request_id);
+ALTER TABLE fuz_responses ADD FOREIGN KEY(project_id) REFERENCES fuz_projects(id);
+ALTER TABLE fuz_responses ADD FOREIGN KEY(request_id) REFERENCES fuz_requests(id);
 
 CREATE TABLE IF NOT EXISTS fuz_dictionaries (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -111,6 +114,9 @@ CREATE TABLE IF NOT EXISTS fuz_dictionaries (
   items_text TEXT,
   created_at TIMESTAMP NULL  
 ) ENGINE=INNODB;
+
+
+// TODO moet sut_id in fuz_projects niet in de meta?
 
 --------------------------- dropping all --------------------
 
@@ -121,6 +127,7 @@ drop table fuz_dictionaries;
 
 drop table rmd_responses;
 drop table rmd_parameters;
+drop table rmd_actions_dependencies;
 drop table rmd_actions;
 drop table rmd_suts;
 

@@ -12,8 +12,8 @@ import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdSutMapper;
 public class FuzProjectMapper {
 
 	// methods
-	public static List<FuzProjectDto> toDtos(List<FuzProject> tasks) {
-		return tasks.stream().map(ft -> FuzProjectMapper.toDto(ft, true)).collect(Collectors.toList());
+	public static List<FuzProjectDto> toDtos(List<FuzProject> projects) {
+		return projects.stream().map(p -> FuzProjectMapper.toDto(p, true)).collect(Collectors.toList());
 	}
 
 	public static FuzProjectDto toDto(FuzProject project, boolean mapRelations) {

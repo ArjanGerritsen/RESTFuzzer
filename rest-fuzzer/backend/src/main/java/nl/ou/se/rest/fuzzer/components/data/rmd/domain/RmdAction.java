@@ -49,6 +49,11 @@ public class RmdAction implements Comparable<RmdAction> {
     @SortNatural
     private SortedSet<RmdResponse> responses = new TreeSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "action_id")
+    @SortNatural
+    private SortedSet<RmdActionDependency> dependencies= new TreeSet<>();
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "sut_id")
     private RmdSut sut;

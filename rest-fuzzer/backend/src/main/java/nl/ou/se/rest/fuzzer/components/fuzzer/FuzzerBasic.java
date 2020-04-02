@@ -22,49 +22,43 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @Service
 public class FuzzerBasic {
 
-	// variables
-	private Logger logger = LoggerFactory.getLogger(FuzDictionaryController.class);
+    // variables
+    private Logger logger = LoggerFactory.getLogger(FuzDictionaryController.class);
 
-	public static final String META_DATA_REPITITIONS = "repetitions";
+    private List<RmdAction> actions;
 
-	private FuzProject project;
+    @Autowired
+    private RmdActionService actionService;
 
-	private List<RmdAction> actions;
+    @Autowired
+    private FuzRequestService requestService;
 
-	@Autowired
-	private RmdActionService actionService;
+    @Autowired
+    private FuzResponseService responseService;
 
-	@Autowired
-	private FuzRequestService requestService;
+    @Autowired
+    private RequestUtil requestUtil;
 
-	@Autowired
-	private FuzResponseService responseService;
-	
-	@Autowired
-	private RequestUtil requestUtil;
-	
-	@Autowired
-	private ExecutorUtil executorUtil;
+    @Autowired
+    private ExecutorUtil executorUtil;
 
-	public void start(FuzProject project) {
-		this.project = project;
+    public void start(FuzProject project) {
+        actions = actionService.findBySutId(project.getSut().getId());
 
-		actions = actionService.findBySutId(this.project.getSut().getId());
+        if (!project.getMetaDataTuples().containsKey(Constants.Fuzzer.Meta.REPITITIONS)) {
+            logger.error(Constants.Fuzzer.META_DATA_MISSING, FuzzerBasic.class, Constants.Fuzzer.Meta.REPITITIONS);
+            return;
+        }
 
-		if (!project.getMetaDataTuples().containsKey(META_DATA_REPITITIONS)) {
-			logger.error(Constants.Fuzzer.META_DATA_MISSING, FuzzerBasic.class, META_DATA_REPITITIONS);
-			return;
-		}
+        Integer repititions = (Integer) project.getMetaDataTuples().get(Constants.Fuzzer.Meta.REPITITIONS);
+        for (int i = 0; i < repititions; i++) {
+            actions.forEach(a -> {
+                FuzRequest request = requestUtil.getRequestFromAction(project, a);
+                requestService.save(request);
 
-		Integer repititions = (Integer) project.getMetaDataTuples().get(META_DATA_REPITITIONS);
-		for (int i = 0; i < repititions; i++) {
-			actions.forEach(a -> {
-				FuzRequest request = requestUtil.getRequestFromAction(project, a);
-				requestService.save(request);
-
-				FuzResponse response = executorUtil.processRequest(request);
-				responseService.save(response);
-			});
-		}
-	}
+                FuzResponse response = executorUtil.processRequest(request);
+                responseService.save(response);
+            });
+        }
+    }
 }

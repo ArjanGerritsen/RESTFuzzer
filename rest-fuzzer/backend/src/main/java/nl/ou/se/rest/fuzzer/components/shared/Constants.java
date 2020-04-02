@@ -15,11 +15,15 @@ public abstract class Constants {
 
 	// Fuzzer
 	public abstract class Fuzzer {
-		public static final String META_DATA_MISSING = "Fuzzer %s misses metadata to run: %s";
+	    public static final String META_DATA_MISSING = "Fuzzer %s misses metadata to run: %s";
 		public static final String ENCODING_UNSUPPORTED = "Encoding is unsupported: %s";
         public static final String INVALID_HTTP_METHOD = "Http method %s is unknown";
         public static final String META_DATA_INVALID = "Meta data value %s is invalid for %s";
         public static final String PARAMETER_TYPE_UNKNOWN = "Parameter type %s is unknown";
+
+        public abstract class Meta {
+            public static final String REPITITIONS = "repetitions";            
+        }
 	}
 
 	// Service

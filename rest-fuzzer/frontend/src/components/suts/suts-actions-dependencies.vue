@@ -56,6 +56,7 @@ export default {
         .force("y", d3.forceY(height / 2).strength(0.05))
         .force("center", d3.forceCenter(width / 2 - 50, height / 2));
 
+      // draw links
       var all_links = g
         .append("g")
         .attr("class", "links")
@@ -65,7 +66,8 @@ export default {
         .append("line")
         .attr("stroke", d3.rgb(0, 0, 0));
 
-      var all_nodes = g
+      // draw nodes
+      var svg_nodes = g
         .append("g")
         .attr("class", "nodes")
         .selectAll("g")
@@ -73,7 +75,7 @@ export default {
         .enter()
         .append("g");
 
-      var circles = all_nodes
+      var svg_nodes_circles = svg_nodes
         .append("circle")
         .attr("r", radius)
         .attr("fill", function(d) {
@@ -87,7 +89,7 @@ export default {
             .on("end", dragended)
         );
 
-      var labels = all_nodes
+      var svg_nodes_labels = svg_nodes
         .append("text")
         .text(function(d) {
           return d.title;
@@ -95,7 +97,7 @@ export default {
         .attr("x", 6)
         .attr("y", 3);
 
-      all_nodes.append("title").text(function(d) {
+      svg_nodes.append("title").text(function(d) {
         return `hoi ${d.id}`;
       });
 
@@ -117,7 +119,7 @@ export default {
             return d.target.y;
           });
 
-        all_nodes
+        svg_nodes
           .attr("transform", function(d) {
             return "translate(" + d.x + "," + d.y + ")";
           })
