@@ -4,7 +4,8 @@ const dictionaries = {
     state: {
     	dictionaries: {
             all: null,
-            current: null
+            current: null,
+            display: null
         }
     },
     mutations: {
@@ -13,6 +14,9 @@ const dictionaries = {
         },
         set_dictionary(state, payload) {
             state.dictionaries.current = payload.dictionary
+        },
+        set_dictionary_display(state, payload) {
+            state.dictionaries.display = payload.display
         }
     },
     actions: {

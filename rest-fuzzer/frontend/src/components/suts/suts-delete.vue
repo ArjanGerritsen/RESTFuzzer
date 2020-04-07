@@ -6,7 +6,9 @@
       </h6>
     </template>
 
-    <template slot="default">Are you sure you want to delete system under test '{{this.sut.location}}'?</template>
+    <template
+      slot="default"
+    >Are you sure you want to delete system under test '{{this.sut.location}}'?</template>
 
     <template slot="modal-footer" slot-scope="{ cancel }">
       <div class="button-group-right">
@@ -34,7 +36,7 @@ export default {
   methods: {
     deleteSut() {
       this.$store.dispatch("deleteSut", this.sut).then(() => {
-        this.$bvModal.hide("suts-detail");
+        this.$store.commit("set_sut_display", { display: null });
         this.$store.dispatch("findAllSuts");
       });
     }

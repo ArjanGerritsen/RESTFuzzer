@@ -6,12 +6,12 @@
       </span>
       <b-card-text>
         <div class="button-group-left">
-          <b-button size="sm" type="submit" variant="primary" v-b-modal.suts-add>
+          <b-button size="sm" type="submit" variant="primary" @click="add">
             <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
           </b-button>
         </div>
         <list
-          @click-item="selectSut"
+          @click-item="select"
           :select="false"
           :fields="fields"
           :items="suts"
@@ -39,9 +39,12 @@ export default {
     };
   },
   methods: {
-    selectSut(sut) {
+    select(sut) {
       this.$store.dispatch("findSut", sut.id);
-      this.$bvModal.show("suts-detail");
+      this.$store.commit("set_sut_display", { display: 'detail' });
+    },
+    add() {
+      this.$store.commit("set_sut_display", { display: 'add' });
     }
   },
   computed: {

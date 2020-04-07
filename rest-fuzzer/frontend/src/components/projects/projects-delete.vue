@@ -6,7 +6,9 @@
       </h6>
     </template>
 
-    <template slot="default">Are you sure you want to delete fuzzing project '{{this.project.type}}' for system under test '{{this.project.sut.title}}'?</template>
+    <template
+      slot="default"
+    >Are you sure you want to delete fuzzing project '{{this.project.type}}' for system under test '{{this.project.sut.title}}'?</template>
 
     <template slot="modal-footer" slot-scope="{ cancel }">
       <div class="button-group-right">
@@ -34,7 +36,7 @@ export default {
   methods: {
     deleteSut() {
       this.$store.dispatch("deleteProject", this.project).then(() => {
-        this.$bvModal.hide("projects-detail");
+        this.$store.commit("set_project_display", { display: null });
         this.$store.dispatch("findAllProjects");
       });
     }

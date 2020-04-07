@@ -1,32 +1,33 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-8">
+      <div class="col-6">
         <suts-list></suts-list>
       </div>
-      <div class="col-4">
-        <tasks-progress></tasks-progress>
+      <div class="col-6">
+        <suts-add></suts-add>
+        <suts-detail></suts-detail>
       </div>
     </div>
-
-    <suts-detail></suts-detail>
-    <suts-add></suts-add>
+    <suts-delete></suts-delete>
   </div>
 </template>
 
 <script>
-  import TasksProgress from "../tasks/tasks-progress";
+import SutsAdd from "./suts-add";
+import SutsList from "./suts-list";
+import SutsDetail from "./suts-detail";
+import SutsDelete from "./suts-delete";
 
-  import SutsAdd from "./suts-add";
-  import SutsList from "./suts-list";
-  import SutsDetail from "./suts-detail";
-
-  export default {
-    components: {
-      TasksProgress, SutsAdd, SutsList, SutsDetail
-    },
-    data() {
-      return { data: {} };
-    },
-  };
+export default {
+  components: {
+    SutsAdd,
+    SutsList,
+    SutsDetail,
+    SutsDelete
+  },
+  data() {
+    return { data: {} };
+  }
+};
 </script>

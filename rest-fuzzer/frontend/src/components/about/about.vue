@@ -24,20 +24,26 @@
             <b-list-group>
             <b-list-group-item href="#" disabled class="flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">Release v0.03</h5>
-              <small class="text-muted">xx-03-2020</small>
+              <h5 class="mb-1">Release v0.04</h5>
+              <small class="text-muted">xx-04-2020</small>
             </div>
             <p class="mb-1">
               <ul>
-                <li>TODO Start Creating dependencies between REST actions (graph)</li>
-                <li>TODO Fix: Use of EntityGraph for FuzProject.</li>
-
                 <li>TODO Change layout Systems under test and Fuzzing projects (remove tasks progress).</li>
                 <li>TODO Sepearate page for Tasks.</li>
                 <li>TODO Tasks: Progress percentage.</li>
                 <li>TODO Tasks: Logging.</li>
-                <li>Fix: Pagination requests/responses with filter.</li>
-                
+                <li>Creating dependencies between REST actions (graph).</li>
+              </ul>
+            </p>
+          </b-list-group-item>            <b-list-group-item href="#" disabled class="flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Release v0.03</h5>
+              <small class="text-muted">25-03-2020</small>
+            </div>
+            <p class="mb-1">
+              <ul>
+                <li>Fix: Pagination requests/responses with filter.</li>               
                 <li>Parameters for Fuzzing projects.</li>
                 <li>First version Dictionaries - CRUD.</li>
                 <li>Finialize (simple) fuzzing task (displaying requests and responses + repetitions).</li>

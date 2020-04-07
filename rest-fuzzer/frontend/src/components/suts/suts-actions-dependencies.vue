@@ -23,8 +23,10 @@ export default {
     drawIt: function() {
       var svg = d3.select("#relations");
 
-      var width = 720;
-      var height = 600;
+      console.log(svg.style("width"));
+
+      var width = svg.style("width").replace("px", "");
+      var height = svg.style("height").replace("px", "");
       var radius = 6;
 
       var color = d3.scaleOrdinal(d3["schemeDark2"]);
@@ -171,9 +173,9 @@ export default {
     }
   },
   mounted: function() {
-    setTimeout(() => {
-      this.drawIt();
-    }, 1500);
+    // setTimeout(() => {
+    //   this.drawIt();
+    // }, 1500);
   }
 };
 </script>
@@ -188,7 +190,7 @@ export default {
   font-family: "Courier New", Courier, monospace;
   font-size: 0.8em;
   border: 1px solid #dddddd;
-  width: 720px;
+  width: 100%;
   height: 600px;
   margin: auto;
 }

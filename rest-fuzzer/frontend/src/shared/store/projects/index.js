@@ -48,6 +48,7 @@ const projects = {
                 count: null,
                 list: null
             },
+            display: null
         }
     },
     mutations: {
@@ -81,6 +82,10 @@ const projects = {
         set_project_responses_list(state, payload) {
             state.projects.current_responses.list = payload.list
         },
+
+        set_project_display(state, payload) {
+            state.projects.display = payload.display
+        }
     },
     actions: {
         findAllProjects({ commit }) {

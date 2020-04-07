@@ -1,104 +1,92 @@
 <template>
-  <b-modal scrollable id="projects-detail" ref="modal" size="lg">
-    <template slot="modal-header">
-      <h6>
-        <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Fuzzing project
-      </h6>
+  <b-card v-if="display" header-tag="header">
+    <template v-slot:header>
+      <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail project
     </template>
 
-    <div v-if="this.project === null" class="text-center text-primary my-2">
-      <b-spinner type="border" class="align-middle" small></b-spinner>
-      <span style="margin-left:10px;">Loading...</span>
-    </div>
+    <b-card-text>
+      <div v-if="this.project === null" class="text-center text-primary my-2">
+        <b-spinner type="border" class="align-middle" small></b-spinner>
+        <span style="margin-left:10px;">Loading...</span>
+      </div>
 
-    <b-tabs v-if="this.project !== null" nav-tabs card>
-      <b-tab title="Information" active>
-        <div class="row">
-          <div class="col">
-            <div class="button-group-left">
-              <b-button
-                :disabled="tasksQueuedOrRunning"
-                size="sm"
-                type="submit"
-                variant="primary"
-                title="start task to fuzz SUT"
-                v-on:click="addFuzzerTask"
-              >
-                <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start fuzzing
-              </b-button>
-              <b-button
-                size="sm"
-                type="submit"
-                v-b-modal.projects-delete
-                variant="outline-danger"
-                title="delete this fuzzing project"
-              >
-                <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
-              </b-button>
+      <b-tabs v-if="this.project !== null" nav-tabs card>
+        <b-tab title="Information" active>
+          <div class="row">
+            <div class="col">
+              <div class="button-group-left">
+                <b-button
+                  :disabled="tasksQueuedOrRunning"
+                  size="sm"
+                  type="submit"
+                  variant="primary"
+                  title="start task to fuzz SUT"
+                  v-on:click="addFuzzerTask"
+                >
+                  <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start fuzzing
+                </b-button>
+                <b-button
+                  size="sm"
+                  type="submit"
+                  v-b-modal.projects-delete
+                  variant="outline-danger"
+                  title="delete this fuzzing project"
+                >
+                  <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
+                </b-button>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <dl class="dl-horizontal">
-              <dt>Identifier</dt>
-              <dd>{{this.project.id}}</dd>
-              <dt>System under test</dt>
-              <dd>
-                <b-link
-                  :href="this.project.sut.location"
-                  target="_blank"
-                >{{this.project.sut.location}}</b-link>
-              </dd>
-              <dt>Type</dt>
-              <dd>{{this.project.type | enumToHuman }}</dd>
-              <dt>Meta data</dt>
-              <dd>
-                <div class="json" :inner-html.prop="this.project.metaDataTuplesJson | json"></div>
-              </dd>
-            </dl>
+          <div class="row">
+            <div class="col">
+              <dl class="dl-horizontal">
+                <dt>Identifier</dt>
+                <dd>{{this.project.id}}</dd>
+                <dt>System under test</dt>
+                <dd>
+                  <b-link
+                    :href="this.project.sut.location"
+                    target="_blank"
+                  >{{this.project.sut.location}}</b-link>
+                </dd>
+                <dt>Type</dt>
+                <dd>{{this.project.type | enumToHuman }}</dd>
+                <dt>Meta data</dt>
+                <dd>
+                  <div class="json" :inner-html.prop="this.project.metaDataTuplesJson | json"></div>
+                </dd>
+              </dl>
+            </div>
+            <div class="col"></div>
           </div>
-          <div class="col"></div>
-        </div>
-      </b-tab>
-      <b-tab :disabled="!requestsPresent" :title="requestsTitle">
-        <ProjectsDetailRequests
-          :project="this.project"
-          :fields="requestFields"
-          :formatters="requestFormatters"
-        ></ProjectsDetailRequests>
-      </b-tab>
-      <b-tab :disabled="!responsesPresent" :title="responsesTitle">
-        <ProjectsDetailResponses
-          :project="this.project"
-          :fields="responseFields"
-          :formatters="responseFormatters"
-        ></ProjectsDetailResponses>
-      </b-tab>
-    </b-tabs>
-
-    <projects-delete></projects-delete>
-
-    <template slot="modal-footer" slot-scope="{ cancel }">
-      <div class="button-group-right">
-        <b-button size="sm" type="cancel" variant="outline-secondary" @click="cancel()">
-          <b-icon icon="backspace" font-scale="1"></b-icon>&nbsp;close
-        </b-button>
-      </div>
-    </template>
-  </b-modal>
+        </b-tab>
+        <b-tab :disabled="!requestsPresent" :title="requestsTitle">
+          <ProjectsDetailRequests
+            :project="this.project"
+            :fields="requestFields"
+            :formatters="requestFormatters"
+          ></ProjectsDetailRequests>
+        </b-tab>
+        <b-tab :disabled="!responsesPresent" :title="responsesTitle">
+          <ProjectsDetailResponses
+            :project="this.project"
+            :fields="responseFields"
+            :formatters="responseFormatters"
+          ></ProjectsDetailResponses>
+        </b-tab>
+      </b-tabs>
+    </b-card-text>
+  </b-card>
 </template>
 
 <script>
 import Constants from "../../shared/constants";
 
-import ProjectsDelete from "./projects-delete";
 import ProjectsDetailRequests from "./projects-detail-requests";
 import ProjectsDetailResponses from "./projects-detail-responses";
 
 export default {
   components: {
-    ProjectsDelete,
     ProjectsDetailRequests,
     ProjectsDetailResponses
   },
@@ -167,6 +155,12 @@ export default {
     }
   },
   computed: {
+    display() {
+      return (
+        this.$store.getters.projects.display !== null &&
+        this.$store.getters.projects.display === "detail"
+      );
+    },
     project() {
       return this.$store.getters.projects.current;
     },

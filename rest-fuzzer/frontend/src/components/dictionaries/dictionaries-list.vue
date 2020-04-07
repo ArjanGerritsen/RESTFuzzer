@@ -6,12 +6,12 @@
       </span>
       <b-card-text>
         <div class="button-group-left">
-          <b-button size="sm" type="submit" variant="primary" @click="addDictionary()">
+          <b-button size="sm" type="submit" variant="primary" @click="add()">
             <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
           </b-button>
         </div>
         <list
-          @click-item="selectDictionary"
+          @click-item="select"
           :select="false"
           :fields="fields"
           :items="dictionaries"
@@ -42,11 +42,12 @@ export default {
     };
   },
   methods: {
-    selectDictionary(dictionary) {
+    select(dictionary) {
+      this.$store.commit("set_dictionary_display", { display: "detail" });
       this.$store.commit("set_dictionary", { dictionary: dictionary });
     },
-    addDictionary() {
-      this.$store.commit("set_dictionary", { dictionary: null });      
+    add() {
+      this.$store.commit("set_dictionary_display", { display: "add" });
     }
   },
   computed: {

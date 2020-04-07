@@ -45,7 +45,8 @@ const suts = {
             current_dependencies: {
                 nodes: null,
                 links: null
-            }
+            },
+            display: null
         }
     },
     mutations: {
@@ -75,6 +76,10 @@ const suts = {
         },
         set_sut_dependencies_links(state, payload) {
             state.suts.current_dependencies.links = payload.links
+        },
+
+        set_sut_display(state, payload) {
+            state.suts.display = payload.display
         }
     },
     actions: {

@@ -1,17 +1,17 @@
 <template>
   <div>
     <b-card header-tag="header">
-      <span slot="header">
-        <b-icon icon="tools" font-scale="1"></b-icon>&nbsp;Fuzzing projects
-      </span>
+      <template v-slot:header>
+        <b-icon icon="tools" font-scale="1"></b-icon>&nbsp;Projects
+      </template>
       <b-card-text>
         <div class="button-group-left">
-          <b-button size="sm" type="submit" variant="primary" v-b-modal.projects-add>
+          <b-button size="sm" type="submit" variant="primary" @click="add">
             <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
           </b-button>
         </div>
         <list
-          @click-item="selectProject"
+          @click-item="select"
           :select="false"
           :fields="fields"
           :items="projects"
@@ -42,9 +42,12 @@ export default {
     };
   },
   methods: {
-    selectProject(project) {
+    add() {
+      this.$store.commit("set_project_display", { display: "add" });
+    },
+    select(project) {
       this.$store.dispatch("findProject", { project_id: project.id });
-      this.$bvModal.show("projects-detail");
+      this.$store.commit("set_project_display", { display: "detail" });
     }
   },
   computed: {

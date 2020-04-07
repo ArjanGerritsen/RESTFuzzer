@@ -1,55 +1,60 @@
 <template>
-  <b-modal id="projects-add" ref="modal" size="md">
-    <template slot="modal-header">
-      <h6>
-        <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;Add fuzzing project
-      </h6>
+  <b-card v-if="display" header-tag="header" footer-tag="footer">
+    <template v-slot:header>
+      <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;Add project
     </template>
 
-    <b-form>
-      <b-form-group id="input-group-1" label="Type:" label-for="input-1" description="Select type">
-        <b-form-select id="input-1" :options="types" v-model="project.type" required>
-          <template v-slot:first>
-            <b-form-select-option :value="null" disabled>-- select a type --</b-form-select-option>
-          </template>
-        </b-form-select>
-      </b-form-group>
+    <b-card-text>
+      <b-form>
+        <b-form-group
+          id="input-group-1"
+          label="Type:"
+          label-for="input-1"
+          description="Select type"
+        >
+          <b-form-select id="input-1" :options="types" v-model="project.type" required>
+            <template v-slot:first>
+              <b-form-select-option :value="null" disabled>-- select a type --</b-form-select-option>
+            </template>
+          </b-form-select>
+        </b-form-group>
 
-      <div v-if="project.type === 'BASIC_FUZZER'">
+        <div v-if="project.type === 'BASIC_FUZZER'">
+          <b-form-group
+            id="input-group-2"
+            label="Repetitions:"
+            label-for="input-2"
+            description="Set number of repetitions"
+          >
+            <b-form-input
+              id="range-1"
+              v-model="metaDataTuplesJson.repetitions"
+              type="range"
+              min="1"
+              max="25000"
+            ></b-form-input>
+            <div class="mt-2">Repetitions: {{ metaDataTuplesJson.repetitions }}</div>
+          </b-form-group>
+        </div>
+
         <b-form-group
           id="input-group-2"
-          label="Repetitions:"
+          label="System under test:"
           label-for="input-2"
-          description="Set number of repetitions"
+          description="Select system under test"
         >
-          <b-form-input
-            id="range-1"
-            v-model="metaDataTuplesJson.repetitions"
-            type="range"
-            min="1"
-            max="25000"
-          ></b-form-input>
-          <div class="mt-2">Repetitions: {{ metaDataTuplesJson.repetitions }}</div>
+          <b-form-select id="input-2" :options="sutsForPullDown" v-model="project.sut.id" required>
+            <template v-slot:first>
+              <b-form-select-option :value="null" disabled>-- select a system under test --</b-form-select-option>
+            </template>
+          </b-form-select>
         </b-form-group>
-      </div>
+      </b-form>
+    </b-card-text>
 
-      <b-form-group
-        id="input-group-2"
-        label="System under test:"
-        label-for="input-2"
-        description="Select system under test"
-      >
-        <b-form-select id="input-2" :options="suts" v-model="project.sut.id" required>
-          <template v-slot:first>
-            <b-form-select-option :value="null" disabled>-- select a system under test --</b-form-select-option>
-          </template>
-        </b-form-select>
-      </b-form-group>
-    </b-form>
-
-    <template slot="modal-footer" slot-scope="{ cancel }">
+    <template v-slot:footer>
       <div class="button-group-right">
-        <b-button size="sm" type="submit" variant="primary" @click="addProject()">
+        <b-button size="sm" type="submit" variant="primary" @click="add()">
           <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
         </b-button>
         <b-button size="sm" type="cancel" variant="outline-secondary" @click="cancel()">
@@ -57,7 +62,7 @@
         </b-button>
       </div>
     </template>
-  </b-modal>
+  </b-card>
 </template>
 
 <script>
@@ -85,18 +90,13 @@ export default {
     };
   },
   methods: {
-    resetForm() {
+    reset() {
       this.project.type = null;
       this.metaDataTuplesJson = DEFAULT_META;
     },
-    hide() {
-      this.$nextTick(() => {
-        this.$refs.modal.hide();
-      });
-    },
     cancel() {
-      this.resetForm();
-      this.hide();
+      this.reset();
+      this.$store.commit("set_project_display", { display: null });
     },
     setMetaDataTuplesJson() {
       this.metaDataTuplesJson.repetitions = Number(
@@ -104,7 +104,7 @@ export default {
       );
       this.project.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);
     },
-    addProject() {
+    add() {
       this.setMetaDataTuplesJson();
       this.$store.dispatch("addProject", this.project).then(() => {
         this.cancel();
@@ -112,13 +112,19 @@ export default {
       });
     },
     async findAllSuts() {
-      if (this.$store.getters.suts.all == null) {
+      if (this.$store.getters.suts.all === null) {
         await this.$store.dispatch("findAllSuts");
       }
     }
   },
   computed: {
-    suts() {
+    display() {
+      return (
+        this.$store.getters.projects.display !== null &&
+        this.$store.getters.projects.display === "add"
+      );
+    },
+    sutsForPullDown() {
       this.findAllSuts();
       return this.$store.getters.sutsForPullDown;
     }

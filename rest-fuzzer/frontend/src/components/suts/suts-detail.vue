@@ -1,95 +1,84 @@
 <template>
-  <b-modal scrollable id="suts-detail" ref="modal" size="lg">
-    <template slot="modal-header">
-      <h6>
-        <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;System under test
-      </h6>
+  <b-card v-if="display" header-tag="header">
+    <template v-slot:header>
+      <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail system under test
     </template>
 
-    <div v-if="this.sut === null" class="text-center text-primary my-2">
-      <b-spinner type="border" class="align-middle" small></b-spinner>
-      <span style="margin-left:10px;">Loading...</span>
-    </div>
+    <b-card-text>
+      <div v-if="this.sut === null" class="text-center text-primary my-2">
+        <b-spinner type="border" class="align-middle" small></b-spinner>
+        <span style="margin-left:10px;">Loading...</span>
+      </div>
 
-    <b-tabs v-if="this.sut !== null" nav-tabs card>
-      <b-tab title="Information" active>
-        <div class="row">
-          <div class="col">
-            <div class="button-group-left">
-              <b-button
-                :disabled="tasksQueuedOrRunning"
-                size="sm"
-                type="submit"
-                variant="primary"
-                title="start task to extract REST model description from OAS"
-                v-on:click="addExtractorTask"
-              >
-                <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start extract task
-              </b-button>
-              <b-button
-                size="sm"
-                type="submit"
-                v-b-modal.suts-delete
-                variant="outline-danger"
-                title="delete this SUT"
-              >
-                <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
-              </b-button>
+      <b-tabs v-if="this.sut !== null" nav-tabs card>
+        <b-tab title="Information" active>
+          <div class="row">
+            <div class="col">
+              <div class="button-group-left">
+                <b-button
+                  :disabled="tasksQueuedOrRunning"
+                  size="sm"
+                  type="submit"
+                  variant="primary"
+                  title="start task to extract REST model description from OAS"
+                  v-on:click="addExtractorTask"
+                >
+                  <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start extract task
+                </b-button>
+                <b-button
+                  size="sm"
+                  type="submit"
+                  v-b-modal.suts-delete
+                  variant="outline-danger"
+                  title="delete this SUT"
+                >
+                  <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
+                </b-button>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <dl class="dl-horizontal">
-              <dt>Identifier</dt>
-              <dd>{{this.sut.id}}</dd>
-              <dt>Title</dt>
-              <dd>{{this.sut.title ? this.sut.title : '-'}}</dd>
-              <dt>OAS location</dt>
-              <dd>
-                <b-link :href="this.sut.location" target="_blank">{{this.sut.location}}</b-link>
-              </dd>
-            </dl>
+          <div class="row">
+            <div class="col">
+              <dl class="dl-horizontal">
+                <dt>Identifier</dt>
+                <dd>{{this.sut.id}}</dd>
+                <dt>Title</dt>
+                <dd>{{this.sut.title ? this.sut.title : '-'}}</dd>
+                <dt>OAS location</dt>
+                <dd>
+                  <b-link :href="this.sut.location" target="_blank">{{this.sut.location}}</b-link>
+                </dd>
+              </dl>
+            </div>
+            <div class="col">
+              <dl class="dl-horizontal">
+                <dt>Description</dt>
+                <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
+                <dt>Created @</dt>
+                <dd>{{this.sut.createdAt | date }}</dd>
+              </dl>
+            </div>
           </div>
-          <div class="col">
-            <dl class="dl-horizontal">
-              <dt>Description</dt>
-              <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
-              <dt>Created @</dt>
-              <dd>{{this.sut.createdAt | date }}</dd>
-            </dl>
-          </div>
-        </div>
-      </b-tab>
-      <b-tab :disabled="this.actionsCount === 0" :title="actionsTitle">
-        <SutsActions :sut="sut" :fields="fields" :formatters="formatters"></SutsActions>
-      </b-tab>
-      <b-tab :disabled="this.actionsCount === 0" title="Dependencies">
-        <SutsActionsDependencies></SutsActionsDependencies>
-      </b-tab>      
-    </b-tabs>
-
-    <suts-delete></suts-delete>
-
-    <template slot="modal-footer" slot-scope="{ cancel }">
-      <div class="button-group-right">
-        <b-button size="sm" type="cancel" variant="outline-secondary" @click="cancel()">
-          <b-icon icon="backspace" font-scale="1"></b-icon>&nbsp;close
-        </b-button>
-      </div>
-    </template>
-  </b-modal>
+        </b-tab>
+        <b-tab :disabled="this.actionsCount === 0" :title="actionsTitle">
+          <SutsActions :sut="sut" :fields="fields" :formatters="formatters"></SutsActions>
+        </b-tab>
+        <b-tab :disabled="this.actionsCount === 0" title="Dependencies">
+          <SutsActionsDependencies></SutsActionsDependencies>
+        </b-tab>
+      </b-tabs>
+    </b-card-text>
+  </b-card>
 </template>
 
 <script>
 import Constants from "../../shared/constants";
 
-import SutsDelete from "./suts-delete";
 import SutsActions from "./suts-actions";
 import SutsActionsDependencies from "./suts-actions-dependencies.vue";
 
 export default {
-  components: { SutsDelete, SutsActions, SutsActionsDependencies },
+  components: { SutsActions, SutsActionsDependencies },
   data() {
     return {
       formatters: [],
@@ -139,6 +128,12 @@ export default {
     }
   },
   computed: {
+    display() {
+      return (
+        this.$store.getters.suts.display !== null &&
+        this.$store.getters.suts.display === "detail"
+      );
+    },
     sut() {
       return this.$store.getters.suts.current;
     },
