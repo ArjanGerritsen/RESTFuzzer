@@ -42,7 +42,7 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 
 		switch (project.getType()) {
 		case BASIC_FUZZER:
-		    fuzzerBasic.start(project);
+		    fuzzerBasic.start(project, this.getTask());
 			break;
 		default:
 			break;
