@@ -21,4 +21,7 @@ public interface TaskService extends CrudRepository<Task, Long> {
 
     @Query("SELECT t FROM tasks t WHERE t.crashedAt IS NOT NULL OR t.finishedAt IS NOT NULL ORDER BY id DESC")
     List<Task> findEnded(Pageable pageable);
+
+    @Query("SELECT count(t) FROM tasks t WHERE t.crashedAt IS NOT NULL OR t.finishedAt IS NOT NULL")
+    Long countEnded();
 }

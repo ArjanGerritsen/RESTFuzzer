@@ -124,7 +124,6 @@ export default {
         this.currentPage = context.currentPage;
       }
       this.filterShadow = this.filter;
-
       return this.$store
         .dispatch("findSutActions", {
           sut_id: this.sut.id,

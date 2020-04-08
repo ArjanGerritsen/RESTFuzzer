@@ -1,5 +1,6 @@
 package nl.ou.se.rest.fuzzer.components.data.task.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -32,6 +33,9 @@ public class Task {
     private String canonicalName;
 
     private String metaDataTuplesJson;
+
+    @Column(precision = 5, scale = 2)
+    private BigDecimal progress;
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime startedAt;
@@ -92,6 +96,22 @@ public class Task {
         this.canonicalName = canonicalName;
     }
 
+    public String getMetaDataTuplesJson() {
+        return metaDataTuplesJson;
+    }
+
+    public void setMetaDataTuplesJson(String metaDataTuplesJson) {
+        this.metaDataTuplesJson = metaDataTuplesJson;
+    }
+
+    public BigDecimal getProgress() {
+        return progress;
+    }
+
+    public void setProgress(BigDecimal progress) {
+        this.progress = progress;
+    }
+
     public LocalDateTime getStartedAt() {
         return startedAt;
     }
@@ -114,14 +134,6 @@ public class Task {
 
     public void setFinishedAt(LocalDateTime finishedAt) {
         this.finishedAt = finishedAt;
-    }
-
-    public String getMetaDataTuplesJson() {
-        return metaDataTuplesJson;
-    }
-
-    public void setMetaDataTuplesJson(String metaDataTuplesJson) {
-        this.metaDataTuplesJson = metaDataTuplesJson;
     }
 
     // toString

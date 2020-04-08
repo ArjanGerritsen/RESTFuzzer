@@ -1,37 +1,31 @@
 import Vue from 'vue'
-import constants from '../shared/constants';
 
-Vue.filter('dynamicFilter', function(value, filterFunction) {
+Vue.filter('downCase', function (value, filterFunction) {
   return filterFunction(value);
-})
+});
 
-Vue.filter('statusToIcon', function(status) {
-  switch (status) {
-    case constants.TASK_STATUS_QUEUED:
-      return '<b-icon icon="trash" font-scale="1"></b-icon>';
-    case constants.TASK_STATUS_RUNNING:
-      return '<b-icon icon="trash" font-scale="1"></b-icon>';
-    case constants.TASK_STATUS_ENDED:
-      return '<b-icon icon="trash" font-scale="1"></b-icon>';        
-    default:
-      return status;
-  }
-})
+Vue.filter('dynamicFilter', function (value, filterFunction) {
+  return filterFunction(value);
+});
 
-Vue.filter('enumToHuman', function(string) {
-	string = string.split("_").map(
-		s => {
-			return s[0].toUpperCase() + 
-				s.substring(1).toLowerCase(); 
-		}
-	).join("");
+Vue.filter('downCase', function (string) {
+  return string.toLowerCase();
+});
 
-	return string;
-})
+Vue.filter('enumToHuman', function (string) {
+  string = string.split("_").map(
+    s => {
+      return s[0].toUpperCase() +
+        s.substring(1).toLowerCase();
+    }
+  ).join("");
 
-Vue.filter('json', function(json) {
+  return string;
+});
+
+Vue.filter('json', function (json) {
   json = JSON.stringify(JSON.parse(json), null, 2);
-  
+
   // keys
   json = json.replace(/"[\w]*":/g, function (match) {
     return '<span class="key">' + match.substring(1, match.length - 2) + '</span>:';
@@ -58,4 +52,4 @@ Vue.filter('json', function(json) {
   });
 
   return json;
-})
+});

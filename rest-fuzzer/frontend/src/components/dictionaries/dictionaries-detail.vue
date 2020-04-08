@@ -1,7 +1,7 @@
 <template>
   <b-card v-if="display" header-tag="header">
     <template v-slot:header>
-      <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail Dictionary
+      <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail dictionary
     </template>
     <b-card-text>
       <b-tabs nav-tabs card>

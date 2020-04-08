@@ -16,7 +16,6 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.ExecutorUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.RequestUtil;
-import nl.ou.se.rest.fuzzer.components.service.fuz.FuzDictionaryController;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service

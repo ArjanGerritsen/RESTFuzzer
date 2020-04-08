@@ -5,12 +5,12 @@
     </template>
 
     <b-card-text>
-      <div v-if="this.project === null" class="text-center text-primary my-2">
+      <div v-if="!project" class="text-center text-primary my-2">
         <b-spinner type="border" class="align-middle" small></b-spinner>
         <span style="margin-left:10px;">Loading...</span>
       </div>
 
-      <b-tabs v-if="this.project !== null" nav-tabs card>
+      <b-tabs v-if="project" nav-tabs card>
         <b-tab title="Information" active>
           <div class="row">
             <div class="col">
@@ -41,19 +41,25 @@
             <div class="col">
               <dl class="dl-horizontal">
                 <dt>Identifier</dt>
-                <dd>{{this.project.id}}</dd>
+                <dd>{{project.id}}</dd>
                 <dt>System under test</dt>
                 <dd>
                   <b-link
-                    :href="this.project.sut.location"
+                    :href="project.sut.location"
                     target="_blank"
-                  >{{this.project.sut.location}}</b-link>
+                  >{{project.sut.location}}</b-link>
                 </dd>
                 <dt>Type</dt>
-                <dd>{{this.project.type | enumToHuman }}</dd>
+                <dd>{{project.type | enumToHuman }}</dd>
+                <dt>Created @</dt>
+                <dd>{{project.createdAt | dateShort }}</dd>
+              </dl>
+            </div>
+            <div class="col">
+              <dl class="dl-horizontal">
                 <dt>Meta data</dt>
                 <dd>
-                  <div class="json" :inner-html.prop="this.project.metaDataTuplesJson | json"></div>
+                  <div class="json" :inner-html.prop="project.metaDataTuplesJson | json"></div>
                 </dd>
               </dl>
             </div>
@@ -62,14 +68,14 @@
         </b-tab>
         <b-tab :disabled="!requestsPresent" :title="requestsTitle">
           <ProjectsDetailRequests
-            :project="this.project"
+            :project="project"
             :fields="requestFields"
             :formatters="requestFormatters"
           ></ProjectsDetailRequests>
         </b-tab>
         <b-tab :disabled="!responsesPresent" :title="responsesTitle">
           <ProjectsDetailResponses
-            :project="this.project"
+            :project="project"
             :fields="responseFields"
             :formatters="responseFormatters"
           ></ProjectsDetailResponses>

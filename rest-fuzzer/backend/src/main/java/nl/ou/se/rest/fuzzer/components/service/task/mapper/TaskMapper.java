@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.components.service.task;
+package nl.ou.se.rest.fuzzer.components.service.task.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
+import nl.ou.se.rest.fuzzer.components.service.task.domain.TaskDto;
 
 public abstract class TaskMapper {
 

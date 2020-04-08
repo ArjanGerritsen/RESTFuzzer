@@ -2,30 +2,109 @@ import axios from "axios";
 
 import Constants from "../../constants";
 
+function convertTasks(tasks) {
+    if (tasks != null) {
+        return tasks.map(t => convertTask(t));
+    }
+}
+
+function convertTask(task) {
+    let nameParts = task.canonicalName.split(".");
+
+    let status = Constants.TASK_STATUS_QUEUED;
+    if (task.startedAt != null && task.crashedAt == null && task.finishedAt == null) {
+        status = Constants.TASK_STATUS_RUNNING;
+    } else if (task.startedAt != null && task.crashedAt != null) {
+        status = Constants.TASK_STATUS_CRASHED;
+    } else if (task.startedAt != null && task.finishedAt != null) {
+        status = Constants.TASK_STATUS_FINISHED;
+    }
+
+    let endedAt = null;
+    if (task.crashedAt != null) { endedAt = task.crashedAt };
+    if (task.finishedAt != null) { endedAt = task.finishedAt };
+
+    task["name"] = nameParts[nameParts.length - 1].replace('Task', '');
+    task["status"] = status;
+    task["endedAt"] = endedAt;
+
+    return task;
+}
+
 const tasks = {
     state: {
         tasks: {
-            all: null,
-            progress: null,
+            active: {
+                list: null
+            },
+            archive: {
+                list: null,
+                count: null
+            },
+            current: {
+                item: null
+            }
         }
     },
     mutations: {
-        tasks_progress_set(state, payload) {
-            state.tasks.progress = payload.tasks
+        set_tasks_active_list(state, payload) {
+            state.tasks.active.list = convertTasks(payload.list)
+        },
+
+        set_tasks_archive_list(state, payload) {
+            state.tasks.archive.list = convertTasks(payload.list)
+        },
+        set_tasks_archive_count(state, payload) {
+            state.tasks.archive.count = payload.count
+        },
+
+        set_task_item(state, payload) {
+            state.tasks.current.item = payload.item
         }
     },
     actions: {
-        findTasksProgress({ commit }) {
+        findTasksActive({ commit }) {
             return new Promise((resolve, reject) => {
                 axios
-                    .get("/rest/tasks/progress")
+                    .get("/rest/tasks/active")
                     .then(response => {
-                        commit("tasks_progress_set", { tasks: response.data });
+                        commit("set_tasks_active_list", { list: response.data });
                         resolve();
                     })
                     .catch(error => {
-                        commit("message_add", { message: { type: "error", text: "Couldn't retrieve tasks (progress)", err: error } });
-                        commit("tasks_progress_set", { tasks: [] });
+                        commit("message_add", { message: { type: "error", text: "Couldn't retrieve tasks (active)", err: error } });
+                        commit("set_tasks_active_list", { list: [] });
+                        reject(error);
+                    })
+            })
+        },
+        findTasksArchive({ commit }, data) {
+            let queryParams = `?curPage=${data.context.currentPage}&perPage=${data.context.perPage}`;
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/rest/tasks/archive/${queryParams}`)
+                    .then(response => {
+                        commit("set_tasks_archive_list", { list: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: "Couldn't retrieve tasks (archive)", err: error } });
+                        commit("set_tasks_archive_list", { list: [] });
+                        reject(error);
+                    })
+            })
+        },
+        countTasksArchive({ commit }) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/rest/tasks/archive/count`)
+                    .then(response => {
+                        commit("set_tasks_archive_count", { count: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: "Couldn't count tasks (archive)", err: error } });
+                        commit("set_tasks_archive_count", { count: null });
                         reject(error);
                     })
             })
@@ -48,30 +127,8 @@ const tasks = {
     },
     getters: {
         tasks: state => {
-            if (state.tasks.progress != null) {
-                state.tasks.progress.forEach(t => {
-                    let nameParts = t.canonicalName.split(".");
-                    t["name"] = nameParts[nameParts.length - 1].replace('Task', '');
-
-                    let status = Constants.TASK_STATUS_QUEUED;
-                    if (t.startedAt != null && t.crashedAt == null && t.finishedAt == null) {
-                        status = Constants.TASK_STATUS_RUNNING;
-                    } else if (t.startedAt != null && t.crashedAt != null) {
-                        status = Constants.TASK_STATUS_CRASHED;
-                    } else if (t.startedAt != null && t.finishedAt != null) {
-                        status = Constants.TASK_STATUS_FINISHED;
-                    }
-                    t["status"] = status;
-
-                    let endedAt = null;
-                    if (t.crashedAt != null) { endedAt = t.crashedAt };
-                    if (t.finishedAt != null) { endedAt = t.finishedAt };
-                    t["endedAt"] = endedAt;
-                });
-            }
-
             return state.tasks
-        }
+        },
     }
 }
 

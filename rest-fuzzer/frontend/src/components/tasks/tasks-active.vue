@@ -1,17 +1,19 @@
 <template>
   <b-card header-tag="header">
     <template v-slot:header>
-      <b-icon icon="list-task" font-scale="1"></b-icon>&nbsp;Tasks (most recent)
+      <b-icon icon="list-task" font-scale="1"></b-icon>&nbsp;Tasks (queued and running)
     </template>
 
     <b-card-text>
       <b-table
-        id="progress-tasks"
+        id="active-tasks"
         class="table-sm"
-        show-empty
-        :busy="tasksProgress === null"
+        hover
         striped
-        :items="tasksProgress"
+        show-empty
+        @row-clicked="select"
+        :busy="tasksActive === null"
+        :items="tasksActive"
         :fields="fields"
         :borderless="true"
       >
@@ -20,13 +22,24 @@
           <span style="margin-left:10px;">Loading...</span>
         </div>
 
+        <template v-slot:cell(progress)="data">
+          <template>
+            <b-progress
+              :value="data.value"
+              :max="100"
+              height="1.5em"
+              style="margin-top:2px; border:1px solid #ffffff;"
+            ></b-progress>
+          </template>
+        </template>
+
         <template v-slot:cell(status)="data">
           <div style="text-align:center;">
             <template v-if="data.value === constants.TASK_STATUS_QUEUED">
               <b-icon icon="clock" variant="success" font-scale="1"></b-icon>
             </template>
             <template v-if="data.value === constants.TASK_STATUS_RUNNING">
-              <b-spinner small variant="success" type="grow"></b-spinner>
+              <b-spinner small variant="primary" type="grow"></b-spinner>
             </template>
             <template v-if="data.value === constants.TASK_STATUS_CRASHED">
               <b-icon icon="alert-circle-fill" variant="danger" font-scale="1"></b-icon>
@@ -61,6 +74,7 @@ export default {
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "name" },
+        { key: "progress", thStyle: "width: 100px;" },
         { key: "status", thStyle: "text-align:center; width: 70px;" },
         { key: "startedAt", label: "Started @", thStyle: "width: 100px;" },
         { key: "endedAt", label: "Ended @", thStyle: "width: 100px;" }
@@ -70,23 +84,26 @@ export default {
     };
   },
   methods: {
-    getTasksProgress: function() {
-      this.timeoutTasks = setTimeout(this.getTasksProgress, 2500);
-      this.$store.dispatch("findTasksProgress").catch(error => {
+    select(item) {
+      this.$store.commit("set_task_item", { item: item });
+    },
+    getTasksActive: function() {
+      this.timeoutTasks = setTimeout(this.getTasksActive, 1500);
+      this.$store.dispatch("findTasksActive").catch(error => {
         clearTimeout(this.timeoutTasks);
       });
     }
   },
   computed: {
-    tasksProgress() {
-      return this.$store.getters.tasks.progress;
+    tasksActive() {
+      return this.$store.getters.tasks.active.list;
     }
   },
   destroyed: function() {
     clearTimeout(this.timeoutTasks);
   },
   created: function() {
-    this.getTasksProgress();
+    this.getTasksActive();
   }
 };
 </script>

@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   id INT AUTO_INCREMENT PRIMARY KEY,
   canonical_name VARCHAR(255) NOT NULL,
   meta_data_tuples_json TEXT, 
+  progress DECIMAL(5,2),
   started_at TIMESTAMP NULL,
   crashed_at TIMESTAMP NULL,
   finished_at TIMESTAMP NULL
