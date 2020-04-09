@@ -59,7 +59,7 @@ const tasks = {
         },
 
         set_task_item(state, payload) {
-            state.tasks.current.item = payload.item
+            state.tasks.current.item = convertTask(payload.item)
         }
     },
     actions: {
@@ -105,6 +105,21 @@ const tasks = {
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: "Couldn't count tasks (archive)", err: error } });
                         commit("set_tasks_archive_count", { count: null });
+                        reject(error);
+                    })
+            })
+        },
+        findTask({ commit }, id) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/rest/tasks/${id}`)
+                    .then(response => {
+                        commit("set_task_item", { item: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve task id ${id}`, err: error } });
+                        commit("set_task_item", { item: null });
                         reject(error);
                     })
             })

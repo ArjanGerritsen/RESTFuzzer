@@ -44,10 +44,7 @@
                 <dd>{{project.id}}</dd>
                 <dt>System under test</dt>
                 <dd>
-                  <b-link
-                    :href="project.sut.location"
-                    target="_blank"
-                  >{{project.sut.location}}</b-link>
+                  <b-link :href="project.sut.location" target="_blank">{{project.sut.location}}</b-link>
                 </dd>
                 <dt>Type</dt>
                 <dd>{{project.type | enumToHuman }}</dd>
@@ -116,30 +113,25 @@ export default {
         },
         { key: "statusCode", label: "HTTP status", thStyle: "width: 110px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
-      ],
-      startedRefresh: null,
-      timeoutRefresh: null
+      ]
     };
   },
   methods: {
-    refreshData() {
+    refreshProject() {
       if (!this.tasksQueuedOrRunning) {
-        this.startedRefresh = null;
-        clearTimeout(this.refreshTimeout);
+        this.$timer.stop("refreshProject");
         this.$store.dispatch("findProject", { project_id: this.project.id });
         this.$root.$emit("bv::refresh::table", "project-requests");
         this.$root.$emit("bv::refresh::table", "project-responses");
         return;
       }
 
-      this.timeoutRefresh = setTimeout(this.refreshData, 1000);
       this.$store
         .dispatch("countProjectRunningOrQueuedTasks", {
           project_id: this.project.id
         })
         .catch(error => {
-          this.startedRefresh = null;
-          clearTimeout(this.timeoutRefresh);
+          this.$timer.stop("refreshProject");
         });
     },
     addFuzzerTask() {
@@ -154,8 +146,7 @@ export default {
               project_id: this.project.id
             })
             .then(() => {
-              this.startedRefresh = new Date();
-              this.refreshData();
+              this.$timer.start("refreshProject");
             });
         });
     }
@@ -209,9 +200,12 @@ export default {
       return true;
     }
   },
-  created: function() {},
-  destroyed: function() {
-    clearTimeout(this.timeoutRefresh);
+  timers: {
+    refreshProject: {
+      time: Constants.REFRESH_TIMEOUT,
+      autostart: false,
+      repeat: true
+    }
   }
 };
 </script>

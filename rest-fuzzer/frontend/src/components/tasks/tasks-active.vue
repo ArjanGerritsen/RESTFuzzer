@@ -71,6 +71,8 @@ export default {
   components: { Constants },
   data() {
     return {
+      constants: Constants,
+      previousCount: null,
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "name" },
@@ -78,20 +80,38 @@ export default {
         { key: "status", thStyle: "text-align:center; width: 70px;" },
         { key: "startedAt", label: "Started @", thStyle: "width: 100px;" },
         { key: "endedAt", label: "Ended @", thStyle: "width: 100px;" }
-      ],
-      constants: Constants,
-      timeoutTasks: null
+      ]
     };
   },
   methods: {
     select(item) {
+      this.$router.push({ name: "task", params: { id: item.id } });
       this.$store.commit("set_task_item", { item: item });
     },
-    getTasksActive: function() {
-      this.timeoutTasks = setTimeout(this.getTasksActive, 1500);
+    refreshTasksActive() {
       this.$store.dispatch("findTasksActive").catch(error => {
-        clearTimeout(this.timeoutTasks);
+        this.$timer.stop("refreshTasksActive");
       });
+    },
+    refreshArchive() {
+      let refresh = false;
+      let count = this.tasksActive.length;
+
+      if (this.tasksActive !== null) {
+        if (this.previousCount !== null && count !== this.previousCount) {
+          refresh = true;
+        }
+        this.previousCount = count;
+      }
+
+      return refresh;
+    }
+  },
+  watch: {
+    tasksActive: function() {
+      if (this.refreshArchive()) {
+        this.$root.$emit("bv::refresh::table", "archive-tasks");
+      }
     }
   },
   computed: {
@@ -99,11 +119,12 @@ export default {
       return this.$store.getters.tasks.active.list;
     }
   },
-  destroyed: function() {
-    clearTimeout(this.timeoutTasks);
-  },
-  created: function() {
-    this.getTasksActive();
+  timers: {
+    refreshTasksActive: {
+      time: Constants.REFRESH_TIMEOUT,
+      autostart: true,
+      repeat: true
+    }
   }
 };
 </script>

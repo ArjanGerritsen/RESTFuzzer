@@ -1,8 +1,14 @@
+/* vuejs */
 import Vue from 'vue';
 import App from "./app.vue";
 
 import router from './router';
 import store from "./shared/store";
+
+/* timers */
+import VueTimers from 'vue-timers'
+
+Vue.use(VueTimers)
 
 /* bootstrap */
 import { BootstrapVue, IconsPlugin }  from 'bootstrap-vue'
@@ -17,6 +23,7 @@ import './filters/other'
 /* other */
 Vue.config.productionTip = false;
 
+/* init */
 new Vue({
   router,
   store,

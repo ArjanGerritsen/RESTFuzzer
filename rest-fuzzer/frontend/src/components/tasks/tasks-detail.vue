@@ -11,12 +11,21 @@
               <div class="button-group-left">
                 <b-button
                   size="sm"
-                  type="submit"
                   v-b-modal.tasks-delete
                   variant="outline-danger"
                   title="delete this task"
                 >
                   <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
+                </b-button>
+
+                <b-button
+                  size="sm"
+                  variant="primary"
+                  title="go to project"
+                  :to="{ name: 'project', params: { id: 1 }}"
+                >
+                  <b-icon icon="link" font-scale="1"></b-icon>&nbsp;
+                  go to project
                 </b-button>
               </div>
             </div>
@@ -106,7 +115,23 @@ export default {
       return this.$store.getters.tasks.current.item;
     }
   },
-  methods: {},
-  created: function() {}
+  methods: {
+    refreshTask() {
+      if (this.display) {
+        this.$store
+          .dispatch("findTask", this.$store.getters.tasks.current.item.id)
+          .catch(error => {
+            this.$timer.stop("refreshTask");
+          });
+      }
+    }
+  },
+  timers: {
+    refreshTask: {
+      time: Constants.REFRESH_TIMEOUT,
+      autostart: true,
+      repeat: true
+    }
+  }
 };
 </script>

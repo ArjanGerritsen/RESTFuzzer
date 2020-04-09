@@ -87,6 +87,7 @@ export default {
   },
   methods: {
     select(item) {
+      this.$router.push({ name: "task", params: { id: item.id } })
       this.$store.commit("set_task_item", { item: item });
     },
     restProvider(context, callback) {
@@ -109,10 +110,6 @@ export default {
     displayPagination() {
       return this.totalRows > this.perPage;
     }
-  },
-  created: function() {
-    return this.$store.dispatch("countTasksArchive");
-    // TODO Update taak kan van actief naar archief gaan ... this.$root.$emit("bv::refresh::table", "archive-tasks");
   }
 };
 </script>

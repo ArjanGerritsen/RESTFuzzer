@@ -22,18 +22,38 @@ const routes = [
     component: Suts
   },
   {
+    path: "/suts/:id",
+    name: "sut",
+    component: Suts
+  },
+  {
     path: "/projects",
     name: "projects",
     component: Projects
   },
   {
+    path: "/projects/:id",
+    name: "project",
+    component: Projects
+  },  
+  {
     path: "/dictionaries",
     name: "dictionaries",
+    component: Dictionaries
+  },
+  {
+    path: "/dictionaries/:id",
+    name: "dictionary",
     component: Dictionaries
   },  
   {
     path: "/tasks",
     name: "tasks",
+    component: Tasks
+  },
+  {
+    path: "/tasks/:id",
+    name: "task",
     component: Tasks
   },
   {

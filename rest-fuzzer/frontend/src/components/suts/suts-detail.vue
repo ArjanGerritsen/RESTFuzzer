@@ -87,28 +87,23 @@ export default {
         { key: "path" },
         { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
-      ],
-      startedRefresh: null,
-      timeoutRefresh: null
+      ]
     };
   },
   methods: {
-    refreshData() {
+    refreshSut() {
       if (!this.tasksQueuedOrRunning) {
-        this.startedRefresh = null;
-        clearTimeout(this.refreshTimeout);
+        this.$timer.stop("refreshSut");
         this.$store.dispatch("findSut", this.sut.id);
         this.$store.dispatch("findAllSuts");
         this.$root.$emit("bv::refresh::table", "sut-actions");
         return;
       }
 
-      this.timeoutRefresh = setTimeout(this.refreshData, 1000);
       this.$store
         .dispatch("countSutRunningOrQueuedTasks", this.sut.id)
         .catch(error => {
-          this.startedRefresh = null;
-          clearTimeout(this.timeoutRefresh);
+          this.$timer.stop("refreshSut");
         });
     },
     addExtractorTask() {
@@ -121,8 +116,7 @@ export default {
           this.$store
             .dispatch("countSutRunningOrQueuedTasks", this.sut.id)
             .then(() => {
-              this.startedRefresh = new Date();
-              this.refreshData();
+              this.$timer.start("refreshSut");
             });
         });
     }
@@ -156,9 +150,12 @@ export default {
       return count !== null && count > 0 ? count : 0;
     }
   },
-  created: function() {},
-  destroyed: function() {
-    clearTimeout(this.timeoutRefresh);
+  timers: {
+    refreshSut: {
+      time: Constants.REFRESH_TIMEOUT,
+      autostart: false,
+      repeat: true
+    }
   }
 };
 </script>

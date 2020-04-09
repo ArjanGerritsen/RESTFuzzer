@@ -3,6 +3,7 @@ package nl.ou.se.rest.fuzzer.components.service.task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import nl.ou.se.rest.fuzzer.components.fuzzer.FuzzerTask;
 import nl.ou.se.rest.fuzzer.components.service.task.domain.TaskDto;
 import nl.ou.se.rest.fuzzer.components.service.task.mapper.TaskMapper;
 import nl.ou.se.rest.fuzzer.components.service.util.HttpResponseDto;
+import nl.ou.se.rest.fuzzer.components.shared.Constants;
 import nl.ou.se.rest.fuzzer.components.shared.QueryUtil;
 
 @RestController()
@@ -42,32 +44,44 @@ public class TaskController {
     private static final int MAX_TASKS_ENDED_SPECIFIC = 250;
 
     @Autowired
-    TaskService taskSerivce;
+    TaskService taskService;
 
     // methods
     @RequestMapping(path = "active", method = RequestMethod.GET)
     public @ResponseBody List<TaskDto> findAllActive() {
         List<Task> tasks = new ArrayList<>();
-        tasks = taskSerivce.findQueuedAndRunning();
+        tasks = taskService.findQueuedAndRunning();
         return TaskMapper.toDtos(tasks);
     }
 
     @RequestMapping(path = "archive/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findArchivedCount() {
-        Long count = taskSerivce.countEnded();
+        Long count = taskService.countEnded();
         return ResponseEntity.ok().body(count);
     }
 
     @RequestMapping(path = "archive", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findArchived(@RequestParam(name = "curPage") int curPage,
             @RequestParam(name = "perPage") int perPage) {
-        return ResponseEntity.ok(TaskMapper.toDtos(taskSerivce.findEnded(QueryUtil.toPageRequest(curPage, perPage))));
+        return ResponseEntity.ok(TaskMapper.toDtos(taskService.findEnded(QueryUtil.toPageRequest(curPage, perPage))));
+    }
+
+    @RequestMapping(path = "{id}", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
+        Optional<Task> task = taskService.findById(id);
+
+        if (!task.isPresent()) {
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, Task.class, id));
+            return ResponseEntity.badRequest().body(new TaskDto());
+        }
+
+        return ResponseEntity.ok(TaskMapper.toDto(task.get()));
     }
 
     @RequestMapping(path = "recent/suts/{sut_id}", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> recentForSut(@PathVariable(value = "sut_id") Long sutId) {
-        List<Task> tasks = taskSerivce.findQueuedAndRunning();
-        tasks.addAll(taskSerivce.findEnded(PageRequest.of(0, MAX_TASKS_ENDED_SPECIFIC)));
+        List<Task> tasks = taskService.findQueuedAndRunning();
+        tasks.addAll(taskService.findEnded(PageRequest.of(0, MAX_TASKS_ENDED_SPECIFIC)));
         tasks = tasks.stream().filter(t -> t.isForSut(sutId)).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(TaskMapper.toDtos(tasks));
@@ -75,8 +89,8 @@ public class TaskController {
 
     @RequestMapping(path = "recent/projects/{project_id}", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> recentForProject(@PathVariable(value = "project_id") Long projectId) {
-        List<Task> tasks = taskSerivce.findQueuedAndRunning();
-        tasks.addAll(taskSerivce.findEnded(PageRequest.of(0, MAX_TASKS_ENDED_SPECIFIC)));
+        List<Task> tasks = taskService.findQueuedAndRunning();
+        tasks.addAll(taskService.findEnded(PageRequest.of(0, MAX_TASKS_ENDED_SPECIFIC)));
         tasks = tasks.stream().filter(t -> t.isForProject(projectId)).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(TaskMapper.toDtos(tasks));
@@ -84,7 +98,7 @@ public class TaskController {
 
     @RequestMapping(path = "running_or_queued/suts/{sut_id}/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> runningOrQueuedForSutCount(@PathVariable(value = "sut_id") Long sutId) {
-        List<Task> tasks = taskSerivce.findQueuedAndRunning();
+        List<Task> tasks = taskService.findQueuedAndRunning();
         Long count = tasks.stream().filter(t -> t.isForSut(sutId)).count();
 
         return ResponseEntity.ok().body(count);
@@ -93,7 +107,7 @@ public class TaskController {
     @RequestMapping(path = "running_or_queued/projects/{project_id}/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> runningOrQueuedForProjectCount(
             @PathVariable(value = "project_id") Long projectId) {
-        List<Task> tasks = taskSerivce.findQueuedAndRunning();
+        List<Task> tasks = taskService.findQueuedAndRunning();
         Long count = tasks.stream().filter(t -> t.isForProject(projectId)).count();
 
         return ResponseEntity.ok().body(count);
@@ -123,7 +137,7 @@ public class TaskController {
         }
 
         task.setMetaDataTuples(metaDataTuples);
-        taskSerivce.save(task);
+        taskService.save(task);
         return ResponseEntity.ok().body(TaskMapper.toDto(task));
     }
 }

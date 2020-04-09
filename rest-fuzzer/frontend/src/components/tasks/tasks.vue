@@ -19,6 +19,21 @@ import TasksArchive from "./tasks-archive";
 import TasksDetail from "./tasks-detail";
 
 export default {
-  components: { TasksActive, TasksArchive, TasksDetail }
+  components: { TasksActive, TasksArchive, TasksDetail },
+  methods: {
+    navigate() {
+      if (this.$route.params.id) {
+        this.$store.dispatch("findTask", this.$route.params.id);
+      }
+    }
+  },
+  watch: {
+    $route(to, from) {
+      this.navigate();
+    }
+  },
+  created() {
+    this.navigate();
+  }
 };
 </script>
