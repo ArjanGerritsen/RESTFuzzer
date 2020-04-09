@@ -10,22 +10,32 @@
             <div class="col">
               <div class="button-group-left">
                 <b-button
+                  v-if="hasRouteFor('sut')"
+                  size="sm"
+                  variant="primary"
+                  title="go to sut"
+                  :to="getRouteFor('sut')"
+                >
+                  <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;
+                  go to sut
+                </b-button>
+                <b-button
+                  v-if="hasRouteFor('project')"
+                  size="sm"
+                  variant="primary"
+                  title="go to project"
+                  :to="getRouteFor('project')"
+                >
+                  <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;
+                  go to project
+                </b-button>
+                <b-button
                   size="sm"
                   v-b-modal.tasks-delete
                   variant="outline-danger"
                   title="delete this task"
                 >
                   <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
-                </b-button>
-
-                <b-button
-                  size="sm"
-                  variant="primary"
-                  title="go to project"
-                  :to="{ name: 'project', params: { id: 1 }}"
-                >
-                  <b-icon icon="link" font-scale="1"></b-icon>&nbsp;
-                  go to project
                 </b-button>
               </div>
             </div>
@@ -124,6 +134,14 @@ export default {
             this.$timer.stop("refreshTask");
           });
       }
+    },
+    hasRouteFor(identifier) {
+      return this.task.metaDataTuplesJson.indexOf(`${identifier}_id`) !== -1;
+    },
+    getRouteFor(identifier) {
+      const jsonObject = JSON.parse(this.task.metaDataTuplesJson);
+      const id = jsonObject[`${identifier}_id`];
+      return { name: identifier, params: { id: id } };
     }
   },
   timers: {

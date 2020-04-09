@@ -1,5 +1,5 @@
 <template>
-  <b-card v-if="display" header-tag="header">
+  <b-card v-if="project !== null" header-tag="header">
     <template v-slot:header>
       <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail project
     </template>
@@ -120,7 +120,7 @@ export default {
     refreshProject() {
       if (!this.tasksQueuedOrRunning) {
         this.$timer.stop("refreshProject");
-        this.$store.dispatch("findProject", { project_id: this.project.id });
+        this.$store.dispatch("findProject", this.project.id);
         this.$root.$emit("bv::refresh::table", "project-requests");
         this.$root.$emit("bv::refresh::table", "project-responses");
         return;
@@ -152,12 +152,6 @@ export default {
     }
   },
   computed: {
-    display() {
-      return (
-        this.$store.getters.projects.display !== null &&
-        this.$store.getters.projects.display === "detail"
-      );
-    },
     project() {
       return this.$store.getters.projects.current;
     },

@@ -40,11 +40,12 @@ export default {
   },
   methods: {
     select(sut) {
+      this.$router.push({ name: "sut", params: { id: sut.id } });
       this.$store.dispatch("findSut", sut.id);
-      this.$store.commit("set_sut_display", { display: 'detail' });
     },
     add() {
       this.$store.commit("set_sut_display", { display: 'add' });
+      this.$store.commit("set_sut", { sut: null });
     }
   },
   computed: {

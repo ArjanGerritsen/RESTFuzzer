@@ -26,8 +26,22 @@ export default {
     ProjectsDetail,
     ProjectsDelete
   },
-  data() {
-    return { data: {} };
+  methods: {
+    navigate() {
+      if (this.$route.params.id) {
+        this.$store.dispatch("findProject", {
+          project_id: this.$route.params.id
+        });
+      }
+    }
+  },
+  watch: {
+    $route(to, from) {
+      this.navigate();
+    }
+  },
+  created() {
+    this.navigate();
   }
 };
 </script>

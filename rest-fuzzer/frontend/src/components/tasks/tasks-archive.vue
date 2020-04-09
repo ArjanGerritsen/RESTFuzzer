@@ -86,9 +86,9 @@ export default {
     };
   },
   methods: {
-    select(item) {
-      this.$router.push({ name: "task", params: { id: item.id } })
-      this.$store.commit("set_task_item", { item: item });
+    select(task) {
+      this.$router.push({ name: "task", params: { id: task.id } });
+      this.$store.commit("set_task_item", { item: task });
     },
     restProvider(context, callback) {
       return this.$store
