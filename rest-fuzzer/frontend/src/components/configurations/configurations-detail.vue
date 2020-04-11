@@ -1,7 +1,7 @@
 <template>
-  <b-card v-if="dictionary !== null" header-tag="header">
+  <b-card v-if="configuration !== null" header-tag="header">
     <template v-slot:header>
-      <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail dictionary
+      <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail configuration
     </template>
     <b-card-text>
       <b-tabs nav-tabs card>
@@ -12,9 +12,9 @@
                 <b-button
                   size="sm"
                   type="submit"
-                  v-b-modal.dictionaries-delete
+                  v-b-modal.configuration-delete
                   variant="outline-danger"
-                  title="delete this dictionary"
+                  title="delete this configuration"
                 >
                   <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
                 </b-button>
@@ -25,25 +25,17 @@
             <div class="col">
               <dl class="dl-horizontal">
                 <dt>Identifier</dt>
-                <dd>{{this.dictionary.id}}</dd>
+                <dd>{{this.configuration.id}}</dd>
                 <dt>Name</dt>
-                <dd>{{this.dictionary.name ? this.dictionary.name : '-'}}</dd>
+                <dd>{{this.configuration.name ? this.configuration.name : '-'}}</dd>
               </dl>
             </div>
-          </div>
-        </b-tab>
-        <b-tab :title="itemTitle()">
-          <div class="row">
             <div class="col">
               <dl class="dl-horizontal">
-                <dt>Items</dt>
-                <dd>
-                  <li
-                    class="list-inline-item item code"
-                    v-for="(value, key) in this.dictionary.items"
-                    :key="key"
-                  >{{value}}</li>
-                </dd>
+                <dt>Identifier</dt>
+                <dd>{{this.configuration.id}}</dd>
+                <dt>Name</dt>
+                <dd>{{this.configuration.name ? this.configuration.name : '-'}}</dd>
               </dl>
             </div>
           </div>
@@ -59,23 +51,9 @@ export default {
     return {};
   },
   computed: {
-    dictionary() {
-      return this.$store.getters.dictionaries.current;
+    configuration() {
+      return this.$store.getters.configurations.current.item;
     }
-  },
-  methods: {
-    itemTitle() {
-      return `Items [${this.dictionary.items.length}]`;
-    }
-  },
-  created: function() {}
+  }
 };
 </script>
-
-<style scoped>
-.item {
-  vertical-align: top;
-  margin: 5px;
-  width: 350px;
-}
-</style>

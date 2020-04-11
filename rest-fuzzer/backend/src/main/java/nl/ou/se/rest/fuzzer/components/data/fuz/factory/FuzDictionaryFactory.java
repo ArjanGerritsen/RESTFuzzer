@@ -6,11 +6,11 @@ public class FuzDictionaryFactory {
 
 	private FuzDictionary dictionary;
 	
-	public FuzDictionaryFactory create(String name, String itemsCsv) {
-		dictionary = new FuzDictionary(name, itemsCsv);	
+	public FuzDictionaryFactory create(String name, String items) {
+		dictionary = new FuzDictionary(name, items);	
 		return this;
 	}
-	
+
 	public FuzDictionary build() {
 		return this.dictionary;
 	}

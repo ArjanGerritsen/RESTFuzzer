@@ -38,6 +38,15 @@
         </div>
 
         <b-form-group
+          id="input-group-configuration"
+          label="Configuration:"
+          label-for="input-configuration"
+          description="Configuration for project"
+        >
+          <b-form-textarea id="coniguration" v-model="metaDataTuplesJson.configuration"></b-form-textarea>
+        </b-form-group>
+
+        <b-form-group
           id="input-group-2"
           label="System under test:"
           label-for="input-2"

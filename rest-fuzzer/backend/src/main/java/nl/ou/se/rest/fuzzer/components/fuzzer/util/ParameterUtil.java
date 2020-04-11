@@ -94,14 +94,16 @@ public class ParameterUtil {
     
     private Object getArrayValue(RmdParameter parameter) {
         // TODO
+        String format = null;
+        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_FORMAT)) {
+            format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_FORMAT);
+        }
+
+        // TODO
         if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_TYPE)) {
             String type = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_TYPE);
         }
 
-        // TODO
-        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_FORMAT)) {
-            String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_FORMAT);
-        }
 
         if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_ENUM)) {
             String values = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_ENUM);

@@ -5,6 +5,7 @@ import suts from "./suts";
 import tasks from "./tasks";
 import projects from "./projects";
 import dictionaries from "./dictionaries";
+import configurations from "./configurations";
 import messsages from "./messages";
 
 Vue.use(Vuex)
@@ -15,6 +16,7 @@ const store = new Vuex.Store({
     tasks: tasks,
     projects: projects,
     dictionaries: dictionaries,
+    configurations: configurations,
     messsages: messsages
   }
 })

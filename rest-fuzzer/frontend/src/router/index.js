@@ -5,6 +5,7 @@ import Home from "../components/home/home";
 import Suts from "../components/suts/suts";
 import Projects from "../components/projects/projects"
 import Dictionaries from "../components/dictionaries/dictionaries";
+import Configurations from "../components/configurations/configurations";
 import Tasks from "../components/tasks/tasks";
 import About from "../components/about/about";
 
@@ -35,7 +36,7 @@ const routes = [
     path: "/projects/:id",
     name: "project",
     component: Projects
-  },  
+  },
   {
     path: "/dictionaries",
     name: "dictionaries",
@@ -45,7 +46,18 @@ const routes = [
     path: "/dictionaries/:id",
     name: "dictionary",
     component: Dictionaries
-  },  
+  },
+  {
+    path: "/configurations",
+    name: "configurations",
+    component: Configurations
+  },
+  {
+    path: "/configurations/:id",
+    name: "configuration",
+    component: Configurations
+  },
+
   {
     path: "/tasks",
     name: "tasks",

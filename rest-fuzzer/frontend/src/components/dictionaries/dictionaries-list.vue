@@ -29,10 +29,7 @@ export default {
   components: { List },
   data() {
     return {
-      formatters: [
-        { field: "type", as: "enumToHuman" },
-        { field: "createdAt", as: "dateShort" }
-      ],
+      formatters: [{ field: "createdAt", as: "dateShort" }],
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "name", thStyle: "width: 250px;" },
@@ -42,11 +39,12 @@ export default {
     };
   },
   methods: {
-    select(dictionary) {
-      this.$store.commit("set_dictionary_display", { display: "detail" });
-      this.$store.commit("set_dictionary", { dictionary: dictionary });
+    select(item) {
+      this.$store.commit("set_dictionary_display", { display: null });      
+      this.$store.commit("set_dictionary", { dictionary: item });
     },
     add() {
+      this.$store.commit("set_dictionary", { dictionary: null });      
       this.$store.commit("set_dictionary_display", { display: "add" });
     }
   },

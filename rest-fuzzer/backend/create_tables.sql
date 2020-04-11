@@ -116,6 +116,13 @@ CREATE TABLE IF NOT EXISTS fuz_dictionaries (
   created_at TIMESTAMP NULL  
 ) ENGINE=INNODB;
 
+CREATE TABLE IF NOT EXISTS fuz_configurations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255),
+  items_json TEXT,
+  created_at TIMESTAMP NULL  
+) ENGINE=INNODB;
+
 
 // TODO moet sut_id in fuz_projects niet in de meta?
 

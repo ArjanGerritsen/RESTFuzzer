@@ -44,9 +44,11 @@ export default {
   methods: {
     select(project) {
       this.$router.push({ name: "project", params: { id: project.id } });
+      this.$store.commit("set_project_display", { display: null });
       this.$store.dispatch("findProject", { project_id: project.id });
     },
     add() {
+      this.$store.commit("set_project", { project: null });
       this.$store.commit("set_project_display", { display: "add" });
     }
   },

@@ -2,11 +2,11 @@
   <div>
     <b-card header-tag="header">
       <span slot="header">
-        <b-icon icon="display" font-scale="1"></b-icon>&nbsp;Systems under test
+        <b-icon icon="puzzle" font-scale="1"></b-icon>&nbsp;Configurations
       </span>
       <b-card-text>
         <div class="button-group-left">
-          <b-button size="sm" type="submit" variant="primary" @click="add">
+          <b-button size="sm" type="submit" variant="primary" @click="add()">
             <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
           </b-button>
         </div>
@@ -14,7 +14,7 @@
           @click-item="select"
           :select="false"
           :fields="fields"
-          :items="suts"
+          :items="configurations"
           :formatters="formatters"
         ></list>
       </b-card-text>
@@ -32,30 +32,28 @@ export default {
       formatters: [{ field: "createdAt", as: "dateShort" }],
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
-        { key: "title", thStyle: "width: 250px;" },
-        { key: "location", label: "OAS location" },
+        { key: "name" },
         { key: "createdAt", label: "Created @", thStyle: "width: 110px;" }
       ]
     };
   },
   methods: {
-    select(sut) {
-      this.$router.push({ name: "sut", params: { id: sut.id } });
-      this.$store.commit("set_sut_display", { display: null });
-      this.$store.dispatch("findSut", sut.id);
+    select(item) {
+      this.$store.commit("set_configuration_display", { display: null });
+      this.$store.commit("set_configuration", { item: item });
     },
     add() {
-      this.$store.commit("set_sut", { sut: null });
-      this.$store.commit("set_sut_display", { display: "add" });
+      this.$store.commit("set_configuration", { item: null });
+      this.$store.commit("set_configuration_display", { display: "add" });
     }
   },
   computed: {
-    suts() {
-      return this.$store.getters.suts.all;
+    configurations() {
+      return this.$store.getters.configurations.all.items;
     }
   },
   created: function() {
-    this.$store.dispatch("findAllSuts");
+    this.$store.dispatch("findAllConfigurations");
   }
 };
 </script>
