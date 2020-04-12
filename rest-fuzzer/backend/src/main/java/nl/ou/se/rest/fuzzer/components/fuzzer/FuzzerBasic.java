@@ -24,7 +24,7 @@ import nl.ou.se.rest.fuzzer.components.service.fuz.FuzDictionaryController;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service
-public class FuzzerBasic {
+public class FuzzerBasic implements Fuzzer {
 
     // variables
     private Logger logger = LoggerFactory.getLogger(FuzDictionaryController.class);
@@ -49,12 +49,11 @@ public class FuzzerBasic {
     @Autowired
     private ExecutorUtil executorUtil;
 
+    private FuzProject project = null;
     private Integer repititions = null;
 
     public void start(FuzProject project, Task task) {
-        if (!collectMetaData(project)) {
-            return;
-        }
+        this.project = project;
 
         int total = repititions * actions.size();
         int count = 0;
@@ -78,18 +77,18 @@ public class FuzzerBasic {
         }
     }
 
-    public Boolean collectMetaData(FuzProject project) {
-        Boolean allMetaDataComplete = true;
+    public Boolean isMetaDataValid() {
+        Boolean isMetaDataValid = true;
 
-        actions = actionService.findBySutId(project.getSut().getId());
+        actions = actionService.findBySutId(this.project.getSut().getId());
 
-        if (!project.getMetaDataTuples().containsKey(Constants.Fuzzer.Meta.REPITITIONS)) {
-            allMetaDataComplete = false;
+        if (!this.project.getMetaDataTuples().containsKey(Constants.Fuzzer.Meta.REPITITIONS)) {
+            isMetaDataValid = false;
             logger.error(Constants.Fuzzer.META_DATA_MISSING, FuzzerBasic.class, Constants.Fuzzer.Meta.REPITITIONS);
         }
 
-        this.repititions = (Integer) project.getMetaDataTuples().get(Constants.Fuzzer.Meta.REPITITIONS);
+        this.repititions = (Integer) this.project.getMetaDataTuples().get(Constants.Fuzzer.Meta.REPITITIONS);
 
-        return allMetaDataComplete;
+        return isMetaDataValid;
     }
 }

@@ -9,6 +9,7 @@ public class FuzProjectDto {
 
     // variables
     private Long id;
+    private String description;
     private FuzType type;
     private String metaDataTuplesJson;
     private RmdSutDto sut;
@@ -18,40 +19,37 @@ public class FuzProjectDto {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
-    public String getMetaDataTuplesJson() {
-        return metaDataTuplesJson;
+    public String getDescription() {
+        return description;
     }
-
-    public void setMetaDataTuplesJson(String metaDataTuplesJson) {
-        this.metaDataTuplesJson = metaDataTuplesJson;
+    public void setDescription(String description) {
+        this.description = description;
     }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public FuzType getType() {
         return type;
     }
-
     public void setType(FuzType type) {
         this.type = type;
     }
-
+    public String getMetaDataTuplesJson() {
+        return metaDataTuplesJson;
+    }
+    public void setMetaDataTuplesJson(String metaDataTuplesJson) {
+        this.metaDataTuplesJson = metaDataTuplesJson;
+    }
     public RmdSutDto getSut() {
         return sut;
     }
-
     public void setSut(RmdSutDto sut) {
         this.sut = sut;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

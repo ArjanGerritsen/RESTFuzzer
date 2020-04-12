@@ -17,12 +17,12 @@
         <b-form-group
           label="Configuration:"
           label-for="configuration-items"
-          description="Configuration (default loaded)"
+          description="Configuration (default loaded), use * for wildcards"
         >
           <b-form-textarea
             id="configuration-items"
             prop="String"
-            v-model="configuration.itemsJson"
+            v-model="configuration.itemsJsonText"
             placeholder="enter the configuration"
             rows="12"
           ></b-form-textarea>
@@ -45,10 +45,10 @@
 
 <script>
 const DEFAULT_CONFIGURATION = {
-  includeActions: [{ actions: [{ path: "*", httpMethod: "*" }] }],
-  excludeActions: [{ actions: [{ path: "*", httpMethod: "*" }] }],
-  skipParameters: [
-    { actions: [{ path: "*", httpMethod: "*" }], parameters: [{ name: "*" }] }
+  includeActions: [{ path: "*", httpMethod: "*" }],
+  excludeActions: [],
+  excludeParameters: [
+    { action: { path: "*", httpMethod: "*" }, parameter: { name: "*" } }
   ]
 };
 
@@ -57,7 +57,8 @@ export default {
     return {
       configuration: {
         name: null,
-        itemsJson: JSON.stringify(DEFAULT_CONFIGURATION, null, 4)
+        itemsJson: null,
+        itemsJsonText: JSON.stringify(DEFAULT_CONFIGURATION, null, 4)
       }
     };
   },
@@ -67,23 +68,37 @@ export default {
         this.$store.getters.configurations.display !== null &&
         this.$store.getters.configurations.display === "add"
       );
+    },
+    configurationsForPullDown() {
+      this.findAllConfigurations();
+      return this.$store.getters.configurationsForPullDown;
     }
   },
   methods: {
     reset() {
       this.configuration.name = "";
-      this.configuration.itemsJson = JSON.stringify(DEFAULT_CONFIGURATION, null, 4);
+      this.configuration.itemsJsonText = JSON.stringify(
+        DEFAULT_CONFIGURATION,
+        null,
+        4
+      );
     },
     cancel() {
       this.reset();
       this.$store.commit("set_configuration_display", { display: null });
     },
     add() {
+      this.configuration.itemsJson = JSON.stringify(JSON.parse(this.configuration.itemsJsonText.replace("\n", "")));
       this.$store.dispatch("addConfiguration", this.configuration).then(() => {
         this.cancel();
         this.$store.dispatch("findAllConfigurations");
       });
-    }
+    },
+    async findAllConfigurations() {
+      if (this.$store.getters.configurations.all.items === null) {
+        await this.$store.dispatch("findAllConfigurations");
+      }
+    }    
   }
 };
 </script>

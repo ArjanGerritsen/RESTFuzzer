@@ -226,11 +226,11 @@ const suts = {
         suts: state => {
             return state.suts
         },
-        sutsForPullDown: state => {
-            let sutsForPullDown = []
+        sutsForSelection: state => {
+            let sutsForSelection = []
 
             if (state.suts.all !== null) {
-                sutsForPullDown = state.suts.all.filter(sut => sut.title !== null).map(
+                sutsForSelection = state.suts.all.filter(sut => sut.title !== null).map(
                     sut => {
                         const newSut = {};
                         newSut["value"] = sut.id;
@@ -240,7 +240,7 @@ const suts = {
                 );
             }
 
-            return sutsForPullDown;
+            return sutsForSelection;
         },
         sutNodes: state => {
             let nodes = []

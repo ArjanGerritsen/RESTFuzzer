@@ -29,11 +29,11 @@
             </div>
             <p class="mb-1">
               <ul>
-                <li>TODO Change layout Systems under test and Fuzzing projects (remove tasks progress).</li>
-                <li>TODO Sepearate page for Tasks.</li>
-                <li>TODO Tasks: Progress percentage.</li>
-                <li>TODO Tasks: Logging.</li>
-                <li>Creating dependencies between REST actions (graph).</li>
+                <li>TODO Creating dependencies between REST actions (graph).</li>
+                <li>TODO Configuration maintenance and selecting configuration for fuzzing projects.</li>
+                <li>Sepearate page for Tasks.</li>
+                <li>Tasks: Progress percentage.</li>
+                <li>Change layout Systems under test and Fuzzing projects (remove tasks progress).</li>
               </ul>
             </p>
           </b-list-group-item>            <b-list-group-item href="#" disabled class="flex-column align-items-start">

@@ -6,22 +6,39 @@
 
     <b-card-text>
       <b-form>
-        <b-form-group
-          id="input-group-1"
-          label="Type:"
-          label-for="input-1"
-          description="Select type"
-        >
-          <b-form-select id="input-1" :options="types" v-model="project.type" required>
+        <b-form-group label="Description:" label-for="description" description="Describe project">
+          <b-form-textarea id="description" v-model="project.description" required></b-form-textarea>
+        </b-form-group>
+
+        <b-form-group label="Type:" label-for="type" description="Select type">
+          <b-form-select id="type" :options="types" v-model="project.type" required>
             <template v-slot:first>
               <b-form-select-option :value="null" disabled>-- select a type --</b-form-select-option>
             </template>
           </b-form-select>
         </b-form-group>
 
+        <hr />
+
+        <b-form-group
+          v-if="configurationsForSelection.length > 0"
+          label="Configuration:"
+          label-for="input-configuration"
+          description="Configuration for project (select zero or more items), configurations are merged and copied to this project"
+        >
+          <b-form-checkbox
+            switch
+            v-for="config in configurationsForSelection"
+            v-model="configuration"
+            :key="config.value"
+            :value="config.value"
+          >{{ config.text }}</b-form-checkbox>
+
+          <hr />
+        </b-form-group>
+
         <div v-if="project.type === 'BASIC_FUZZER'">
           <b-form-group
-            id="input-group-2"
             label="Repetitions:"
             label-for="input-2"
             description="Set number of repetitions"
@@ -35,24 +52,16 @@
             ></b-form-input>
             <div class="mt-2">Repetitions: {{ metaDataTuplesJson.repetitions }}</div>
           </b-form-group>
+
+          <hr />
         </div>
 
         <b-form-group
-          id="input-group-configuration"
-          label="Configuration:"
-          label-for="input-configuration"
-          description="Configuration for project"
-        >
-          <b-form-textarea id="coniguration" v-model="metaDataTuplesJson.configuration"></b-form-textarea>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-2"
           label="System under test:"
           label-for="input-2"
           description="Select system under test"
         >
-          <b-form-select id="input-2" :options="sutsForPullDown" v-model="project.sut.id" required>
+          <b-form-select id="input-2" :options="sutsForSelection" v-model="project.sut.id" required>
             <template v-slot:first>
               <b-form-select-option :value="null" disabled>-- select a system under test --</b-form-select-option>
             </template>
@@ -76,6 +85,7 @@
 
 <script>
 const DEFAULT_META = {
+  configuration: {},
   repetitions: 1
 };
 
@@ -83,12 +93,14 @@ export default {
   data() {
     return {
       project: {
+        description: null,
         type: null,
         sut: {
           id: null
         },
         metaDataTuplesJson: null
       },
+      configuration: null,
       metaDataTuplesJson: DEFAULT_META,
       types: [
         { value: "BASIC_FUZZER", text: "Basic" },
@@ -100,6 +112,7 @@ export default {
   },
   methods: {
     reset() {
+      this.project.description = null;
       this.project.type = null;
       this.metaDataTuplesJson = DEFAULT_META;
     },
@@ -108,9 +121,12 @@ export default {
       this.$store.commit("set_project_display", { display: null });
     },
     setMetaDataTuplesJson() {
+      this.metaDataTuplesJson.configuration = this.getConfigurationJson();
+
       this.metaDataTuplesJson.repetitions = Number(
         this.metaDataTuplesJson.repetitions
       );
+
       this.project.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);
     },
     add() {
@@ -124,6 +140,26 @@ export default {
       if (this.$store.getters.suts.all === null) {
         await this.$store.dispatch("findAllSuts");
       }
+    },
+    async findAllConfigurations() {
+      if (this.$store.getters.configurations.all.items === null) {
+        await this.$store.dispatch("findAllConfigurations");
+      }
+    },
+    getConfigurationJson() {
+      let configurations = this.$store.getters.configurations.all.items.filter(
+        config => {
+          return this.configuration === config.id;
+        }
+      );
+
+      let configurationsJson = {};
+
+      if (configurations.length === 1) {
+        configurationsJson = JSON.parse(configurations[0].itemsJson);
+      }
+
+      return configurationsJson;
     }
   },
   computed: {
@@ -133,9 +169,13 @@ export default {
         this.$store.getters.projects.display === "add"
       );
     },
-    sutsForPullDown() {
+    sutsForSelection() {
       this.findAllSuts();
-      return this.$store.getters.sutsForPullDown;
+      return this.$store.getters.sutsForSelection;
+    },
+    configurationsForSelection() {
+      this.findAllConfigurations();
+      return this.$store.getters.configurationsForSelection;
     }
   }
 };

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const configurations = {
     state: {
-    	configurations: {
+        configurations: {
             all: {
                 items: null
             },
@@ -69,13 +69,13 @@ const configurations = {
                     })
             })
         },
-        deleteConfiguration({ commit }, dictionary) {
+        deleteConfiguration({ commit }, configuration) {
             return new Promise((resolve, reject) => {
                 axios
-                    .delete(`/rest/configuations/${dictionary.id}`)
+                    .delete(`/rest/configurations/${configuration.id}`)
                     .then(response => {
-                        commit("message_add", { message: { type: "info", title: "Delete configuations", text: `Dictionary ${response.data.name} deleted successful.` } });
-                        commit("set_dictionary", { item: null });
+                        commit("message_add", { message: { type: "info", title: "Delete configuations", text: `Configuration ${response.data.name} deleted successful.` } });
+                        commit("set_configuration", { item: null });
                         resolve();
                     })
                     .catch(error => {
@@ -86,9 +86,25 @@ const configurations = {
         },
     },
     getters: {
-    	configurations: state => {
+        configurations: state => {
             return state.configurations
         },
+        configurationsForSelection: state => {
+            let configurationsForSelection = []
+
+            if (state.configurations.all.items !== null) {
+                configurationsForSelection = state.configurations.all.items.map(
+                    configuration => {
+                        const newConfiguration = {};
+                        newConfiguration["value"] = configuration.id;
+                        newConfiguration["text"] = configuration.name;
+                        return newConfiguration;
+                    }
+                );
+            }
+
+            return configurationsForSelection;
+        }
     }
 }
 

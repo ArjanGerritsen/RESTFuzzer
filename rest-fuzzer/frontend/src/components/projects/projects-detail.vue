@@ -42,12 +42,14 @@
               <dl class="dl-horizontal">
                 <dt>Identifier</dt>
                 <dd>{{project.id}}</dd>
+                <dt>Description</dt>
+                <dd>{{project.description}}</dd>
+                <dt>Type</dt>
+                <dd>{{project.type | enumToHuman }}</dd>
                 <dt>System under test</dt>
                 <dd>
                   <b-link :href="project.sut.location" target="_blank">{{project.sut.location}}</b-link>
                 </dd>
-                <dt>Type</dt>
-                <dd>{{project.type | enumToHuman }}</dd>
                 <dt>Created @</dt>
                 <dd>{{project.createdAt | dateShort }}</dd>
               </dl>

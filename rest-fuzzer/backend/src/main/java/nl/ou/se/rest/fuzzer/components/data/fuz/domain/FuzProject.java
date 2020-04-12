@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -34,6 +35,11 @@ public class FuzProject implements Comparable<FuzProject> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @NotEmpty
+    @Size(max = 255)
+    private String description;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -83,6 +89,14 @@ public class FuzProject implements Comparable<FuzProject> {
         this.id = id;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public FuzType getType() {
         return type;
     }
@@ -91,20 +105,20 @@ public class FuzProject implements Comparable<FuzProject> {
         this.type = type;
     }
 
-    public RmdSut getSut() {
-        return sut;
-    }
-
-    public void setSut(RmdSut sut) {
-        this.sut = sut;
-    }
-
     public String getMetaDataTuplesJson() {
         return metaDataTuplesJson;
     }
 
     public void setMetaDataTuplesJson(String metaDataTuplesJson) {
         this.metaDataTuplesJson = metaDataTuplesJson;
+    }
+
+    public RmdSut getSut() {
+        return sut;
+    }
+
+    public void setSut(RmdSut sut) {
+        this.sut = sut;
     }
 
     public LocalDateTime getCreatedAt() {

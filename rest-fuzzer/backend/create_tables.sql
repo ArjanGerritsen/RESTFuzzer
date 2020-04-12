@@ -71,6 +71,7 @@ ALTER TABLE rmd_responses ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
 
 CREATE TABLE IF NOT EXISTS fuz_projects (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  description VARCHAR(255) NOT NULL,
   type VARCHAR(64) NOT NULL,
   meta_data_tuples_json TEXT, 
   sut_id INT,
@@ -132,6 +133,7 @@ drop table fuz_responses;
 drop table fuz_requests;
 drop table fuz_projects;
 drop table fuz_dictionaries;
+drop table fuz_configurations;
 
 drop table rmd_responses;
 drop table rmd_parameters;

@@ -1,5 +1,6 @@
 package nl.ou.se.rest.fuzzer.components.extractor;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
+import nl.ou.se.rest.fuzzer.components.data.task.dao.TaskService;
 import nl.ou.se.rest.fuzzer.components.task.TaskExecution;
 import nl.ou.se.rest.fuzzer.components.task.TaskExecutionBase;
 
@@ -21,6 +23,9 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
 
     @Autowired
     private RmdSutService sutService;
+    
+    @Autowired
+    private TaskService taskService;
     
     @Autowired
     private RmdActionDependencyService actionDependencyService;
@@ -44,9 +49,15 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
     	RmdSut sut = oSut.get();
 
     	extract(sut);
+    	
+    	getTask().setProgress(new BigDecimal(50));
+    	taskService.save(getTask());
 
         relate(sut);
 
+        getTask().setProgress(new BigDecimal(100));
+        taskService.save(getTask());
+        
     	this.logStop(ExtractorTask.class.getTypeName());
 	}
 

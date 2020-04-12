@@ -32,10 +32,8 @@
             </div>
             <div class="col">
               <dl class="dl-horizontal">
-                <dt>Identifier</dt>
-                <dd>{{this.configuration.id}}</dd>
-                <dt>Name</dt>
-                <dd>{{this.configuration.name ? this.configuration.name : '-'}}</dd>
+                <dt>Configuration</dt>
+                <dd class="json" :inner-html.prop="this.configuration.itemsJson | json"></dd>
               </dl>
             </div>
           </div>

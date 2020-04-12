@@ -19,6 +19,8 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 	@Autowired
 	private FuzProjectService projectService;
 	
+	private Fuzzer fuzzer;
+
 	@Autowired
 	private FuzzerBasic fuzzerBasic;
 
@@ -42,10 +44,14 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 
 		switch (project.getType()) {
 		case BASIC_FUZZER:
-		    fuzzerBasic.start(project, this.getTask());
+		    fuzzer = fuzzerBasic;
 			break;
 		default:
 			break;
+		}
+
+		if (fuzzer.isMetaDataValid()) {
+		    fuzzer.start(project, this.getTask());
 		}
 
 		projectService.save(project);
