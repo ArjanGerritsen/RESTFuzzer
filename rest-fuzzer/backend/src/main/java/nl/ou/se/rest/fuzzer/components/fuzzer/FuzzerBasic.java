@@ -3,9 +3,8 @@ package nl.ou.se.rest.fuzzer.components.fuzzer;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +18,16 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.data.task.dao.TaskService;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.ExecutorUtil;
+import nl.ou.se.rest.fuzzer.components.fuzzer.util.MetaDataUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.RequestUtil;
-import nl.ou.se.rest.fuzzer.components.service.fuz.FuzDictionaryController;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service
 public class FuzzerBasic implements Fuzzer {
 
     // variables
-    private Logger logger = LoggerFactory.getLogger(FuzDictionaryController.class);
-
-    private List<RmdAction> actions;
+    private FuzProject project = null;
+    private MetaDataUtil metaDataUtil = null;
 
     @Autowired
     private RmdActionService actionService;
@@ -49,16 +47,18 @@ public class FuzzerBasic implements Fuzzer {
     @Autowired
     private ExecutorUtil executorUtil;
 
-    private FuzProject project = null;
-    private Integer repititions = null;
-
     public void start(FuzProject project, Task task) {
         this.project = project;
 
-        int total = repititions * actions.size();
-        int count = 0;
+        List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
+        actions = metaDataUtil.filterActions(actions);
 
-        for (int i = 0; i < repititions; i++) {
+        Integer repetitions = metaDataUtil.getIntegerValue(Constants.Fuzzer.Meta.REPITITIONS);
+
+        int count = 0;
+        int total = repetitions * actions.size();
+
+        for (int i = 0; i < repetitions; i++) {
             for (RmdAction a : actions) {
                 FuzRequest request = requestUtil.getRequestFromAction(project, a);
                 requestService.save(request);
@@ -67,28 +67,22 @@ public class FuzzerBasic implements Fuzzer {
                 responseService.save(response);
 
                 count++;
-                BigDecimal progress = BigDecimal.valueOf(count)
-                        .divide(BigDecimal.valueOf(total), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
-                if (task.getProgress() == null || task.getProgress().compareTo(progress) < 0) {
-                    task.setProgress(progress);
-                    taskService.save(task);
-                }
+                doProgress(task, count, total);
             }
         }
     }
 
-    public Boolean isMetaDataValid() {
-        Boolean isMetaDataValid = true;
-
-        actions = actionService.findBySutId(this.project.getSut().getId());
-
-        if (!this.project.getMetaDataTuples().containsKey(Constants.Fuzzer.Meta.REPITITIONS)) {
-            isMetaDataValid = false;
-            logger.error(Constants.Fuzzer.META_DATA_MISSING, FuzzerBasic.class, Constants.Fuzzer.Meta.REPITITIONS);
+    private void doProgress(Task task, int count, int total) {
+        BigDecimal progress = BigDecimal.valueOf(count).divide(BigDecimal.valueOf(total), 2, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
+        if (task.getProgress() == null || task.getProgress().compareTo(progress) < 0) {
+            task.setProgress(progress);
+            taskService.save(task);
         }
+    }
 
-        this.repititions = (Integer) this.project.getMetaDataTuples().get(Constants.Fuzzer.Meta.REPITITIONS);
-
-        return isMetaDataValid;
+    public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
+        this.metaDataUtil = new MetaDataUtil(metaDataTuples);
+        return metaDataUtil.isValid(Constants.Fuzzer.Meta.REPITITIONS);
     }
 }

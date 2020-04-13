@@ -220,7 +220,7 @@ const suts = {
                         reject(error);
                     })
             })
-        },
+        }
     },
     getters: {
         suts: state => {

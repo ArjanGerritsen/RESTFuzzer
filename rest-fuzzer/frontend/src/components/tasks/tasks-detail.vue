@@ -31,7 +31,7 @@
                 </b-button>
                 <b-button
                   size="sm"
-                  v-b-modal.tasks-delete
+                  v-b-modal.task-delete
                   variant="outline-danger"
                   title="delete this task"
                 >
@@ -74,7 +74,7 @@
                   ></b-spinner>
                   <b-icon
                     v-if="task.status === constants.TASK_STATUS_CRASHED"
-                    icon="alert-circle-fill"
+                    icon="exclamation-circle-fill"
                     variant="danger"
                     font-scale="1"
                   ></b-icon>

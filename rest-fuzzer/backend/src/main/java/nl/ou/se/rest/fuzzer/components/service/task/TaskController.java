@@ -26,6 +26,7 @@ import nl.ou.se.rest.fuzzer.components.data.task.dao.TaskService;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.extractor.ExtractorTask;
 import nl.ou.se.rest.fuzzer.components.fuzzer.FuzzerTask;
+import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 import nl.ou.se.rest.fuzzer.components.service.task.domain.TaskDto;
 import nl.ou.se.rest.fuzzer.components.service.task.mapper.TaskMapper;
 import nl.ou.se.rest.fuzzer.components.service.util.HttpResponseDto;
@@ -114,7 +115,7 @@ public class TaskController {
     }
 
     @RequestMapping(path = "/{name}/start", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> addExtractorTask(@PathVariable(value = "name") String name,
+    public @ResponseBody ResponseEntity<?> add(@PathVariable(value = "name") String name,
             @RequestBody Map<String, Object> metaDataTuples) {
         Task task = null;
 
@@ -140,4 +141,17 @@ public class TaskController {
         taskService.save(task);
         return ResponseEntity.ok().body(TaskMapper.toDto(task));
     }
+    
+    @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
+    public @ResponseBody ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
+        Optional<Task> task = taskService.findById(id);
+
+        if (!task.isPresent()) {
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, Task.class, id));
+            return ResponseEntity.badRequest().body(new RmdSutDto());
+        }
+
+        taskService.deleteById(id);
+        return ResponseEntity.ok(TaskMapper.toDto(task.get()));
+    }    
 }

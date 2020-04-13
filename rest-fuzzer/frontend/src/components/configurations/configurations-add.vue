@@ -45,10 +45,10 @@
 
 <script>
 const DEFAULT_CONFIGURATION = {
-  includeActions: [{ path: "*", httpMethod: "*" }],
+  includeActions: [{ path: ".*", httpMethod: ".*" }],
   excludeActions: [],
   excludeParameters: [
-    { action: { path: "*", httpMethod: "*" }, parameter: { name: "*" } }
+    { action: { path: ".*", httpMethod: ".*" }, parameter: { name: ".*" } }
   ]
 };
 

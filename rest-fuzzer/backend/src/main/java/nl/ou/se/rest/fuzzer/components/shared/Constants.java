@@ -22,7 +22,11 @@ public abstract class Constants {
         public static final String PARAMETER_TYPE_UNKNOWN = "Parameter type %s is unknown";
 
         public abstract class Meta {
-            public static final String REPITITIONS = "repetitions";            
+            public static final String CONFIGURATION = "configuration";            
+            public static final String INCLUDE_ACTIONS = "includeActions";
+            public static final String EXCLUDE_ACTIONS = "excludeActions";
+            public static final String EXCLUDE_PARAMETERS = "excludeParameters";
+            public static final String REPITITIONS = "repetitions";
         }
 	}
 

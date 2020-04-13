@@ -2,7 +2,7 @@
   <div>
     <b-card header-tag="header">
       <span slot="header">
-        <b-icon icon="puzzle" font-scale="1"></b-icon>&nbsp;Configurations
+        <b-icon icon="gear" font-scale="1"></b-icon>&nbsp;Configurations
       </span>
       <b-card-text>
         <div class="button-group-left">

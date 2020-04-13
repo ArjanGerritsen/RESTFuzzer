@@ -9,6 +9,10 @@ function convertTasks(tasks) {
 }
 
 function convertTask(task) {
+    if (task == null) {
+        return task;
+    }
+
     let nameParts = task.canonicalName.split(".");
 
     let status = Constants.TASK_STATUS_QUEUED;
@@ -58,7 +62,7 @@ const tasks = {
             state.tasks.archive.count = payload.count
         },
 
-        set_task_item(state, payload) {
+        set_task(state, payload) {
             state.tasks.current.item = convertTask(payload.item)
         }
     },
@@ -114,12 +118,12 @@ const tasks = {
                 axios
                     .get(`/rest/tasks/${id}`)
                     .then(response => {
-                        commit("set_task_item", { item: response.data });
+                        commit("set_task", { item: response.data });
                         resolve();
                     })
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: `Couldn't retrieve task id ${id}`, err: error } });
-                        commit("set_task_item", { item: null });
+                        commit("set_task", { item: null });
                         reject(error);
                     })
             })
@@ -137,8 +141,22 @@ const tasks = {
                         reject(error);
                     })
             })
-
-        }
+        },
+        deleteTask({ commit }, task) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .delete(`/rest/tasks/${task.id}`)
+                    .then(response => {
+                        commit("message_add", { message: { type: "info", title: "Delete task", text: `Task ${response.data.id} deleted successful.` } });
+                        commit("set_task", { item: null });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't task with id ${task.id}`, err: error } });
+                        reject(error);
+                    })
+            })
+        },
     },
     getters: {
         tasks: state => {

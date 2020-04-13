@@ -33,7 +33,7 @@
               <b-spinner small variant="success" type="grow"></b-spinner>
             </template>
             <template v-if="data.value === constants.TASK_STATUS_CRASHED">
-              <b-icon icon="alert-circle-fill" variant="danger" font-scale="1"></b-icon>
+              <b-icon icon="exclamation-circle-fill" variant="danger" font-scale="1"></b-icon>
             </template>
             <template v-if="data.value === constants.TASK_STATUS_FINISHED">
               <b-icon icon="check-circle" variant="success" font-scale="1"></b-icon>
@@ -88,7 +88,7 @@ export default {
   methods: {
     select(task) {
       this.$router.push({ name: "task", params: { id: task.id } });
-      this.$store.commit("set_task_item", { item: task });
+      this.$store.commit("set_task", { item: task });
     },
     restProvider(context, callback) {
       return this.$store

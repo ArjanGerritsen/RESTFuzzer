@@ -50,7 +50,7 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 			break;
 		}
 
-		if (fuzzer.isMetaDataValid()) {
+		if (fuzzer.isMetaDataValid(project.getMetaDataTuples())) {
 		    fuzzer.start(project, this.getTask());
 		}
 

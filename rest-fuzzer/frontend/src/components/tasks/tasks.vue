@@ -10,6 +10,7 @@
         <tasks-detail></tasks-detail>
       </div>
     </div>
+    <tasks-delete></tasks-delete>
   </div>
 </template>
 
@@ -17,9 +18,10 @@
 import TasksActive from "./tasks-active";
 import TasksArchive from "./tasks-archive";
 import TasksDetail from "./tasks-detail";
+import TasksDelete from "./tasks-delete";
 
 export default {
-  components: { TasksActive, TasksArchive, TasksDetail },
+  components: { TasksActive, TasksArchive, TasksDetail, TasksDelete },
   methods: {
     navigate() {
       if (this.$route.params.id) {
