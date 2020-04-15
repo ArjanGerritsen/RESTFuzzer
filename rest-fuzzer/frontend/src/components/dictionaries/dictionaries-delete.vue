@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="dictionaries-delete" ref="modal" v-if="this.dictionary !== null" size="xs">
+  <b-modal id="dictionaries-delete" ref="modal" v-if="this.dictionary" size="xs">
     <template slot="modal-header">
       <h6>
         <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;Delete dictionary
@@ -28,12 +28,13 @@ export default {
   },
   computed: {
     dictionary() {
-      return this.$store.getters.dictionaries.current;
+      return this.$store.getters.dictionaries.current.item;
     }
   },
   methods: {
     deleteDictionary() {
       this.$store.dispatch("deleteDictionary", this.dictionary).then(() => {
+        this.$router.push({ name: "dictionaries" });
         this.$store.commit("set_dictionary", { dictionary: null });
         this.$store.dispatch("findAllDictionaries");
       });

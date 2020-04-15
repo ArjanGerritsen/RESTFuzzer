@@ -96,11 +96,11 @@ export default {
 
       return this.$store
         .dispatch("findProjectRequests", {
-          project_id: this.project.id,
+          id: this.project.id,
           context: context
         })
         .then(() => {
-          return this.$store.getters.projects.current_requests.list;
+          return this.$store.getters.projects.current.requests.items;
         })
         .catch(() => {
           return [];
@@ -109,7 +109,7 @@ export default {
   },
   computed: {
     totalRows() {
-      return this.$store.getters.projects.current_requests.count;
+      return this.$store.getters.projects.current.requests.count;
     },
     displayPagination() {
       return this.totalRows > this.perPage;

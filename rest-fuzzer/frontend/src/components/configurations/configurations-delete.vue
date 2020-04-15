@@ -1,14 +1,12 @@
 <template>
-  <b-modal id="configuration-delete" ref="modal" v-if="this.configuration !== null" size="xs">
+  <b-modal id="configuration-delete" ref="modal" v-if="configuration" size="xs">
     <template slot="modal-header">
       <h6>
         <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;Delete configuration
       </h6>
     </template>
 
-    <template
-      slot="default"
-    >Are you sure you want to delete configuration '{{this.configuration.name}}'?</template>
+    <template slot="default">Are you sure you want to delete configuration '{{configuration.name}}'?</template>
 
     <template slot="modal-footer" slot-scope="{ cancel }">
       <div class="button-group-right">
@@ -38,6 +36,7 @@ export default {
       this.$store
         .dispatch("deleteConfiguration", this.configuration)
         .then(() => {
+          this.$router.push({ name: "configurations" });
           this.$store.commit("set_configuration", { item: null });
           this.$store.dispatch("findAllConfigurations");
         });

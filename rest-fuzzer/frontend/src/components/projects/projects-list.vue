@@ -45,16 +45,16 @@ export default {
     select(project) {
       this.$router.push({ name: "project", params: { id: project.id } });
       this.$store.commit("set_project_display", { display: null });
-      this.$store.dispatch("findProject", { project_id: project.id });
+      this.$store.dispatch("findProject", project.id);
     },
     add() {
-      this.$store.commit("set_project", { project: null });
+      this.$store.commit("set_project", { item: null });
       this.$store.commit("set_project_display", { display: "add" });
     }
   },
   computed: {
     projects() {
-      return this.$store.getters.projects.all;
+      return this.$store.getters.projects.all.items;
     }
   },
   created: function() {

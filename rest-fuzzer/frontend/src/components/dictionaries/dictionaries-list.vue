@@ -40,17 +40,18 @@ export default {
   },
   methods: {
     select(item) {
+      this.$router.push({ name: "dictionary", params: { id: item.id } });
       this.$store.commit("set_dictionary_display", { display: null });      
-      this.$store.commit("set_dictionary", { dictionary: item });
+      this.$store.commit("set_dictionary", { item: item });
     },
     add() {
-      this.$store.commit("set_dictionary", { dictionary: null });      
+      this.$store.commit("set_dictionary", { item: null });      
       this.$store.commit("set_dictionary_display", { display: "add" });
     }
   },
   computed: {
     dictionaries() {
-      return this.$store.getters.dictionaries.all;
+      return this.$store.getters.dictionaries.all.items;
     }
   },
   created: function() {

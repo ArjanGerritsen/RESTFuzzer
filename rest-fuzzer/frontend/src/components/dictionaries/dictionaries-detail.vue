@@ -1,5 +1,5 @@
 <template>
-  <b-card v-if="dictionary !== null" header-tag="header">
+  <b-card v-if="dictionary" header-tag="header">
     <template v-slot:header>
       <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail dictionary
     </template>
@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     dictionary() {
-      return this.$store.getters.dictionaries.current;
+      return this.$store.getters.dictionaries.current.item;
     }
   },
   methods: {

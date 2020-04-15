@@ -1,11 +1,17 @@
 package nl.ou.se.rest.fuzzer.components.fuzzer.util;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -16,72 +22,79 @@ import org.springframework.stereotype.Service;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
 import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzResponseFactory;
-import nl.ou.se.rest.fuzzer.components.service.task.TaskController;
 
 @Service
 public class ExecutorUtil {
 
-	// variables
-	private Logger logger = LoggerFactory.getLogger(TaskController.class);
+    // variables
+    private Logger logger = LoggerFactory.getLogger(ExecutorUtil.class);
 
-	private static final int TIMEOUT_MS = 5 * 1000;
+    private static final int TIMEOUT_MS = 5 * 1000;
 
-	private static CloseableHttpClient httpClient;
+    private static CloseableHttpClient httpClient;
 
-	private FuzResponseFactory responseFactory = new FuzResponseFactory();
+    private FuzResponseFactory responseFactory = new FuzResponseFactory();
 
-	// constructors
-	private ExecutorUtil() {
+    // constructors
+    private ExecutorUtil() {
         this.init();
-	}
+    }
 
-	private void init() {
-		RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT_MS)
-				.setConnectionRequestTimeout(TIMEOUT_MS).setSocketTimeout(TIMEOUT_MS).build();
+    private void init() {
+        CredentialsProvider provider = new BasicCredentialsProvider();
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("wordpress", "wordpress");
+        provider.setCredentials(AuthScope.ANY, credentials);
 
-		httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
-	}
+        RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT_MS)
+                .setConnectionRequestTimeout(TIMEOUT_MS).setSocketTimeout(TIMEOUT_MS).build();
 
-	public void destroy() {
-		try {
-			httpClient.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+        httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).setDefaultCredentialsProvider(provider)
+                .build();
+    }
 
-	public FuzResponse processRequest(FuzRequest request) {
-		HttpResponse response = null;
-		String failureReason = null;
+    public void destroy() {
+        try {
+            httpClient.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-		try {
-			HttpUriRequest httpUriRequest = ExecutorUtilHelper.getRequest(request);
+    public FuzResponse processRequest(FuzRequest request) {
+        HttpResponse response = null;
+        String failureReason = null;
 
-			logger.debug(httpUriRequest.getRequestLine().toString());
+        LocalDateTime ldt = LocalDateTime.now();
+        try {
+            HttpUriRequest httpUriRequest = ExecutorUtilHelper.getRequest(request);
 
-			if (httpUriRequest != null) {
-				response = httpClient.execute(httpUriRequest);
+            logger.debug(httpUriRequest.getRequestLine().toString());
 
-				logger.debug(response.getStatusLine().toString());
-			}
+            if (httpUriRequest != null) {
+                response = httpClient.execute(httpUriRequest);
 
-		} catch (Exception e) {
-			e.printStackTrace(); // TODO
-			failureReason = e.getMessage();
-		}
+                logger.debug(response.getStatusLine().toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO
+            failureReason = e.getMessage();
+        }
+        Long ms = ldt.until(LocalDateTime.now(), ChronoUnit.MILLIS);
 
-		return createFuzResponse(request, response, failureReason);
-	}
+        logger.info(String.format("it took %s ms to execute request and capture response", ms));
 
-	private FuzResponse createFuzResponse(FuzRequest request, HttpResponse response, String failureReason) {
-		responseFactory.create(request.getProject(), request);
+        return createFuzResponse(request, response, failureReason);
+    }
 
-		if (response != null) {
-			responseFactory.setCode(response.getStatusLine().getStatusCode());
-			responseFactory.setDescription(response.getStatusLine().getReasonPhrase());
+    private FuzResponse createFuzResponse(FuzRequest request, HttpResponse response, String failureReason) {
+        responseFactory.create(request.getProject(), request);
 
-			String body = null;
+        if (response != null) {
+            responseFactory.setCode(response.getStatusLine().getStatusCode());
+            responseFactory.setDescription(response.getStatusLine().getReasonPhrase());
+
+            String body = null;
             try {
                 body = EntityUtils.toString(response.getEntity());
 
@@ -89,13 +102,13 @@ public class ExecutorUtil {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-			responseFactory.setBody(body);
-		}
+            responseFactory.setBody(body);
+        }
 
-		if (failureReason != null) {
-			responseFactory.setFailureReason(failureReason);
-		}
-		
-		return responseFactory.build();
-	}
+        if (failureReason != null) {
+            responseFactory.setFailureReason(failureReason);
+        }
+
+        return responseFactory.build();
+    }
 }

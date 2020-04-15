@@ -39,6 +39,7 @@ export default {
   },
   methods: {
     select(item) {
+      this.$router.push({ name: "configuration", params: { id: item.id } });
       this.$store.commit("set_configuration_display", { display: null });
       this.$store.commit("set_configuration", { item: item });
     },

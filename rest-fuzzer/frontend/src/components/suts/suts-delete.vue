@@ -36,6 +36,7 @@ export default {
   methods: {
     deleteSut() {
       this.$store.dispatch("deleteSut", this.sut).then(() => {
+        this.$router.push({ name: "suts" });
         this.$store.commit("set_sut_display", { display: null });
         this.$store.dispatch("findAllSuts");
       });

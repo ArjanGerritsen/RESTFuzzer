@@ -43,7 +43,7 @@ const configurations = {
             return new Promise((resolve, reject) => {
                 commit("set_configuration", { ìtem: null });
                 axios
-                    .get(`/rest/dictionaries/${id}`)
+                    .get(`/rest/configurations/${id}`)
                     .then(response => {
                         commit("set_configuration", { item: response.data });
                         resolve();

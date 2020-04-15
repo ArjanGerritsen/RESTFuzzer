@@ -1,5 +1,5 @@
 <template>
-  <b-card v-if="configuration !== null" header-tag="header">
+  <b-card v-if="this.configuration" header-tag="header">
     <template v-slot:header>
       <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail configuration
     </template>

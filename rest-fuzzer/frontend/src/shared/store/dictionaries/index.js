@@ -2,18 +2,22 @@ import axios from "axios";
 
 const dictionaries = {
     state: {
-    	dictionaries: {
-            all: null,
-            current: null,
+        dictionaries: {
+            all: {
+                items: null
+            },
+            current: {
+                item: null
+            },
             display: null
         }
     },
     mutations: {
         set_dictionaries(state, payload) {
-            state.dictionaries.all = payload.dictionaries
+            state.dictionaries.all.items = payload.items
         },
         set_dictionary(state, payload) {
-            state.dictionaries.current = payload.dictionary
+            state.dictionaries.current.item = payload.item
         },
         set_dictionary_display(state, payload) {
             state.dictionaries.display = payload.display
@@ -25,28 +29,28 @@ const dictionaries = {
                 axios
                     .get("/rest/dictionaries")
                     .then(response => {
-                        commit("set_dictionaries", { dictionaries: response.data });
+                        commit("set_dictionaries", { items: response.data });
                         resolve();
                     })
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: "Couldn't retrieve dictionaries", err: error } });
-                        commit("set_dictionaries", { dictionaries: [] });
+                        commit("set_dictionaries", { items: [] });
                         reject(error);
                     })
             })
         },
         findDictionary({ commit }, id) {
             return new Promise((resolve, reject) => {
-                commit("set_dictionary", { dictionary: null });
+                commit("set_dictionary", { item: null });
                 axios
                     .get(`/rest/dictionaries/${id}`)
                     .then(response => {
-                        commit("set_dictionary", { dictionary: response.data });
+                        commit("set_dictionary", { item: response.data });
                         resolve();
                     })
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: `Couldn't retrieve dictionary with id ${id}`, err: error } });
-                        commit("set_dictionary", { dictionary: null });
+                        commit("set_dictionary", { item: null });
                         reject(error);
                     })
             })
@@ -82,7 +86,7 @@ const dictionaries = {
         },
     },
     getters: {
-    	dictionaries: state => {
+        dictionaries: state => {
             return state.dictionaries
         },
     }

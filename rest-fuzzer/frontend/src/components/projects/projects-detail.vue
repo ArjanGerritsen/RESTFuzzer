@@ -130,7 +130,7 @@ export default {
 
       this.$store
         .dispatch("countProjectRunningOrQueuedTasks", {
-          project_id: this.project.id
+          id: this.project.id
         })
         .catch(error => {
           this.$timer.stop("refreshProject");
@@ -145,7 +145,7 @@ export default {
         .then(() => {
           this.$store
             .dispatch("countProjectRunningOrQueuedTasks", {
-              project_id: this.project.id
+              id: this.project.id
             })
             .then(() => {
               this.$timer.start("refreshProject");
@@ -155,13 +155,13 @@ export default {
   },
   computed: {
     project() {
-      return this.$store.getters.projects.current;
+      return this.$store.getters.projects.current.item;
     },
     tasksQueuedOrRunning() {
       return (
-        this.$store.getters.projects.current_queued_or_running_tasks_count !==
+        this.$store.getters.projects.current.queued_or_running_tasks_count !==
           null &&
-        this.$store.getters.projects.current_queued_or_running_tasks_count > 0
+        this.$store.getters.projects.current.queued_or_running_tasks_count > 0
       );
     },
     requestsPresent() {
@@ -175,7 +175,7 @@ export default {
       return title;
     },
     requestsCount() {
-      const count = this.$store.getters.projects.current_requests.total;
+      const count = this.$store.getters.projects.current.requests.total;
       return count !== null && count > 0 ? count : 0;
     },
     responsesPresent() {
@@ -189,7 +189,7 @@ export default {
       return title;
     },
     responsesCount() {
-      const count = this.$store.getters.projects.current_responses.total;
+      const count = this.$store.getters.projects.current.responses.total;
       return count !== null && count > 0 ? count : 0;
     },
     canExecuteTask() {

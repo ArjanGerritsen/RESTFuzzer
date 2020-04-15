@@ -69,7 +69,7 @@
             </div>
           </div>
 
-          <hr>
+          <hr />
           <h6>Request data:</h6>
 
           <ProjectDetailRequest :item="row.item.request"></ProjectDetailRequest>
@@ -117,11 +117,11 @@ export default {
 
       return this.$store
         .dispatch("findProjectResponses", {
-          project_id: this.project.id,
+          id: this.project.id,
           context: context
         })
         .then(() => {
-          return this.$store.getters.projects.current_responses.list;
+          return this.$store.getters.projects.current.responses.items;
         })
         .catch(() => {
           return [];
@@ -133,7 +133,7 @@ export default {
   },
   computed: {
     totalRows() {
-      return this.$store.getters.projects.current_responses.count;
+      return this.$store.getters.projects.current.responses.count;
     },
     displayPagination() {
       return this.totalRows > this.perPage;

@@ -29,9 +29,7 @@ export default {
   methods: {
     navigate() {
       if (this.$route.params.id) {
-        this.$store.dispatch("findProject", {
-          project_id: this.$route.params.id
-        });
+        this.$store.dispatch("findProject", this.$route.params.id);
       }
     }
   },

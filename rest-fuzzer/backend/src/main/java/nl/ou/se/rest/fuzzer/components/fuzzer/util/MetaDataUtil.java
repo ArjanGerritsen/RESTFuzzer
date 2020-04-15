@@ -11,13 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
-import nl.ou.se.rest.fuzzer.components.service.fuz.FuzDictionaryController;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 public class MetaDataUtil {
 
     // variables
-    private Logger logger = LoggerFactory.getLogger(FuzDictionaryController.class);
+    private Logger logger = LoggerFactory.getLogger(MetaDataUtil.class);
 
     private Map<String, Object> metaDataTuples;
     private Map<String, Object> configurationMetaDataTuples;
@@ -31,13 +30,14 @@ public class MetaDataUtil {
         Boolean isValid = true;
 
         if (!this.metaDataTuples.containsKey(Constants.Fuzzer.Meta.CONFIGURATION)) {
-            logger.error(Constants.Fuzzer.META_DATA_MISSING, MetaDataUtil.class, Constants.Fuzzer.Meta.CONFIGURATION);
+            logger.error(String.format(Constants.Fuzzer.META_DATA_MISSING, MetaDataUtil.class,
+                    Constants.Fuzzer.Meta.CONFIGURATION));
             isValid = false;
         }
 
         for (String key : keys) {
             if (!this.metaDataTuples.containsKey(key)) {
-                logger.error(Constants.Fuzzer.META_DATA_MISSING, MetaDataUtil.class, key);
+                logger.error(String.format(Constants.Fuzzer.META_DATA_MISSING, MetaDataUtil.class, key));
                 isValid = false;
             }
         }
@@ -60,24 +60,20 @@ public class MetaDataUtil {
         List<Map<String, Object>> excludeParameters = (ArrayList<Map<String, Object>>) this
                 .getValue(this.configurationMetaDataTuples, Constants.Fuzzer.Meta.EXCLUDE_PARAMETERS);
 
-        if (!includeActions.isEmpty()) {
+        if (includeActions != null && !includeActions.isEmpty()) {
             actions = actions.stream().filter(action -> isActionMatched(action, includeActions))
                     .collect(Collectors.toList());
         }
 
-        if (!excludeActions.isEmpty()) {
+        if (excludeActions != null && !excludeActions.isEmpty()) {
             actions = actions.stream().filter(action -> !isActionMatched(action, includeActions))
                     .collect(Collectors.toList());
         }
-        
-        System.out.println("pre excludeParameters");
 
-        if (!excludeParameters.isEmpty()) {
+        if (excludeParameters != null && !excludeParameters.isEmpty()) {
             actions = actions.stream().map(action -> removeMatchedParameters(action, excludeParameters))
                     .collect(Collectors.toList());
         }
-        
-        System.out.println("post excludeParameters");
 
         return actions;
     }
@@ -113,9 +109,9 @@ public class MetaDataUtil {
 
     private Boolean isParameterMatched(RmdParameter parameter, Map<String, String> parameterMap) {
         System.out.println("pre isParameterMatched");
-        
+
         String nameRegex = (String) parameterMap.get("name");
-        return parameter.getName().matches(nameRegex);        
+        return parameter.getName().matches(nameRegex);
     }
 
     @SuppressWarnings("unchecked")
@@ -143,7 +139,6 @@ public class MetaDataUtil {
 
     private Object getValue(Map<String, Object> metaDataTuples, String key) {
         if (!metaDataTuples.containsKey(key)) {
-            logger.error(Constants.Fuzzer.META_DATA_MISSING, MetaDataUtil.class, key);
             return null;
         }
 

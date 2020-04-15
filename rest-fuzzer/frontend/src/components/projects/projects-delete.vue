@@ -30,12 +30,13 @@ export default {
   },
   computed: {
     project() {
-      return this.$store.getters.projects.current;
+      return this.$store.getters.projects.current.item;
     }
   },
   methods: {
     deleteSut() {
       this.$store.dispatch("deleteProject", this.project).then(() => {
+        this.$router.push({ name: "projects" });
         this.$store.commit("set_project_display", { display: null });
         this.$store.dispatch("findAllProjects");
       });

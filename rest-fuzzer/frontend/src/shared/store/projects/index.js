@@ -5,12 +5,12 @@ function getCountRequests({ commit }, data) {
         let queryParams = '';
         if (data.context && data.context.filter !== null) { queryParams += `?filter=${data.context.filter}`; }
         axios
-            .get(`/rest/projects/${data.project_id}/requests/count${queryParams}`)
+            .get(`/rest/projects/${data.id}/requests/count${queryParams}`)
             .then(response => {
                 resolve(response.data);
             })
             .catch(error => {
-                commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project request count for project with id ${data.project_id}`, err: error } });
+                commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project request count for project with id ${data.id}`, err: error } });
                 reject(error);
             })
     });
@@ -21,12 +21,12 @@ function getCountResponses({ commit }, data) {
         let queryParams = '';
         if (data.context && data.context.filter !== null) { queryParams += `?filter=${data.context.filter}`; }
         axios
-            .get(`/rest/projects/${data.project_id}/responses/count${queryParams}`)
+            .get(`/rest/projects/${data.id}/responses/count${queryParams}`)
             .then(response => {
                 resolve(response.data);
             })
             .catch(error => {
-                commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project responses count for project with id ${data.project_id}`, err: error } });
+                commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project responses count for project with id ${data.id}`, err: error } });
                 reject(error);
             })
     });
@@ -35,52 +35,56 @@ function getCountResponses({ commit }, data) {
 const projects = {
     state: {
         projects: {
-            all: null,
-            current: null,
-            current_queued_or_running_tasks_count: null,            
-            current_requests: {
-                total: null,
-                count: null,
-                list: null
+            all: {
+                items: null
             },
-            current_responses: {
-                total: null,
-                count: null,
-                list: null
+            current: {
+                item: null,
+                queued_or_running_tasks_count: null,
+                requests: {
+                    items: null,
+                    count: null,
+                    total: null
+                },
+                responses: {
+                    items: null,
+                    count: null,
+                    total: null
+                }
             },
             display: null
         }
     },
     mutations: {
         set_projects(state, payload) {
-            state.projects.all = payload.projects
+            state.projects.all.items = payload.items
         },
         set_project(state, payload) {
-            state.projects.current = payload.project
+            state.projects.current.item = payload.item
         },
 
         set_project_running_or_queued_tasks_count(state, payload) {
-            state.projects.current_queued_or_running_tasks_count = payload.count
+            state.projects.current.queued_or_running_tasks_count = payload.count
         },
 
         set_project_requests_total(state, payload) {
-            state.projects.current_requests.total = payload.total
+            state.projects.current.requests.total = payload.total
         },
         set_project_requests_count(state, payload) {
-            state.projects.current_requests.count = payload.count
+            state.projects.current.requests.count = payload.count
         },
-        set_project_requests_list(state, payload) {
-            state.projects.current_requests.list = payload.list
+        set_project_requests_items(state, payload) {
+            state.projects.current.requests.items = payload.items
         },
 
         set_project_responses_total(state, payload) {
-            state.projects.current_responses.total = payload.total
+            state.projects.current.responses.total = payload.total
         },
         set_project_responses_count(state, payload) {
-            state.projects.current_responses.count = payload.count
+            state.projects.current.responses.count = payload.count
         },
-        set_project_responses_list(state, payload) {
-            state.projects.current_responses.list = payload.list
+        set_project_responses_items(state, payload) {
+            state.projects.current.responses.items = payload.items
         },
 
         set_project_display(state, payload) {
@@ -93,48 +97,31 @@ const projects = {
                 axios
                     .get("/rest/projects")
                     .then(response => {
-                        commit("set_projects", { projects: response.data });
+                        commit("set_projects", { items: response.data });
                         resolve();
                     })
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: "Couldn't retrieve fuzzing projects", err: error } });
-                        commit("set_projects", { projects: [] });
+                        commit("set_projects", { items: [] });
                         reject(error);
                     })
             })
         },
-        findProject({ commit, dispatch }, data) {
+        findProject({ commit, dispatch }, id) {
             return new Promise((resolve, reject) => {
                 commit("set_project", { project: null });
                 axios
-                    .get(`/rest/projects/${data.project_id}`)
+                    .get(`/rest/projects/${id}`)
                     .then(response => {
-                        commit("set_project", { project: response.data });
-                        dispatch("countAllProjectRequests", data);
-                        dispatch("countAllProjectResponses", data);
+                        commit("set_project", { item: response.data });
+                        dispatch("countAllProjectRequests", { id: id });
+                        dispatch("countAllProjectResponses", { id: id });
+                        dispatch("countProjectRunningOrQueuedTasks", { id: id });
                         resolve();
                     })
                     .catch(error => {
-                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project with id ${data.project_id}`, err: error } });
-                        commit("set_project", { project: null });
-                        reject(error);
-                    })
-            })
-        },
-        findProjectRequests({ commit, dispatch }, data) {
-            return new Promise((resolve, reject) => {
-                let queryParams = `?curPage=${data.context.currentPage}&perPage=${data.context.perPage}`;
-                if (data.context.filter !== null) { queryParams += `&filter=${data.context.filter}`; }
-                axios
-                    .get(`/rest/projects/${data.project_id}/requests${queryParams}`)
-                    .then(response => {
-                        commit("set_project_requests_list", { list: response.data });
-                        dispatch("countProjectRequests", data);
-                        resolve();
-                    })
-                    .catch(error => {
-                        commit("set_project_requests_list", { list: null });
-                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project requests for project with id ${data.project_id}`, err: error } });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project with id ${id}`, err: error } });
+                        commit("set_project", { item: null });
                         reject(error);
                     })
             })
@@ -151,20 +138,38 @@ const projects = {
                     commit("set_project_requests_count", { count: count });
                 });
         },
+        findProjectRequests({ commit, dispatch }, data) {
+            return new Promise((resolve, reject) => {
+                let queryParams = `?curPage=${data.context.currentPage}&perPage=${data.context.perPage}`;
+                if (data.context.filter !== null) { queryParams += `&filter=${data.context.filter}`; }
+                axios
+                    .get(`/rest/projects/${data.id}/requests${queryParams}`)
+                    .then(response => {
+                        commit("set_project_requests_items", { items: response.data });
+                        dispatch("countProjectRequests", data);
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("set_project_requests_items", { items: null });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project requests for project with id ${data.id}`, err: error } });
+                        reject(error);
+                    })
+            })
+        },
         findProjectResponses({ commit, dispatch }, data) {
             return new Promise((resolve, reject) => {
                 let queryParams = `?curPage=${data.context.currentPage}&perPage=${data.context.perPage}`;
                 if (data.context.filter !== null) { queryParams += `&filter=${data.context.filter}`; }
                 axios
-                    .get(`/rest/projects/${data.project_id}/responses${queryParams}`)
+                    .get(`/rest/projects/${data.id}/responses${queryParams}`)
                     .then(response => {
-                        commit("set_project_responses_list", { list: response.data });
+                        commit("set_project_responses_items", { items: response.data });
                         dispatch("countProjectResponses", data);
                         resolve();
                     })
                     .catch(error => {
-                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project responses for project with id ${data.project_id}`, err: error } });
-                        commit("set_project_responses_list", { list: [] });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project responses for project with id ${data.id}`, err: error } });
+                        commit("set_project_responses_items", { items: [] });
                         reject(error);
                     })
             })
@@ -184,13 +189,13 @@ const projects = {
         countProjectRunningOrQueuedTasks({ commit }, data) {
             return new Promise((resolve, reject) => {
                 axios
-                    .get(`/rest/tasks/running_or_queued/projects/${data.project_id}/count`)
+                    .get(`/rest/tasks/running_or_queued/projects/${data.id}/count`)
                     .then(response => {
                         commit("set_project_running_or_queued_tasks_count", { count: response.data });
                         resolve();
                     })
                     .catch(error => {
-                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve tasks count (running or queued) for project with id ${data.project_id}`, err: error } });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve tasks count (running or queued) for project with id ${data.id}`, err: error } });
                         commit("set_project_running_or_queued_tasks_count", { count: null });
                         reject(error);
                     })

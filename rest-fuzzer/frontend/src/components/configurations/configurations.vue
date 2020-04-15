@@ -26,8 +26,20 @@ export default {
     ConfigurationsDetail,
     ConfigurationsDelete
   },
-  data() {
-    return { data: {} };
+  methods: {
+    navigate() {
+      if (this.$route.params.id) {
+        this.$store.dispatch("findConfiguration", this.$route.params.id);
+      }
+    }
+  },
+  watch: {
+    $route(to, from) {
+      this.navigate();
+    }
+  },
+  created() {
+    this.navigate();
   }
 };
 </script>
