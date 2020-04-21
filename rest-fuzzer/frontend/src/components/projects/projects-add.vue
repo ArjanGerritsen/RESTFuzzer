@@ -56,6 +56,25 @@
           <hr />
         </div>
 
+        <div v-if="project.type === 'MB_FUZZER' || project.type === 'MB_DICTIONARY_FUZZER'">
+          <b-form-group
+            label="Sequence length:"
+            label-for="sequence-length"
+            description="Set length of sequence"
+          >
+            <b-form-input
+              id="sequence-length"
+              v-model="metaDataTuplesJson.sequenceLength"
+              type="range"
+              min="1"
+              max="10"
+            ></b-form-input>
+            <div class="mt-2">Sequence length: {{ metaDataTuplesJson.sequenceLength }}</div>
+          </b-form-group>
+
+          <hr />
+        </div>
+
         <b-form-group
           label="System under test:"
           label-for="input-2"
@@ -86,7 +105,8 @@
 <script>
 const DEFAULT_META = {
   configuration: {},
-  repetitions: 1
+  repetitions: 1,
+  sequenceLength: 1
 };
 
 export default {
@@ -104,9 +124,9 @@ export default {
       metaDataTuplesJson: DEFAULT_META,
       types: [
         { value: "BASIC_FUZZER", text: "Basic" },
-        { value: "MBT_FUZZER", text: "ModelBased" },
+        { value: "MB_FUZZER", text: "ModelBased" },
         { value: "DICTIONARY_FUZZER", text: "Dictionary" },
-        { value: "MBT_DICTIONARY_FUZZER", text: "ModelBasedDictionary" }
+        { value: "MB_DICTIONARY_FUZZER", text: "ModelBasedDictionary" }
       ]
     };
   },
@@ -123,9 +143,24 @@ export default {
     setMetaDataTuplesJson() {
       this.metaDataTuplesJson.configuration = this.getConfigurationJson();
 
-      this.metaDataTuplesJson.repetitions = Number(
-        this.metaDataTuplesJson.repetitions
-      );
+      if (this.project.type === "BASIC_FUZZER") {
+        this.metaDataTuplesJson.repetitions = Number(
+          this.metaDataTuplesJson.repetitions
+        );
+      } else {
+        delete this.metaDataTuplesJson.repetitions;
+      }
+
+      if (
+        this.project.type === "MB_FUZZER" ||
+        this.project.type === "MB_DICTIONARY_FUZZER"
+      ) {
+        this.metaDataTuplesJson.sequenceLength = Number(
+          this.metaDataTuplesJson.sequenceLength
+        );
+      } else {
+        delete this.metaDataTuplesJson.sequenceLength;
+      }
 
       this.project.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);
     },

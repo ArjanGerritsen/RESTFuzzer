@@ -83,8 +83,6 @@ public class MetaDataUtil {
     }
 
     private Boolean isActionMatched(RmdAction action, List<Map<String, String>> actions) {
-        System.out.println("pre isActionMatched");
-
         for (Map<String, String> actionMap : actions) {
             if (isActionMatched(action, actionMap)) {
                 return true;
@@ -95,8 +93,6 @@ public class MetaDataUtil {
     }
 
     private Boolean isActionMatched(RmdAction action, Map<String, String> actionMap) {
-        System.out.println("pre isActionMatched");
-
         String pathRegex = (String) actionMap.get("path");
         String httpMethodRegex = (String) actionMap.get("httpMethod");
 
@@ -108,16 +104,12 @@ public class MetaDataUtil {
     }
 
     private Boolean isParameterMatched(RmdParameter parameter, Map<String, String> parameterMap) {
-        System.out.println("pre isParameterMatched");
-
         String nameRegex = (String) parameterMap.get("name");
         return parameter.getName().matches(nameRegex);
     }
 
     @SuppressWarnings("unchecked")
     private RmdAction removeMatchedParameters(RmdAction action, List<Map<String, Object>> parameters) {
-        System.out.println("pre removeMatchedParameters");
-
         List<RmdParameter> parametersToRemove = new ArrayList<RmdParameter>();
         for (RmdParameter parameter : action.getParameters()) {
             for (Map<String, Object> parameterContainer : parameters) {
@@ -125,9 +117,7 @@ public class MetaDataUtil {
                 Map<String, String> parameterMap = (Map<String, String>) parameterContainer.get("parameter");
 
                 if (isActionMatched(action, actionMap) && isParameterMatched(parameter, parameterMap)) {
-                    System.out.println("removing ... " + parameter.getName());
                     parametersToRemove.add(parameter);
-                    System.out.println("post removing ... ");
                 }
             }
         }

@@ -13,49 +13,55 @@ import nl.ou.se.rest.fuzzer.components.task.TaskExecutionBase;
 @Service
 public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 
-	// variables
-	public static final String KEY_PROJECT_ID = "project_id";
+    // variables
+    public static final String KEY_PROJECT_ID = "project_id";
 
-	@Autowired
-	private FuzProjectService projectService;
-	
-	private Fuzzer fuzzer;
+    @Autowired
+    private FuzProjectService projectService;
 
-	@Autowired
-	private FuzzerBasic fuzzerBasic;
+    private Fuzzer fuzzer;
 
-	@Override
-	public void execute() {
-    	this.logStart(FuzzerTask.class.getTypeName());
+    @Autowired
+    private FuzzerBasic fuzzerBasic;
 
-    	Object objProjectId = this.getValueForKey(FuzzerTask.class, KEY_PROJECT_ID);
-    	if (objProjectId == null) {
-    		return;
-    	}
+    @Autowired
+    private FuzzerModelBased fuzzerModelBased;
 
-		Long projectId = Long.valueOf((Integer) objProjectId);
-		Optional<FuzProject> oProject = projectService.findById(projectId);
-    	
-    	if (!this.isOptionalPresent(FuzzerTask.class, oProject, projectId)) {
-    	    return;
-    	}
+    @Override
+    public void execute() {
+        this.logStart(FuzzerTask.class.getTypeName());
 
-		FuzProject project = oProject.get();
+        Object objProjectId = this.getValueForKey(FuzzerTask.class, KEY_PROJECT_ID);
+        if (objProjectId == null) {
+            return;
+        }
 
-		switch (project.getType()) {
-		case BASIC_FUZZER:
-		    fuzzer = fuzzerBasic;
-			break;
-		default:
-			break;
-		}
+        Long projectId = Long.valueOf((Integer) objProjectId);
+        Optional<FuzProject> oProject = projectService.findById(projectId);
 
-		if (fuzzer.isMetaDataValid(project.getMetaDataTuples())) {
-		    fuzzer.start(project, this.getTask());
-		}
+        if (!this.isOptionalPresent(FuzzerTask.class, oProject, projectId)) {
+            return;
+        }
 
-		projectService.save(project);
+        FuzProject project = oProject.get();
 
-    	this.logStop(FuzzerTask.class.getTypeName());
-	}
+        switch (project.getType()) {
+        case BASIC_FUZZER:
+            fuzzer = fuzzerBasic;
+            break;
+        case MB_FUZZER:
+            fuzzer = fuzzerModelBased;
+            break;
+        default:
+            break;
+        }
+
+        if (fuzzer.isMetaDataValid(project.getMetaDataTuples())) {
+            fuzzer.start(project, this.getTask());
+        }
+
+        projectService.save(project);
+
+        this.logStop(FuzzerTask.class.getTypeName());
+    }
 }

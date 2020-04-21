@@ -9,6 +9,9 @@
           <b-dropdown-item to="/dictionaries">Dictionaries</b-dropdown-item>
           <b-dropdown-item to="/configurations">Configurations</b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item-dropdown ref="reports" text="Reports">
+          <b-dropdown-item to="/reports/http_response_codes">Http response codes</b-dropdown-item>
+        </b-nav-item-dropdown>        
         <b-nav-item href="#" to="/tasks">Tasks</b-nav-item>
         <b-nav-item href="#" to="/about">About</b-nav-item>
       </b-navbar-nav>

@@ -1,72 +1,82 @@
 package nl.ou.se.rest.fuzzer.components.fuzzer;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzRequestService;
-import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzResponseService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
-import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
-import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
+import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
-import nl.ou.se.rest.fuzzer.components.fuzzer.util.ExecutorUtil;
-import nl.ou.se.rest.fuzzer.components.fuzzer.util.RequestUtil;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
+import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
+import nl.ou.se.rest.fuzzer.components.fuzzer.util.MetaDataUtil;
+import nl.ou.se.rest.fuzzer.components.fuzzer.util.SequenceUtil;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service
-public class FuzzerModelBased {
+public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
 
     // variables
-    private Logger logger = LoggerFactory.getLogger(FuzzerModelBased.class);
-
-    private List<RmdAction> actions;
+    private FuzProject project = null;
+    private MetaDataUtil metaDataUtil = null;
 
     @Autowired
     private RmdActionService actionService;
 
     @Autowired
-    private FuzRequestService requestService;
+    private RmdActionDependencyService actionDependencyService;
 
-    @Autowired
-    private FuzResponseService responseService;
+//    @Autowired
+//    private FuzRequestService requestService;
+//
+//    @Autowired
+//    private FuzResponseService responseService;
+//
+//    @Autowired
+//    private RequestUtil requestUtil;
+//
+//    @Autowired
+//    private ExecutorUtil executorUtil;
 
-    @Autowired
-    private RequestUtil requestUtil;
+    public void start(FuzProject project, Task task) {
+        this.project = project;
 
-    @Autowired
-    private ExecutorUtil executorUtil;
+        List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
+        actions = metaDataUtil.filterActions(actions);
 
-    public void start(FuzProject project) {
-        if (!collectMetaData(project)) {
-            return;
-        }
+        List<RmdActionDependency> dependencies = actionDependencyService.findBySutId(this.project.getSut().getId());
 
-        actions.forEach(a -> {
-            FuzRequest request = requestUtil.getRequestFromAction(project, a);
-            requestService.save(request);
+        Integer sequenceLength = metaDataUtil.getIntegerValue(Constants.Fuzzer.Meta.SEQUENCE_LENGTH);
 
-            FuzResponse response = executorUtil.processRequest(request);
-            responseService.save(response);
-        });
+        LocalDateTime ldt = LocalDateTime.now();
+        SequenceUtil sequenceUtil = new SequenceUtil(actions, dependencies);
+        List<String> sequences = sequenceUtil.getValidSequences(sequenceLength);
+
+        System.out.println(LocalDateTime.now().until(ldt, ChronoUnit.SECONDS) + " seconds ...");
+
+        int count = 0;
+        int total = sequences.size();
+
+//            for (RmdAction a : actions) {
+//                FuzRequest request = requestUtil.getRequestFromAction(project, a);
+//                requestService.save(request);
+//
+//                FuzResponse response = executorUtil.processRequest(request);
+//                responseService.save(response);
+//
+//                count++;
+//                saveTaskProgress(task, count, total);
+//            }
+
     }
 
-    public Boolean collectMetaData(FuzProject project) {
-        Boolean allMetaDataComplete = true;
-
-        actions = actionService.findBySutId(project.getSut().getId());
-
-        if (!project.getMetaDataTuples().containsKey(Constants.Fuzzer.Meta.REPITITIONS)) {
-            allMetaDataComplete = false;
-            logger.error(Constants.Fuzzer.META_DATA_MISSING, FuzzerBasic.class, Constants.Fuzzer.Meta.REPITITIONS);
-        }
-
-//        this.repititions = (Integer) project.getMetaDataTuples().get(Constants.Fuzzer.Meta.REPITITIONS);
-
-        return allMetaDataComplete;
+    public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
+        this.metaDataUtil = new MetaDataUtil(metaDataTuples);
+        return metaDataUtil.isValid(Constants.Fuzzer.Meta.SEQUENCE_LENGTH);
     }
 }
