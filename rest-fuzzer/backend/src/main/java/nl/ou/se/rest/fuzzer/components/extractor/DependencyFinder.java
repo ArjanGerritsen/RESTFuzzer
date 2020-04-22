@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
@@ -21,6 +23,8 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.factory.RmdActionDependencyFacto
 public class DependencyFinder {
 
     // variables
+    private Logger logger = LoggerFactory.getLogger(DependencyFinder.class);
+
     private static final String EMPTY_STRING = "";
     private static final String PATH_DEPENDENCY_FORMAT = "{%s}";
     private static final String ID_DEPENDENCIES_UNDERSCORE_ID = "_id";
@@ -35,60 +39,43 @@ public class DependencyFinder {
     public DependencyFinder(RmdSut sut) {
         this.sut = sut;
     }
-    
+
     // methods
     public void process() {
-        this.sut.getActions().forEach(a -> findRelatedActions(a, sut.getActions()));
+        this.sut.getActions().forEach(a -> a.getParameters().forEach(p -> processParameter(p)));
     }
 
     public Set<RmdActionDependency> getActionDepencies() {
         return this.actionDependencies;
     }
 
-    private void findRelatedActions(RmdAction action, SortedSet<RmdAction> actions) {
-
-        List<RmdParameter> dependenciesFromPath = action.getParameters().stream().filter(p -> isDependencyFromPath(p))
-                .collect(Collectors.toList());
-
-        for (RmdParameter parameter : dependenciesFromPath) {
-            addActionDependency(action, actions, parameter);
-        }
-
-        List<RmdParameter> dependenciesFromOtherEntities = action.getParameters().stream()
-                .filter(p -> isDependencyFromOtherEntity(p)).collect(Collectors.toList());
-
-        for (RmdParameter parameter : dependenciesFromOtherEntities) {
-            addActionDependency(action, actions, parameter);
-        }
-    }
-
-    private void addActionDependency(RmdAction action, SortedSet<RmdAction> actions, RmdParameter parameter) {
-        Optional<RmdAction> actionDependsOn = findCorrespondingAction(parameter, actions);
+    private void processParameter(RmdParameter parameter) {
+        Optional<RmdAction> actionDependsOn = getDependencyForParameter(parameter);
 
         if (actionDependsOn.isPresent()) {
-            actionDependencies.add(actionDependencyFactory.create(action, actionDependsOn.get()).build());
-        } else {
-            // TODO ... log.
-            System.out.println(String.format("%s \t %s \t %s -> %s", action.getHttpMethod(), action.getPath(),
-                    parameter.getName(), "NOT FOUND"));
+            actionDependencies.add(
+                    actionDependencyFactory.create(parameter.getAction(), parameter, actionDependsOn.get()).build());
         }
     }
 
-    private Optional<RmdAction> findCorrespondingAction(RmdParameter parameter, SortedSet<RmdAction> actions) {
+    private Optional<RmdAction> getDependencyForParameter(RmdParameter parameter) {
         String actionPath = null;
 
         if (isDependencyFromPath(parameter)) {
             actionPath = getActionPathFromPath(parameter);
         } else if (isDependencyFromOtherEntity(parameter)) {
             actionPath = getAchtionPathFromOtherEntity(parameter);
+        } else if (isFromPath(parameter)) {
+            logger.info(String.format("%s \t %s \t %s -> %s", parameter.getAction().getHttpMethod(),
+                    parameter.getAction().getPath(), parameter.getName(), "NOT FOUND"));
         }
 
-        return findActionForNameAndHttpMethod(actionPath, HttpMethod.POST, actions);
+        return findActionForNameAndHttpMethod(actionPath, HttpMethod.POST);
     }
 
-    private Optional<RmdAction> findActionForNameAndHttpMethod(String actionPath, HttpMethod httpMethod,
-            SortedSet<RmdAction> actions) {
-        return actions.stream().filter(a -> actionPath.equals(a.getPath()) && httpMethod == a.getHttpMethod())
+    private Optional<RmdAction> findActionForNameAndHttpMethod(String actionPath, HttpMethod httpMethod) {
+        return this.sut.getActions().stream()
+                .filter(a -> actionPath != null && actionPath.equals(a.getPath()) && httpMethod == a.getHttpMethod())
                 .findFirst();
     }
 
@@ -115,6 +102,10 @@ public class DependencyFinder {
 
     private Boolean isDependencyFromPath(RmdParameter parameter) {
         return ParameterContext.PATH == parameter.getContext() && PATH_DEPENDENCY_NAMES.contains(parameter.getName());
+    }
+
+    private Boolean isFromPath(RmdParameter parameter) {
+        return ParameterContext.PATH == parameter.getContext();
     }
 
     private Boolean isDependencyFromOtherEntity(RmdParameter parameter) {

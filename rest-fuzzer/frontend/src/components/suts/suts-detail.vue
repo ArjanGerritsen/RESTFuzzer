@@ -61,10 +61,14 @@
           </div>
         </b-tab>
         <b-tab :disabled="this.actionsCount === 0" :title="actionsTitle">
-          <SutsActions :sut="sut" :fields="fields" :formatters="formatters"></SutsActions>
+          <SutsActions :sut="sut" :fields="actions_fields" :formatters="actions_formatters"></SutsActions>
         </b-tab>
-        <b-tab :disabled="this.actionsCount === 0" title="Dependencies">
-          <SutsActionsDependencies></SutsActionsDependencies>
+        <b-tab :disabled="this.actionsCount === 0" :title="actionsDependenciesTitle">
+          <SutsActionsDependencies
+            :sut="sut"
+            :fields="actions_dependencies_fields"
+            :formatters="actions_dependencies_formatters"
+          ></SutsActionsDependencies>
         </b-tab>
       </b-tabs>
     </b-card-text>
@@ -75,14 +79,21 @@
 import Constants from "../../shared/constants";
 
 import SutsActions from "./suts-actions";
-import SutsActionsDependencies from "./suts-actions-dependencies.vue";
+import SutsActionsDependencies from "./suts-actions-dependencies";
 
 export default {
   components: { SutsActions, SutsActionsDependencies },
   data() {
     return {
-      formatters: [],
-      fields: [
+      actions_formatters: [],
+      actions_fields: [
+        { key: "id", label: "#", thStyle: "width: 50px;" },
+        { key: "path" },
+        { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" },
+        { key: "details", label: "Details", thStyle: "width: 60px;" }
+      ],
+      actions_dependencies_formatters: [],
+      actions_dependencies_fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "path" },
         { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" },
@@ -123,13 +134,13 @@ export default {
   },
   computed: {
     sut() {
-      return this.$store.getters.suts.current;
+      return this.$store.getters.suts.current.item;
     },
     tasksQueuedOrRunning() {
       return (
-        this.$store.getters.suts.current_queued_or_running_tasks_count !==
+        this.$store.getters.suts.current.queued_or_running_tasks_count !==
           null &&
-        this.$store.getters.suts.current_queued_or_running_tasks_count > 0
+        this.$store.getters.suts.current.queued_or_running_tasks_count > 0
       );
     },
     actionsTitle() {
@@ -139,8 +150,15 @@ export default {
       }
       return title;
     },
+    actionsDependenciesTitle() {
+      let title = "Dependencies";
+      if (this.actionsCount > 0) {
+        title += ` [${this.actionsCount}]`;
+      }
+      return title;
+    },
     actionsCount() {
-      const count = this.$store.getters.suts.current_actions.total;
+      const count = this.$store.getters.suts.current.actions.total;
       return count !== null && count > 0 ? count : 0;
     }
   },

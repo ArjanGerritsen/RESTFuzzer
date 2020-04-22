@@ -130,7 +130,7 @@ export default {
           context: context
         })
         .then(() => {
-          return this.$store.getters.suts.current_actions.list;
+          return this.$store.getters.suts.current.actions.items;
         })
         .catch(() => {
           return [];
@@ -145,12 +145,14 @@ export default {
   },
   computed: {
     totalRows() {
-      return this.$store.getters.suts.current_actions.count;
+      return this.$store.getters.suts.current.actions.count;
     },
     displayPagination() {
       return this.totalRows > this.perPage;
     }
   },
-  created: function() {}
+  created: function() {
+    
+  }
 };
 </script>

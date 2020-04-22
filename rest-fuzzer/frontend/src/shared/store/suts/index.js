@@ -16,66 +16,75 @@ function getCountActions({ commit }, data) {
     });
 }
 
-function getCommonStart(paths) {
-    const sortedPaths = paths.concat().sort();
-
-    const first = sortedPaths[0];
-    const last = sortedPaths[sortedPaths.length - 1];
-    const lengthShortestString = Math.min(first.length, last.length) - 1;
-
-    let common = "";
-    for (let i = 0; i < lengthShortestString; i++) {
-        if (first[i] !== last[i]) { continue; }
-        common += first[i];
-    }
-    return common;
+function getCountActionsDependencies({ commit }, data) {
+    return new Promise((resolve, reject) => {
+        let queryParams = '';
+        if (data.context && data.context.filter !== null) { queryParams += `?filter=${data.context.filter}`; }
+        axios
+            .get(`/rest/suts/${data.sut_id}/actions/count${queryParams}`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut dependencies count for sut with id ${data.sut_id}`, err: error } });
+                reject(error);
+            })
+    });
 }
 
 const suts = {
     state: {
         suts: {
-            all: null,
-            current: null,
-            current_queued_or_running_tasks_count: null,
-            current_actions: {
-                total: null,
-                count: null,
-                list: null
+            all: {
+                items: null
             },
-            current_dependencies: {
-                nodes: null,
-                links: null
+            current: {
+                item: null,
+                queued_or_running_tasks_count: null,
+                actions: {
+                    items: null,
+                    total: null,
+                    count: null
+                },
+                actions_dependencies: {
+                    items: null,
+                    total: null,
+                    count: null
+                }
             },
             display: null
         }
     },
     mutations: {
         set_suts(state, payload) {
-            state.suts.all = payload.suts
+            state.suts.all.items = payload.items
         },
         set_sut(state, payload) {
-            state.suts.current = payload.sut
+            state.suts.current.item = payload.item
         },
 
         set_sut_running_or_queued_tasks_count(state, payload) {
-            state.suts.current_queued_or_running_tasks_count = payload.count
+            state.suts.current.queued_or_running_tasks_count = payload.count
         },
 
+        set_sut_actions(state, payload) {
+            state.suts.current.actions.items = payload.items
+        },
         set_sut_actions_total(state, payload) {
-            state.suts.current_actions.total = payload.total
+            state.suts.current.actions.total = payload.total
         },
         set_sut_actions_count(state, payload) {
-            state.suts.current_actions.count = payload.count
-        },
-        set_sut_actions_list(state, payload) {
-            state.suts.current_actions.list = payload.list
+            state.suts.current.actions.count = payload.count
         },
 
-        set_sut_dependencies_nodes(state, payload) {
-            state.suts.current_dependencies.nodes = payload.nodes
+        set_sut_actions_dependencies(state, payload) {
+            state.suts.current.actions_dependencies.items = payload.items
         },
-        set_sut_dependencies_links(state, payload) {
-            state.suts.current_dependencies.links = payload.links
+        set_sut_actions_dependencies_total(state, payload) {
+            state.suts.current.actions_dependencies.total = payload.total
+        },
+        set_sut_actions_dependencies_count(state, payload) {
+            state.suts.current.actions_dependencies.count = payload.count
         },
 
         set_sut_display(state, payload) {
@@ -88,31 +97,44 @@ const suts = {
                 axios
                     .get("/rest/suts")
                     .then(response => {
-                        commit("set_suts", { suts: response.data });
+                        commit("set_suts", { items: response.data });
                         resolve();
                     })
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: "Couldn't retrieve suts", err: error } });
-                        commit("set_suts", { suts: [] });
+                        commit("set_suts", { items: [] });
                         reject(error);
                     })
             })
         },
         findSut({ commit, dispatch }, id) {
             return new Promise((resolve, reject) => {
-                commit("set_sut", { sut: null });
                 axios
                     .get(`/rest/suts/${id}`)
                     .then(response => {
-                        commit("set_sut", { sut: response.data });
+                        commit("set_sut", { item: response.data });
                         dispatch("countAllSutActions", { sut_id: id });
-                        dispatch("findSutDependenciesNodes", { sut_id: id });
-                        dispatch("findSutDependenciesLinks", { sut_id: id });
+                        dispatch("countAllSutActionsDependencies", { sut_id: id });
                         resolve();
                     })
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut with id ${id}`, err: error } });
-                        commit("set_sut", { sut: null });
+                        commit("set_sut", { item: null });
+                        reject(error);
+                    })
+            })
+        },
+        countSutRunningOrQueuedTasks({ commit }, id) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/rest/tasks/running_or_queued/suts/${id}/count`)
+                    .then(response => {
+                        commit("set_sut_running_or_queued_tasks_count", { count: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve tasks count (running or queued) for sut with id ${id}`, err: error } });
+                        commit("set_sut_running_or_queued_tasks_count", { count: null });
                         reject(error);
                     })
             })
@@ -124,12 +146,12 @@ const suts = {
                 axios
                     .get(`/rest/suts/${data.sut_id}/actions/paginated/${queryParams}`)
                     .then(response => {
-                        commit("set_sut_actions_list", { list: response.data });
+                        commit("set_sut_actions", { items: response.data });
                         dispatch("countSutActions", data);
                         resolve();
                     })
                     .catch(error => {
-                        commit("set_sut_actions_list", { list: null });
+                        commit("set_sut_actions", { items: null });
                         commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut actions for sut with id ${data.sut_id}`, err: error } });
                         reject(error);
                     })
@@ -147,50 +169,35 @@ const suts = {
                     commit("set_sut_actions_count", { count: count });
                 });
         },
-        countSutRunningOrQueuedTasks({ commit }, id) {
+        findSutActionsDependencies({ commit, dispatch }, data) {
             return new Promise((resolve, reject) => {
+                let queryParams = `?curPage=${data.context.currentPage}&perPage=${data.context.perPage}`;
+                if (data.context.filter !== null) { queryParams += `&filter=${data.context.filter}`; }
                 axios
-                    .get(`/rest/tasks/running_or_queued/suts/${id}/count`)
+                    .get(`/rest/suts/${data.sut_id}/actions/paginated/${queryParams}`)
                     .then(response => {
-                        commit("set_sut_running_or_queued_tasks_count", { count: response.data });
+                        commit("set_sut_actions", { items: response.data });
+                        dispatch("countSutActions", data);
                         resolve();
                     })
                     .catch(error => {
-                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve tasks count (running or queued) for sut with id ${id}`, err: error } });
-                        commit("set_sut_running_or_queued_tasks_count", { count: null });
+                        commit("set_sut_actions", { items: null });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut actions for sut with id ${data.sut_id}`, err: error } });
                         reject(error);
                     })
             })
         },
-        findSutDependenciesNodes({ commit }, data) {
-            return new Promise((resolve, reject) => {
-                axios
-                    .get(`/rest/suts/${data.sut_id}/actions`)
-                    .then(response => {
-                        commit("set_sut_dependencies_nodes", { nodes: response.data });
-                        resolve();
-                    })
-                    .catch(error => {
-                        commit("set_sut_dependencies_nodes", { nodes: null });
-                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut dependency nodes for sut with id ${data.sut_id}`, err: error } });
-                        reject(error);
-                    })
-            })
+        countAllSutActionsDependencies({ commit }, data) {
+            getCountActionsDependencies({ commit }, data)
+                .then(total => {
+                    commit("set_sut_actions_dependencies_total", { total: total });
+                });
         },
-        findSutDependenciesLinks({ commit }, data) {
-            return new Promise((resolve, reject) => {
-                axios
-                    .get(`/rest/suts/${data.sut_id}/actions/dependencies`)
-                    .then(response => {
-                        commit("set_sut_dependencies_links", { links: response.data });
-                        resolve();
-                    })
-                    .catch(error => {
-                        commit("set_sut_dependencies_links", { links: null });
-                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut dependency links for sut with id ${data.sut_id}`, err: error } });
-                        reject(error);
-                    })
-            })
+        countSutActionsDependencies({ commit }, data) {
+            getCountActionsDependencies({ commit }, data)
+                .then(count => {
+                    commit("set_sut_actions_dependencies_count", { count: count });
+                });
         },
         addSut({ commit }, sut) {
             return new Promise((resolve, reject) => {
@@ -241,43 +248,7 @@ const suts = {
             }
 
             return sutsForSelection;
-        },
-        sutNodes: state => {
-            let nodes = []
-
-            const commonStart = getCommonStart(state.suts.current_dependencies.nodes.map(n => n.path));
-
-            if (state.suts.current_dependencies.nodes !== null) {
-                nodes = state.suts.current_dependencies.nodes.map(
-                    node => {
-                        let newNode = {};
-                        newNode["id"] = node.id;
-                        newNode["title"] = node.path.replace(commonStart, "");
-                        newNode["httpMethod"] = node.httpMethod;
-                        return newNode;
-                    }
-                );
-            }
-
-            return nodes;
-        },
-        sutLinks: state => {
-            let links = []
-
-            if (state.suts.current_dependencies.links !== null) {
-                links = state.suts.current_dependencies.links.map(
-                    link => {
-                        let newLink = {};
-                        newLink["id"] = link.id;
-                        newLink["target"] = link.dependsOnActionId;
-                        newLink["source"] = link.actionId;
-                        return newLink;
-                    }
-                );
-            }
-
-            return links;
-        },
+        }
     }
 }
 

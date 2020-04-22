@@ -18,6 +18,9 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
     private Long id;
 
     @ManyToOne
+    private RmdParameter parameter;
+
+    @ManyToOne
     private RmdAction action;
 
     @ManyToOne
@@ -27,17 +30,24 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
     public RmdActionDependency() {
     }
 
-    public RmdActionDependency(RmdAction action, RmdAction actionDependsOn) {
+    public RmdActionDependency(RmdAction action, RmdParameter parameter, RmdAction actionDependsOn) {
         this.action = action;
+        this.parameter = parameter;
         this.actionDependsOn = actionDependsOn;
     }
-    
+
     // methods
     public int compareTo(RmdActionDependency other) {
         int compareAction = this.getAction().compareTo(other.getAction());
         if (compareAction != 0) {
             return compareAction;
         }
+
+        int compareParameter = this.getParameter().compareTo(other.getParameter());
+        if (compareParameter != 0) {
+            return compareParameter;
+        }
+
         return this.getActionDependsOn().compareTo(other.getActionDependsOn());
     }
 
@@ -48,6 +58,14 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public RmdParameter getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(RmdParameter parameter) {
+        this.parameter = parameter;
     }
 
     public RmdAction getAction() {

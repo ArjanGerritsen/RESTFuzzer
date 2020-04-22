@@ -24,8 +24,8 @@
             <b-list-group>
             <b-list-group-item href="#" disabled class="flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">Release v0.04</h5>
-              <small class="text-muted">22-04-2020</small>
+              <h5 class="mb-1">Release v0.05</h5>
+              <small class="text-muted">14-05-2020</small>
             </div>
             <p class="mb-1">
               <ul>
@@ -33,6 +33,16 @@
                 <li>PRIO1 TODO Creating dependencies between REST actions (graph).</li>
                 <li>PRIO2 TODO First version of MBT fuzzing done.</li>
                 <li>PRIO3 TODO Tasks overview for SUTs and projecs.</li>
+              </ul>
+            </p>
+          </b-list-group-item>   
+            <b-list-group-item href="#" disabled class="flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Release v0.04</h5>
+              <small class="text-muted">22-04-2020</small>
+            </div>
+            <p class="mb-1">
+              <ul>
                 <li>Configuration maintenance and selecting configuration for fuzzing projects.</li>
                 <li>Sepearate page for Tasks.</li>
                 <li>Tasks: Progress percentage.</li>
@@ -40,7 +50,8 @@
                 <li>Fix: Ids in URLs for all entities + deletion of item (update URL without id).</li>
               </ul>
             </p>
-          </b-list-group-item>            <b-list-group-item href="#" disabled class="flex-column align-items-start">
+          </b-list-group-item>   
+          <b-list-group-item href="#" disabled class="flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">Release v0.03</h5>
               <small class="text-muted">25-03-2020</small>
@@ -85,7 +96,7 @@
                   </ul>
                 </p>
               </b-list-group-item>
-            </b-list-group>              
+            </b-list-group> 
           </b-card-text>
         </b-card>
       </div>     

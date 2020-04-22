@@ -30,6 +30,8 @@ export default {
     navigate() {
       if (this.$route.params.id) {
         this.$store.dispatch("findDictionary", this.$route.params.id);
+      } else {
+        this.$store.commit("set_dictionary", { item: null });
       }
     }
   },

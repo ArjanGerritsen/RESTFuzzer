@@ -45,13 +45,13 @@ export default {
       this.$store.dispatch("findSut", sut.id);
     },
     add() {
-      this.$store.commit("set_sut", { sut: null });
+      this.$store.commit("set_sut", { item: null });
       this.$store.commit("set_sut_display", { display: "add" });
     }
   },
   computed: {
     suts() {
-      return this.$store.getters.suts.all;
+      return this.$store.getters.suts.all.items;
     }
   },
   created: function() {

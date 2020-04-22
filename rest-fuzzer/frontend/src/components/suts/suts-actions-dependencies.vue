@@ -1,197 +1,158 @@
 <template>
-  <svg id="relations" width="960" height="600" />
+  <div>
+    <b-row style="margin-bottom:5px;">
+      <b-col lg="6" class="my-1">
+        <b-input-group size="sm">
+          <b-form-input
+            v-model="filter"
+            type="search"
+            id="filterInput"
+            placeholder="type to filter table"
+          ></b-form-input>
+          <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">clear</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <b-col lg="6" class="my-1"></b-col>
+    </b-row>
+
+    <b-table
+      id="sut-actions"
+      class="table-sm"
+      show-empty
+      :busy="isBusy"
+      striped
+      :items="restProvider"
+      :fields="fields"
+      :borderless="true"
+      :filter="filter"
+      @filtered="onFiltered"
+      :current-page="currentPage"
+      :per-page="perPage"
+    >
+      <div slot="table-busy" class="text-center text-primary my-2">
+        <b-spinner type="border" class="align-middle" small></b-spinner>
+        <span style="margin-left:10px;">Loading...</span>
+      </div>
+
+      <template
+        v-for="formatter in formatters"
+        v-slot:[`cell(${formatter.field})`]="data"
+      >
+        <template>{{ data.value | dynamicFilter($options.filters[formatter.as]) }}</template>
+      </template>
+
+      <template v-slot:cell(details)="row">
+        <b-button size="sm" variant="primary" @click="row.toggleDetails">
+          <b-icon v-if="row.detailsShowing" icon="x" font-scale="1"></b-icon>
+          <b-icon v-if="!row.detailsShowing" icon="plus" font-scale="1"></b-icon>
+        </b-button>
+      </template>
+
+      <template v-slot:row-details="row">
+        <b-card>
+          <h6>Parameters:</h6>
+          <li
+            class="list-inline-item"
+            style="vertical-align:top; margin:8px; width: 190px;"
+            v-for="(value, key) in row.item.parameters"
+            :key="key"
+          >
+            <b>#{{ value.id }} </b>
+            <b-badge v-if="value.required" variant="primary">required</b-badge>
+            <br />
+            name: {{ value.name}}
+            <br />
+            context: {{ value.context }}
+            <br />
+            type: {{ value.type }}
+            <br />
+            extra: {{ value.metaDataTuplesJson === "{}" ? "-" : value.metaDataTuplesJson }}
+          </li>
+
+          <hr />
+
+          <h6>Responses:</h6>
+          <li
+            class="list-inline-item"
+            style="margin:8px; width: 190px;"
+            v-for="(value, key) in row.item.responses"
+            :key="key"
+          >
+            <b>#{{ value.id }}</b>
+            <br />
+            http status: {{ value.statusCode }}
+            <br />
+            description: {{ value.description }}
+          </li>
+        </b-card>
+      </template>
+
+      <template slot="empty">No data present.</template>
+    </b-table>
+
+    <b-pagination
+      v-if="displayPagination"
+      size="sm"
+      style="float:right;"
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage"
+      aria-controls="list"
+    ></b-pagination>
+  </div>
 </template>
 
 <script>
-import * as d3 from "d3";
-
 export default {
+  props: ["sut", "fields", "formatters"],
   data() {
     return {
-      svg_links: null
+      isBusy: false,
+      filter: null,
+      perPage: 15,
+      currentPage: 1,
+      filterShadow: null
     };
   },
-  computed: {
-    nodes: function() {
-      return this.$store.getters.sutNodes;
-    },
-    links: function() {
-      return this.$store.getters.sutLinks;
-    }
-  },
   methods: {
-    drawIt: function() {
-      var svg = d3.select("#relations");
-
-      console.log(svg.style("width"));
-
-      var width = svg.style("width").replace("px", "");
-      var height = svg.style("height").replace("px", "");
-      var radius = 6;
-
-      var color = d3.scaleOrdinal(d3["schemeDark2"]);
-
-      svg.attr("viewBox", [0, 0, width, height]);
-      svg.call(
-        d3
-          .zoom()
-          .extent([
-            [0, 0],
-            [width, height]
-          ])
-          .scaleExtent([1, 8])
-          .on("zoom", zoomed)
-      );
-
-      const g = svg.append("g").attr("cursor", "grab");
-
-      let simulation = d3
-        .forceSimulation()
-        .force(
-          "link",
-          d3.forceLink().id(function(d) {
-            return d.id;
-          })
-        )
-        .force("charge", d3.forceManyBody().strength(-50))
-        .force("x", d3.forceX(width / 2).strength(0.05))
-        .force("y", d3.forceY(height / 2).strength(0.05))
-        .force("center", d3.forceCenter(width / 2 - 50, height / 2));
-
-      // draw links
-      var all_links = g
-        .append("g")
-        .attr("class", "links")
-        .selectAll("line")
-        .data(this.links)
-        .enter()
-        .append("line")
-        .attr("stroke", d3.rgb(0, 0, 0));
-
-      // draw nodes
-      var svg_nodes = g
-        .append("g")
-        .attr("class", "nodes")
-        .selectAll("g")
-        .data(this.nodes)
-        .enter()
-        .append("g");
-
-      var svg_nodes_circles = svg_nodes
-        .append("circle")
-        .attr("r", radius)
-        .attr("fill", function(d) {
-          return colorForHttpMethod(d.httpMethod);
+    restProvider(context, callback) {
+      if (this.filter !== this.filterShadow) {
+        this.currentPage = 1;
+      } else {
+        this.currentPage = context.currentPage;
+      }
+      this.filterShadow = this.filter;
+      return this.$store
+        .dispatch("findSutActions", {
+          sut_id: this.sut.id,
+          context: context
         })
-        .call(
-          d3
-            .drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended)
-        );
-
-      var svg_nodes_labels = svg_nodes
-        .append("text")
-        .text(function(d) {
-          return d.title;
+        .then(() => {
+          return this.$store.getters.suts.current.actions.items;
         })
-        .attr("x", 6)
-        .attr("y", 3);
-
-      svg_nodes.append("title").text(function(d) {
-        return `hoi ${d.id}`;
-      });
-
-      simulation.nodes(this.nodes).on("tick", ticked);
-      simulation.force("link").links(this.links);
-
-      function ticked() {
-        all_links
-          .attr("x1", function(d) {
-            return d.source.x;
-          })
-          .attr("y1", function(d) {
-            return d.source.y;
-          })
-          .attr("x2", function(d) {
-            return d.target.x;
-          })
-          .attr("y2", function(d) {
-            return d.target.y;
-          });
-
-        svg_nodes
-          .attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")";
-          })
-          .attr("cx", function(d) {
-            return (d.x = Math.max(radius, Math.min(width - radius, d.x)));
-          })
-          .attr("cy", function(d) {
-            return (d.y = Math.max(radius, Math.min(height - radius, d.y)));
-          });
-      }
-
-      function dragstarted(d) {
-        // if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-      }
-
-      function dragged(d) {
-        d.fx = d3.event.x;
-        d.fy = d3.event.y;
-      }
-
-      function dragended(d, simulation) {
-        // if (!d3.event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-      }
-
-      function colorForHttpMethod(httpMethod) {
-        switch (httpMethod) {
-          case "GET":
-            return d3.rgb(0, 255, 0);
-          case "POST":
-            return d3.rgb(0, 255, 255);
-          case "PATCH":
-            return d3.rgb(0, 128, 128);
-          case "PUT":
-            return d3.rgb(0, 255, 128);
-          case "DELETE":
-            return d3.rgb(255, 0, 0);
-          default:
-            return d3.rgb(255, 255, 0);
-        }
-      }
-
-      function zoomed() {
-        g.attr("transform", d3.event.transform);
-      }
+        .catch(() => {
+          return [];
+        });
+    },
+    linkGen(pageNum) {
+      return pageNum === 1 ? "?" : `?page=${pageNum}`;
+    },
+    onFiltered(filteredItems) {
+      this.currentPage = 1;
     }
   },
-  mounted: function() {
-    // setTimeout(() => {
-    //   this.drawIt();
-    // }, 1500);
+  computed: {
+    totalRows() {
+      return this.$store.getters.suts.current.actions.count;
+    },
+    displayPagination() {
+      return this.totalRows > this.perPage;
+    }
+  },
+  created: function() {
+    
   }
 };
 </script>
-
-<style>
-#relation rect .get {
-  stroke: #000;
-  stroke-width: 1;
-}
-
-#relations {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 0.8em;
-  border: 1px solid #dddddd;
-  width: 100%;
-  height: 600px;
-  margin: auto;
-}
-</style>

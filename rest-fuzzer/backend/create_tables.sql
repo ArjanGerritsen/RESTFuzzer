@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS rmd_actions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   path VARCHAR(255) NOT NULL,
   http_method ENUM('GET', 'POST', 'PATCH', 'PUT', 'DELETE') NOT NULL,
-  sut_id INTEGER
+  sut_id INT
 ) ENGINE=INNODB;
 
 ALTER TABLE rmd_actions ADD FOREIGN KEY(sut_id) REFERENCES rmd_suts(id); 
@@ -35,11 +35,13 @@ ALTER TABLE rmd_actions ADD FOREIGN KEY(sut_id) REFERENCES rmd_suts(id);
 
 CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  action_id INTEGER,
-  action_depends_on_id INTEGER
+  action_id INT,
+  parameter_id INT,
+  action_depends_on_id INT
 ) ENGINE=INNODB;
 
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
+ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(parameter_id) REFERENCES rmd_parameters(id);
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_depends_on_id) REFERENCES rmd_actions(id);
 
 
@@ -123,9 +125,6 @@ CREATE TABLE IF NOT EXISTS fuz_configurations (
   items_json TEXT,
   created_at TIMESTAMP NULL  
 ) ENGINE=INNODB;
-
-
-// TODO moet sut_id in fuz_projects niet in de meta?
 
 --------------------------- dropping all --------------------
 
