@@ -95,8 +95,8 @@ export default {
       actions_dependencies_formatters: [],
       actions_dependencies_fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
-        { key: "path" },
-        { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" },
+        { key: "action.path", label: "Path" },
+        { key: "action.httpMethod", label: "Http method", thStyle: "width: 110px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ]
     };
@@ -108,6 +108,7 @@ export default {
         this.$store.dispatch("findSut", this.sut.id);
         this.$store.dispatch("findAllSuts");
         this.$root.$emit("bv::refresh::table", "sut-actions");
+        this.$root.$emit("bv::refresh::table", "sut-actions-dependencies");
         return;
       }
 
@@ -144,14 +145,7 @@ export default {
       );
     },
     actionsTitle() {
-      let title = "REST model description";
-      if (this.actionsCount > 0) {
-        title += ` [${this.actionsCount}]`;
-      }
-      return title;
-    },
-    actionsDependenciesTitle() {
-      let title = "Dependencies";
+      let title = "Actions";
       if (this.actionsCount > 0) {
         title += ` [${this.actionsCount}]`;
       }
@@ -159,6 +153,17 @@ export default {
     },
     actionsCount() {
       const count = this.$store.getters.suts.current.actions.total;
+      return count !== null && count > 0 ? count : 0;
+    },
+    actionsDependenciesTitle() {
+      let title = "Dependencies";
+      if (this.actionsDependenciesCount > 0) {
+        title += ` [${this.actionsDependenciesCount}]`;
+      }
+      return title;
+    },
+    actionsDependenciesCount() {
+      const count = this.$store.getters.suts.current.actions_dependencies.total;
       return count !== null && count > 0 ? count : 0;
     }
   },

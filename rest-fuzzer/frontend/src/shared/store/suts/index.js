@@ -21,12 +21,12 @@ function getCountActionsDependencies({ commit }, data) {
         let queryParams = '';
         if (data.context && data.context.filter !== null) { queryParams += `?filter=${data.context.filter}`; }
         axios
-            .get(`/rest/suts/${data.sut_id}/actions/count${queryParams}`)
+            .get(`/rest/suts/${data.sut_id}/actions/dependencies/count${queryParams}`)
             .then(response => {
                 resolve(response.data);
             })
             .catch(error => {
-                commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut dependencies count for sut with id ${data.sut_id}`, err: error } });
+                commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut action dependencies count for sut with id ${data.sut_id}`, err: error } });
                 reject(error);
             })
     });
@@ -148,6 +148,7 @@ const suts = {
                     .then(response => {
                         commit("set_sut_actions", { items: response.data });
                         dispatch("countSutActions", data);
+                        dispatch("countSutActionsDepencies", data);
                         resolve();
                     })
                     .catch(error => {
@@ -174,15 +175,15 @@ const suts = {
                 let queryParams = `?curPage=${data.context.currentPage}&perPage=${data.context.perPage}`;
                 if (data.context.filter !== null) { queryParams += `&filter=${data.context.filter}`; }
                 axios
-                    .get(`/rest/suts/${data.sut_id}/actions/paginated/${queryParams}`)
+                    .get(`/rest/suts/${data.sut_id}/actions/dependencies/paginated/${queryParams}`)
                     .then(response => {
-                        commit("set_sut_actions", { items: response.data });
-                        dispatch("countSutActions", data);
+                        commit("set_sut_actions_dependencies", { items: response.data });
+                        dispatch("countSutActionsDependencies", data);
                         resolve();
                     })
                     .catch(error => {
-                        commit("set_sut_actions", { items: null });
-                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut actions for sut with id ${data.sut_id}`, err: error } });
+                        commit("set_sut_actions_dependencies", { items: null });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut action dependencies for sut with id ${data.sut_id}`, err: error } });
                         reject(error);
                     })
             })

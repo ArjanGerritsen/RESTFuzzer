@@ -91,34 +91,39 @@ public class RmdSutController {
 
         if (projectService.countBySutId(id) > 0) {
             logger.warn(String.format(Constants.Service.VALIDATION_SUT_USED_BY_PROJECTS, id));
-            return ValidatorUtil.getResponseForViolation(String.format(Constants.Service.VALIDATION_SUT_USED_BY_PROJECTS, id));
+            return ValidatorUtil
+                    .getResponseForViolation(String.format(Constants.Service.VALIDATION_SUT_USED_BY_PROJECTS, id));
         }
 
         sutService.deleteById(id);
         return ResponseEntity.ok(RmdSutMapper.toDto(sut.get(), false));
     }
 
-    @RequestMapping(path = "{id}/actions", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findActionsById(@PathVariable(name = "id") Long id) {
-        return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findBySutId(id)));
-    }
-
     @RequestMapping(path = "{id}/actions/count", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> countActionsByIdId(@PathVariable(name = "id") Long id,
+    public @ResponseBody ResponseEntity<?> countActionsBySutId(@PathVariable(name = "id") Long id,
             @RequestParam(name = "filter", required = false) String path) {
         return ResponseEntity.ok(actionService.countBySutIdAndPath(id, QueryUtil.toLike(path)));
     }
 
     @RequestMapping(path = "{id}/actions/paginated", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findActionsById(@PathVariable(name = "id") Long id,
+    public @ResponseBody ResponseEntity<?> findActionsBySutId(@PathVariable(name = "id") Long id,
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
             @RequestParam(name = "filter", required = false) String path) {
         return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findBySutIdAndPath(id, QueryUtil.toLike(path),
                 QueryUtil.toPageRequest(curPage, perPage))));
     }
-    
-    @RequestMapping(path = "{id}/actions/dependencies", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findActionsDependenciesById(@PathVariable(name = "id") Long id) {
-        return ResponseEntity.ok(RmdActionDependencyMapper.toDtos(actionDependencyService.findBySutId(id)));
-    }    
+
+    @RequestMapping(path = "{id}/actions/dependencies/count", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> countActionsDependenciesBySutId(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(actionDependencyService.countBySutIdAndPath(id, QueryUtil.toLike(path)));
+    }
+
+    @RequestMapping(path = "{id}/actions/dependencies/paginated", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> findActionsDependenciesBySutId(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(RmdActionDependencyMapper.toDtos(actionDependencyService.findBySutIdAndPath(id,
+                QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
+    }
 }

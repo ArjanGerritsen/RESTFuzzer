@@ -18,7 +18,7 @@
     </b-row>
 
     <b-table
-      id="sut-actions"
+      id="sut-actions-dependencies"
       class="table-sm"
       show-empty
       :busy="isBusy"
@@ -52,40 +52,20 @@
 
       <template v-slot:row-details="row">
         <b-card>
-          <h6>Parameters:</h6>
-          <li
-            class="list-inline-item"
-            style="vertical-align:top; margin:8px; width: 190px;"
-            v-for="(value, key) in row.item.parameters"
-            :key="key"
-          >
-            <b>#{{ value.id }} </b>
-            <b-badge v-if="value.required" variant="primary">required</b-badge>
-            <br />
-            name: {{ value.name}}
-            <br />
-            context: {{ value.context }}
-            <br />
-            type: {{ value.type }}
-            <br />
-            extra: {{ value.metaDataTuplesJson === "{}" ? "-" : value.metaDataTuplesJson }}
-          </li>
+          <h6>Parameter:</h6>
+
+          {{ row.item.parameter.name }}
+
+          [{{ row.item.parameter.type }}]
 
           <hr />
 
-          <h6>Responses:</h6>
-          <li
-            class="list-inline-item"
-            style="margin:8px; width: 190px;"
-            v-for="(value, key) in row.item.responses"
-            :key="key"
-          >
-            <b>#{{ value.id }}</b>
-            <br />
-            http status: {{ value.statusCode }}
-            <br />
-            description: {{ value.description }}
-          </li>
+          <h6>Depends on:</h6>
+
+          {{ row.item.dependsOnAction.path }}
+
+          {{ row.item.dependsOnAction.httpMethod }}
+
         </b-card>
       </template>
 
@@ -125,12 +105,12 @@ export default {
       }
       this.filterShadow = this.filter;
       return this.$store
-        .dispatch("findSutActions", {
+        .dispatch("findSutActionsDependencies", {
           sut_id: this.sut.id,
           context: context
         })
         .then(() => {
-          return this.$store.getters.suts.current.actions.items;
+          return this.$store.getters.suts.current.actions_dependencies.items;
         })
         .catch(() => {
           return [];
@@ -145,7 +125,7 @@ export default {
   },
   computed: {
     totalRows() {
-      return this.$store.getters.suts.current.actions.count;
+      return this.$store.getters.suts.current.actions_dependencies.count;
     },
     displayPagination() {
       return this.totalRows > this.perPage;

@@ -15,7 +15,7 @@ public class RmdParameterMapper {
         return parameters.stream().map(p -> RmdParameterMapper.toDto(p)).collect(Collectors.toList());
     }
 
-    private static RmdParameterDto toDto(RmdParameter parameter) {
+    public static RmdParameterDto toDto(RmdParameter parameter) {
         RmdParameterDto dto = new RmdParameterDto();
         BeanUtils.copyProperties(parameter, dto);
         dto.setMetaDataTuplesJson(parameter.getMetaDataTuples().toString());

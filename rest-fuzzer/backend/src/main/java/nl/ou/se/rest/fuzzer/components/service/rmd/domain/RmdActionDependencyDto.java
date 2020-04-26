@@ -1,12 +1,15 @@
 package nl.ou.se.rest.fuzzer.components.service.rmd.domain;
 
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.DiscoveryType;
+
 public class RmdActionDependencyDto {
 
     // variables
     private Long id;
-    private Long actionId;
-    private Long parameterId;
-    private Long dependsOnActionId;
+    private RmdActionDto action;
+    private RmdParameterDto parameter;
+    private RmdActionDto dependsOnAction;
+    private DiscoveryType discoveryType;
 
     // getters and setters
     public Long getId() {
@@ -15,22 +18,28 @@ public class RmdActionDependencyDto {
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getActionId() {
-        return actionId;
+    public RmdActionDto getAction() {
+        return action;
     }
-    public void setActionId(Long actionId) {
-        this.actionId = actionId;
+    public void setAction(RmdActionDto action) {
+        this.action = action;
     }
-    public Long getParameterId() {
-        return parameterId;
+    public RmdParameterDto getParameter() {
+        return parameter;
     }
-    public void setParameterId(Long parameterId) {
-        this.parameterId = parameterId;
+    public void setParameter(RmdParameterDto parameter) {
+        this.parameter = parameter;
     }
-    public Long getDependsOnActionId() {
-        return dependsOnActionId;
+    public RmdActionDto getDependsOnAction() {
+        return dependsOnAction;
     }
-    public void setDependsOnActionId(Long dependsOnActionId) {
-        this.dependsOnActionId = dependsOnActionId;
-    }   
+    public void setDependsOnAction(RmdActionDto dependsOnAction) {
+        this.dependsOnAction = dependsOnAction;
+    }
+    public DiscoveryType getDiscoveryType() {
+        return discoveryType;
+    }
+    public void setDiscoveryType(DiscoveryType discoveryType) {
+        this.discoveryType = discoveryType;
+    }
 }

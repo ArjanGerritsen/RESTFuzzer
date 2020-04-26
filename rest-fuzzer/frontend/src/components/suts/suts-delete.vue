@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     sut() {
-      return this.$store.getters.suts.current;
+      return this.$store.getters.suts.current.item;
     }
   },
   methods: {

@@ -10,11 +10,11 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 
 public interface RmdActionService extends CrudRepository<RmdAction, Long> {
 
-    @Query(value = "SELECT COUNT(a) FROM rmd_actions a WHERE a.sut.id = :sutId AND a.path LIKE CONCAT('%', :path, '%')")
-    long countBySutIdAndPath(Long sutId, String path);
-
     @Query(value = "SELECT DISTINCT a FROM rmd_actions a LEFT JOIN FETCH a.parameters LEFT JOIN FETCH a.sut WHERE a.sut.id = :sutId")
     List<RmdAction> findBySutId(Long sutId);
+
+    @Query(value = "SELECT COUNT(a) FROM rmd_actions a WHERE a.sut.id = :sutId AND a.path LIKE CONCAT('%', :path, '%')")
+    Long countBySutIdAndPath(Long sutId, String path);
 
     @Query(value = "SELECT a FROM rmd_actions a WHERE a.sut.id = :sutId AND a.path LIKE CONCAT('%', :path, '%')")
     List<RmdAction> findBySutIdAndPath(Long sutId, String path, Pageable pageable);
