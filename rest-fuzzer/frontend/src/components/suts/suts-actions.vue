@@ -1,7 +1,8 @@
 <template>
   <div>
     <b-row style="margin-bottom:5px;">
-      <b-col lg="6" class="my-1">
+      <b-col lg="6"></b-col>
+      <b-col lg="6">
         <b-input-group size="sm">
           <b-form-input
             v-model="filter"
@@ -14,7 +15,6 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <b-col lg="6" class="my-1"></b-col>
     </b-row>
 
     <b-table
@@ -150,9 +150,6 @@ export default {
     displayPagination() {
       return this.totalRows > this.perPage;
     }
-  },
-  created: function() {
-    
   }
 };
 </script>

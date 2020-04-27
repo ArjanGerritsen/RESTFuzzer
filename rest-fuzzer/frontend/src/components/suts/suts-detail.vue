@@ -12,8 +12,8 @@
 
       <b-tabs v-if="this.sut !== null" nav-tabs card>
         <b-tab title="Information" active>
-          <div class="row">
-            <div class="col">
+          <b-row>
+            <b-col>
               <div class="button-group-left">
                 <b-button
                   :disabled="tasksQueuedOrRunning"
@@ -35,10 +35,10 @@
                   <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
                 </b-button>
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
               <dl class="dl-horizontal">
                 <dt>Identifier</dt>
                 <dd>{{this.sut.id}}</dd>
@@ -49,16 +49,16 @@
                   <b-link :href="this.sut.location" target="_blank">{{this.sut.location}}</b-link>
                 </dd>
               </dl>
-            </div>
-            <div class="col">
+            </b-col>
+            <b-col>
               <dl class="dl-horizontal">
                 <dt>Description</dt>
                 <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
                 <dt>Created @</dt>
                 <dd>{{this.sut.createdAt | date }}</dd>
               </dl>
-            </div>
-          </div>
+            </b-col>
+          </b-row>
         </b-tab>
         <b-tab :disabled="this.actionsCount === 0" :title="actionsTitle">
           <SutsActions :sut="sut" :fields="actions_fields" :formatters="actions_formatters"></SutsActions>
@@ -97,6 +97,7 @@ export default {
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "action.path", label: "Path" },
         { key: "action.httpMethod", label: "Http method", thStyle: "width: 110px;" },
+        { key: "discoveryModus", label: "Discovered", thStyle: "width: 110px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ]
     };

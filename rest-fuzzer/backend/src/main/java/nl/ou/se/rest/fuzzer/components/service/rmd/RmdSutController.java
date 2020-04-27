@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzProjectService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdParameterService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
 import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionDependencyMapper;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionMapper;
+import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdParameterMapper;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdSutMapper;
 import nl.ou.se.rest.fuzzer.components.service.util.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
@@ -40,6 +42,9 @@ public class RmdSutController {
 
     @Autowired
     RmdActionService actionService;
+
+    @Autowired
+    RmdParameterService parameterService;
 
     @Autowired
     RmdActionDependencyService actionDependencyService;
@@ -97,6 +102,18 @@ public class RmdSutController {
 
         sutService.deleteById(id);
         return ResponseEntity.ok(RmdSutMapper.toDto(sut.get(), false));
+    }
+
+    @RequestMapping(path = "{id}/actions", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> findAllActionsBySutId(@PathVariable(name = "id") Long id,
+            @RequestParam(name = "filter", required = false) String path) {
+        return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findBySutId(id)));
+    }
+
+    @RequestMapping(path = "{id}/actions/{actionId}/parameters", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<?> findAllParametersBySutIdAndActionId(@PathVariable(name = "id") Long id,
+            @PathVariable(name = "actionId") Long actionId) {
+        return ResponseEntity.ok(RmdParameterMapper.toDtos(parameterService.findByActionId(actionId)));
     }
 
     @RequestMapping(path = "{id}/actions/count", method = RequestMethod.GET)

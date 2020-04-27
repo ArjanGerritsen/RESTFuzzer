@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
   action_id INT,
   parameter_id INT,
   action_depends_on_id INT,
-  discovery_type ENUM('AUTOMATIC', 'MANUAL') NOT NULL
+  discovery_modus ENUM('AUTOMATIC', 'MANUAL') NOT NULL
 ) ENGINE=INNODB;
 
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);

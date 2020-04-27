@@ -1,7 +1,6 @@
 package nl.ou.se.rest.fuzzer.components.service.rmd.mapper;
 
 import java.util.List;
-import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -11,7 +10,7 @@ import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdResponseDto;
 
 public class RmdResponseMapper {
 
-    public static List<RmdResponseDto> toDtos(SortedSet<RmdResponse> responses) {
+    public static List<RmdResponseDto> toDtos(List<RmdResponse> responses) {
         return responses.stream().map(r -> RmdResponseMapper.toDto(r)).collect(Collectors.toList());
     }
 

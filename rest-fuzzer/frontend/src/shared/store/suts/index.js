@@ -50,6 +50,10 @@ const suts = {
                     items: null,
                     total: null,
                     count: null
+                },
+                selection: {
+                    actions: null,
+                    parameters: null
                 }
             },
             display: null
@@ -85,6 +89,13 @@ const suts = {
         },
         set_sut_actions_dependencies_count(state, payload) {
             state.suts.current.actions_dependencies.count = payload.count
+        },
+
+        set_sut_selection_actions(state, payload) {
+            state.suts.current.selection.actions = payload.actions
+        },
+        set_sut_selection_parameters(state, payload) {
+            state.suts.current.selection.parameters = payload.parameters
         },
 
         set_sut_display(state, payload) {
@@ -148,7 +159,7 @@ const suts = {
                     .then(response => {
                         commit("set_sut_actions", { items: response.data });
                         dispatch("countSutActions", data);
-                        dispatch("countSutActionsDepencies", data);
+                        dispatch("countSutActionsDependencies", data);
                         resolve();
                     })
                     .catch(error => {
@@ -200,6 +211,36 @@ const suts = {
                     commit("set_sut_actions_dependencies_count", { count: count });
                 });
         },
+        findSelectionActions({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/rest/suts/${data.sut_id}/actions`)
+                    .then(response => {
+                        commit("set_sut_selection_actions", { actions: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("set_sut_selection_actions", { actions: null });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut actions (selection) for sut with id ${data.sut_id}`, err: error } });
+                        reject(error);
+                    })
+            })
+        },
+        findSelectionParameters({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/rest/suts/${data.sut_id}/actions/${data.action_id}/parameters`)
+                    .then(response => {
+                        commit("set_sut_selection_parameters", { parameters: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("set_sut_selection_parameters", { parameters: null });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve parameters for action with id ${data.action_id} and sut with id ${data.sut_id}`, err: error } });
+                        reject(error);
+                    })
+            })
+        },
         addSut({ commit }, sut) {
             return new Promise((resolve, reject) => {
                 axios
@@ -237,8 +278,8 @@ const suts = {
         sutsForSelection: state => {
             let sutsForSelection = []
 
-            if (state.suts.all !== null) {
-                sutsForSelection = state.suts.all.filter(sut => sut.title !== null).map(
+            if (state.suts.all.items !== null) {
+                sutsForSelection = state.suts.all.items.filter(sut => sut.title !== null).map(
                     sut => {
                         const newSut = {};
                         newSut["value"] = sut.id;
@@ -249,7 +290,55 @@ const suts = {
             }
 
             return sutsForSelection;
-        }
+        },
+        selectionActions: state => {
+            let actions = [];
+
+            if (state.suts.current.selection.actions !== null) {
+                actions = state.suts.current.selection.actions.map(
+                    action => {
+                        const newAction = {};
+                        newAction["value"] = action.id;
+                        newAction["text"] = `${action.path} (${action.httpMethod})`;
+                        return newAction;
+                    }
+                );
+            }
+
+            return actions;
+        },
+        selectionActionsPosts: state => {
+            let actions = [];
+
+            if (state.suts.current.selection.actions !== null) {
+                actions = state.suts.current.selection.actions.filter(action => action.httpMethod === "POST").map(
+                    action => {
+                        const newAction = {};
+                        newAction["value"] = action.id;
+                        newAction["text"] = `${action.path} (${action.httpMethod})`;
+                        return newAction;
+                    }
+                );
+            }
+
+            return actions;
+        },
+        selectionParameters: state => {
+            let parameters = [];
+
+            if (state.suts.current.selection.parameters !== null) {
+                parameters = state.suts.current.selection.parameters.map(
+                    parameter => {
+                        const newParameter = {};
+                        newParameter["value"] = parameter.id;
+                        newParameter["text"] = `${parameter.name} (${parameter.type})`;
+                        return newParameter;
+                    }
+                );
+            }
+            
+            return parameters;
+        },
     }
 }
 

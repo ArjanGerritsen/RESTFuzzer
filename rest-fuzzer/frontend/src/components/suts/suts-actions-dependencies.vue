@@ -1,7 +1,12 @@
 <template>
   <div>
     <b-row style="margin-bottom:5px;">
-      <b-col lg="6" class="my-1">
+      <b-col lg="6">
+        <b-button size="sm" type="submit" variant="primary" v-b-modal.suts-actions-dependencies-add title="add a dependency">
+          <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
+        </b-button>
+      </b-col>
+      <b-col lg="6">
         <b-input-group size="sm">
           <b-form-input
             v-model="filter"
@@ -14,7 +19,6 @@
           </b-input-group-append>
         </b-input-group>
       </b-col>
-      <b-col lg="6" class="my-1"></b-col>
     </b-row>
 
     <b-table
@@ -55,17 +59,13 @@
           <h6>Parameter:</h6>
 
           {{ row.item.parameter.name }}
-
           [{{ row.item.parameter.type }}]
-
           <hr />
 
           <h6>Depends on:</h6>
 
           {{ row.item.dependsOnAction.path }}
-
           {{ row.item.dependsOnAction.httpMethod }}
-
         </b-card>
       </template>
 
@@ -81,11 +81,16 @@
       :per-page="perPage"
       aria-controls="list"
     ></b-pagination>
+
+    <SutsActionsDependenciesAdd :sut="this.sut" ></SutsActionsDependenciesAdd>
   </div>
 </template>
 
 <script>
+import SutsActionsDependenciesAdd from "./suts-actions-dependencies-add";
+
 export default {
+  components: { SutsActionsDependenciesAdd },
   props: ["sut", "fields", "formatters"],
   data() {
     return {
@@ -131,8 +136,6 @@ export default {
       return this.totalRows > this.perPage;
     }
   },
-  created: function() {
-    
-  }
+  created: function() {}
 };
 </script>

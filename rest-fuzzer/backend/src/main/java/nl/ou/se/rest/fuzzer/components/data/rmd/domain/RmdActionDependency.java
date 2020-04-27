@@ -34,13 +34,14 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private DiscoveryType discoveryType;
+    private DiscoveryModus discoveryModus;
 
     // constructors
     public RmdActionDependency() {
     }
 
-    public RmdActionDependency(RmdAction action, RmdParameter parameter, RmdAction actionDependsOn) {
+    public RmdActionDependency(DiscoveryModus discoveryModus, RmdAction action, RmdParameter parameter, RmdAction actionDependsOn) {
+        this.discoveryModus = discoveryModus;
         this.action = action;
         this.parameter = parameter;
         this.actionDependsOn = actionDependsOn;
@@ -94,12 +95,12 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
         this.actionDependsOn = actionDependsOn;
     }
 
-    public DiscoveryType getDiscoveryType() {
-        return discoveryType;
+    public DiscoveryModus getDiscoveryModus() {
+        return discoveryModus;
     }
 
-    public void setDiscoveryType(DiscoveryType discoveryType) {
-        this.discoveryType = discoveryType;
+    public void setDiscoveryModus(DiscoveryModus discoveryModus) {
+        this.discoveryModus = discoveryModus;
     }
 
     // toString

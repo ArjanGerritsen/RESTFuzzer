@@ -17,8 +17,8 @@ public class RmdActionMapper {
     public static RmdActionDto toDto(RmdAction action) {
         RmdActionDto dto = new RmdActionDto();
         BeanUtils.copyProperties(action, dto);
-        dto.setParameters(RmdParameterMapper.toDtos(action.getParameters()));
-        dto.setResponses(RmdResponseMapper.toDtos(action.getResponses()));
+        dto.setParameters(RmdParameterMapper.toDtos(action.getParameters().stream().collect(Collectors.toList())));
+        dto.setResponses(RmdResponseMapper.toDtos(action.getResponses().stream().collect(Collectors.toList())));
         return dto;
     }
 }
