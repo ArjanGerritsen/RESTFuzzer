@@ -1,5 +1,7 @@
 package nl.ou.se.rest.fuzzer.components.service.rmd.domain;
 
+import java.time.LocalDateTime;
+
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.DiscoveryModus;
 
 public class RmdActionDependencyDto {
@@ -8,8 +10,9 @@ public class RmdActionDependencyDto {
     private Long id;
     private RmdActionDto action;
     private RmdParameterDto parameter;
-    private RmdActionDto dependsOnAction;
+    private RmdActionDto actionDependsOn;
     private DiscoveryModus discoveryModus;
+    private LocalDateTime createdAt;
 
     // getters and setters
     public Long getId() {
@@ -36,12 +39,12 @@ public class RmdActionDependencyDto {
         this.parameter = parameter;
     }
 
-    public RmdActionDto getDependsOnAction() {
-        return dependsOnAction;
+    public RmdActionDto getActionDependsOn() {
+        return actionDependsOn;
     }
 
-    public void setDependsOnAction(RmdActionDto dependsOnAction) {
-        this.dependsOnAction = dependsOnAction;
+    public void setActionDependsOn(RmdActionDto actionDependsOn) {
+        this.actionDependsOn = actionDependsOn;
     }
 
     public DiscoveryModus getDiscoveryModus() {
@@ -50,5 +53,13 @@ public class RmdActionDependencyDto {
 
     public void setDiscoveryModus(DiscoveryModus discoveryModus) {
         this.discoveryModus = discoveryModus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

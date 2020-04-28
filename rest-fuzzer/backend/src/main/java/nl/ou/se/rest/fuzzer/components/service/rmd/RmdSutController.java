@@ -1,7 +1,9 @@
 package nl.ou.se.rest.fuzzer.components.service.rmd;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -21,7 +23,12 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdParameterService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.DiscoveryModus;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
+import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdActionDependencyDto;
 import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionDependencyMapper;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionMapper;
@@ -128,6 +135,48 @@ public class RmdSutController {
             @RequestParam(name = "filter", required = false) String path) {
         return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findBySutIdAndPath(id, QueryUtil.toLike(path),
                 QueryUtil.toPageRequest(curPage, perPage))));
+    }
+
+    @RequestMapping(path = "{id}/actions/dependencies", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<?> addActionDepdency(@RequestBody Map<String, Long> parameters) {
+        Optional<RmdParameter> parameter = parameterService
+                .findById(parameters.get("parameter") == null ? -1 : parameters.get("parameter"));
+
+        if (!parameter.isPresent()) {
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdParameter.class,
+                    parameters.get("parameter_id")));
+        }
+
+        Optional<RmdAction> action = actionService
+                .findById(parameters.get("action") == null ? -1 : parameters.get("action"));
+
+        if (!action.isPresent()) {
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdAction.class,
+                    parameters.get("actionId")));
+        }
+
+        Optional<RmdAction> actionDependsOn = actionService
+                .findById(parameters.get("actionDependsOn") == null ? -1 : parameters.get("actionDependsOn"));
+
+        if (!actionDependsOn.isPresent()) {
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdAction.class,
+                    parameters.get("actionDependsOnId")));
+        }
+
+        RmdActionDependency actionDependency = RmdActionDependencyMapper.toDomain(new RmdActionDependencyDto(),
+                parameter.orElse(null), action.orElse(null), actionDependsOn.orElse(null));
+        actionDependency.setCreatedAt(LocalDateTime.now());
+        actionDependency.setDiscoveryModus(DiscoveryModus.MANUAL);
+
+        List<String> violations = ValidatorUtil.getViolations(actionDependency);
+        if (!violations.isEmpty()) {
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_FAILED, RmdActionDependency.class,
+                    violations.size()));
+            return ValidatorUtil.getResponseForViolations(violations);
+        }
+
+        actionDependency = actionDependencyService.save(actionDependency);
+        return ResponseEntity.ok(RmdActionDependencyMapper.toDto(actionDependency));
     }
 
     @RequestMapping(path = "{id}/actions/dependencies/count", method = RequestMethod.GET)

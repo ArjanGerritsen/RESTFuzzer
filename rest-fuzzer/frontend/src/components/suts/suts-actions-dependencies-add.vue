@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="suts-actions-dependencies-add" ref="modal" centered size="lg">
+  <b-modal id="suts-actions-dependencies-add" ref="modalActionsDependenciesAdd" centered size="lg">
     <template slot="modal-header">
       <h6>
         <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;Add action dependency
@@ -47,10 +47,10 @@
 
     <template slot="modal-footer">
       <div class="button-group-right">
-        <b-button size="sm" type="submit" variant="primary" @click="add()">
+        <b-button size="sm" variant="primary" @click="add()">
           <b-icon icon="plus" font-scale="1"></b-icon>&nbsp;add
         </b-button>
-        <b-button size="sm" type="cancel" variant="outline-secondary" @click="clear()">
+        <b-button size="sm" variant="outline-secondary" @click="clear()">
           <b-icon icon="backspace" font-scale="1"></b-icon>&nbsp;clear
         </b-button>
       </div>
@@ -88,15 +88,19 @@ export default {
       this.dependency.actionDependsOn = null;
 
       this.$nextTick(() => {
-        this.$refs.modal.hide();
+        this.$refs.modalActionsDependenciesAdd.hide();
       });
     },
     add() {
-      this.$store.dispatch("deleteSut", this.sut).then(() => {
-        this.$router.push({ name: "suts" });
-        this.$store.commit("set_sut_display", { display: null });
-        this.$store.dispatch("findAllSuts");
-      });
+      this.$store
+        .dispatch("addSutActionDependency", {
+          sut_id: this.sut.id,
+          dependency: this.dependency
+        })
+        .then(() => {
+          this.$root.$emit("bv::refresh::table", "sut-actions-dependencies");
+          this.clear();
+        });
     },
     updateParameters() {
       this.$store.dispatch("findSelectionParameters", {

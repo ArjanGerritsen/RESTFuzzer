@@ -64,8 +64,8 @@
 
           <h6>Depends on:</h6>
 
-          {{ row.item.dependsOnAction.path }}
-          {{ row.item.dependsOnAction.httpMethod }}
+          {{ row.item.actionDependsOn.path }}
+          {{ row.item.actionDependsOn.httpMethod }}
         </b-card>
       </template>
 

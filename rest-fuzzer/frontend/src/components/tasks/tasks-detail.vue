@@ -1,4 +1,4 @@
-<template>
+  <template>
   <b-card v-if="task !== null" header-tag="header">
     <template v-slot:header>
       <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail task

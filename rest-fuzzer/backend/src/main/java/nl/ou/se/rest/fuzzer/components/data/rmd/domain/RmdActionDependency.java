@@ -1,5 +1,8 @@
 package nl.ou.se.rest.fuzzer.components.data.rmd.domain;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,13 +24,16 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne
     private RmdParameter parameter;
 
+    @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "action_id")
     private RmdAction action;
 
+    @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "action_depends_on_id")
     private RmdAction actionDependsOn;
@@ -36,11 +42,15 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
     @Enumerated(EnumType.STRING)
     private DiscoveryModus discoveryModus;
 
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
+
     // constructors
     public RmdActionDependency() {
     }
 
-    public RmdActionDependency(DiscoveryModus discoveryModus, RmdAction action, RmdParameter parameter, RmdAction actionDependsOn) {
+    public RmdActionDependency(DiscoveryModus discoveryModus, RmdAction action, RmdParameter parameter,
+            RmdAction actionDependsOn) {
         this.discoveryModus = discoveryModus;
         this.action = action;
         this.parameter = parameter;
@@ -101,6 +111,14 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
 
     public void setDiscoveryModus(DiscoveryModus discoveryModus) {
         this.discoveryModus = discoveryModus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     // toString

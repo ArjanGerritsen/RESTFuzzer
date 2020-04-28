@@ -1,5 +1,5 @@
 <template>
-  <b-card v-if="sut !== null" header-tag="header">
+  <b-card v-if="sut" header-tag="header">
     <template v-slot:header>
       <b-icon icon="eye" font-scale="1"></b-icon>&nbsp;Detail system under test
     </template>
