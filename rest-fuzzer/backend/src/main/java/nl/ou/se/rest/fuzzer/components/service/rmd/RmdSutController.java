@@ -1,7 +1,6 @@
 package nl.ou.se.rest.fuzzer.components.service.rmd;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,11 +23,12 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdParameterService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.DiscoveryModus;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
-import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdActionDependencyDto;
+import nl.ou.se.rest.fuzzer.components.data.rmd.factory.RmdActionDependencyFactory;
 import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionDependencyMapper;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionMapper;
@@ -36,7 +36,7 @@ import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdParameterMapper;
 import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdSutMapper;
 import nl.ou.se.rest.fuzzer.components.service.util.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
-import nl.ou.se.rest.fuzzer.components.shared.QueryUtil;
+import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
 
 @RestController()
 @RequestMapping("/rest/suts")
@@ -125,16 +125,24 @@ public class RmdSutController {
 
     @RequestMapping(path = "{id}/actions/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> countActionsBySutId(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(actionService.countBySutIdAndPath(id, QueryUtil.toLike(path)));
+            @RequestParam(name = "filter", required = false) String filter) {
+        
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethodsFromFilter(filter);
+        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
+
+        return ResponseEntity.ok(actionService.countByFilter(id, httpMethods, FilterUtil.toLike(path)));
     }
 
     @RequestMapping(path = "{id}/actions/paginated", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findActionsBySutId(@PathVariable(name = "id") Long id,
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findBySutIdAndPath(id, QueryUtil.toLike(path),
-                QueryUtil.toPageRequest(curPage, perPage))));
+            @RequestParam(name = "filter", required = false) String filter) {
+        
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethodsFromFilter(filter);
+        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
+
+        return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findByFilter(id, httpMethods, FilterUtil.toLike(path),
+                FilterUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/actions/dependencies", method = RequestMethod.POST)
@@ -163,10 +171,8 @@ public class RmdSutController {
                     parameters.get("actionDependsOnId")));
         }
 
-        RmdActionDependency actionDependency = RmdActionDependencyMapper.toDomain(new RmdActionDependencyDto(),
-                parameter.orElse(null), action.orElse(null), actionDependsOn.orElse(null));
-        actionDependency.setCreatedAt(LocalDateTime.now());
-        actionDependency.setDiscoveryModus(DiscoveryModus.MANUAL);
+        RmdActionDependency actionDependency = new RmdActionDependencyFactory().create(DiscoveryModus.MANUAL,
+                action.orElse(null), parameter.orElse(null), actionDependsOn.orElse(null)).build();
 
         List<String> violations = ValidatorUtil.getViolations(actionDependency);
         if (!violations.isEmpty()) {
@@ -181,15 +187,26 @@ public class RmdSutController {
 
     @RequestMapping(path = "{id}/actions/dependencies/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> countActionsDependenciesBySutId(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(actionDependencyService.countBySutIdAndPath(id, QueryUtil.toLike(path)));
+            @RequestParam(name = "filter", required = false) String filter) {
+
+        List<DiscoveryModus> discoveryModes = FilterUtil.getDiscoveryModesFromFilter(filter);
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethodsFromFilter(filter);
+        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
+
+        return ResponseEntity
+                .ok(actionDependencyService.countByFilter(id, discoveryModes, httpMethods, FilterUtil.toLike(path)));
     }
 
     @RequestMapping(path = "{id}/actions/dependencies/paginated", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findActionsDependenciesBySutId(@PathVariable(name = "id") Long id,
+    public @ResponseBody ResponseEntity<?> findActionsDependenciesByFilter(@PathVariable(name = "id") Long id,
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(RmdActionDependencyMapper.toDtos(actionDependencyService.findBySutIdAndPath(id,
-                QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
+            @RequestParam(name = "filter", required = false) String filter) {
+
+        List<DiscoveryModus> discoveryModes = FilterUtil.getDiscoveryModesFromFilter(filter);
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethodsFromFilter(filter);
+        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
+
+        return ResponseEntity.ok(RmdActionDependencyMapper.toDtos(actionDependencyService.findByFilter(id,
+                discoveryModes, httpMethods, FilterUtil.toLike(path), FilterUtil.toPageRequest(curPage, perPage))));
     }
 }

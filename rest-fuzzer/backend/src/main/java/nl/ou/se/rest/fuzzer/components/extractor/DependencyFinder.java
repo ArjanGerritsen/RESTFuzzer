@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.DiscoveryModus;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
@@ -53,8 +54,8 @@ public class DependencyFinder {
         Optional<RmdAction> actionDependsOn = getDependencyForParameter(parameter);
 
         if (actionDependsOn.isPresent()) {
-            actionDependencies.add(
-                    actionDependencyFactory.create(parameter.getAction(), parameter, actionDependsOn.get()).build());
+            actionDependencies.add(actionDependencyFactory
+                    .create(DiscoveryModus.AUTOMATIC, parameter.getAction(), parameter, actionDependsOn.get()).build());
         }
     }
 

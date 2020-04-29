@@ -89,14 +89,14 @@ export default {
       actions_fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "path" },
-        { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" },
+        { key: "httpMethod", label: "HTTP method", thStyle: "width: 110px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ],
       actions_dependencies_formatters: [],
       actions_dependencies_fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "action.path", label: "Path" },
-        { key: "action.httpMethod", label: "Http method", thStyle: "width: 110px;" },
+        { key: "action.httpMethod", label: "HTTP method", thStyle: "width: 110px;" },
         { key: "discoveryModus", label: "Discovered", thStyle: "width: 110px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ]

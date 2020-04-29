@@ -26,5 +26,4 @@ public abstract class JsonUtil {
         JSONObject jsonObject = new JSONObject(map);
         return jsonObject.toString();
     }
-
 }

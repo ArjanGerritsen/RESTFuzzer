@@ -31,7 +31,7 @@ import nl.ou.se.rest.fuzzer.components.service.task.domain.TaskDto;
 import nl.ou.se.rest.fuzzer.components.service.task.mapper.TaskMapper;
 import nl.ou.se.rest.fuzzer.components.service.util.HttpResponseDto;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
-import nl.ou.se.rest.fuzzer.components.shared.QueryUtil;
+import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
 
 @RestController()
 @RequestMapping("/rest/tasks")
@@ -64,7 +64,7 @@ public class TaskController {
     @RequestMapping(path = "archive", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findArchived(@RequestParam(name = "curPage") int curPage,
             @RequestParam(name = "perPage") int perPage) {
-        return ResponseEntity.ok(TaskMapper.toDtos(taskService.findEnded(QueryUtil.toPageRequest(curPage, perPage))));
+        return ResponseEntity.ok(TaskMapper.toDtos(taskService.findEnded(FilterUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}", method = RequestMethod.GET)

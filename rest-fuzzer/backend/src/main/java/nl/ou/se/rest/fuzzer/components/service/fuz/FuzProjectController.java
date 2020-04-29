@@ -28,7 +28,7 @@ import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzRequestMapper;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzResponseMapper;
 import nl.ou.se.rest.fuzzer.components.service.util.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
-import nl.ou.se.rest.fuzzer.components.shared.QueryUtil;
+import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
 
 @RestController()
 @RequestMapping("/rest/projects")
@@ -108,13 +108,13 @@ public class FuzProjectController {
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
             @RequestParam(name = "filter", required = false) String path) {
         return ResponseEntity.ok(FuzRequestMapper.toDtos(requestService.findByProjectIdAndPath(id,
-                QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
+                FilterUtil.toLike(path), FilterUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/requests/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> countRequestsById(@PathVariable(name = "id") Long id,
             @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(requestService.countByProjectIdAndPath(id, QueryUtil.toLike(path)));
+        return ResponseEntity.ok(requestService.countByProjectIdAndPath(id, FilterUtil.toLike(path)));
     }
 
     @RequestMapping(path = "{id}/responses", method = RequestMethod.GET)
@@ -122,12 +122,12 @@ public class FuzProjectController {
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
             @RequestParam(name = "filter", required = false) String path) {
         return ResponseEntity.ok(FuzResponseMapper.toDtos(responseService.findByProjectIdAndPath(id,
-                QueryUtil.toLike(path), QueryUtil.toPageRequest(curPage, perPage))));
+                FilterUtil.toLike(path), FilterUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/responses/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> countResponsesById(@PathVariable(name = "id") Long id,
             @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(responseService.countByProjectIdAndPath(id, QueryUtil.toLike(path)));
+        return ResponseEntity.ok(responseService.countByProjectIdAndPath(id, FilterUtil.toLike(path)));
     }
 }

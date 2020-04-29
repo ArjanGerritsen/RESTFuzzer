@@ -1,19 +1,47 @@
 <template>
   <div>
     <b-row style="margin-bottom:5px;">
-      <b-col lg="6"></b-col>
-      <b-col lg="6">
-        <b-input-group size="sm">
-          <b-form-input
-            v-model="filter"
-            type="search"
-            id="filterInput"
-            placeholder="type to filter table"
-          ></b-form-input>
-          <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">clear</b-button>
-          </b-input-group-append>
-        </b-input-group>
+      <b-col lg="3"></b-col>
+      <b-col lg="9">
+        <b-card bg-variant="light" header-tag="header" class="float-right clearfix">
+          <template v-slot:header>
+            <h6 class="mb-0">
+              Filter: displaying
+              <b>{{ totalRows }}</b> results.
+            </h6>
+          </template>
+          <b-card-text>
+            <div class="float-left" style="margin-right:25px;">
+              <b-form-group size="sm" label="HTTP method(s):" label-for="input-http-method">
+                <b-form-checkbox
+                  class="float-left"
+                  style="margin-right:15px;"
+                  size="sm"
+                  v-model="filter.httpMethods"
+                  v-for="method in httpMethods"
+                  :key="method"
+                  :value="method"
+                >{{ method }}</b-form-checkbox>
+              </b-form-group>
+            </div>
+            <div class="float-left" style="margin-right:25px;">
+              <b-form-group size="sm" label="Path:" label-for="input-path">
+                <b-input-group size="sm" label-for="input-path">
+                  <b-form-input
+                    v-model="filter.path"
+                    size="sm"
+                    type="search"
+                    id="input-path"
+                    placeholder="type to filter path"
+                  ></b-form-input>
+                  <b-input-group-append>
+                    <b-button :disabled="!filter.path" @click="filter.path = ''">clear</b-button>
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form-group>
+            </div>
+          </b-card-text>
+        </b-card>
       </b-col>
     </b-row>
 
@@ -26,8 +54,7 @@
       :items="restProvider"
       :fields="fields"
       :borderless="true"
-      :filter="filter"
-      @filtered="onFiltered"
+      :filter="filterToJson"
       :current-page="currentPage"
       :per-page="perPage"
     >
@@ -59,7 +86,7 @@
             v-for="(value, key) in row.item.parameters"
             :key="key"
           >
-            <b>#{{ value.id }} </b>
+            <b>#{{ value.id }}</b>
             <b-badge v-if="value.required" variant="primary">required</b-badge>
             <br />
             name: {{ value.name}}
@@ -105,25 +132,32 @@
 </template>
 
 <script>
+import Constants from "../../shared/constants";
+
 export default {
   props: ["sut", "fields", "formatters"],
+  components: { Constants },
   data() {
     return {
       isBusy: false,
-      filter: null,
-      perPage: 15,
+      perPage: 10,
       currentPage: 1,
-      filterShadow: null
+      httpMethods: Constants.HTTP_METHODS,
+      filter: {
+        httpMethods: Constants.HTTP_METHODS,
+        path: ""
+      },
+      firstTime: true
     };
   },
   methods: {
     restProvider(context, callback) {
-      if (this.filter !== this.filterShadow) {
+      if (this.firstTime) {
         this.currentPage = 1;
+        this.firstTime = false;
       } else {
         this.currentPage = context.currentPage;
       }
-      this.filterShadow = this.filter;
       return this.$store
         .dispatch("findSutActions", {
           sut_id: this.sut.id,
@@ -138,12 +172,12 @@ export default {
     },
     linkGen(pageNum) {
       return pageNum === 1 ? "?" : `?page=${pageNum}`;
-    },
-    onFiltered(filteredItems) {
-      this.currentPage = 1;
     }
   },
   computed: {
+    filterToJson() {
+      return encodeURI(JSON.stringify(this.filter));
+    },
     totalRows() {
       return this.$store.getters.suts.current.actions.count;
     },
