@@ -66,18 +66,18 @@
           </div>
         </b-tab>
         <b-tab :disabled="!requestsPresent" :title="requestsTitle">
-          <ProjectsDetailRequests
+          <ProjectsRequests
             :project="project"
             :fields="requestFields"
             :formatters="requestFormatters"
-          ></ProjectsDetailRequests>
+          ></ProjectsRequests>
         </b-tab>
         <b-tab :disabled="!responsesPresent" :title="responsesTitle">
-          <ProjectsDetailResponses
+          <ProjectsResponses
             :project="project"
             :fields="responseFields"
             :formatters="responseFormatters"
-          ></ProjectsDetailResponses>
+          ></ProjectsResponses>
         </b-tab>
       </b-tabs>
     </b-card-text>
@@ -87,13 +87,13 @@
 <script>
 import Constants from "../../shared/constants";
 
-import ProjectsDetailRequests from "./projects-detail-requests";
-import ProjectsDetailResponses from "./projects-detail-responses";
+import ProjectsRequests from "./projects-requests";
+import ProjectsResponses from "./projects-responses";
 
 export default {
   components: {
-    ProjectsDetailRequests,
-    ProjectsDetailResponses
+    ProjectsRequests,
+    ProjectsResponses
   },
   data() {
     return {

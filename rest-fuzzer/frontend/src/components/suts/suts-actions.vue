@@ -1,8 +1,7 @@
 <template>
   <div>
     <b-row style="margin-bottom:5px;">
-      <b-col lg="3"></b-col>
-      <b-col lg="9">
+      <b-col lg="12">
         <b-card bg-variant="light" header-tag="header" class="float-right clearfix">
           <template v-slot:header>
             <h6 class="mb-0">
@@ -140,24 +139,26 @@ export default {
   data() {
     return {
       isBusy: false,
-      perPage: 10,
+      perPage: Constants.PER_PAGE,
       currentPage: 1,
       httpMethods: Constants.HTTP_METHODS,
       filter: {
         httpMethods: Constants.HTTP_METHODS,
         path: ""
       },
-      firstTime: true
+      filterCopy: null
     };
   },
   methods: {
     restProvider(context, callback) {
-      if (this.firstTime) {
+      if (this.filterCopy != this.filterToJson) {
         this.currentPage = 1;
-        this.firstTime = false;
+        context.currentPage = 1;        
+        this.filterCopy = this.filterToJson;
       } else {
         this.currentPage = context.currentPage;
       }
+
       return this.$store
         .dispatch("findSutActions", {
           sut_id: this.sut.id,
@@ -172,7 +173,7 @@ export default {
     },
     linkGen(pageNum) {
       return pageNum === 1 ? "?" : `?page=${pageNum}`;
-    }
+    },
   },
   computed: {
     filterToJson() {

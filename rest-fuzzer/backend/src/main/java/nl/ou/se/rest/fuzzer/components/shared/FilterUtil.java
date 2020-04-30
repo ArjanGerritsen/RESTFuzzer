@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -19,8 +20,9 @@ public abstract class FilterUtil {
 
     private static final String HTTP_METHODS = "httpMethods";
     private static final String DISCOVERY_MODES = "discoveryModes";
+    private static final String HTTP_RESPONSE_RANGES = "httpResponseRanges";
 
-    // methods    
+    // methods
     public static String toLike(String query) {
         if (StringUtils.isAllBlank(query)) {
             return "%";
@@ -33,7 +35,7 @@ public abstract class FilterUtil {
         return PageRequest.of(curPage - 1, perPage);
     }
 
-    public static List<HttpMethod> getHttpMethodsFromFilter(String filter) {
+    public static List<HttpMethod> getHttpMethods(String filter) {
         List<HttpMethod> httpMethods = new ArrayList<>(Arrays.asList(HttpMethod.values()));
         if (filter != null) {
             Map<String, Object> items = JsonUtil.stringToMap(filter);
@@ -47,8 +49,42 @@ public abstract class FilterUtil {
         }
         return httpMethods;
     }
-    
-    public static List<DiscoveryModus> getDiscoveryModesFromFilter(String filter) {
+
+    public static List<Integer> getHttpResponseCodes(List<Integer> defaultValues, String filter) {
+        List<Integer> values = defaultValues;
+        if (filter != null) {
+            defaultValues.clear();
+            Map<String, Object> items = JsonUtil.stringToMap(filter);
+            if (items.get(HTTP_RESPONSE_RANGES) != null) {
+                JSONArray rangesArray = (JSONArray) items.get(HTTP_RESPONSE_RANGES);
+                rangesArray.forEach(o -> {
+                    int startRange = getStartFromRange(o.toString());
+                    values.addAll(defaultValues.stream().filter(v -> v >= startRange && v <= (startRange + 99) )
+                            .collect(Collectors.toList()));
+                });
+            }
+        }
+        return values;
+    }
+
+    private static int getStartFromRange(String range) {
+        switch (range) {
+        case "-":
+            return 0;
+        case "2xx":
+            return 200;
+        case "3xx":
+            return 300;
+        case "4xx":
+            return 400;
+        case "5xx":
+            return 500;
+        default:
+            return 0;
+        }
+    }
+
+    public static List<DiscoveryModus> getDiscoveryModes(String filter) {
         List<DiscoveryModus> discoveryModes = new ArrayList<>(Arrays.asList(DiscoveryModus.values()));
         if (filter != null) {
             Map<String, Object> items = JsonUtil.stringToMap(filter);
@@ -61,7 +97,7 @@ public abstract class FilterUtil {
             }
         }
         return discoveryModes;
-    }    
+    }
 
     public static String getValueFromFilter(String filter, String key) {
         String value = "";

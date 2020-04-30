@@ -1,20 +1,61 @@
 <template>
   <div>
     <b-row style="margin-bottom:5px;">
-      <b-col lg="6" class="my-1">
-        <b-input-group size="sm">
-          <b-form-input
-            v-model="filter"
-            type="search"
-            id="filterInput"
-            placeholder="type to filter table"
-          ></b-form-input>
-          <b-input-group-append>
-            <b-button :disabled="!filter" @click="filter = ''">clear</b-button>
-          </b-input-group-append>
-        </b-input-group>
+      <b-col lg="12">
+        <b-card bg-variant="light" header-tag="header" class="float-right clearfix">
+          <template v-slot:header>
+            <h6 class="mb-0">
+              Filter: displaying
+              <b>{{ totalRows }}</b> results.
+            </h6>
+          </template>
+          <b-card-text>           
+            <div class="float-left" style="margin-right:25px;">
+              <b-form-group size="sm" label="HTTP method(s):" label-for="input-http-method">
+                <b-form-checkbox
+                  class="float-left"
+                  style="margin-right:15px;"
+                  size="sm"
+                  v-model="filter.httpMethods"
+                  v-for="method in httpMethods"
+                  :key="method"
+                  :value="method"
+                >{{ method }}</b-form-checkbox>
+              </b-form-group>
+            </div>
+            <div class="float-left" style="margin-right:25px;">
+              <b-form-group size="sm" label="HTTP response code ranges:" label-for="input-http-response-range">
+                <b-form-checkbox
+                  class="float-left"
+                  style="margin-right:15px;"
+                  size="sm"
+                  v-model="filter.httpResponseRanges"
+                  v-for="range in httpResponseRanges"
+                  :key="range"
+                  :value="range"
+                >{{ range }}</b-form-checkbox>
+              </b-form-group>
+            </div>            
+            <div class="float-left" style="margin-right:25px;">
+              <b-form-group size="sm" label="Path:" label-for="input-path">
+                <b-input-group size="sm" label-for="input-path">
+                  <b-form-input
+                    id="input-path"
+                    v-model="filter.path"
+                    size="sm"
+                    type="search"
+                    placeholder="type to filter path"
+                  ></b-form-input>
+                  <b-input-group-append>
+                    <b-button :disabled="!filter.path" @click="filter.path = ''">clear</b-button>
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form-group>
+            </div>
+          </b-card-text>
+        </b-card>
       </b-col>
-      <b-col lg="6" class="my-1"></b-col>
+
     </b-row>
 
     <b-table
@@ -26,7 +67,7 @@
       :items="restProvider"
       :fields="fields"
       :borderless="true"
-      :filter="filter"
+      :filter="filterToJson"
       :current-page="currentPage"
       :per-page="perPage"
     >
@@ -92,6 +133,8 @@
 </template>
 
 <script>
+import Constants from "../../shared/constants";
+
 import ProjectDetailRequest from "./projects-detail-request";
 
 export default {
@@ -100,20 +143,27 @@ export default {
   data() {
     return {
       isBusy: false,
-      filter: null,
-      perPage: 15,
+      perPage: Constants.PER_PAGE,
       currentPage: 1,
-      filterShadow: null
+      httpMethods: Constants.HTTP_METHODS,
+      httpResponseRanges: Constants.HTTP_RESPONSE_RANGES,
+      filter: {
+        httpMethods: Constants.HTTP_METHODS,
+        httpResponseRanges: Constants.HTTP_RESPONSE_RANGES,
+        path: ""
+      },
+      filterCopy: null
     };
   },
   methods: {
     restProvider(context, callback) {
-      if (this.filter !== this.filterShadow) {
+      if (this.filterCopy != this.filterToJson) {
         this.currentPage = 1;
+        context.currentPage = 1;
+        this.filterCopy = this.filterToJson;
       } else {
         this.currentPage = context.currentPage;
       }
-      this.filterShadow = this.filter;
 
       return this.$store
         .dispatch("findProjectResponses", {
@@ -132,6 +182,9 @@ export default {
     }
   },
   computed: {
+    filterToJson() {
+      return encodeURI(JSON.stringify(this.filter));
+    },    
     totalRows() {
       return this.$store.getters.projects.current.responses.count;
     },

@@ -150,7 +150,7 @@ export default {
   data() {
     return {
       isBusy: false,
-      perPage: 10,
+      perPage: Constants.PER_PAGE,
       currentPage: 1,
       httpMethods: Constants.HTTP_METHODS,
       discoveryModes: Constants.DISCOVERY_MODES,
@@ -166,6 +166,7 @@ export default {
     restProvider(context, callback) {
       if (this.firstTime) {
         this.currentPage = 1;
+        context.currentPage = 1;
         this.firstTime = false;
       } else {
         this.currentPage = context.currentPage;

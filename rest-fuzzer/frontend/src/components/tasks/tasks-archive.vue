@@ -73,7 +73,7 @@ export default {
   data() {
     return {
       isBusy: false,
-      perPage: 10,
+      perPage: Constants.PER_PAGE,
       currentPage: 1,
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },

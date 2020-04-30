@@ -127,7 +127,7 @@ public class RmdSutController {
     public @ResponseBody ResponseEntity<?> countActionsBySutId(@PathVariable(name = "id") Long id,
             @RequestParam(name = "filter", required = false) String filter) {
         
-        List<HttpMethod> httpMethods = FilterUtil.getHttpMethodsFromFilter(filter);
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
         String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
 
         return ResponseEntity.ok(actionService.countByFilter(id, httpMethods, FilterUtil.toLike(path)));
@@ -138,7 +138,7 @@ public class RmdSutController {
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
             @RequestParam(name = "filter", required = false) String filter) {
         
-        List<HttpMethod> httpMethods = FilterUtil.getHttpMethodsFromFilter(filter);
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
         String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
 
         return ResponseEntity.ok(RmdActionMapper.toDtos(actionService.findByFilter(id, httpMethods, FilterUtil.toLike(path),
@@ -189,8 +189,8 @@ public class RmdSutController {
     public @ResponseBody ResponseEntity<?> countActionsDependenciesBySutId(@PathVariable(name = "id") Long id,
             @RequestParam(name = "filter", required = false) String filter) {
 
-        List<DiscoveryModus> discoveryModes = FilterUtil.getDiscoveryModesFromFilter(filter);
-        List<HttpMethod> httpMethods = FilterUtil.getHttpMethodsFromFilter(filter);
+        List<DiscoveryModus> discoveryModes = FilterUtil.getDiscoveryModes(filter);
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
         String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
 
         return ResponseEntity
@@ -202,8 +202,8 @@ public class RmdSutController {
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
             @RequestParam(name = "filter", required = false) String filter) {
 
-        List<DiscoveryModus> discoveryModes = FilterUtil.getDiscoveryModesFromFilter(filter);
-        List<HttpMethod> httpMethods = FilterUtil.getHttpMethodsFromFilter(filter);
+        List<DiscoveryModus> discoveryModes = FilterUtil.getDiscoveryModes(filter);
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
         String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
 
         return ResponseEntity.ok(RmdActionDependencyMapper.toDtos(actionDependencyService.findByFilter(id,

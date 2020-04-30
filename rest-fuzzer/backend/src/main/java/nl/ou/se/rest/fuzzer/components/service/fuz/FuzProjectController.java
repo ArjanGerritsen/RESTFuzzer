@@ -21,6 +21,7 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzRequestService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzResponseService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
 import nl.ou.se.rest.fuzzer.components.service.fuz.domain.FuzProjectDto;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzProjectMapper;
@@ -106,28 +107,48 @@ public class FuzProjectController {
     @RequestMapping(path = "{id}/requests", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findRequestsById(@PathVariable(name = "id") Long id,
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(FuzRequestMapper.toDtos(requestService.findByProjectIdAndPath(id,
+            @RequestParam(name = "filter", required = false) String filter) {
+
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
+        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
+
+        return ResponseEntity.ok(FuzRequestMapper.toDtos(requestService.findByFilter(id, httpMethods,
                 FilterUtil.toLike(path), FilterUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/requests/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> countRequestsById(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(requestService.countByProjectIdAndPath(id, FilterUtil.toLike(path)));
+            @RequestParam(name = "filter", required = false) String filter) {
+
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
+        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
+
+        return ResponseEntity.ok(requestService.countByFilter(id, httpMethods, FilterUtil.toLike(path)));
     }
 
     @RequestMapping(path = "{id}/responses", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findResponsesById(@PathVariable(name = "id") Long id,
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(FuzResponseMapper.toDtos(responseService.findByProjectIdAndPath(id,
+            @RequestParam(name = "filter", required = false) String filter) {
+
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
+        List<Integer> statusCodes = FilterUtil
+                .getHttpResponseCodes(responseService.findUniqueStatusCodesForProject(id), filter);
+        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
+
+        return ResponseEntity.ok(FuzResponseMapper.toDtos(responseService.findByFilter(id, httpMethods, statusCodes,
                 FilterUtil.toLike(path), FilterUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/responses/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> countResponsesById(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "filter", required = false) String path) {
-        return ResponseEntity.ok(responseService.countByProjectIdAndPath(id, FilterUtil.toLike(path)));
+            @RequestParam(name = "filter", required = false) String filter) {
+
+        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
+        List<Integer> statusCodes = FilterUtil
+                .getHttpResponseCodes(responseService.findUniqueStatusCodesForProject(id), filter);
+        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
+
+        return ResponseEntity.ok(responseService.countByFilter(id, httpMethods, statusCodes, FilterUtil.toLike(path)));
     }
 }
