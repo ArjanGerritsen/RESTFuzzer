@@ -13,16 +13,16 @@
         </b-button>
       </b-col>
       <b-col lg="10">
-        <b-card bg-variant="light" header-tag="header" class="float-right clearfix">
+        <b-card bg-variant="white" header-tag="header" class="float-right clearfix">
           <template v-slot:header>
             <h6 class="mb-0">Filter: displaying <b>{{ totalRows }}</b> results.</h6>
           </template>
           <b-card-text>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group size="sm" label="HTTP method(s):" label-for="input-http-method">
+              <b-form-group label-size="sm" label="HTTP method(s):" label-for="input-http-method">
                 <b-form-checkbox
                   class="float-left"
-                  style="margin-right:15px;"
+                  style="margin-right:10px;"
                   size="sm"
                   v-model="filter.httpMethods"
                   v-for="method in httpMethods"
@@ -30,22 +30,26 @@
                   :value="method"
                 >{{ method }}</b-form-checkbox>
               </b-form-group>
+              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link> /
+              <b-link @click="filter.httpMethods = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group size="sm" label="Discovery modus:" label-for="input-discovery-modus">
+              <b-form-group label-size="sm" label="Discovery modus:" label-for="input-discovery-modus">
                 <b-form-checkbox
                   size="sm"
                   class="float-left"
-                  style="margin-right:15px;"
+                  style="margin-right:10px;"
                   v-model="filter.discoveryModes"
                   v-for="mode in discoveryModes"
                   :key="mode"
                   :value="mode"
                 >{{ mode }}</b-form-checkbox>
               </b-form-group>
+              <b-link @click="filter.discoveryModes = constants.DISCOVERY_MODES">select all</b-link> /
+              <b-link @click="filter.discoveryModes = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group size="sm" label="Path:" label-for="input-path">
+              <b-form-group label-size="sm" label="Path:" label-for="input-path">
                 <b-input-group size="sm" label-for="input-path">
                   <b-form-input
                     v-model="filter.path"
@@ -146,9 +150,10 @@ import SutsActionsDependenciesAdd from "./suts-actions-dependencies-add";
 
 export default {
   props: ["sut", "fields", "formatters"],
-  components: { Constants, SutsActionsDependenciesAdd },
+  components: { SutsActionsDependenciesAdd },
   data() {
     return {
+      constants: Constants,
       isBusy: false,
       perPage: Constants.PER_PAGE,
       currentPage: 1,

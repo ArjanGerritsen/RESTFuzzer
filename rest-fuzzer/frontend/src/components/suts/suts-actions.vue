@@ -2,16 +2,15 @@
   <div>
     <b-row style="margin-bottom:5px;">
       <b-col lg="12">
-        <b-card bg-variant="light" header-tag="header" class="float-right clearfix">
+        <b-card bg-variant="white" header-tag="header" class="float-right clearfix">
           <template v-slot:header>
             <h6 class="mb-0">
-              Filter: displaying
-              <b>{{ totalRows }}</b> results.
+              Filter: displaying <b>{{ totalRows }}</b> results.
             </h6>
           </template>
           <b-card-text>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group size="sm" label="HTTP method(s):" label-for="input-http-method">
+              <b-form-group label-size="sm" label="HTTP method(s):" label-for="input-http-method">
                 <b-form-checkbox
                   class="float-left"
                   style="margin-right:15px;"
@@ -22,9 +21,11 @@
                   :value="method"
                 >{{ method }}</b-form-checkbox>
               </b-form-group>
+              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link> /
+              <b-link @click="filter.httpMethods = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group size="sm" label="Path:" label-for="input-path">
+              <b-form-group label-size="sm" label="Path:" label-for="input-path">
                 <b-input-group size="sm" label-for="input-path">
                   <b-form-input
                     v-model="filter.path"
@@ -135,9 +136,9 @@ import Constants from "../../shared/constants";
 
 export default {
   props: ["sut", "fields", "formatters"],
-  components: { Constants },
   data() {
     return {
+      constants: Constants,
       isBusy: false,
       perPage: Constants.PER_PAGE,
       currentPage: 1,

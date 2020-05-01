@@ -51,9 +51,9 @@ public abstract class FilterUtil {
     }
 
     public static List<Integer> getHttpResponseCodes(List<Integer> defaultValues, String filter) {
-        List<Integer> values = defaultValues;
+        List<Integer> values = new ArrayList<>(defaultValues);
         if (filter != null) {
-            defaultValues.clear();
+            values.clear();
             Map<String, Object> items = JsonUtil.stringToMap(filter);
             if (items.get(HTTP_RESPONSE_RANGES) != null) {
                 JSONArray rangesArray = (JSONArray) items.get(HTTP_RESPONSE_RANGES);
