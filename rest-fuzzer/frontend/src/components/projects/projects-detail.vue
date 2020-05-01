@@ -28,6 +28,15 @@
                 <b-button
                   size="sm"
                   type="submit"
+                  v-b-modal.projects-clear
+                  variant="outline-danger"
+                  title="delete all requests and responses"
+                >
+                  <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;clear results
+                </b-button>                
+                <b-button
+                  size="sm"
+                  type="submit"
                   v-b-modal.projects-delete
                   variant="outline-danger"
                   title="delete this fuzzing project"

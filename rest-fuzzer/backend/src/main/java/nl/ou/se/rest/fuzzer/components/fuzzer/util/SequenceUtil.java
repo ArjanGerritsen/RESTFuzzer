@@ -18,38 +18,21 @@ public class SequenceUtil {
     // variables
     private Logger logger = LoggerFactory.getLogger(SequenceUtil.class);
 
+    private static final String SEPERATOR = ",";
+
     private List<RmdAction> actions = new ArrayList<>();
     private List<RmdActionDependency> dependencies = new ArrayList<>();
 
     private Map<Long, List<Long>> mappedDepencies = new HashMap<>();
+    private Map<Long, RmdAction> mappedActions = new HashMap<>();
 
     public SequenceUtil(List<RmdAction> actions, List<RmdActionDependency> dependencies) {
         this.actions = actions;
-
-        System.out.println("SIZE ACTIONS: " + this.actions.size());
-
         this.dependencies = dependencies;
         this.init();
     }
 
     // methods
-    public List<String> getValidSequences(Integer sequenceLength) {
-        List<String> sequences = new ArrayList<String>();
-        for (int sequence = 1; sequence <= sequenceLength; sequence++) {
-            sequences = this.createNewSequences(sequences);
-        }
-
-        
-        
-        System.out.println("SIZE SEQUENCES: " + sequences.size());
-
-//        for (String sequence : sequences) {
-//            System.out.println(sequence);
-//        }
-
-        return sequences;
-    }
-
     private void init() {
         dependencies.forEach(d -> {
             List<Long> dependsOnActionIds = new ArrayList<>();
@@ -60,6 +43,19 @@ public class SequenceUtil {
             dependsOnActionIds.add(d.getActionDependsOn().getId());
             this.mappedDepencies.put(actionId, dependsOnActionIds);
         });
+
+        actions.forEach(a -> {
+            mappedActions.put(a.getId(), a);
+        });
+    }
+
+    public List<String> getValidSequences(Integer sequenceLength) {
+        List<String> sequences = new ArrayList<String>();
+        for (int sequence = 1; sequence <= sequenceLength; sequence++) {
+            sequences = this.createNewSequences(sequences);
+        }
+
+        return sequences;
     }
 
     private List<String> createNewSequences(List<String> sequences) {
@@ -70,7 +66,7 @@ public class SequenceUtil {
         } else {
             for (String sequence : sequences) {
                 for (RmdAction action : this.actions) {
-                    String newSequence = sequence.concat("," + action.getId().toString());
+                    String newSequence = sequence.concat(SEPERATOR + action.getId().toString());
                     if (satisfiesAllDependencies(newSequence)) {
                         newSequences.add(newSequence);
                     }
@@ -97,9 +93,9 @@ public class SequenceUtil {
     }
 
     private Boolean satisfiesDependenciesForLastItem(List<Long> actionIds) {
+        List<Long> requiredDependencies = new ArrayList<>();
         Long actionId = actionIds.get(actionIds.size() - 1);
 
-        List<Long> requiredDependencies = new ArrayList<>();
         if (this.mappedDepencies.containsKey(actionId)) {
             requiredDependencies = this.mappedDepencies.get(actionId);
         }
@@ -111,10 +107,21 @@ public class SequenceUtil {
 
         Boolean satisFiesDependencies = requiredDependencies == null || requiredDependencies.isEmpty();
 
-        logger.info(
-                String.format("Last Action with id %s from sequence %s has dependencies %s and dependencies are satisfied: %s ",
-                        actionId, actionIds, requiredDependencies, satisFiesDependencies));
+        logger.info(String.format(
+                "Last Action with id %s from sequence %s has dependencies %s and dependencies are satisfied: %s ",
+                actionId, actionIds, requiredDependencies, satisFiesDependencies));
 
         return satisFiesDependencies;
+    }
+
+    public List<RmdAction> getActionsFromSequence(String sequence) {
+        List<RmdAction> actions = new ArrayList<>();
+        String[] actionIds = sequence.split(SEPERATOR);
+
+        for (String id : actionIds) {
+            actions.add(this.mappedActions.get(Long.valueOf(id)));
+        }
+
+        return actions;
     }
 }

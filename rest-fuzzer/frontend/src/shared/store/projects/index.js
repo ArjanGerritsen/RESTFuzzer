@@ -229,6 +229,41 @@ const projects = {
                         reject(error);
                     })
             })
+        },
+        clearProject({ dispatch }, project) {
+            dispatch("deleteProjectRequests", project);
+            dispatch("deleteProjectResponses", project);
+            dispatch("findProject", project.id);
+        },
+        deleteProjectRequests({ commit }, project) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .delete(`/rest/projects/${project.id}/requests`)
+                    .then(response => {
+                        commit("message_add", { message: { type: "info", title: "Delete fuzzing project requests", text: `Requests for fuzzing project ${response.data.type} with id ${response.data.id} deleted successful.` } });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't delete fuzzing project requests with id ${project.id}`, err: error } });
+                        reject(error);
+                    })
+
+            })
+        },
+        deleteProjectResponses({ commit }, project) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .delete(`/rest/projects/${project.id}/responses`)
+                    .then(response => {
+                        commit("message_add", { message: { type: "info", title: "Delete fuzzing project responses", text: `Responses for fuzzing project ${response.data.type} with id ${response.data.id} deleted successful.` } });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't delete fuzzing project responses with id ${project.id}`, err: error } });
+                        reject(error);
+                    })
+
+            })
         }
     },
     getters: {

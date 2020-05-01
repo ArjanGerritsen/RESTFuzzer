@@ -1,5 +1,6 @@
 package nl.ou.se.rest.fuzzer.components.fuzzer.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
@@ -35,29 +37,59 @@ public class ParameterUtil {
     }
 
     private Object getValueForParameter(RmdParameter parameter) {
-        switch (parameter.getType()) {
+        if (ParameterType.ARRAY.equals(parameter.getType())) {
+            return getArrayValue(parameter);
+        } else {
+            String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_FORMAT);
+            return getValueForParameter(parameter, parameter.getType(), format);
+        }
+    }
+
+    private Object getValueForParameter(RmdParameter parameter, ParameterType type, String format) {
+        switch (type) {
         case BOOLEAN:
             return getBooleanValue(parameter);
         case STRING:
-            return getStringValue(parameter);
+            return getStringValue(parameter, format);
         case INTEGER:
-            return getIntegerValue(parameter);
-        case ARRAY:
-            return getArrayValue(parameter);
+            return getIntegerValue(parameter, format);
         default:
             logger.error(String.format(Constants.Fuzzer.PARAMETER_TYPE_UNKNOWN, parameter.getType()));
             return "?";
         }
     }
 
+    private Object getArrayValue(RmdParameter parameter) {
+        List<Object> list = new ArrayList<>();
+
+        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_ENUM)) {
+            String values = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_ENUM);
+            String[] valuesArray = values.split(Constants.VALUE_SEPERATOR);
+            return valuesArray[RandomUtils.nextInt(0, valuesArray.length)];
+        } else {
+            ParameterType type = null;
+            if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_TYPE)) {
+                type = ParameterType.valueOf(((String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_TYPE)).toUpperCase());
+            }
+
+            String format = null;
+            if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_FORMAT)) {
+                format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_FORMAT);
+            }
+
+            Object value = getValueForParameter(parameter, type, format);
+            list.add(value);
+        }
+
+        return list.toArray();
+    }
+
     private Object getBooleanValue(RmdParameter parameter) {
         return RandomUtils.nextBoolean();
     }
 
-    private Object getStringValue(RmdParameter parameter) {
+    private Object getStringValue(RmdParameter parameter, String format) {
         if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_FORMAT)) {
-            String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_FORMAT);
-
             switch (format) {
             case FORMAT_IP:
                 return "127.0.0.1";
@@ -75,9 +107,8 @@ public class ParameterUtil {
         return "abc";
     }
 
-    private Object getIntegerValue(RmdParameter parameter) {
+    private Object getIntegerValue(RmdParameter parameter, String format) {
         if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_FORMAT)) {
-            String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_FORMAT);
             int min = (int) parameter.getMetaDataTupleValue(RmdParameter.META_DATA_MIN_VALUE, 1);
             int max = (int) parameter.getMetaDataTupleValue(RmdParameter.META_DATA_MAX_VALUE, 1) + 1;
 
@@ -90,28 +121,5 @@ public class ParameterUtil {
         }
 
         return 1;
-    }
-    
-    private Object getArrayValue(RmdParameter parameter) {
-        // TODO
-        String format = null;
-        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_FORMAT)) {
-            format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_FORMAT);
-        }
-
-        // TODO
-        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_TYPE)) {
-            String type = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_TYPE);
-        }
-
-
-        if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_ENUM)) {
-            String values = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_ENUM);
-            String[] valuesArray = values.split(Constants.VALUE_SEPERATOR);
-            String value = valuesArray[RandomUtils.nextInt(0, valuesArray.length)];
-            return value;
-        }
-
-        return "abc";
     }
 }

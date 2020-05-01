@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -103,7 +104,7 @@ public class FuzProjectController {
         projectService.deleteById(id);
         return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
     }
-
+    
     @RequestMapping(path = "{id}/requests", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findRequestsById(@PathVariable(name = "id") Long id,
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
@@ -124,6 +125,14 @@ public class FuzProjectController {
         String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
 
         return ResponseEntity.ok(requestService.countByFilter(id, httpMethods, FilterUtil.toLike(path)));
+    }
+
+    @Transactional
+    @RequestMapping(path = "{id}/requests", method = RequestMethod.DELETE)
+    public @ResponseBody ResponseEntity<?> deleteRequests(@PathVariable(name = "id") Long id) {
+        Optional<FuzProject> project = projectService.findById(id);
+        requestService.deleteByProjectId(id);
+        return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
     }
 
     @RequestMapping(path = "{id}/responses", method = RequestMethod.GET)
@@ -151,4 +160,12 @@ public class FuzProjectController {
 
         return ResponseEntity.ok(responseService.countByFilter(id, httpMethods, statusCodes, FilterUtil.toLike(path)));
     }
+
+    @Transactional
+    @RequestMapping(path = "{id}/responses", method = RequestMethod.DELETE)
+    public @ResponseBody ResponseEntity<?> deleteResponses(@PathVariable(name = "id") Long id) {
+        Optional<FuzProject> project = projectService.findById(id);
+        responseService.deleteByProjectId(id);
+        return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
+    }    
 }

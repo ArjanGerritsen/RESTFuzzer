@@ -3,6 +3,7 @@ package nl.ou.se.rest.fuzzer.components.data.fuz.dao;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -19,5 +20,9 @@ public interface FuzResponseService extends CrudRepository<FuzResponse, Long> {
 
     @Query(value = "SELECT DISTINCT(r.statusCode) FROM fuz_responses r LEFT JOIN r.request req WHERE r.project.id = :projectId")
     List<Integer> findUniqueStatusCodesForProject(Long projectId);
+
+    @Modifying
+    @Query(value = "DELETE FROM fuz_responses r WHERE r.project.id = :projectId")
+    void deleteByProjectId(Long projectId);
 
 }

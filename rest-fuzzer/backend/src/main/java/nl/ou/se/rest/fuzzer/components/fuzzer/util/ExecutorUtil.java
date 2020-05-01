@@ -56,8 +56,7 @@ public class ExecutorUtil {
         try {
             httpClient.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -69,20 +68,16 @@ public class ExecutorUtil {
         try {
             HttpUriRequest httpUriRequest = ExecutorUtilHelper.getRequest(request);
 
-            logger.debug(httpUriRequest.getRequestLine().toString());
-
             if (httpUriRequest != null) {
                 response = httpClient.execute(httpUriRequest);
-
-                logger.debug(response.getStatusLine().toString());
             }
         } catch (Exception e) {
-            e.printStackTrace(); // TODO
+            logger.warn(e.getMessage());
             failureReason = e.getMessage();
         }
         Long ms = ldt.until(LocalDateTime.now(), ChronoUnit.MILLIS);
 
-        logger.info(String.format("it took %s ms to execute request and capture response", ms));
+        logger.info(String.format("it took %s ms to execute request and capture response", ms)); // TODO Kan straks weg, is alleen voor performance. 
 
         return createFuzResponse(request, response, failureReason);
     }
@@ -97,10 +92,8 @@ public class ExecutorUtil {
             String body = null;
             try {
                 body = EntityUtils.toString(response.getEntity());
-
             } catch (ParseException | IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
             responseFactory.setBody(body);
         }

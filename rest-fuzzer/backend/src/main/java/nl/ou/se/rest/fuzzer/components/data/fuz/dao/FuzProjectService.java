@@ -13,15 +13,8 @@ public interface FuzProjectService extends CrudRepository<FuzProject, Long> {
     @Query("SELECT p FROM fuz_projects p ORDER BY p.createdAt DESC")
     List<FuzProject> findAll();
 
-//    @Query("SELECT f FROM fuz_projects f "
-//            + "JOIN fetch f.sut s "
-//            + "JOIN FETCH s.actions a "
-//            + "JOIN FETCH a.parameters "
-//            + "JOIN FETCH f.requests q " // TODO Anders? Is nu zo gedaan voor Generator + Executor
-//            + "WHERE f.id = :id ")
-//    Optional<FuzProject> findByIdWithRelations(Long id);
-
     Optional<FuzProject> findById(Long id);
 
     Long countBySutId(Long id);
+
 }

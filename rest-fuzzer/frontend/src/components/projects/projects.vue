@@ -9,6 +9,7 @@
         <projects-detail></projects-detail>
       </div>
     </div>
+    <projects-clear></projects-clear>
     <projects-delete></projects-delete>
   </div>
 </template>
@@ -17,6 +18,7 @@
 import ProjectsAdd from "./projects-add";
 import ProjectsList from "./projects-list";
 import ProjectsDetail from "./projects-detail";
+import ProjectsClear from "./projects-clear";
 import ProjectsDelete from "./projects-delete";
 
 export default {
@@ -24,6 +26,7 @@ export default {
     ProjectsAdd,
     ProjectsList,
     ProjectsDetail,
+    ProjectsClear,
     ProjectsDelete
   },
   methods: {
