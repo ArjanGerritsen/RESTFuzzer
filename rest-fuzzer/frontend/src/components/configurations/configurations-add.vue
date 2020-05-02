@@ -45,6 +45,7 @@
 
 <script>
 const DEFAULT_CONFIGURATION = {
+  authentication: { method: "BASIC", username: "", password: "" },
   includeActions: [{ path: ".*", httpMethod: ".*" }],
   excludeActions: [],
   excludeParameters: [

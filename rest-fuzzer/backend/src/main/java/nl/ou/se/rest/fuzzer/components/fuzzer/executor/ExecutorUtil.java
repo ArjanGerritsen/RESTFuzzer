@@ -1,17 +1,14 @@
-package nl.ou.se.rest.fuzzer.components.fuzzer.util;
+package nl.ou.se.rest.fuzzer.components.fuzzer.executor;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -31,25 +28,22 @@ public class ExecutorUtil {
 
     private static final int TIMEOUT_MS = 5 * 1000;
 
-    private static CloseableHttpClient httpClient;
-
     private FuzResponseFactory responseFactory = new FuzResponseFactory();
+
+    private CloseableHttpClient httpClient;
+    private Authentication authentication;
 
     // constructors
     private ExecutorUtil() {
         this.init();
     }
 
+    // methods
     private void init() {
-        CredentialsProvider provider = new BasicCredentialsProvider();
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("wordpress", "wordpress");
-        provider.setCredentials(AuthScope.ANY, credentials);
-
         RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT_MS)
                 .setConnectionRequestTimeout(TIMEOUT_MS).setSocketTimeout(TIMEOUT_MS).build();
 
-        httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).setDefaultCredentialsProvider(provider)
-                .build();
+        httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
     }
 
     public void destroy() {
@@ -60,6 +54,10 @@ public class ExecutorUtil {
         }
     }
 
+    public void setAuthentication(Authentication authentication) {
+        this.authentication = authentication;
+    }
+
     public FuzResponse processRequest(FuzRequest request) {
         HttpResponse response = null;
         String failureReason = null;
@@ -67,6 +65,12 @@ public class ExecutorUtil {
         LocalDateTime ldt = LocalDateTime.now();
         try {
             HttpUriRequest httpUriRequest = ExecutorUtilHelper.getRequest(request);
+
+            // basic authentication
+            if (this.authentication != null && (this.authentication instanceof BasicAuthentication)) {
+                BasicAuthentication basicAuthentication = (BasicAuthentication) authentication;
+                httpUriRequest.setHeader(HttpHeaders.AUTHORIZATION, basicAuthentication.getHeader());
+            }
 
             if (httpUriRequest != null) {
                 response = httpClient.execute(httpUriRequest);
@@ -77,7 +81,9 @@ public class ExecutorUtil {
         }
         Long ms = ldt.until(LocalDateTime.now(), ChronoUnit.MILLIS);
 
-        logger.info(String.format("it took %s ms to execute request and capture response", ms)); // TODO Kan straks weg, is alleen voor performance. 
+        logger.info(String.format("it took %s ms to execute request and capture response", ms)); // TODO Kan straks weg,
+                                                                                                 // is alleen voor
+                                                                                                 // performance.
 
         return createFuzResponse(request, response, failureReason);
     }

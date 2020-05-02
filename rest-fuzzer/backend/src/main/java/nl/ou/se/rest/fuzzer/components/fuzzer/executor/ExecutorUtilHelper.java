@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.components.fuzzer.util;
+package nl.ou.se.rest.fuzzer.components.fuzzer.executor;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;

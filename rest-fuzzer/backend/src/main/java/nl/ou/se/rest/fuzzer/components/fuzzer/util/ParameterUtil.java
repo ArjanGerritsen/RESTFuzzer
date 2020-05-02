@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
@@ -79,6 +81,10 @@ public class ParameterUtil {
 
             Object value = getValueForParameter(parameter, type, format);
             list.add(value);
+        }
+
+        if (ParameterContext.QUERY.equals(parameter.getContext())) {
+            return list.stream().map(o -> o.toString()).collect(Collectors.joining()); 
         }
 
         return list.toArray();

@@ -16,11 +16,10 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
-import nl.ou.se.rest.fuzzer.components.fuzzer.util.ExecutorUtil;
+import nl.ou.se.rest.fuzzer.components.fuzzer.executor.ExecutorUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.MetaDataUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.RequestUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.SequenceUtil;
-import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service
 public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
@@ -55,13 +54,15 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
 
         List<RmdActionDependency> dependencies = actionDependencyService.findBySutId(this.project.getSut().getId());
 
-        Integer sequenceLength = metaDataUtil.getIntegerValue(Constants.Fuzzer.Meta.SEQUENCE_LENGTH);
+        Integer sequenceLength = metaDataUtil.getIntegerValue(MetaDataUtil.Meta.SEQUENCE_LENGTH);
 
         SequenceUtil sequenceUtil = new SequenceUtil(actions, dependencies);
         List<String> sequences = sequenceUtil.getValidSequences(sequenceLength);
 
         int count = 0;
         int total = sequences.size();
+
+        executorUtil.setAuthentication(metaDataUtil.getAuthentication());
 
         // for all sequences
         for (String sequence : sequences) {
@@ -83,6 +84,6 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
         this.metaDataUtil = new MetaDataUtil(metaDataTuples);
-        return metaDataUtil.isValid(Constants.Fuzzer.Meta.SEQUENCE_LENGTH);
+        return metaDataUtil.isValid(MetaDataUtil.Meta.SEQUENCE_LENGTH);
     }
 }

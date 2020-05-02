@@ -11,11 +11,40 @@ import org.slf4j.LoggerFactory;
 
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
+import nl.ou.se.rest.fuzzer.components.fuzzer.executor.Authentication;
+import nl.ou.se.rest.fuzzer.components.fuzzer.executor.BasicAuthentication;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 public class MetaDataUtil {
 
     // variables
+    public abstract class Meta {
+        // general
+        public static final String CONFIGURATION = "configuration";
+
+        public static final String AUTHENTICATION = "authentication";
+        public static final String AUTH_METHOD = "method";
+        public static final String AUTH_METHOD_BASIC = "BASIC";
+        public static final String AUTH_USERNAME = "username";
+        public static final String AUTH_PASSWORD = "password";
+
+        public static final String INCLUDE_ACTIONS = "includeActions";
+        public static final String EXCLUDE_ACTIONS = "excludeActions";
+        public static final String ACTION = "action";
+        public static final String ACTION_PATH = "path";
+        public static final String ACTION_METHOD = "method";
+
+        public static final String EXCLUDE_PARAMETERS = "excludeParameters";
+        public static final String PARAMETER = "parameter";
+        public static final String PARAMETER_NAME = "name";
+
+        // basic fuzzer
+        public static final String REPITITIONS = "repetitions";
+
+        // model based fuzzer
+        public static final String SEQUENCE_LENGTH = "sequenceLength";
+    }
+
     private Logger logger = LoggerFactory.getLogger(MetaDataUtil.class);
 
     private Map<String, Object> metaDataTuples;
@@ -29,9 +58,8 @@ public class MetaDataUtil {
     public Boolean isValid(String... keys) {
         Boolean isValid = true;
 
-        if (!this.metaDataTuples.containsKey(Constants.Fuzzer.Meta.CONFIGURATION)) {
-            logger.error(String.format(Constants.Fuzzer.META_DATA_MISSING, MetaDataUtil.class,
-                    Constants.Fuzzer.Meta.CONFIGURATION));
+        if (!this.metaDataTuples.containsKey(Meta.CONFIGURATION)) {
+            logger.error(String.format(Constants.Fuzzer.META_DATA_MISSING, MetaDataUtil.class, Meta.CONFIGURATION));
             isValid = false;
         }
 
@@ -43,8 +71,8 @@ public class MetaDataUtil {
         }
 
         if (isValid) {
-            this.configurationMetaDataTuples = ((JSONObject) this.getValue(this.metaDataTuples,
-                    Constants.Fuzzer.Meta.CONFIGURATION)).toMap();
+            this.configurationMetaDataTuples = ((JSONObject) this.getValue(this.metaDataTuples, Meta.CONFIGURATION))
+                    .toMap();
         }
 
         return isValid;
@@ -53,12 +81,12 @@ public class MetaDataUtil {
     @SuppressWarnings("unchecked")
     public List<RmdAction> filterActions(List<RmdAction> actions) {
         List<Map<String, String>> includeActions = (ArrayList<Map<String, String>>) this
-                .getValue(this.configurationMetaDataTuples, Constants.Fuzzer.Meta.INCLUDE_ACTIONS);
+                .getValue(this.configurationMetaDataTuples, Meta.INCLUDE_ACTIONS);
         List<Map<String, String>> excludeActions = (ArrayList<Map<String, String>>) this
-                .getValue(this.configurationMetaDataTuples, Constants.Fuzzer.Meta.EXCLUDE_ACTIONS);
+                .getValue(this.configurationMetaDataTuples, Meta.EXCLUDE_ACTIONS);
 
         List<Map<String, Object>> excludeParameters = (ArrayList<Map<String, Object>>) this
-                .getValue(this.configurationMetaDataTuples, Constants.Fuzzer.Meta.EXCLUDE_PARAMETERS);
+                .getValue(this.configurationMetaDataTuples, Meta.EXCLUDE_PARAMETERS);
 
         if (includeActions != null && !includeActions.isEmpty()) {
             actions = actions.stream().filter(action -> isActionMatched(action, includeActions))
@@ -82,6 +110,30 @@ public class MetaDataUtil {
         return (Integer) this.getValue(this.metaDataTuples, key);
     }
 
+    @SuppressWarnings("unchecked")
+    public Authentication getAuthentication() {
+        Authentication authentication = null;
+
+        Map<String, String> authenticationMap = (Map<String, String>) this
+                .getValue(this.configurationMetaDataTuples, Meta.AUTHENTICATION);
+
+        if (authenticationMap != null && !authenticationMap.isEmpty()) {
+            String method = authenticationMap.get(Meta.AUTH_METHOD);
+            switch (method) {
+            case Meta.AUTH_METHOD_BASIC:
+                String username = authenticationMap.get(Meta.AUTH_USERNAME);
+                String password = authenticationMap.get(Meta.AUTH_PASSWORD);
+                authentication = new BasicAuthentication(username, password);
+                break;
+            default:
+                logger.error(String.format(Constants.Fuzzer.META_DATA_INVALID, 1, 2));
+                break;
+            }
+        }
+        
+        return authentication;
+    }
+
     private Boolean isActionMatched(RmdAction action, List<Map<String, String>> actions) {
         for (Map<String, String> actionMap : actions) {
             if (isActionMatched(action, actionMap)) {
@@ -93,8 +145,8 @@ public class MetaDataUtil {
     }
 
     private Boolean isActionMatched(RmdAction action, Map<String, String> actionMap) {
-        String pathRegex = (String) actionMap.get("path");
-        String httpMethodRegex = (String) actionMap.get("httpMethod");
+        String pathRegex = (String) actionMap.get(Meta.ACTION_PATH);
+        String httpMethodRegex = (String) actionMap.get(Meta.ACTION_PATH);
 
         if ((action.getPath().matches(pathRegex)) && (action.getHttpMethod().toString().matches(httpMethodRegex))) {
             return true;
@@ -104,7 +156,7 @@ public class MetaDataUtil {
     }
 
     private Boolean isParameterMatched(RmdParameter parameter, Map<String, String> parameterMap) {
-        String nameRegex = (String) parameterMap.get("name");
+        String nameRegex = (String) parameterMap.get(Meta.PARAMETER_NAME);
         return parameter.getName().matches(nameRegex);
     }
 
@@ -113,8 +165,8 @@ public class MetaDataUtil {
         List<RmdParameter> parametersToRemove = new ArrayList<RmdParameter>();
         for (RmdParameter parameter : action.getParameters()) {
             for (Map<String, Object> parameterContainer : parameters) {
-                Map<String, String> actionMap = (Map<String, String>) parameterContainer.get("action");
-                Map<String, String> parameterMap = (Map<String, String>) parameterContainer.get("parameter");
+                Map<String, String> actionMap = (Map<String, String>) parameterContainer.get(Meta.ACTION);
+                Map<String, String> parameterMap = (Map<String, String>) parameterContainer.get(Meta.PARAMETER);
 
                 if (isActionMatched(action, actionMap) && isParameterMatched(parameter, parameterMap)) {
                     parametersToRemove.add(parameter);
