@@ -2,7 +2,7 @@ package nl.ou.se.rest.fuzzer.components.service.fuz.domain;
 
 import java.time.LocalDateTime;
 
-import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzType;
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProjectType;
 import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 
 public class FuzProjectDto {
@@ -10,7 +10,7 @@ public class FuzProjectDto {
     // variables
     private Long id;
     private String description;
-    private FuzType type;
+    private FuzProjectType type;
     private String metaDataTuplesJson;
     private RmdSutDto sut;
     private LocalDateTime createdAt;
@@ -28,10 +28,10 @@ public class FuzProjectDto {
     public void setDescription(String description) {
         this.description = description;
     }
-    public FuzType getType() {
+    public FuzProjectType getType() {
         return type;
     }
-    public void setType(FuzType type) {
+    public void setType(FuzProjectType type) {
         this.type = type;
     }
     public String getMetaDataTuplesJson() {

@@ -29,10 +29,16 @@
             </div>
             <p class="mb-1">
               <ul>
-                <li>PRIO1 TODO Handle arrays with relations to other objects.</li>
-                <li>PRIO1 TODO Creating dependencies between REST actions (graph).</li>
-                <li>PRIO2 TODO First version of MBT fuzzing done.</li>
-                <li>PRIO3 TODO Tasks overview for SUTs and projecs.</li>
+                <li>OPTION (nice to have) TODO Tasks overview for SUTs and projecs.</li>
+                <li>TODO Refactor createdAt to constructors instead of factories.</li>
+
+                <li>BUSY Use values for dependencies in sequence.</li>
+                <li>BUSY Create sequences for MB fuzzing (implementing in fuzzing process + overview with fuzzing projects).</li>
+
+                <li>Enable basic authentication via configuration.</li>
+                <li>Improve values assigned for arrays.</li>
+                <li>Depency overview for SUTs.</li>
+                <li>Adding/removing manual dependencies for SUTs.</li>
               </ul>
             </p>
           </b-list-group-item>   

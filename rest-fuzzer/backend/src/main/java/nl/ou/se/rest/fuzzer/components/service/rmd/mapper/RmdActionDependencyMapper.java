@@ -22,16 +22,18 @@ public class RmdActionDependencyMapper {
         dto.setParameter(RmdParameterMapper.toDto(actionDependency.getParameter()));
         dto.setAction(RmdActionMapper.toDto(actionDependency.getAction()));
         dto.setActionDependsOn(RmdActionMapper.toDto(actionDependency.getActionDependsOn()));
+        dto.setParameterDependsOn(RmdParameterMapper.toDto(actionDependency.getParameterDependsOn()));
         return dto;
     }
 
     public static RmdActionDependency toDomain(RmdActionDependencyDto dto, RmdParameter parameter, RmdAction action,
-            RmdAction actionDependsOn) {
+            RmdAction actionDependsOn, RmdParameter parameterDependsOn) {
         RmdActionDependency actionDependency = new RmdActionDependency();
         BeanUtils.copyProperties(dto, actionDependency);
         actionDependency.setParameter(parameter);
         actionDependency.setAction(action);
         actionDependency.setActionDependsOn(actionDependsOn);
+        actionDependency.setParameter(parameterDependsOn);
         return actionDependency;
     }
 }

@@ -43,7 +43,7 @@ public class FuzProject implements Comparable<FuzProject> {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private FuzType type;
+    private FuzProjectType type;
 
     @NotNull
     @NotEmpty
@@ -97,11 +97,11 @@ public class FuzProject implements Comparable<FuzProject> {
         this.description = description;
     }
 
-    public FuzType getType() {
+    public FuzProjectType getType() {
         return type;
     }
 
-    public void setType(FuzType type) {
+    public void setType(FuzProjectType type) {
         this.type = type;
     }
 

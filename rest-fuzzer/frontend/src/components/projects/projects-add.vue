@@ -24,7 +24,7 @@
           v-if="configurationsForSelection.length > 0"
           label="Configuration:"
           label-for="input-configuration"
-          description="Configuration for project (select zero or more items), configurations are merged and copied to this project"
+          description="Configuration for project (select none or one), configurations are copied to this project"
         >
           <b-form-checkbox
             switch
@@ -58,22 +58,42 @@
 
         <div v-if="project.type === 'MB_FUZZER' || project.type === 'MB_DICTIONARY_FUZZER'">
           <b-form-group
-            label="Sequence length:"
+            label="Maximum sequence length:"
             label-for="sequence-length"
-            description="Set length of sequence"
+            description="Set maximum length of generated sequences"
           >
             <b-form-input
               id="sequence-length"
-              v-model="metaDataTuplesJson.sequenceLength"
+              v-model="metaDataTuplesJson.maxSequenceLength"
               type="range"
               min="1"
               max="10"
             ></b-form-input>
-            <div class="mt-2">Sequence length: {{ metaDataTuplesJson.sequenceLength }}</div>
+            <div class="mt-2">Maximum sequence length: {{ metaDataTuplesJson.maxSequenceLength }}</div>
           </b-form-group>
 
           <hr />
         </div>
+
+        <div v-if="project.type === 'MB_FUZZER' || project.type === 'MB_DICTIONARY_FUZZER'">
+          <b-form-group
+            label="Maximum number of requests:"
+            label-for="max-requests"
+            description="Set maximum of requests to be executed"
+          >
+            <b-form-input
+              id="max-requests"
+              v-model="metaDataTuplesJson.maxNumRequests"
+              type="range"
+              min="1000"
+              max="500000"
+              step="1000"
+            ></b-form-input>
+            <div class="mt-2">Maximum number of requests: {{ metaDataTuplesJson.maxNumRequests }}</div>
+          </b-form-group>
+
+          <hr />
+        </div>        
 
         <b-form-group
           label="System under test:"
@@ -106,7 +126,8 @@
 const DEFAULT_META = {
   configuration: {},
   repetitions: 1,
-  sequenceLength: 1
+  maxSequenceLength: 1,
+  maxNumRequests: 1000
 };
 
 export default {
@@ -155,11 +176,15 @@ export default {
         this.project.type === "MB_FUZZER" ||
         this.project.type === "MB_DICTIONARY_FUZZER"
       ) {
-        this.metaDataTuplesJson.sequenceLength = Number(
-          this.metaDataTuplesJson.sequenceLength
+        this.metaDataTuplesJson.maxSequenceLength = Number(
+          this.metaDataTuplesJson.maxSequenceLength
+        );
+        this.metaDataTuplesJson.maxNumRequests = Number(
+          this.metaDataTuplesJson.maxNumRequests
         );
       } else {
-        delete this.metaDataTuplesJson.sequenceLength;
+        delete this.metaDataTuplesJson.maxSequenceLength;
+        delete this.metaDataTuplesJson.maxNumRequests;
       }
 
       this.project.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);

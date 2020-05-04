@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzRequestService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzResponseService;
+import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzSequenceService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequence;
+import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzSequenceFactory;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
@@ -39,6 +42,9 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
 
     @Autowired
     private FuzResponseService responseService;
+    
+    @Autowired
+    private FuzSequenceService sequenceService;
 
     @Autowired
     private RequestUtil requestUtil;
@@ -46,44 +52,70 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
     @Autowired
     private ExecutorUtil executorUtil;
 
+    private FuzSequenceFactory sequenceFactory = new FuzSequenceFactory();
+
     public void start(FuzProject project, Task task) {
         this.project = project;
 
+        // get meta
+        Integer maxSequenceLength = metaDataUtil.getIntegerValue(MetaDataUtil.Meta.MAX_SEQUENCE_LENGTH);
+        Integer maxNumRequests = metaDataUtil.getIntegerValue(MetaDataUtil.Meta.MAX_NUMBER_REQUESTS);
+
+        // authentication
+        executorUtil.setAuthentication(metaDataUtil.getAuthentication());
+
+        // get sequences
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
         actions = metaDataUtil.filterActions(actions);
 
         List<RmdActionDependency> dependencies = actionDependencyService.findBySutId(this.project.getSut().getId());
 
-        Integer sequenceLength = metaDataUtil.getIntegerValue(MetaDataUtil.Meta.SEQUENCE_LENGTH);
-
         SequenceUtil sequenceUtil = new SequenceUtil(actions, dependencies);
-        List<String> sequences = sequenceUtil.getValidSequences(sequenceLength);
+        List<String> sequences = sequenceUtil.getValidSequences(maxSequenceLength);
 
         int count = 0;
-        int total = sequences.size();
+        int total = sequenceUtil.getNumberOfRequests(sequences);
 
-        executorUtil.setAuthentication(metaDataUtil.getAuthentication());
+        // cap at maxNumRequests
+        if (total > maxNumRequests) {
+            sequences = sequenceUtil.getRandomSequences(sequences, maxNumRequests);
+            total = maxNumRequests;
+        }
 
         // for all sequences
-        for (String sequence : sequences) {
-            List<RmdAction> actionsFromSequence = sequenceUtil.getActionsFromSequence(sequence);
+        int sequencePosition = 1;
+        for (String sequenceString : sequences) {
+            List<RmdAction> actionsFromSequence = sequenceUtil.getActionsFromSequence(sequenceString);
+
+            // create and save sequence
+            FuzSequence sequence = saveSequence(project, sequencePosition, actionsFromSequence);
 
             // for each action in sequence
             for (RmdAction a : actionsFromSequence) {
                 FuzRequest request = requestUtil.getRequestFromAction(project, a);
+                request.setSequence(sequence);
                 requestService.save(request);
 
                 FuzResponse response = executorUtil.processRequest(request);
                 responseService.save(response);
+
+                count++;                
             }
 
-            count++;
-            saveTaskProgress(task, count, total);            
+            sequencePosition++;
+            saveTaskProgress(task, count, total);
         }
+    }
+
+    private FuzSequence saveSequence(FuzProject project, int sequencePosition, List<RmdAction> actionsFromSequence) {
+        FuzSequence sequence = sequenceFactory.create(sequencePosition, actionsFromSequence.size(), project)
+                .build();
+        sequenceService.save(sequence);
+        return sequence;
     }
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
         this.metaDataUtil = new MetaDataUtil(metaDataTuples);
-        return metaDataUtil.isValid(MetaDataUtil.Meta.SEQUENCE_LENGTH);
+        return metaDataUtil.isValid(MetaDataUtil.Meta.MAX_SEQUENCE_LENGTH, MetaDataUtil.Meta.MAX_NUMBER_REQUESTS);
     }
 }

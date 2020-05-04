@@ -5,11 +5,10 @@ CREATE TABLE IF NOT EXISTS tasks (
   canonical_name VARCHAR(255) NOT NULL,
   meta_data_tuples_json TEXT, 
   progress DECIMAL(5,2),
-  started_at TIMESTAMP NULL,
-  crashed_at TIMESTAMP NULL,
-  finished_at TIMESTAMP NULL
+  started_at DATETIME NULL,
+  crashed_at DATETIME NULL,
+  finished_at DATETIME NULL
 ) ENGINE=INNODB;
-
 
 
 CREATE TABLE IF NOT EXISTS rmd_suts (
@@ -19,7 +18,7 @@ CREATE TABLE IF NOT EXISTS rmd_suts (
   description VARCHAR(128) NULL,  
   host VARCHAR(255) NULL,
   base_path VARCHAR(255) NULL,
-  created_at TIMESTAMP NULL
+  created_at DATETIME NULL
 ) ENGINE=INNODB;
 
 
@@ -38,14 +37,15 @@ CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
   action_id INT,
   parameter_id INT,
   action_depends_on_id INT,
+  parameter_depends_on_id INT,
   discovery_modus ENUM('AUTOMATIC', 'MANUAL') NOT NULL,
-  created_at TIMESTAMP NULL
+  created_at DATETIME NULL
 ) ENGINE=INNODB;
 
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(parameter_id) REFERENCES rmd_parameters(id);
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_depends_on_id) REFERENCES rmd_actions(id);
-
+ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(parameter_depends_on_id) REFERENCES rmd_parameters(id);
 
 CREATE TABLE IF NOT EXISTS rmd_parameters (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS rmd_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
   status_code INT NOT NULL,
   description VARCHAR(255) NOT NULL,
-  action_id INT
+  action_id INT NOT NULL
 ) ENGINE=INNODB;
 
 
@@ -79,10 +79,22 @@ CREATE TABLE IF NOT EXISTS fuz_projects (
   type VARCHAR(64) NOT NULL,
   meta_data_tuples_json TEXT, 
   sut_id INT,
-  created_at TIMESTAMP NULL
+  created_at DATETIME NOT NULL
 ) ENGINE=INNODB;
 
 ALTER TABLE fuz_projects ADD FOREIGN KEY(sut_id) REFERENCES rmd_suts(id);
+
+
+CREATE TABLE IF NOT EXISTS fuz_sequences (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  position INT,
+  length INT,
+  status VARCHAR(64) NOT NULL,
+  project_id INT,
+  created_at DATETIME NOT NULL  
+) ENGINE=INNODB;
+
+ALTER TABLE fuz_sequences ADD FOREIGN KEY(project_id) REFERENCES fuz_projects(id);
 
 
 CREATE TABLE IF NOT EXISTS fuz_requests (
@@ -93,11 +105,13 @@ CREATE TABLE IF NOT EXISTS fuz_requests (
   header_parameters_json TEXT,
   path_parameters_json TEXT,
   query_parameters_json TEXT,
-  project_id INT,
-  created_at TIMESTAMP NULL  
+  project_id INT NOT NULL,
+  sequence_id INT NULL,
+  created_at DATETIME NOT NULL
 ) ENGINE=INNODB;
 
 ALTER TABLE fuz_requests ADD FOREIGN KEY(project_id) REFERENCES fuz_projects(id);
+ALTER TABLE fuz_requests ADD FOREIGN KEY(sequence_id) REFERENCES fuz_sequences(id);
 
 
 CREATE TABLE IF NOT EXISTS fuz_responses (
@@ -108,7 +122,7 @@ CREATE TABLE IF NOT EXISTS fuz_responses (
   failure_reason VARCHAR(255),
   project_id INT,
   request_id INT,
-  created_at TIMESTAMP NULL
+  created_at DATETIME NOT NULL
 ) ENGINE=INNODB;
 
 ALTER TABLE fuz_responses ADD FOREIGN KEY(project_id) REFERENCES fuz_projects(id);
@@ -118,14 +132,14 @@ CREATE TABLE IF NOT EXISTS fuz_dictionaries (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255),
   items_text TEXT,
-  created_at TIMESTAMP NULL  
+  created_at DATETIME NOT NULL  
 ) ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS fuz_configurations (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255),
   items_json TEXT,
-  created_at TIMESTAMP NULL  
+  created_at DATETIME NOT NULL  
 ) ENGINE=INNODB;
 
 --------------------------- dropping all --------------------

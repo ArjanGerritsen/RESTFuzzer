@@ -37,12 +37,21 @@
           id="actionDependsOn"
           :options="actionsDependsOn"
           v-model="dependency.actionDependsOn"
+          @change="updateParametersDependsOn()"
         >
           <template v-slot:first>
             <b-form-select-option :value="null" disabled>-- select an action --</b-form-select-option>
           </template>
         </b-form-select>
       </b-form-group>
+
+      <b-form-group label="Parameter (depends on):" label-for="parameter-depends-on" description="Select a parameter">
+        <b-form-select id="parameter-depends-on" :options="parametersDependsOn" v-model="dependency.parameterDependsOn">
+          <template v-slot:first>
+            <b-form-select-option :value="null" disabled>-- select a parameter --</b-form-select-option>
+          </template>
+        </b-form-select>
+      </b-form-group>      
     </b-form>
 
     <template slot="modal-footer">
@@ -66,7 +75,8 @@ export default {
       dependency: {
         action: null,
         parameter: null,
-        actionDependsOn: null
+        actionDependsOn: null,
+        parameterDependsOn: null
       }
     };
   },
@@ -79,6 +89,9 @@ export default {
     },
     actionsDependsOn() {
       return this.$store.getters.selectionActionsPosts;
+    },
+    parametersDependsOn() {
+      return this.$store.getters.selectionParametersDependsOn;
     }
   },
   methods: {
@@ -86,6 +99,7 @@ export default {
       this.dependency.action = null;
       this.dependency.parameter = null;
       this.dependency.actionDependsOn = null;
+      this.dependency.parameterDependsOn = null;
 
       this.$nextTick(() => {
         this.$refs.modalActionsDependenciesAdd.hide();
@@ -106,6 +120,12 @@ export default {
       this.$store.dispatch("findSelectionParameters", {
         sut_id: this.sut.id,
         action_id: this.dependency.action
+      });
+    },
+    updateParametersDependsOn() {
+      this.$store.dispatch("findSelectionParametersDependsOn", {
+        sut_id: this.sut.id,
+        action_id: this.dependency.actionDependsOn
       });
     }
   },

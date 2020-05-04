@@ -53,7 +53,8 @@ const suts = {
                 },
                 selection: {
                     actions: null,
-                    parameters: null
+                    parameters: null,
+                    parameters_depends_on: null
                 }
             },
             display: null
@@ -96,6 +97,9 @@ const suts = {
         },
         set_sut_selection_parameters(state, payload) {
             state.suts.current.selection.parameters = payload.parameters
+        },
+        set_sut_selection_parameters_depends_on(state, payload) {
+            state.suts.current.selection.parameters_depends_on = payload.parameters
         },
 
         set_sut_display(state, payload) {
@@ -241,6 +245,21 @@ const suts = {
                     })
             })
         },
+        findSelectionParametersDependsOn({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .get(`/rest/suts/${data.sut_id}/actions/${data.action_id}/parameters`)
+                    .then(response => {
+                        commit("set_sut_selection_parameters_depends_on", { parameters: response.data });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("set_sut_selection_parameters_depends_on", { parameters: null });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve parameters for action with id ${data.action_id} and sut with id ${data.sut_id}`, err: error } });
+                        reject(error);
+                    })
+            })
+        },        
         addSut({ commit }, sut) {
             return new Promise((resolve, reject) => {
                 axios
@@ -354,6 +373,22 @@ const suts = {
 
             return parameters;
         },
+        selectionParametersDependsOn: state => {
+            let parameters = [];
+
+            if (state.suts.current.selection.parameters_depends_on !== null) {
+                parameters = state.suts.current.selection.parameters_depends_on.map(
+                    parameter => {
+                        const newParameter = {};
+                        newParameter["value"] = parameter.id;
+                        newParameter["text"] = `${parameter.name} (${parameter.type})`;
+                        return newParameter;
+                    }
+                );
+            }
+
+            return parameters;
+        },        
     }
 }
 

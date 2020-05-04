@@ -87,9 +87,9 @@
                   ({{task.status | downCase }})
                 </dd>
                 <dt>Started @</dt>
-                <dd>{{task.startedAt | dateShort}}</dd>
+                <dd>{{task.startedAt | date }}</dd>
                 <dt>Ended @</dt>
-                <dd>{{task.endedAt | dateShort}}</dd>
+                <dd>{{task.endedAt | date }}</dd>
               </dl>
             </div>
             <div class="col">

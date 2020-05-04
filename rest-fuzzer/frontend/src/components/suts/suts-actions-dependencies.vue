@@ -122,6 +122,10 @@
               {{ row.item.actionDependsOn.path }}
               {{ row.item.actionDependsOn.httpMethod }}
             </dd>
+            <dd v-if="row.item.parameterDependsOn">
+              {{ row.item.parameterDependsOn.name }}
+              [{{ row.item.parameterDependsOn.type }}]
+            </dd>
           </dl>
         </b-card>
       </template>

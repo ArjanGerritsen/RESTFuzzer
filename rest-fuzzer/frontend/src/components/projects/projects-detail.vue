@@ -60,7 +60,7 @@
                   <b-link :href="project.sut.location" target="_blank">{{project.sut.location}}</b-link>
                 </dd>
                 <dt>Created @</dt>
-                <dd>{{project.createdAt | dateShort }}</dd>
+                <dd>{{project.createdAt | date }}</dd>
               </dl>
             </div>
             <div class="col">

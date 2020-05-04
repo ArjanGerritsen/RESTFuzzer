@@ -15,9 +15,12 @@ public class RmdParameterMapper {
     }
 
     public static RmdParameterDto toDto(RmdParameter parameter) {
-        RmdParameterDto dto = new RmdParameterDto();
-        BeanUtils.copyProperties(parameter, dto);
-        dto.setMetaDataTuplesJson(parameter.getMetaDataTuples().toString());
+        RmdParameterDto dto = null;
+        if (parameter != null) {
+            dto = new RmdParameterDto();
+            BeanUtils.copyProperties(parameter, dto);
+            dto.setMetaDataTuplesJson(parameter.getMetaDataTuples().toString());
+        }
         return dto;
     }
 }

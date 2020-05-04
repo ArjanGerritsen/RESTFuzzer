@@ -25,7 +25,7 @@ import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 @Entity(name = "fuz_requests")
 public class FuzRequest implements Comparable<FuzRequest> {
 
-    // variables
+    // variable(s)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,10 +47,14 @@ public class FuzRequest implements Comparable<FuzRequest> {
     @JoinColumn(name = "project_id")
     private FuzProject project;
 
+    @ManyToOne
+    @JoinColumn(name = "sequence_id")
+    private FuzSequence sequence;
+
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    // constructors
+    // constructor(s)
     public FuzRequest() {
     }
 
@@ -59,7 +63,7 @@ public class FuzRequest implements Comparable<FuzRequest> {
         this.httpMethod = HttpMethod.valueOf(httpMethod);
     }
 
-    // methods
+    // method(s)
     public int compareTo(FuzRequest other) {
         return new String(this.getPath() + this.getHttpMethod())
                 .compareTo(new String(other.getPath() + other.getHttpMethod()));
@@ -171,6 +175,14 @@ public class FuzRequest implements Comparable<FuzRequest> {
 
     public void setProject(FuzProject project) {
         this.project = project;
+    }
+
+    public FuzSequence getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(FuzSequence sequence) {
+        this.sequence = sequence;
     }
 
     public LocalDateTime getCreatedAt() {

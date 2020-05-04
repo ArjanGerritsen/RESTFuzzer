@@ -2,9 +2,11 @@ package nl.ou.se.rest.fuzzer.components.fuzzer.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -84,7 +86,7 @@ public class SequenceUtil {
         List<Long> actionIds = Arrays.asList(actionStringIds).stream().map(id -> Long.parseLong(id))
                 .collect(Collectors.toList());
 
-        // only check last item, the sequence -1 is already checked ant thus valid
+        // only check last item, the sequence -1 is already checked and thus valid
         if (!satisfiesDependenciesForLastItem(actionIds)) {
             return false;
         }
@@ -123,5 +125,29 @@ public class SequenceUtil {
         }
 
         return actions;
+    }
+
+    public int getNumberOfRequests(List<String> sequences) {
+        return sequences.stream().mapToInt(s -> {
+            return s.split(SEPERATOR).length;
+        }).sum();
+    }
+
+    public List<String> getRandomSequences(List<String> sequences, Integer maxSize) {
+        List<String> result = new ArrayList<>();
+
+        Collections.shuffle(sequences);
+
+        for (int i = 0; getNumberOfRequests(result) < maxSize; i++) {
+            result.add(sequences.get(i));
+        }
+
+        int diff = getNumberOfRequests(result) - maxSize;
+        Optional<String> remove = result.stream().filter(s -> s.split(SEPERATOR).length == diff).findFirst();
+        if (remove.isPresent()) {
+            result.remove(remove.get());
+        }
+
+        return result;
     }
 }

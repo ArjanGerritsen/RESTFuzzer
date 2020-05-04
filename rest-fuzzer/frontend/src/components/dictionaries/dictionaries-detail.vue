@@ -28,6 +28,8 @@
                 <dd>{{this.dictionary.id}}</dd>
                 <dt>Name</dt>
                 <dd>{{this.dictionary.name ? this.dictionary.name : '-'}}</dd>
+                <dt>Created @</dt>
+                <dd>{{this.dictionary.createdAt | date }}</dd>
               </dl>
             </div>
           </div>

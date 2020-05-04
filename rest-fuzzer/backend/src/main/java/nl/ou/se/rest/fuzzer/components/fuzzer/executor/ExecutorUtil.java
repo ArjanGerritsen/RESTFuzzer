@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -69,7 +70,10 @@ public class ExecutorUtil {
             // basic authentication
             if (this.authentication != null && (this.authentication instanceof BasicAuthentication)) {
                 BasicAuthentication basicAuthentication = (BasicAuthentication) authentication;
-                httpUriRequest.setHeader(HttpHeaders.AUTHORIZATION, basicAuthentication.getHeader());
+                if (!StringUtils.isBlank(basicAuthentication.getUsername())
+                        && !StringUtils.isBlank(basicAuthentication.getPassword())) {
+                    httpUriRequest.setHeader(HttpHeaders.AUTHORIZATION, basicAuthentication.getHeader());
+                }
             }
 
             if (httpUriRequest != null) {

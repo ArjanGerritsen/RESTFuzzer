@@ -55,7 +55,8 @@ public class DependencyFinder {
 
         if (actionDependsOn.isPresent()) {
             actionDependencies.add(actionDependencyFactory
-                    .create(DiscoveryModus.AUTOMATIC, parameter.getAction(), parameter, actionDependsOn.get()).build());
+                    .create(DiscoveryModus.AUTOMATIC, parameter.getAction(), parameter, actionDependsOn.get(), null)
+                    .build());
         }
     }
 

@@ -41,8 +41,12 @@ public class MetaDataUtil {
         // basic fuzzer
         public static final String REPITITIONS = "repetitions";
 
-        // model based fuzzer
-        public static final String SEQUENCE_LENGTH = "sequenceLength";
+        // model based fuzzers
+        public static final String MAX_SEQUENCE_LENGTH = "maxSequenceLength";
+        public static final String MAX_NUMBER_REQUESTS = "maxNumRequests";
+        
+        // dictionary fuzzers
+        
     }
 
     private Logger logger = LoggerFactory.getLogger(MetaDataUtil.class);

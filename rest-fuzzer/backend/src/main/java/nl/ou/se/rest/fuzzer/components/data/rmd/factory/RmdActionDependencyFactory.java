@@ -14,8 +14,8 @@ public class RmdActionDependencyFactory {
 
     // constructor
     public RmdActionDependencyFactory create(DiscoveryModus discoveryModus, RmdAction action, RmdParameter parameter,
-            RmdAction actionDependsOn) {
-        actionDependency = new RmdActionDependency(discoveryModus, action, parameter, actionDependsOn);
+            RmdAction actionDependsOn, RmdParameter parameterDependsOn) {
+        actionDependency = new RmdActionDependency(discoveryModus, action, parameter, actionDependsOn, parameterDependsOn);
         actionDependency.setCreatedAt(LocalDateTime.now());
         return this;
     }

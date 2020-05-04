@@ -28,6 +28,8 @@
                 <dd>{{this.configuration.id}}</dd>
                 <dt>Name</dt>
                 <dd>{{this.configuration.name ? this.configuration.name : '-'}}</dd>
+                <dt>Created @</dt>
+                <dd>{{this.configuration.createdAt | date }}</dd>
               </dl>
             </div>
             <div class="col">
