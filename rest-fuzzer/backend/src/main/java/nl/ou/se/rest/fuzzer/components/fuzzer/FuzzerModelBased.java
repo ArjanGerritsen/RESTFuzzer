@@ -13,6 +13,7 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequence;
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequenceStatus;
 import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzSequenceFactory;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
@@ -87,31 +88,33 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
         for (String sequenceString : sequences) {
             List<RmdAction> actionsFromSequence = sequenceUtil.getActionsFromSequence(sequenceString);
 
-            // create and save sequence
-            FuzSequence sequence = saveSequence(project, sequencePosition, actionsFromSequence);
+            FuzSequence sequence = sequenceFactory.create(sequencePosition, actionsFromSequence.size(), project).build();
+            sequenceService.save(sequence);
 
-            // for each action in sequence
+            // create requests for sequence
             for (RmdAction a : actionsFromSequence) {
                 FuzRequest request = requestUtil.getRequestFromAction(project, a);
-                request.setSequence(sequence);
                 requestService.save(request);
+                sequence.addRequest(request);
+            }
 
-                FuzResponse response = executorUtil.processRequest(request);
+            sequence = sequenceService.save(sequence);
+
+            // execute requests for sequence
+            for (FuzRequest r : sequence.getRequests()) {
+                FuzResponse response = executorUtil.processRequest(r);
                 responseService.save(response);
 
                 count++;                
             }
 
+            // update sequence
+            sequence.setStatus(FuzSequenceStatus.COMPLETE);
+            sequenceService.save(sequence);
+
             sequencePosition++;
             saveTaskProgress(task, count, total);
         }
-    }
-
-    private FuzSequence saveSequence(FuzProject project, int sequencePosition, List<RmdAction> actionsFromSequence) {
-        FuzSequence sequence = sequenceFactory.create(sequencePosition, actionsFromSequence.size(), project)
-                .build();
-        sequenceService.save(sequence);
-        return sequence;
     }
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {

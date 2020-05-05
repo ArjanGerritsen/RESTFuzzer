@@ -69,6 +69,11 @@ public class RmdAction implements Comparable<RmdAction> {
 
     // methods
     public int compareTo(RmdAction other) {
+        int sutCompare = this.getSut().compareTo(other.getSut());
+        if (sutCompare != 0) {
+            return sutCompare;
+        }
+        
         int pathCompare = this.getPath().compareTo(other.getPath());
         if (pathCompare != 0) {
             return pathCompare;

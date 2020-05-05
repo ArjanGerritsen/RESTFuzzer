@@ -60,6 +60,11 @@ public class FuzProject implements Comparable<FuzProject> {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "project_id")
     @SortNatural
+    private SortedSet<FuzSequence> sequences = new TreeSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "project_id")
+    @SortNatural
     private SortedSet<FuzRequest> requests = new TreeSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -127,6 +132,14 @@ public class FuzProject implements Comparable<FuzProject> {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public SortedSet<FuzSequence> getSequences() {
+        return sequences;
+    }
+
+    public void setSequences(SortedSet<FuzSequence> sequences) {
+        this.sequences = sequences;
     }
 
     public SortedSet<FuzRequest> getRequests() {

@@ -27,6 +27,15 @@
                 </b-button>
                 <b-button
                   size="sm"
+                  to="/tasks"
+                  variant="primary"
+                  title="start task to fuzz SUT"
+                  
+                >
+                  <b-icon icon="link" font-scale="1"></b-icon>&nbsp;go to tasks
+                </b-button>
+                <b-button
+                  size="sm"
                   type="submit"
                   v-b-modal.projects-clear
                   variant="outline-danger"
@@ -74,19 +83,26 @@
             <div class="col"></div>
           </div>
         </b-tab>
-        <b-tab :disabled="!requestsPresent" :title="requestsTitle">
-          <ProjectsRequests
+        <b-tab :disabled="!sequencesPresent" :title="sequencesTitle">
+          <ProjectsSequences
             :project="project"
-            :fields="requestFields"
-            :formatters="requestFormatters"
-          ></ProjectsRequests>
-        </b-tab>
+            :fields="sequenceFields"
+            :formatters="sequenceFormatters"
+          ></ProjectsSequences>
+        </b-tab>        
         <b-tab :disabled="!responsesPresent" :title="responsesTitle">
           <ProjectsResponses
             :project="project"
             :fields="responseFields"
             :formatters="responseFormatters"
           ></ProjectsResponses>
+        </b-tab>
+        <b-tab :disabled="!requestsPresent" :title="requestsTitle">
+          <ProjectsRequests
+            :project="project"
+            :fields="requestFields"
+            :formatters="requestFormatters"
+          ></ProjectsRequests>
         </b-tab>
       </b-tabs>
     </b-card-text>
@@ -96,16 +112,26 @@
 <script>
 import Constants from "../../shared/constants";
 
+import ProjectsSequences from "./projects-sequences";
 import ProjectsRequests from "./projects-requests";
 import ProjectsResponses from "./projects-responses";
 
 export default {
   components: {
+    ProjectsSequences,
     ProjectsRequests,
     ProjectsResponses
   },
   data() {
     return {
+      sequenceFormatters: [],
+      sequenceFields: [
+        { key: "id", label: "#", thStyle: "width: 50px;" },
+        { key: "position", label: "Execution order" },
+        { key: "length", label: "Number of requests" },
+        { key: "status" },
+        { key: "details", label: "Details", thStyle: "width: 60px;" }
+      ],
       requestFormatters: [],
       requestFields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
@@ -173,6 +199,20 @@ export default {
         this.$store.getters.projects.current.queued_or_running_tasks_count > 0
       );
     },
+    sequencesPresent() {
+      return this.sequencesCount > 0;
+    },
+    sequencesTitle() {
+      let title = "Sequences";
+      if (this.sequencesCount > 0) {
+        title += ` [${this.sequencesCount}]`;
+      }
+      return title;
+    },
+    sequencesCount() {
+      const count = this.$store.getters.projects.current.sequences.total;
+      return count !== null && count > 0 ? count : 0;
+    },    
     requestsPresent() {
       return this.requestsCount > 0;
     },

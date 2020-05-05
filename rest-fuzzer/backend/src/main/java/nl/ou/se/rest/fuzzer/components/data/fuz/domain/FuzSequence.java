@@ -1,6 +1,8 @@
 package nl.ou.se.rest.fuzzer.components.data.fuz.domain;
 
 import java.time.LocalDateTime;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +13,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.SortNatural;
 
 @Entity(name = "fuz_sequences")
 public class FuzSequence implements Comparable<FuzSequence> {
@@ -35,6 +40,11 @@ public class FuzSequence implements Comparable<FuzSequence> {
     @JoinColumn(name = "project_id")
     private FuzProject project;
 
+    @OneToMany
+    @JoinColumn(name = "sequence_id")
+    @SortNatural
+    private SortedSet<FuzRequest> requests = new TreeSet<>();
+
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
@@ -52,7 +62,17 @@ public class FuzSequence implements Comparable<FuzSequence> {
 
     // method(s)
     public int compareTo(FuzSequence other) {
+        int projectCompare = this.getProject().compareTo(other.getProject());
+        if (projectCompare != 0) {
+            return projectCompare;
+        }
+
         return Integer.valueOf(this.getPosition()).compareTo(Integer.valueOf(other.getPosition()));
+    }
+
+    public void addRequest(FuzRequest request) {
+        request.setSequence(this);
+        this.requests.add(request);
     }
 
     // getters and setters
@@ -68,7 +88,7 @@ public class FuzSequence implements Comparable<FuzSequence> {
         return position;
     }
 
-    public void setPositon(int position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 
@@ -94,6 +114,14 @@ public class FuzSequence implements Comparable<FuzSequence> {
 
     public void setProject(FuzProject project) {
         this.project = project;
+    }
+
+    public SortedSet<FuzRequest> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(SortedSet<FuzRequest> requests) {
+        this.requests = requests;
     }
 
     public LocalDateTime getCreatedAt() {

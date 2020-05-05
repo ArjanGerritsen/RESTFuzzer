@@ -86,6 +86,7 @@ public class MetaDataUtil {
     public List<RmdAction> filterActions(List<RmdAction> actions) {
         List<Map<String, String>> includeActions = (ArrayList<Map<String, String>>) this
                 .getValue(this.configurationMetaDataTuples, Meta.INCLUDE_ACTIONS);
+
         List<Map<String, String>> excludeActions = (ArrayList<Map<String, String>>) this
                 .getValue(this.configurationMetaDataTuples, Meta.EXCLUDE_ACTIONS);
 

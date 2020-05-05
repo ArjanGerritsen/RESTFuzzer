@@ -30,9 +30,9 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @NamedEntityGraph(name = Constants.ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS, attributeNodes = @NamedAttributeNode(value = "actions", subgraph = "suts.subgraph.actions"), subgraphs = {
 		@NamedSubgraph(name = "suts.subgraph.actions", attributeNodes = { @NamedAttributeNode(value = "parameters"),
                 @NamedAttributeNode(value = "responses") }) })
-public class RmdSut {
+public class RmdSut implements Comparable<RmdSut> {
 
-    // variables
+    // variable(s)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -62,11 +62,15 @@ public class RmdSut {
     @SortNatural
     private SortedSet<RmdAction> actions = new TreeSet<>();
 
-    // constructors
+    // constructor(s)
     public RmdSut() {
     }
 
-    // methods
+    // method(s)
+    public int compareTo(RmdSut other) {
+        return this.getId().compareTo(other.getId());
+    }
+
     public void addAction(RmdAction action) {
         action.setSut(this);
         this.actions.add(action);

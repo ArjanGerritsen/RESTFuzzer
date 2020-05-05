@@ -1,5 +1,21 @@
 import axios from "axios";
 
+function getCountSequences({ commit }, data) {
+    return new Promise((resolve, reject) => {
+        let queryParams = '';
+        if (data.context && data.context.filter !== null) { queryParams += `?filter=${data.context.filter}`; }
+        axios
+            .get(`/rest/projects/${data.id}/sequences/count${queryParams}`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project sequence count for project with id ${data.id}`, err: error } });
+                reject(error);
+            })
+    });
+}
+
 function getCountRequests({ commit }, data) {
     return new Promise((resolve, reject) => {
         let queryParams = '';
@@ -41,6 +57,11 @@ const projects = {
             current: {
                 item: null,
                 queued_or_running_tasks_count: null,
+                sequences: {
+                    items: null,
+                    count: null,
+                    total: null
+                },
                 requests: {
                     items: null,
                     count: null,
@@ -65,6 +86,16 @@ const projects = {
 
         set_project_running_or_queued_tasks_count(state, payload) {
             state.projects.current.queued_or_running_tasks_count = payload.count
+        },
+
+        set_project_sequences_total(state, payload) {
+            state.projects.current.sequences.total = payload.total
+        },
+        set_project_sequences_count(state, payload) {
+            state.projects.current.sequences.count = payload.count
+        },
+        set_project_sequences_items(state, payload) {
+            state.projects.current.sequences.items = payload.items
         },
 
         set_project_requests_total(state, payload) {
@@ -114,6 +145,7 @@ const projects = {
                     .get(`/rest/projects/${id}`)
                     .then(response => {
                         commit("set_project", { item: response.data });
+                        dispatch("countAllProjectSequences", { id: id });
                         dispatch("countAllProjectRequests", { id: id });
                         dispatch("countAllProjectResponses", { id: id });
                         dispatch("countProjectRunningOrQueuedTasks", { id: id });
@@ -122,6 +154,36 @@ const projects = {
                     .catch(error => {
                         commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project with id ${id}`, err: error } });
                         commit("set_project", { item: null });
+                        reject(error);
+                    })
+            })
+        },
+        countAllProjectSequences({ commit }, data) {
+            getCountSequences({ commit }, data)
+                .then(total => {
+                    commit("set_project_sequences_total", { total: total });
+                });
+        },
+        countProjectSequences({ commit }, data) {
+            getCountSequences({ commit }, data)
+                .then(count => {
+                    commit("set_project_sequences_count", { count: count });
+                });
+        },
+        findProjectSequences({ commit, dispatch }, data) {
+            return new Promise((resolve, reject) => {
+                let queryParams = `?curPage=${data.context.currentPage}&perPage=${data.context.perPage}`;
+                if (data.context.filter !== null) { queryParams += `&filter=${data.context.filter}`; }
+                axios
+                    .get(`/rest/projects/${data.id}/sequences${queryParams}`)
+                    .then(response => {
+                        commit("set_project_sequences_items", { items: response.data });
+                        dispatch("countProjectSequences", data);
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("set_project_sequences_items", { items: null });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve fuzzing project sequences for project with id ${data.id}`, err: error } });
                         reject(error);
                     })
             })
@@ -231,10 +293,27 @@ const projects = {
             })
         },
         clearProject({ dispatch }, project) {
-            dispatch("deleteProjectRequests", project);
             dispatch("deleteProjectResponses", project);
+            dispatch("deleteProjectRequests", project);
+            dispatch("deleteProjectSequences", project);            
+            // TODO SUCCES msg commit("message_add", { message: { type: "info", title: "Delete fuzzing project requests", text: `Requests for fuzzing project ${response.data.type} with id ${response.data.id} deleted successful.` } });
             dispatch("findProject", project.id);
         },
+        deleteProjectSequences({ commit }, project) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .delete(`/rest/projects/${project.id}/sequences`)
+                    .then(response => {
+                        commit("message_add", { message: { type: "info", title: "Delete fuzzing project requests", text: `Sequences for fuzzing project ${response.data.type} with id ${response.data.id} deleted successful.` } });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't delete fuzzing project sequences with id ${project.id}`, err: error } });
+                        reject(error);
+                    })
+
+            })
+        },        
         deleteProjectRequests({ commit }, project) {
             return new Promise((resolve, reject) => {
                 axios

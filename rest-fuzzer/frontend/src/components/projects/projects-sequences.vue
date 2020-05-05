@@ -47,7 +47,7 @@
     </b-row>
 
     <b-table
-      id="project-requests"
+      id="project-sequences"
       class="table-sm"
       show-empty
       striped
@@ -64,7 +64,10 @@
         <span style="margin-left:10px;">Loading...</span>
       </div>
 
-      <template v-for="formatter in formatters" v-slot:[`(${formatter.field})`]="data">
+      <template
+        v-for="formatter in formatters"
+        v-slot:[`cell(${formatter.field})`]="data"
+      >
         <template>{{ data.value | dynamicFilter($options.filters[formatter.as]) }}</template>
       </template>
 
@@ -77,14 +80,29 @@
 
       <template v-slot:row-details="row">
         <b-card no-body>
-          <b-tabs card pills>
-            <b-tab title="Request" active>
+          <b-tabs card pills vertical>
+            <b-tab
+              v-for="(request, index) in row.item.requests"
+              :key="request.id"
+              :title="tabTitle(index, request)"
+            >
               <b-card-text>
-                <ProjectDetailRequest :item="row.item"></ProjectDetailRequest>
+                <b-card no-body>
+                  <b-tabs card pills>
+                    <b-tab title="Response" active>
+                      <b-card-text>TODO</b-card-text>
+                    </b-tab>
+                    <b-tab title="Request">
+                      <b-card-text>
+                        <ProjectDetailRequest :item="request"></ProjectDetailRequest>
+                      </b-card-text>
+                    </b-tab>
+                    <b-tab title="REST model description">
+                      <b-card-text>TODO</b-card-text>
+                    </b-tab>
+                  </b-tabs>
+                </b-card>
               </b-card-text>
-            </b-tab>
-            <b-tab title="REST model description">
-              <b-card-text>TODO</b-card-text>
             </b-tab>
           </b-tabs>
         </b-card>
@@ -138,16 +156,19 @@ export default {
       }
 
       return this.$store
-        .dispatch("findProjectRequests", {
+        .dispatch("findProjectSequences", {
           id: this.project.id,
           context: context
         })
         .then(() => {
-          return this.$store.getters.projects.current.requests.items;
+          return this.$store.getters.projects.current.sequences.items;
         })
         .catch(() => {
           return [];
         });
+    },
+    tabTitle(index, request) {
+      return `#${index+1} ${request.path} [${request.httpMethod}]`;
     }
   },
   computed: {
@@ -155,7 +176,7 @@ export default {
       return encodeURI(JSON.stringify(this.filter));
     },
     totalRows() {
-      return this.$store.getters.projects.current.requests.count;
+      return this.$store.getters.projects.current.sequences.count;
     },
     displayPagination() {
       return this.totalRows > this.perPage;

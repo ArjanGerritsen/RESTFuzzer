@@ -50,9 +50,13 @@ public class FuzResponse implements Comparable<FuzResponse> {
 
     // methods
     public int compareTo(FuzResponse other) {
+        int projectCompare = this.getProject().compareTo(other.getProject());
+        if (projectCompare != 0) {
+            return projectCompare;
+        }
+
         return new String(this.getRequest().getPath() + this.getRequest().getHttpMethod())
                 .compareTo(new String(other.getRequest().getPath() + other.getRequest().getHttpMethod()));
-
     }
 
     // getters and setters

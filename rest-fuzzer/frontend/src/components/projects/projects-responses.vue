@@ -5,7 +5,8 @@
         <b-card bg-variant="white" header-tag="header" class="float-right clearfix">
           <template v-slot:header>
             <h6 class="mb-0">
-              Filter: displaying <b>{{ totalRows }}</b> results.
+              Filter: displaying
+              <b>{{ totalRows }}</b> results.
             </h6>
           </template>
           <b-card-text>
@@ -21,7 +22,7 @@
                   :value="method"
                 >{{ method }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link> /
+              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>/
               <b-link @click="filter.httpMethods = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
@@ -40,7 +41,7 @@
                   :value="range"
                 >{{ range }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpResponseRanges = constants.HTTP_RESPONSE_RANGES">select all</b-link> /
+              <b-link @click="filter.httpResponseRanges = constants.HTTP_RESPONSE_RANGES">select all</b-link>/
               <b-link @click="filter.httpResponseRanges = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
@@ -97,29 +98,37 @@
       </template>
 
       <template v-slot:row-details="row">
-        <b-card>
-          <h6>Response data:</h6>
-          <dl class="dl-horizontal">
-            <dt>Created @:</dt>
-            <dd>{{row.item.createdAt | date}}</dd>
-            <dt>HTTP status:</dt>
-            <dd>{{row.item.statusCode}}</dd>
-            <dt>HTTP status description:</dt>
-            <dd>{{row.item.statusDescription}}</dd>
-            <dt>Exception:</dt>
-            <dd>{{row.item.failureReason === null ? '-' : row.item.failureReason}}</dd>
-          </dl>
-          <div class="row">
-            <div class="col" style="margin-bottom:20px">
-              <h6>Body:</h6>
-              <div class="json" :inner-html.prop="row.item.body | json"></div>
-            </div>
-          </div>
-
-          <hr />
-          <h6>Request data:</h6>
-
-          <ProjectDetailRequest :item="row.item.request"></ProjectDetailRequest>
+        <b-card no-body>
+          <b-tabs card pills>
+            <b-tab title="Response" active>
+              <b-card-text>
+                <dl class="dl-horizontal">
+                  <dt>Created @:</dt>
+                  <dd>{{row.item.createdAt | date}}</dd>
+                  <dt>HTTP status:</dt>
+                  <dd>{{row.item.statusCode}}</dd>
+                  <dt>HTTP status description:</dt>
+                  <dd>{{row.item.statusDescription}}</dd>
+                  <dt>Exception:</dt>
+                  <dd>{{row.item.failureReason === null ? '-' : row.item.failureReason}}</dd>
+                </dl>
+                <div class="row">
+                  <div class="col" style="margin-bottom:20px">
+                    <h6>Body:</h6>
+                    <div class="json" :inner-html.prop="row.item.body | json"></div>
+                  </div>
+                </div>
+              </b-card-text>
+            </b-tab>
+            <b-tab title="Request">
+              <b-card-text>
+                <ProjectDetailRequest :item="row.item.request"></ProjectDetailRequest>
+              </b-card-text>
+            </b-tab>
+            <b-tab title="REST model description">
+              <b-card-text>TODO</b-card-text>
+            </b-tab>
+          </b-tabs>
         </b-card>
       </template>
 

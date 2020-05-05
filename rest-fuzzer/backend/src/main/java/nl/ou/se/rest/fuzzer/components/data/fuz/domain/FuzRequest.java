@@ -65,6 +65,11 @@ public class FuzRequest implements Comparable<FuzRequest> {
 
     // method(s)
     public int compareTo(FuzRequest other) {
+        int projectCompare = this.getProject().compareTo(other.getProject());
+        if (projectCompare != 0) {
+            return projectCompare;
+        }
+
         return new String(this.getPath() + this.getHttpMethod())
                 .compareTo(new String(other.getPath() + other.getHttpMethod()));
     }
@@ -112,7 +117,7 @@ public class FuzRequest implements Comparable<FuzRequest> {
         }
     }
 
-    // getters and setters
+    // getter(s) and setter(s)
     public Long getId() {
         return id;
     }

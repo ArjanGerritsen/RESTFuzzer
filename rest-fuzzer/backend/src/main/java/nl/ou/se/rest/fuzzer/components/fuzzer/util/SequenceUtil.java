@@ -21,6 +21,7 @@ public class SequenceUtil {
     private Logger logger = LoggerFactory.getLogger(SequenceUtil.class);
 
     private static final String SEPERATOR = ",";
+    private static final int NUM_SEQUENCES_SINGLE_LENGTH = 3;
 
     private List<RmdAction> actions = new ArrayList<>();
     private List<RmdActionDependency> dependencies = new ArrayList<>();
@@ -136,6 +137,18 @@ public class SequenceUtil {
     public List<String> getRandomSequences(List<String> sequences, Integer maxSize) {
         List<String> result = new ArrayList<>();
 
+        // put a number of sequences to the result with length == 1
+        while (result.size() < NUM_SEQUENCES_SINGLE_LENGTH) {
+            Optional<String> match = sequences.stream().filter(s -> s.split(SEPERATOR).length == 1).findFirst();
+            if (match.isPresent()) {
+                result.add(match.get());
+                sequences.remove(match.get());
+            } else {
+                break;
+            }
+        }
+
+        // get a list of sequences with maxSize number of requests (randomized)
         Collections.shuffle(sequences);
 
         for (int i = 0; getNumberOfRequests(result) < maxSize; i++) {
@@ -146,7 +159,12 @@ public class SequenceUtil {
         Optional<String> remove = result.stream().filter(s -> s.split(SEPERATOR).length == diff).findFirst();
         if (remove.isPresent()) {
             result.remove(remove.get());
+        } else {
+            result.remove(result.size() - 1);
         }
+
+        // shuffle result
+        Collections.shuffle(result);
 
         return result;
     }

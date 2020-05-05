@@ -88,6 +88,11 @@ public class RmdParameter implements Comparable<RmdParameter> {
 
     // methods
     public int compareTo(RmdParameter other) {
+        int actionCompare = this.getAction().compareTo(other.getAction());
+        if (actionCompare != 0) {
+            return actionCompare;
+        }
+
         return this.getPosition().compareTo(other.getPosition());
     }
 

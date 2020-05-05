@@ -42,6 +42,11 @@ public class RmdResponse implements Comparable<RmdResponse> {
 
     // methods
     public int compareTo(RmdResponse other) {
+        int actionCompare = this.getAction().compareTo(other.getAction());
+        if (actionCompare != 0) {
+            return actionCompare;
+        }
+
         return this.getStatusCode().compareTo(other.getStatusCode());
     }
 
