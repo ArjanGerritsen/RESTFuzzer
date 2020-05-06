@@ -17,4 +17,5 @@ public interface RmdSutService extends CrudRepository<RmdSut, Long> {
 
     @EntityGraph(value = Constants.ENTITY_GRAPH_RMD_SUTS_ALL_RELATIONS)
     Optional<RmdSut> findById(Long id);
+
 }
