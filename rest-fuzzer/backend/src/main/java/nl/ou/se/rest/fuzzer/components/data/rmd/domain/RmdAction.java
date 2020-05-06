@@ -39,20 +39,20 @@ public class RmdAction implements Comparable<RmdAction> {
     @Enumerated(EnumType.STRING)
     private HttpMethod httpMethod;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "action_id")
     @SortNatural
     private SortedSet<RmdParameter> parameters = new TreeSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "action_id")
     @SortNatural
     private SortedSet<RmdResponse> responses = new TreeSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "action_id")
     @SortNatural
-    private SortedSet<RmdActionDependency> dependencies= new TreeSet<>();
+    private SortedSet<RmdActionDependency> dependencies = new TreeSet<>();
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "sut_id")
@@ -69,11 +69,13 @@ public class RmdAction implements Comparable<RmdAction> {
 
     // methods
     public int compareTo(RmdAction other) {
-        int sutCompare = this.getSut().compareTo(other.getSut());
-        if (sutCompare != 0) {
-            return sutCompare;
+        if (this.getSut() != null && other.getSut() != null) {
+            int sutCompare = this.getSut().compareTo(other.getSut());
+            if (sutCompare != 0) {
+                return sutCompare;
+            }
         }
-        
+
         int pathCompare = this.getPath().compareTo(other.getPath());
         if (pathCompare != 0) {
             return pathCompare;
@@ -90,9 +92,9 @@ public class RmdAction implements Comparable<RmdAction> {
         response.setAction(this);
         this.getResponses().add(response);
     }
-    
+
     public List<RmdParameter> getParametersByContext(ParameterContext context) {
-    	return this.getParameters().stream().filter(p -> context.equals(p.getContext())).collect(Collectors.toList());
+        return this.getParameters().stream().filter(p -> context.equals(p.getContext())).collect(Collectors.toList());
     }
 
     // getters and setters

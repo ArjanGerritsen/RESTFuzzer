@@ -1,6 +1,7 @@
 package nl.ou.se.rest.fuzzer.components.extractor;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -8,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
 import nl.ou.se.rest.fuzzer.components.data.task.dao.TaskService;
@@ -25,10 +28,13 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
     private RmdSutService sutService;
     
     @Autowired
-    private TaskService taskService;
-    
+    private RmdActionService actionService;
+   
     @Autowired
     private RmdActionDependencyService actionDependencyService;
+
+    @Autowired
+    private TaskService taskService;
 
     // methods
     public void execute() {
@@ -69,9 +75,11 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
         sut.setDescription(extractor.getDescription());
         sut.setHost(extractor.getHost());
         sut.setBasePath(extractor.getBasePath());
-        extractor.getActions().forEach(a -> sut.addAction(a));
-
         sutService.save(sut);
+
+        List<RmdAction> actions = extractor.getActions();
+        actions.forEach(a -> a.setSut(sut));
+        actionService.saveAll(actions);
     }
 
     private void relate(RmdSut sut) {

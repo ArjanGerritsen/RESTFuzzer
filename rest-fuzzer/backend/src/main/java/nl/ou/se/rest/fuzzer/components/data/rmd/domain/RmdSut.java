@@ -57,7 +57,7 @@ public class RmdSut implements Comparable<RmdSut> {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sut_id")
     @SortNatural
     private SortedSet<RmdAction> actions = new TreeSet<>();

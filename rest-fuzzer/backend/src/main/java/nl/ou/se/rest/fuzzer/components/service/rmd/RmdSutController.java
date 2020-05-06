@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzProjectService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionDependencyService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdParameterService;
+import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdResponseService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdSutService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
 import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
@@ -32,6 +37,18 @@ public class RmdSutController {
 
     @Autowired
     private RmdSutService sutService;
+
+    @Autowired
+    private RmdActionService actionService;
+
+    @Autowired
+    private RmdParameterService parameterService;
+
+    @Autowired
+    private RmdResponseService responseService;
+
+    @Autowired
+    private RmdActionDependencyService actionDependencyService;
 
     @Autowired
     private FuzProjectService projectService;
@@ -70,6 +87,7 @@ public class RmdSutController {
         return ResponseEntity.ok(RmdSutMapper.toDto(sut, false));
     }
 
+    @Transactional
     @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
     public @ResponseBody ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         Optional<RmdSut> sut = sutService.findById(id);
@@ -85,7 +103,14 @@ public class RmdSutController {
                     .getResponseForViolation(String.format(Constants.Service.VALIDATION_SUT_USED_BY_PROJECTS, id));
         }
 
+        actionDependencyService.deleteBySutId(id);
+
+        parameterService.deleteBySutId(id);
+        responseService.deleteBySutId(id);
+        actionService.deleteBySutId(id);
+
         sutService.deleteById(id);
+
         return ResponseEntity.ok(RmdSutMapper.toDto(sut.get(), false));
     }
 }
