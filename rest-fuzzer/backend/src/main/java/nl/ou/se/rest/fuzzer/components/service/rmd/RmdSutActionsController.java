@@ -84,7 +84,7 @@ public class RmdSutActionsController {
     }
 
     @RequestMapping(path = "dependencies", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> addActionDepdency(@RequestBody Map<String, Long> parameters) {
+    public @ResponseBody ResponseEntity<?> addActionDependency(@RequestBody Map<String, Long> parameters) {
         Optional<RmdParameter> parameter = parameterService
                 .findById(parameters.get("parameter") == null ? -1 : parameters.get("parameter"));
 
@@ -131,6 +131,21 @@ public class RmdSutActionsController {
 
         actionDependency = actionDependencyService.save(actionDependency);
         return ResponseEntity.ok(RmdActionDependencyMapper.toDto(actionDependency));
+    }
+
+    @RequestMapping(path = "dependencies/{actionDependencyId}", method = RequestMethod.DELETE)
+    public @ResponseBody ResponseEntity<?> deleteActionDependency(
+            @PathVariable(name = "actionDependencyId") Long actionDependencyId) {
+        Optional<RmdActionDependency> actionDependency = actionDependencyService.findById(actionDependencyId);
+
+        if (!actionDependency.isPresent()) {
+            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdActionDependency.class,
+                    actionDependencyId));
+            return ResponseEntity.badRequest().body(new RmdActionDependency());
+        }
+
+        actionDependencyService.deleteById(actionDependencyId);
+        return ResponseEntity.ok(RmdActionDependencyMapper.toDto(actionDependency.get()));
     }
 
     @RequestMapping(path = "dependencies/count", method = RequestMethod.GET)
