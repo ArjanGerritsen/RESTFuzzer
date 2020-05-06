@@ -294,16 +294,31 @@ const suts = {
                 axios
                     .post(`/rest/suts/${data.sut_id}/actions/dependencies`, data.dependency)
                     .then(response => {
-                        commit("message_add", { message: { type: "info", title: "Add action dependency", text: `Action dependency for action ${response.data.action.path} [${response.data.action.httpMethod}]  added successful.` } });
+                        commit("message_add", { message: { type: "info", title: "Add dependency", text: `Dependency for action ${response.data.action.path} [${response.data.action.httpMethod}] added successful.` } });
                         dispatch("countAllSutActionsDependencies", { sut_id: data.sut_id });
                         resolve();
                     })
                     .catch(error => {
-                        commit("message_add", { message: { type: "error", text: `Couldn't add action dependency for action ${data.dependency.action}.`, err: error } });
+                        commit("message_add", { message: { type: "error", text: `Couldn't add dependency for action ${data.dependency.action}.`, err: error } });
                         reject(error);
                     })
             })
-        }
+        },
+        deleteSutActionDependency({ commit, dispatch }, data) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .delete(`/rest/suts/${data.sut_id}/actions/dependencies/${data.dependency.id}`)
+                    .then(response => {
+                        commit("message_add", { message: { type: "info", title: "Add action dependency", text: `Action dependency for action ${response.data.action.path} [${response.data.action.httpMethod}] deleted successful.` } });
+                        dispatch("countAllSutActionsDependencies", { sut_id: data.sut_id });
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("message_add", { message: { type: "error", text: `Couldn't delete dependency for action ${data.dependency.action.path} [${data.dependency.action.httpMethod}].`, err: error } });
+                        reject(error);
+                    })
+            })
+        }        
     },
     getters: {
         suts: state => {

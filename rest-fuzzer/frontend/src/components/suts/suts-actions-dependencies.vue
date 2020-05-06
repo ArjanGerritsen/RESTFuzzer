@@ -15,7 +15,10 @@
       <b-col lg="10">
         <b-card bg-variant="white" header-tag="header" class="float-right clearfix">
           <template v-slot:header>
-            <h6 class="mb-0">Filter: displaying <b>{{ totalRows }}</b> results.</h6>
+            <h6 class="mb-0">
+              Filter: displaying
+              <b>{{ totalRows }}</b> results.
+            </h6>
           </template>
           <b-card-text>
             <div class="float-left" style="margin-right:25px;">
@@ -30,11 +33,15 @@
                   :value="method"
                 >{{ method }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link> /
+              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>/
               <b-link @click="filter.httpMethods = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group label-size="sm" label="Discovery modus:" label-for="input-discovery-modus">
+              <b-form-group
+                label-size="sm"
+                label="Discovery modus:"
+                label-for="input-discovery-modus"
+              >
                 <b-form-checkbox
                   size="sm"
                   class="float-left"
@@ -45,7 +52,7 @@
                   :value="mode"
                 >{{ mode }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.discoveryModes = constants.DISCOVERY_MODES">select all</b-link> /
+              <b-link @click="filter.discoveryModes = constants.DISCOVERY_MODES">select all</b-link>/
               <b-link @click="filter.discoveryModes = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
@@ -95,7 +102,11 @@
       </template>
 
       <template v-slot:cell(details)="row">
-        <b-button size="sm" variant="primary" @click="row.toggleDetails">
+        <b-button
+          size="sm"
+          variant="primary"
+          @click="handleToggle(row)"
+        >
           <b-icon v-if="row.detailsShowing" icon="x" font-scale="1"></b-icon>
           <b-icon v-if="!row.detailsShowing" icon="plus" font-scale="1"></b-icon>
         </b-button>
@@ -103,6 +114,21 @@
 
       <template v-slot:row-details="row">
         <b-card>
+          <dl class="dl-horizontal">
+            <dt>
+              <b-button
+                v-if="row.item.discoveryModus === constants.MANUAL"
+                size="sm"
+                type="submit"
+                v-b-modal.suts-actions-dependencies-delete
+                variant="outline-danger"
+                title="delete this dependency"
+              >
+                <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
+              </b-button>
+            </dt>
+          </dl>
+
           <dl class="dl-horizontal">
             <dt>Created @</dt>
             <dd>{{ row.item.parameter.createdAt | date }}</dd>
@@ -144,6 +170,7 @@
     ></b-pagination>
 
     <SutsActionsDependenciesAdd :sut="this.sut"></SutsActionsDependenciesAdd>
+    <SutsActionsDependenciesDelete :sut="this.sut" :dependency="selectedDependency"></SutsActionsDependenciesDelete>
   </div>
 </template>
 
@@ -151,13 +178,15 @@
 import Constants from "../../shared/constants";
 
 import SutsActionsDependenciesAdd from "./suts-actions-dependencies-add";
+import SutsActionsDependenciesDelete from "./suts-actions-dependencies-delete";
 
 export default {
   props: ["sut", "fields", "formatters"],
-  components: { SutsActionsDependenciesAdd },
+  components: { SutsActionsDependenciesAdd, SutsActionsDependenciesDelete },
   data() {
     return {
       constants: Constants,
+      selectedDependency: null,
       isBusy: false,
       perPage: Constants.PER_PAGE,
       currentPage: 1,
@@ -194,6 +223,10 @@ export default {
     },
     linkGen(pageNum) {
       return pageNum === 1 ? "?" : `?page=${pageNum}`;
+    },
+    handleToggle(row) {
+      this.selectedDependency = row.item;
+      row.toggleDetails();
     }
   },
   computed: {

@@ -30,9 +30,8 @@
                   to="/tasks"
                   variant="primary"
                   title="start task to fuzz SUT"
-                  
                 >
-                  <b-icon icon="link" font-scale="1"></b-icon>&nbsp;go to tasks
+                  <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;go to tasks
                 </b-button>
                 <b-button
                   size="sm"

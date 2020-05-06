@@ -31,7 +31,6 @@
               <ul>
                 <li>OPTION (nice to have) TODO Tasks overview for SUTs and projecs.</li>
                 <li>TODO Refactor createdAt to constructors instead of factories.</li>
-                <li>TODO Delete manual added action dependency.</li>
                 <li>TODO Relation between request and action to display action details with request.</li>
                 <li>Fix: Delete project.</li>
                 <li>Fix: Clear results.</li>
@@ -40,6 +39,7 @@
                 <li>BUSY Use values for dependencies in sequence.</li>
                 <li>BUSY Create sequences for MB fuzzing (implementing in fuzzing process + overview with fuzzing projects).</li>
 
+                <li>Delete manual added action dependency.</li>
                 <li>Enable basic authentication via configuration.</li>
                 <li>Improve values assigned for arrays.</li>
                 <li>Depency overview for SUTs.</li>
