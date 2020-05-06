@@ -9,17 +9,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
 
 public class SequenceUtil {
 
     // variables
-    private Logger logger = LoggerFactory.getLogger(SequenceUtil.class);
-
     private static final String SEPERATOR = ",";
     private static final int NUM_SEQUENCES_SINGLE_LENGTH = 3;
 
@@ -109,10 +104,6 @@ public class SequenceUtil {
         }
 
         Boolean satisFiesDependencies = requiredDependencies == null || requiredDependencies.isEmpty();
-
-        logger.info(String.format(
-                "Last Action with id %s from sequence %s has dependencies %s and dependencies are satisfied: %s ",
-                actionId, actionIds, requiredDependencies, satisFiesDependencies));
 
         return satisFiesDependencies;
     }
