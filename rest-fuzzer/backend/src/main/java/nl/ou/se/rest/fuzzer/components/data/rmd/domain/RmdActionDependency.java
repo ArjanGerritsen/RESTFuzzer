@@ -19,7 +19,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Entity(name = "rmd_actions_dependencies")
 public class RmdActionDependency implements Comparable<RmdActionDependency> {
 
-    // variables
+    // variable(s)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,7 +49,7 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    // constructors
+    // constructor(s)
     public RmdActionDependency() {
     }
 
@@ -62,19 +62,27 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
         this.parameterDependsOn = parameterDependsOn;
     }
 
-    // methods
+    // method(s)
     public int compareTo(RmdActionDependency other) {
-        int compareAction = this.getAction().compareTo(other.getAction());
-        if (compareAction != 0) {
-            return compareAction;
+        if (this.getAction() != null && other.getAction() != null) {
+            int compareAction = this.getAction().compareTo(other.getAction());
+            if (compareAction != 0) {
+                return compareAction;
+            }
         }
 
-        int compareParameter = this.getParameter().compareTo(other.getParameter());
-        if (compareParameter != 0) {
-            return compareParameter;
+        if (this.getParameter() != null && other.getParameter() != null) {
+            int compareParameter = this.getParameter().compareTo(other.getParameter());
+            if (compareParameter != 0) {
+                return compareParameter;
+            }
         }
 
-        return this.getActionDependsOn().compareTo(other.getActionDependsOn());
+        if (this.getActionDependsOn() != null && other.getActionDependsOn() != null) {
+            return this.getActionDependsOn().compareTo(other.getActionDependsOn());
+        }
+
+        return this.getId().compareTo(this.getId());
     }
 
     // getters and setters

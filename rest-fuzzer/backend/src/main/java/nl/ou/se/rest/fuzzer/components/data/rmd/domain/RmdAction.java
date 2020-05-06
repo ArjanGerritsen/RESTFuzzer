@@ -54,6 +54,7 @@ public class RmdAction implements Comparable<RmdAction> {
     @SortNatural
     private SortedSet<RmdActionDependency> dependencies = new TreeSet<>();
 
+    @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "sut_id")
     private RmdSut sut;

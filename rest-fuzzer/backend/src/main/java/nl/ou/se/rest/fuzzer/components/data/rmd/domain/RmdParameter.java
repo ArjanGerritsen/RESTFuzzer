@@ -40,7 +40,7 @@ public class RmdParameter implements Comparable<RmdParameter> {
     public static final String META_DATA_ARRAY_FORMAT = "ARRAY_FORMAT";
     public static final String META_DATA_ARRAY_TYPE = "ARRAY_TYPE";
     public static final String META_DATA_ARRAY_ENUM = "ARRAY_ENUM";
-    
+
     // variables
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,9 +88,11 @@ public class RmdParameter implements Comparable<RmdParameter> {
 
     // methods
     public int compareTo(RmdParameter other) {
-        int actionCompare = this.getAction().compareTo(other.getAction());
-        if (actionCompare != 0) {
-            return actionCompare;
+        if (this.getAction() != null && other.getAction() != null) {
+            int actionCompare = this.getAction().compareTo(other.getAction());
+            if (actionCompare != 0) {
+                return actionCompare;
+            }
         }
 
         return this.getPosition().compareTo(other.getPosition());

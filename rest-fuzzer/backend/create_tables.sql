@@ -34,9 +34,9 @@ ALTER TABLE rmd_actions ADD FOREIGN KEY(sut_id) REFERENCES rmd_suts(id);
 
 CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  action_id INT,
-  parameter_id INT,
-  action_depends_on_id INT,
+  action_id INT NOT NULL,
+  parameter_id INT NOT NULL,
+  action_depends_on_id INT NOT NULL,
   parameter_depends_on_id INT,
   discovery_modus ENUM('AUTOMATIC', 'MANUAL') NOT NULL,
   created_at DATETIME NULL
