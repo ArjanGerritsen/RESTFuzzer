@@ -44,6 +44,7 @@ export default {
         })
         .then(() => {
           this.$root.$emit("bv::refresh::table", "sut-actions-dependencies");
+          this.$refs['modal'].hide();
         });
     }
   }

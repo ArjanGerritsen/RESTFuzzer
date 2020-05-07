@@ -20,6 +20,6 @@ public interface FuzRequestService extends CrudRepository<FuzRequest, Long> {
 
     @Modifying
     @Query(value = "DELETE FROM fuz_requests r WHERE r.project.id = :projectId")
-    void deleteByProjectId(Long projectId);
+    Integer deleteByProjectId(Long projectId);
 
 }

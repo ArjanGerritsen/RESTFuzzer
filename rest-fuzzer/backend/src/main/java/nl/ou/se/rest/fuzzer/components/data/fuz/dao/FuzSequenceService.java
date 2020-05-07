@@ -19,6 +19,6 @@ public interface FuzSequenceService extends CrudRepository<FuzSequence, Long> {
 
     @Modifying
     @Query(value = "DELETE FROM fuz_sequences s WHERE s.project.id = :projectId")
-    void deleteByProjectId(Long projectId);
+    Integer deleteByProjectId(Long projectId);
 
 }

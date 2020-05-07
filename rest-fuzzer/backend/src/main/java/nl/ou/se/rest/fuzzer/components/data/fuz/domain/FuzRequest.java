@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,11 +44,11 @@ public class FuzRequest implements Comparable<FuzRequest> {
     private String pathParametersJson;
     private String queryParametersJson;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id")
     private FuzProject project;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "sequence_id")
     private FuzSequence sequence;
 

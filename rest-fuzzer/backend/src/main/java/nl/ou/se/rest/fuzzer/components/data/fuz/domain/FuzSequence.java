@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,11 +37,11 @@ public class FuzSequence implements Comparable<FuzSequence> {
     @Enumerated(EnumType.STRING)
     private FuzSequenceStatus status;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id")
     private FuzProject project;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "sequence_id")
     @SortNatural
     private SortedSet<FuzRequest> requests = new TreeSet<>();

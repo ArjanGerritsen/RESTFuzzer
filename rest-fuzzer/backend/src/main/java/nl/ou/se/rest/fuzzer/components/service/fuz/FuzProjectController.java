@@ -97,6 +97,7 @@ public class FuzProjectController {
         return ResponseEntity.ok(FuzProjectMapper.toDto(project, false));
     }
 
+    @Transactional
     @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
     public @ResponseBody ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         Optional<FuzProject> project = projectService.findById(id);
@@ -106,7 +107,11 @@ public class FuzProjectController {
             return ResponseEntity.badRequest().body(new FuzProjectDto());
         }
 
+        responseService.deleteByProjectId(id);
+        requestService.deleteByProjectId(id);
+        sequenceService.deleteByProjectId(id);
         projectService.deleteById(id);
+
         return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
     }
 
