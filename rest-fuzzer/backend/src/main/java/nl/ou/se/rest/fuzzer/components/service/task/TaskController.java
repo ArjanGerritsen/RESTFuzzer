@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.ou.se.rest.fuzzer.components.data.task.dao.TaskService;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.extractor.ExtractorTask;
-import nl.ou.se.rest.fuzzer.components.fuzzer.FuzzerTask;
+import nl.ou.se.rest.fuzzer.components.fuzzer.type.FuzzerTask;
 import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 import nl.ou.se.rest.fuzzer.components.service.task.domain.TaskDto;
 import nl.ou.se.rest.fuzzer.components.service.task.mapper.TaskMapper;

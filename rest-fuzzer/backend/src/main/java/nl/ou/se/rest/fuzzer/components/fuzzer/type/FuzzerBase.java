@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.components.fuzzer;
+package nl.ou.se.rest.fuzzer.components.fuzzer.type;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

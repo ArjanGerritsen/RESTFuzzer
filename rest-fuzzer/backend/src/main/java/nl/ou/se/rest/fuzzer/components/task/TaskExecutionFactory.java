@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.extractor.ExtractorTask;
-import nl.ou.se.rest.fuzzer.components.fuzzer.FuzzerTask;
+import nl.ou.se.rest.fuzzer.components.fuzzer.type.FuzzerTask;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service
