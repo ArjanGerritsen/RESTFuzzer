@@ -79,7 +79,6 @@
                 </dd>
               </dl>
             </div>
-            <div class="col"></div>
           </div>
         </b-tab>
         <b-tab :disabled="!sequencesPresent" :title="sequencesTitle">

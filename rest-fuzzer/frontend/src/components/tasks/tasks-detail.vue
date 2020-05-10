@@ -13,11 +13,11 @@
                   v-if="hasRouteFor('sut')"
                   size="sm"
                   variant="primary"
-                  title="go to sut"
+                  title="go to SUT"
                   :to="getRouteFor('sut')"
                 >
                   <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;
-                  go to sut
+                  go to SUT
                 </b-button>
                 <b-button
                   v-if="hasRouteFor('project')"

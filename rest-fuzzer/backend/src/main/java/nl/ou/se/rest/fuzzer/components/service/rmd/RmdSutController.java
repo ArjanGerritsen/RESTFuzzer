@@ -103,10 +103,21 @@ public class RmdSutController {
                     .getResponseForViolation(String.format(Constants.Service.VALIDATION_SUT_USED_BY_PROJECTS, id));
         }
 
-        actionDependencyService.deleteBySutId(id);
+        List<Long> actionDependencyIds = actionDependencyService.findIdsBySutId(id);
+        if (!actionDependencyIds.isEmpty()) {
+        	actionDependencyService.deleteByIds(actionDependencyIds);
+        }
 
-        parameterService.deleteBySutId(id);
-        responseService.deleteBySutId(id);
+        List<Long> parameterIds = parameterService.findIdsBySutId(id);
+        if (!parameterIds.isEmpty()) {
+        	parameterService.deleteByIds(parameterIds);
+        }
+
+        List<Long> responseIds = responseService.findIdsBySutId(id);
+        if (!responseIds.isEmpty()) {
+        	responseService.deleteByIds(responseIds);
+        }
+
         actionService.deleteBySutId(id);
 
         sutService.deleteById(id);

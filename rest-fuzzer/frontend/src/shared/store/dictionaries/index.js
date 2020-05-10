@@ -89,6 +89,24 @@ const dictionaries = {
         dictionaries: state => {
             return state.dictionaries
         },
+        dictionariesForSelection: state => {
+            let dictionariesForSelection = []
+
+            if (state.dictionaries.all.items !== null) {
+            	dictionariesForSelection = state.dictionaries.all.items.map(
+                    dictionary => {
+                        const newDictionary = {};
+                        newDictionary["value"] = dictionary.id;
+                        newDictionary["text"] = dictionary.name;
+                        return newDictionary;
+                    }
+                );
+            }
+            
+            console.log(dictionariesForSelection);
+
+            return dictionariesForSelection;
+        }
     }
 }
 

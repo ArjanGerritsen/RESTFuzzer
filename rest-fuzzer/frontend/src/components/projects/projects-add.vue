@@ -9,6 +9,8 @@
         <b-form-group label="Description:" label-for="description" description="Describe project">
           <b-form-textarea id="description" v-model="project.description" required></b-form-textarea>
         </b-form-group>
+        
+        <hr />
 
         <b-form-group label="Type:" label-for="type" description="Select type">
           <b-form-select id="type" :options="types" v-model="project.type" required>
@@ -24,37 +26,35 @@
           v-if="configurationsForSelection.length > 0"
           label="Configuration:"
           label-for="input-configuration"
-          description="Configuration for project (select none or one), configurations are copied to this project"
+          description="Configuration for project (select none or one), configuration is copied to this project"
         >
           <b-form-checkbox
             switch
+            id="input-configuration"
             v-for="config in configurationsForSelection"
             v-model="configuration"
             :key="config.value"
             :value="config.value"
           >{{ config.text }}</b-form-checkbox>
+        </b-form-group>
+        
+        <hr />
 
+        <b-form-group v-if="project.type === 'BASIC_FUZZER'"
+          label="Repetitions:"
+          label-for="input-2"
+          description="Set number of repetitions"
+        >
+          <b-form-input
+            id="range-1"
+            v-model="metaDataTuplesJson.repetitions"
+            type="range"
+            min="1"
+            max="25000"
+          ></b-form-input>
+          <div class="mt-2">Repetitions: {{ metaDataTuplesJson.repetitions }}</div>
           <hr />
         </b-form-group>
-
-        <div v-if="project.type === 'BASIC_FUZZER'">
-          <b-form-group
-            label="Repetitions:"
-            label-for="input-2"
-            description="Set number of repetitions"
-          >
-            <b-form-input
-              id="range-1"
-              v-model="metaDataTuplesJson.repetitions"
-              type="range"
-              min="1"
-              max="25000"
-            ></b-form-input>
-            <div class="mt-2">Repetitions: {{ metaDataTuplesJson.repetitions }}</div>
-          </b-form-group>
-
-          <hr />
-        </div>
 
         <div v-if="project.type === 'MB_FUZZER' || project.type === 'MB_DICTIONARY_FUZZER'">
           <b-form-group
@@ -94,6 +94,18 @@
 
           <hr />
         </div>        
+
+        <b-form-group
+          v-if="(project.type === 'DICTIONARY_FUZZER' || project.type === 'MB_DICTIONARY_FUZZER') && dictionariesForSelection.length > 0"
+          label="Dictionaries:"
+          description="Dictionaries for project (select one or more)">
+          <b-form-checkbox-group
+            switches
+            stacked
+            :options="dictionariesForSelection"
+            v-model="dictionaries">
+          </b-form-checkbox-group>
+        </b-form-group>
 
         <b-form-group
           label="System under test:"
@@ -142,6 +154,7 @@ export default {
         metaDataTuplesJson: null
       },
       configuration: null,
+      dictionaries: [],
       metaDataTuplesJson: DEFAULT_META,
       types: [
         { value: "BASIC_FUZZER", text: "Basic" },
@@ -205,6 +218,11 @@ export default {
       if (this.$store.getters.configurations.all.items === null) {
         await this.$store.dispatch("findAllConfigurations");
       }
+    },    
+    async findAllDictionaries() {
+      if (this.$store.getters.dictionaries.all.items === null) {
+        await this.$store.dispatch("findAllDictionaries");
+      }
     },
     getConfigurationJson() {
       let configurations = this.$store.getters.configurations.all.items.filter(
@@ -236,6 +254,11 @@ export default {
     configurationsForSelection() {
       this.findAllConfigurations();
       return this.$store.getters.configurationsForSelection;
+    },
+    dictionariesForSelection() {
+      this.findAllDictionaries();
+      console.log(this.$store.getters.dictionariesForSelection);
+      return this.$store.getters.dictionariesForSelection;
     }
   }
 };

@@ -23,8 +23,10 @@ public interface RmdActionDependencyService extends CrudRepository<RmdActionDepe
     List<RmdActionDependency> findByFilter(Long sutId, List<DiscoveryModus> discoveryModes,
             List<HttpMethod> httpMethods, String path, Pageable pageable);
 
-    @Modifying
-    @Query(value = "DELETE FROM rmd_actions_dependencies d WHERE d.id IN (SELECT d.id FROM rmd_actions_dependencies d LEFT JOIN d.action a LEFT JOIN a.sut s WHERE s.id = :sutId)")
-    Integer deleteBySutId(Long sutId);
+    @Query(value = "SELECT d.id FROM rmd_actions_dependencies d LEFT JOIN d.action a LEFT JOIN a.sut s WHERE s.id = :sutId")
+    List<Long> findIdsBySutId(Long sutId);
 
+    @Modifying
+    @Query(value = "DELETE FROM rmd_actions_dependencies d WHERE d.id IN (:ids)")
+    Integer deleteByIds(List<Long> ids);
 }
