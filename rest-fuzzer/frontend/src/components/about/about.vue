@@ -35,7 +35,7 @@
                       <br />
                       <li>Enable basic authentication via configuration.</li>
                       <li>Improve correctness values assigned to arrays.</li>
-                      <li>Depency overview for SUTs.</li>
+                      <li>Dependency overview for SUTs.</li>
                       <li>Adding/removing manual dependencies for SUTs.</li>
                     </ul>
                     <ul>
