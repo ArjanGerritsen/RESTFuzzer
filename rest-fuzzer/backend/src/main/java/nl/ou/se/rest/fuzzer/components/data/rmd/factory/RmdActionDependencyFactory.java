@@ -9,18 +9,18 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
 
 public class RmdActionDependencyFactory {
 
-    // variables
+    // variable(s)
     private RmdActionDependency actionDependency;
 
-    // constructor
+    // constructor(s)
     public RmdActionDependencyFactory create(DiscoveryModus discoveryModus, RmdAction action, RmdParameter parameter,
-            RmdAction actionDependsOn, RmdParameter parameterDependsOn) {
+            RmdAction actionDependsOn, String parameterDependsOn) {
         actionDependency = new RmdActionDependency(discoveryModus, action, parameter, actionDependsOn, parameterDependsOn);
         actionDependency.setCreatedAt(LocalDateTime.now());
         return this;
     }
 
-    // methods
+    // method(s)
     public RmdActionDependency build() {
         return actionDependency;
     }

@@ -21,6 +21,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 
 @Entity(name = "fuz_requests")
@@ -48,10 +49,14 @@ public class FuzRequest implements Comparable<FuzRequest> {
     @JoinColumn(name = "project_id")
     private FuzProject project;
 
-    @ManyToOne(fetch = FetchType.LAZY )
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sequence_id")
     private FuzSequence sequence;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "action_id")
+    private RmdAction action;
+    
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
@@ -181,6 +186,14 @@ public class FuzRequest implements Comparable<FuzRequest> {
 
     public void setProject(FuzProject project) {
         this.project = project;
+    }
+
+    public RmdAction getAction() {
+        return action;
+    }
+
+    public void setAction(RmdAction action) {
+        this.action = action;
     }
 
     public FuzSequence getSequence() {

@@ -40,9 +40,8 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
     @JoinColumn(name = "action_depends_on_id")
     private RmdAction actionDependsOn;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "parameter_depends_on_id")
-    private RmdParameter parameterDependsOn;
+    @NotNull
+    private String parameterDependsOn;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -56,7 +55,7 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
     }
 
     public RmdActionDependency(DiscoveryModus discoveryModus, RmdAction action, RmdParameter parameter,
-            RmdAction actionDependsOn, RmdParameter parameterDependsOn) {
+            RmdAction actionDependsOn, String parameterDependsOn) {
         this.discoveryModus = discoveryModus;
         this.action = action;
         this.parameter = parameter;
@@ -120,11 +119,11 @@ public class RmdActionDependency implements Comparable<RmdActionDependency> {
         this.actionDependsOn = actionDependsOn;
     }
 
-    public RmdParameter getParameterDependsOn() {
+    public String getParameterDependsOn() {
         return parameterDependsOn;
     }
 
-    public void setParameterDependsOn(RmdParameter parameterDependsOn) {
+    public void setParameterDependsOn(String parameterDependsOn) {
         this.parameterDependsOn = parameterDependsOn;
     }
 

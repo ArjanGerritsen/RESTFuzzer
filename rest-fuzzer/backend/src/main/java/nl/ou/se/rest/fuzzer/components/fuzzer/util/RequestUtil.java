@@ -19,7 +19,7 @@ public class RequestUtil {
 	private ParameterUtil parameterService;
 
 	public FuzRequest getRequestFromAction(FuzProject project, RmdAction action) {
-		requestFactory.create(project, action.getPath(), action.getHttpMethod());
+		requestFactory.create(project, action, action.getPath(), action.getHttpMethod());
 
 		for (ParameterContext context : ParameterContext.values()) {
 			requestFactory.addParameterMap(context,

@@ -7,14 +7,15 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 
 public class RmdActionDto {
 
-    // variables
+    // variable(s)
     private Long id;
     private String path;
     private HttpMethod httpMethod;
     private List<RmdParameterDto> parameters = new ArrayList<>();
     private List<RmdResponseDto> responses = new ArrayList<>();
+    private List<RmdActionDependencyDto> dependencies = new ArrayList<>();
 
-    // getters and setters
+    // getter(s) and setter(s)
     public Long getId() {
         return id;
     }
@@ -53,5 +54,13 @@ public class RmdActionDto {
 
     public void setResponses(List<RmdResponseDto> responses) {
         this.responses = responses;
+    }
+
+    public List<RmdActionDependencyDto> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(List<RmdActionDependencyDto> dependencies) {
+        this.dependencies = dependencies;
     }
 }

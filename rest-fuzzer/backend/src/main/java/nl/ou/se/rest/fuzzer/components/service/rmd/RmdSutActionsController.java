@@ -84,9 +84,9 @@ public class RmdSutActionsController {
     }
 
     @RequestMapping(path = "dependencies", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> addActionDependency(@RequestBody Map<String, Long> parameters) {
-        Optional<RmdParameter> parameter = parameterService
-                .findById(parameters.get("parameter") == null ? -1 : parameters.get("parameter"));
+    public @ResponseBody ResponseEntity<?> addActionDependency(@RequestBody Map<String, Object> parameters) {
+        Optional<RmdParameter> parameter = parameterService.findById(
+                Long.valueOf((parameters.get("parameter") == null ? -1 : (Integer) parameters.get("parameter"))));
 
         if (!parameter.isPresent()) {
             logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdParameter.class,
@@ -94,33 +94,25 @@ public class RmdSutActionsController {
         }
 
         Optional<RmdAction> action = actionService
-                .findById(parameters.get("action") == null ? -1 : parameters.get("action"));
+                .findById(Long.valueOf(parameters.get("action") == null ? -1 : (Integer) parameters.get("action")));
 
         if (!action.isPresent()) {
             logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdAction.class,
                     parameters.get("actionId")));
         }
 
-        Optional<RmdAction> actionDependsOn = actionService
-                .findById(parameters.get("actionDependsOn") == null ? -1 : parameters.get("actionDependsOn"));
+        Optional<RmdAction> actionDependsOn = actionService.findById(Long
+                .valueOf(parameters.get("actionDependsOn") == null ? -1 : (Integer) parameters.get("actionDependsOn")));
 
         if (!actionDependsOn.isPresent()) {
             logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdAction.class,
                     parameters.get("actionDependsOnId")));
         }
 
-        Optional<RmdParameter> parameterDependsOn = parameterService
-                .findById(parameters.get("parameterDependsOnId") == null ? -1 : parameters.get("parameterDependsOnId"));
+        String parameterDependsOn = (String) parameters.get("parameterDependsOn");
 
-        if (!parameterDependsOn.isPresent()) {
-            logger.warn(String.format(Constants.Service.VALIDATION_OBJECT_NOT_FOUND, RmdParameter.class,
-                    parameters.get("parameterDependsOnId")));
-        }
-
-        RmdActionDependency actionDependency = new RmdActionDependencyFactory()
-                .create(DiscoveryModus.MANUAL, action.orElse(null), parameter.orElse(null),
-                        actionDependsOn.orElse(null), parameterDependsOn.orElse(null))
-                .build();
+        RmdActionDependency actionDependency = new RmdActionDependencyFactory().create(DiscoveryModus.MANUAL,
+                action.orElse(null), parameter.orElse(null), actionDependsOn.orElse(null), parameterDependsOn).build();
 
         List<String> violations = ValidatorUtil.getViolations(actionDependency);
         if (!violations.isEmpty()) {

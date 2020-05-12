@@ -53,3 +53,17 @@ Vue.filter('json', function (json) {
 
   return json;
 });
+
+Vue.filter('ppAction', function (action) {
+  if (!action) {
+    return '-';
+  }
+  return `${action.path} [${action.httpMethod}]`;
+});
+
+Vue.filter('ppParam', function (parameter) {
+  if (!parameter) {
+    return '-';
+  }
+  return `${parameter.name} [${parameter.type}]`;
+});

@@ -149,8 +149,7 @@
               {{ row.item.actionDependsOn.httpMethod }}
             </dd>
             <dd v-if="row.item.parameterDependsOn">
-              {{ row.item.parameterDependsOn.name }}
-              [{{ row.item.parameterDependsOn.type }}]
+              {{ row.item.parameterDependsOn }}
             </dd>
           </dl>
         </b-card>

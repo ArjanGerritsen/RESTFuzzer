@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
   action_id INT NOT NULL,
   parameter_id INT NOT NULL,
   action_depends_on_id INT NOT NULL,
-  parameter_depends_on_id INT,
+  parameter_depends_on VARCHAR(255) NOT NULL,
   discovery_modus ENUM('AUTOMATIC', 'MANUAL') NOT NULL,
   created_at DATETIME NULL
 ) ENGINE=INNODB;
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(parameter_id) REFERENCES rmd_parameters(id);
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_depends_on_id) REFERENCES rmd_actions(id);
-ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(parameter_depends_on_id) REFERENCES rmd_parameters(id);
+
 
 CREATE TABLE IF NOT EXISTS rmd_parameters (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -107,10 +107,12 @@ CREATE TABLE IF NOT EXISTS fuz_requests (
   query_parameters_json TEXT,
   project_id INT NOT NULL,
   sequence_id INT NULL,
+  action_id INT NOT NULL,
   created_at DATETIME NOT NULL
 ) ENGINE=INNODB;
 
 ALTER TABLE fuz_requests ADD FOREIGN KEY(project_id) REFERENCES fuz_projects(id);
+ALTER TABLE fuz_requests ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
 ALTER TABLE fuz_requests ADD FOREIGN KEY(sequence_id) REFERENCES fuz_sequences(id);
 
 
@@ -144,6 +146,7 @@ CREATE TABLE IF NOT EXISTS fuz_configurations (
 
 --------------------------- dropping all --------------------
 
+drop table fuz_sequences;
 drop table fuz_responses;
 drop table fuz_requests;
 drop table fuz_projects;

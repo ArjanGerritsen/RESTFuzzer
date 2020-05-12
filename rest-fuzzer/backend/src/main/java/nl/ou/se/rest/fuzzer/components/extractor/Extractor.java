@@ -20,7 +20,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.factory.RmdResponseFactory;
 
 public class Extractor {
 
-    // variables
+    // variable(s)
     private RmdSut sut;
 
     private String title;
@@ -33,7 +33,7 @@ public class Extractor {
     private RmdParameterFactory parameterFactory = new RmdParameterFactory();
     private RmdResponseFactory responseFactory = new RmdResponseFactory();
 
-    // constructor
+    // constructor(s)
     public Extractor(RmdSut sut) {
         this.sut = sut;
     }
@@ -84,7 +84,7 @@ public class Extractor {
                 .create(Integer.valueOf(responseEntry.getKey()), responseEntry.getValue().getDescription()).build());
     }
 
-    // getters and setters
+    // getter(s) and setter(s)
     public List<RmdAction> getActions() {
         return this.actions;
     }

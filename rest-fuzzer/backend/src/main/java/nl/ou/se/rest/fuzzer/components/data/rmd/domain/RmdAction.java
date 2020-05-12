@@ -26,7 +26,7 @@ import org.hibernate.annotations.SortNatural;
 @Entity(name = "rmd_actions")
 public class RmdAction implements Comparable<RmdAction> {
 
-    // variables
+    // variable(s)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -59,7 +59,7 @@ public class RmdAction implements Comparable<RmdAction> {
     @JoinColumn(name = "sut_id")
     private RmdSut sut;
 
-    // constructors
+    // constructor(s)
     public RmdAction() {
     }
 
@@ -68,7 +68,7 @@ public class RmdAction implements Comparable<RmdAction> {
         this.httpMethod = HttpMethod.valueOf(httpMethod);
     }
 
-    // methods
+    // method(s)
     public int compareTo(RmdAction other) {
         if (this.getSut() != null && other.getSut() != null) {
             int sutCompare = this.getSut().compareTo(other.getSut());
@@ -98,7 +98,7 @@ public class RmdAction implements Comparable<RmdAction> {
         return this.getParameters().stream().filter(p -> context.equals(p.getContext())).collect(Collectors.toList());
     }
 
-    // getters and setters
+    // getter(s) and setter(s)
     public Long getId() {
         return id;
     }
@@ -137,6 +137,14 @@ public class RmdAction implements Comparable<RmdAction> {
 
     public void setResponses(SortedSet<RmdResponse> responses) {
         this.responses = responses;
+    }
+
+    public SortedSet<RmdActionDependency> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(SortedSet<RmdActionDependency> dependencies) {
+        this.dependencies = dependencies;
     }
 
     public RmdSut getSut() {

@@ -79,12 +79,10 @@
         <b-card no-body>
           <b-tabs card pills>
             <b-tab title="Request" active>
-              <b-card-text>
-                <ProjectDetailRequest :item="row.item"></ProjectDetailRequest>
-              </b-card-text>
+              <RequestDetail :request="row.item"></RequestDetail>
             </b-tab>
             <b-tab title="REST model description">
-              <b-card-text>TODO</b-card-text>
+              <ActionDetail :action="row.item.action"></ActionDetail>
             </b-tab>
           </b-tabs>
         </b-card>
@@ -108,10 +106,11 @@
 <script>
 import Constants from "../../shared/constants";
 
-import ProjectDetailRequest from "./projects-detail-request";
+import ActionDetail from "../shared/partial/action-detail";
+import RequestDetail from "../shared/partial/request-detail";
 
 export default {
-  components: { ProjectDetailRequest },
+  components: { ActionDetail, RequestDetail },
   props: ["project", "fields", "formatters"],
   data() {
     return {

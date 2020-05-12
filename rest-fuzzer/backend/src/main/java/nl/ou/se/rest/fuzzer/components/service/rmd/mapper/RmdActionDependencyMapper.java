@@ -19,10 +19,9 @@ public class RmdActionDependencyMapper {
     public static RmdActionDependencyDto toDto(RmdActionDependency actionDependency) {
         RmdActionDependencyDto dto = new RmdActionDependencyDto();
         BeanUtils.copyProperties(actionDependency, dto);
+        dto.setAction(RmdActionMapper.toDto(actionDependency.getAction(), false));
         dto.setParameter(RmdParameterMapper.toDto(actionDependency.getParameter()));
-        dto.setAction(RmdActionMapper.toDto(actionDependency.getAction()));
-        dto.setActionDependsOn(RmdActionMapper.toDto(actionDependency.getActionDependsOn()));
-        dto.setParameterDependsOn(RmdParameterMapper.toDto(actionDependency.getParameterDependsOn()));
+        dto.setActionDependsOn(RmdActionMapper.toDto(actionDependency.getActionDependsOn(), false));
         return dto;
     }
 
@@ -30,10 +29,9 @@ public class RmdActionDependencyMapper {
             RmdAction actionDependsOn, RmdParameter parameterDependsOn) {
         RmdActionDependency actionDependency = new RmdActionDependency();
         BeanUtils.copyProperties(dto, actionDependency);
-        actionDependency.setParameter(parameter);
         actionDependency.setAction(action);
+        actionDependency.setParameter(parameter);
         actionDependency.setActionDependsOn(actionDependsOn);
-        actionDependency.setParameter(parameterDependsOn);
         return actionDependency;
     }
 }

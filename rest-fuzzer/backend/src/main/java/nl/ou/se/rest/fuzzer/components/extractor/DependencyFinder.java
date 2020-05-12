@@ -26,6 +26,8 @@ public class DependencyFinder {
     // variables
     private Logger logger = LoggerFactory.getLogger(DependencyFinder.class);
 
+    private static final String ID = "id";
+
     private static final String EMPTY_STRING = "";
     private static final String PATH_DEPENDENCY_FORMAT = "{%s}";
     private static final String ID_DEPENDENCIES_UNDERSCORE_ID = "_id";
@@ -55,7 +57,7 @@ public class DependencyFinder {
 
         if (actionDependsOn.isPresent()) {
             actionDependencies.add(actionDependencyFactory
-                    .create(DiscoveryModus.AUTOMATIC, parameter.getAction(), parameter, actionDependsOn.get(), null)
+                    .create(DiscoveryModus.AUTOMATIC, parameter.getAction(), parameter, actionDependsOn.get(), ID)
                     .build());
         }
     }

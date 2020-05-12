@@ -11,7 +11,7 @@ public class RmdActionDependencyDto {
     private RmdActionDto action;
     private RmdParameterDto parameter;
     private RmdActionDto actionDependsOn;
-    private RmdParameterDto parameterDependsOn;
+    private String parameterDependsOn;
     private DiscoveryModus discoveryModus;
     private LocalDateTime createdAt;
 
@@ -48,11 +48,11 @@ public class RmdActionDependencyDto {
         this.actionDependsOn = actionDependsOn;
     }
 
-    public RmdParameterDto getParameterDependsOn() {
+    public String getParameterDependsOn() {
         return parameterDependsOn;
     }
 
-    public void setParameterDependsOn(RmdParameterDto parameterDependsOn) {
+    public void setParameterDependsOn(String parameterDependsOn) {
         this.parameterDependsOn = parameterDependsOn;
     }
 

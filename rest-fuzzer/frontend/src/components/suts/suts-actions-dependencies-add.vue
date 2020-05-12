@@ -37,7 +37,6 @@
           id="actionDependsOn"
           :options="actionsDependsOn"
           v-model="dependency.actionDependsOn"
-          @change="updateParametersDependsOn()"
         >
           <template v-slot:first>
             <b-form-select-option :value="null" disabled>-- select an action --</b-form-select-option>
@@ -45,13 +44,16 @@
         </b-form-select>
       </b-form-group>
 
-      <b-form-group label="Parameter (depends on):" label-for="parameter-depends-on" description="Select a parameter">
-        <b-form-select id="parameter-depends-on" :options="parametersDependsOn" v-model="dependency.parameterDependsOn">
-          <template v-slot:first>
-            <b-form-select-option :value="null" disabled>-- select a parameter --</b-form-select-option>
-          </template>
-        </b-form-select>
-      </b-form-group>      
+      <b-form-group
+        label="Parameter (depends on):"
+        label-for="parameter-depends-on"
+        description="Type the name of the parameter in the response"
+      >
+        <b-form-input
+          id="parameter-depends-on"
+          v-model="dependency.parameterDependsOn"
+        ></b-form-input>
+      </b-form-group>
     </b-form>
 
     <template slot="modal-footer">
@@ -89,9 +91,6 @@ export default {
     },
     actionsDependsOn() {
       return this.$store.getters.selectionActionsPosts;
-    },
-    parametersDependsOn() {
-      return this.$store.getters.selectionParametersDependsOn;
     }
   },
   methods: {
@@ -120,12 +119,6 @@ export default {
       this.$store.dispatch("findSelectionParameters", {
         sut_id: this.sut.id,
         action_id: this.dependency.action
-      });
-    },
-    updateParametersDependsOn() {
-      this.$store.dispatch("findSelectionParametersDependsOn", {
-        sut_id: this.sut.id,
-        action_id: this.dependency.actionDependsOn
       });
     }
   },

@@ -5,7 +5,8 @@
         <b-card bg-variant="white" header-tag="header" class="float-right clearfix">
           <template v-slot:header>
             <h6 class="mb-0">
-              Filter: displaying <b>{{ totalRows }}</b> results.
+              Filter: displaying
+              <b>{{ totalRows }}</b> results.
             </h6>
           </template>
           <b-card-text>
@@ -21,7 +22,7 @@
                   :value="method"
                 >{{ method }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link> /
+              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>/
               <b-link @click="filter.httpMethods = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
@@ -79,40 +80,9 @@
 
       <template v-slot:row-details="row">
         <b-card>
-          <h6>Parameters:</h6>
-          <li
-            class="list-inline-item"
-            style="vertical-align:top; margin:8px; width: 190px;"
-            v-for="(value, key) in row.item.parameters"
-            :key="key"
-          >
-            <b>#{{ value.id }}</b>
-            <b-badge v-if="value.required" variant="primary">required</b-badge>
-            <br />
-            name: {{ value.name}}
-            <br />
-            context: {{ value.context }}
-            <br />
-            type: {{ value.type }}
-            <br />
-            extra: {{ value.metaDataTuplesJson === "{}" ? "-" : value.metaDataTuplesJson }}
-          </li>
-
-          <hr />
-
-          <h6>Responses:</h6>
-          <li
-            class="list-inline-item"
-            style="margin:8px; width: 190px;"
-            v-for="(value, key) in row.item.responses"
-            :key="key"
-          >
-            <b>#{{ value.id }}</b>
-            <br />
-            http status: {{ value.statusCode }}
-            <br />
-            description: {{ value.description }}
-          </li>
+          <b-card-text>
+            <ActionDetail :action="row.item"></ActionDetail>
+          </b-card-text>
         </b-card>
       </template>
 
@@ -134,8 +104,11 @@
 <script>
 import Constants from "../../shared/constants";
 
+import ActionDetail from "../shared/partial/action-detail";
+
 export default {
   props: ["sut", "fields", "formatters"],
+  components: { ActionDetail },
   data() {
     return {
       constants: Constants,
@@ -154,7 +127,7 @@ export default {
     restProvider(context, callback) {
       if (this.filterCopy != this.filterToJson) {
         this.currentPage = 1;
-        context.currentPage = 1;        
+        context.currentPage = 1;
         this.filterCopy = this.filterToJson;
       } else {
         this.currentPage = context.currentPage;
@@ -174,7 +147,7 @@ export default {
     },
     linkGen(pageNum) {
       return pageNum === 1 ? "?" : `?page=${pageNum}`;
-    },
+    }
   },
   computed: {
     filterToJson() {
