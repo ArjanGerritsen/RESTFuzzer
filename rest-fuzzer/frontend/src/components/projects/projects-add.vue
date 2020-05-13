@@ -9,7 +9,7 @@
         <b-form-group label="Description:" label-for="description" description="Describe project">
           <b-form-textarea id="description" v-model="project.description" required></b-form-textarea>
         </b-form-group>
-        
+
         <hr />
 
         <b-form-group label="Type:" label-for="type" description="Select type">
@@ -25,22 +25,21 @@
         <b-form-group
           v-if="configurationsForSelection.length > 0"
           label="Configuration:"
-          label-for="input-configuration"
           description="Configuration for project (select none or one), configuration is copied to this project"
         >
           <b-form-checkbox
             switch
-            id="input-configuration"
             v-for="config in configurationsForSelection"
             v-model="configuration"
             :key="config.value"
             :value="config.value"
           >{{ config.text }}</b-form-checkbox>
         </b-form-group>
-        
+
         <hr />
 
-        <b-form-group v-if="project.type === 'BASIC_FUZZER'"
+        <b-form-group
+          v-if="project.type === 'BASIC_FUZZER'"
           label="Repetitions:"
           label-for="input-2"
           description="Set number of repetitions"
@@ -93,18 +92,19 @@
           </b-form-group>
 
           <hr />
-        </div>        
+        </div>
 
         <b-form-group
           v-if="(project.type === 'DICTIONARY_FUZZER' || project.type === 'MB_DICTIONARY_FUZZER') && dictionariesForSelection.length > 0"
           label="Dictionaries:"
-          description="Dictionaries for project (select one or more)">
+          description="Dictionaries for project (select one or more)"
+        >
           <b-form-checkbox-group
             switches
             stacked
             :options="dictionariesForSelection"
-            v-model="dictionaries">
-          </b-form-checkbox-group>
+            v-model="dictionaries"
+          ></b-form-checkbox-group>
         </b-form-group>
 
         <b-form-group
@@ -218,7 +218,7 @@ export default {
       if (this.$store.getters.configurations.all.items === null) {
         await this.$store.dispatch("findAllConfigurations");
       }
-    },    
+    },
     async findAllDictionaries() {
       if (this.$store.getters.dictionaries.all.items === null) {
         await this.$store.dispatch("findAllDictionaries");

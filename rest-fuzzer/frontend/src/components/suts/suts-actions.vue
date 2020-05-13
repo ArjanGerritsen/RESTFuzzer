@@ -22,7 +22,7 @@
                   :value="method"
                 >{{ method }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>/
+              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>&nbsp;/
               <b-link @click="filter.httpMethods = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">

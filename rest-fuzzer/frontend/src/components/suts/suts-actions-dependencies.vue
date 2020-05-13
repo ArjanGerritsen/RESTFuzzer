@@ -33,7 +33,7 @@
                   :value="method"
                 >{{ method }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>/
+              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>&nbsp;/
               <b-link @click="filter.httpMethods = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
@@ -52,7 +52,7 @@
                   :value="mode"
                 >{{ mode }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.discoveryModes = constants.DISCOVERY_MODES">select all</b-link>/
+              <b-link @click="filter.discoveryModes = constants.DISCOVERY_MODES">select all</b-link>&nbsp;/
               <b-link @click="filter.discoveryModes = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
@@ -131,7 +131,7 @@
 
           <dl class="dl-horizontal">
             <dt>Created @</dt>
-            <dd>{{ row.item.parameter.createdAt | date }}</dd>
+            <dd>{{ row.item.createdAt | date }}</dd>
           </dl>
 
           <dl class="dl-horizontal">
@@ -145,8 +145,7 @@
           <dl class="dl-horizontal">
             <dt>Depends on</dt>
             <dd>
-              {{ row.item.actionDependsOn.path }}
-              {{ row.item.actionDependsOn.httpMethod }}
+              {{ row.item.actionDependsOn | ppAction }}
             </dd>
             <dd v-if="row.item.parameterDependsOn">
               {{ row.item.parameterDependsOn }}

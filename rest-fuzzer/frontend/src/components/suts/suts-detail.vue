@@ -20,7 +20,7 @@
                   size="sm"
                   type="submit"
                   variant="primary"
-                  title="start task to extract REST model description from OAS"
+                  title="start task to extract REST model description (actions and dependencies) from OAS"
                   v-on:click="addExtractorTask"
                 >
                   <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start extract task
@@ -29,18 +29,10 @@
                   size="sm"
                   to="/tasks"
                   variant="primary"
-                  title="start task to fuzz SUT"
+                  title="go to tasks"
                 >
                   <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;go to tasks
                 </b-button>
-                <b-button
-                  size="sm"
-                  to="/tasks"
-                  variant="primary"
-                  title="start task to fuzz SUT"
-                >
-                  <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;go to tasks
-                </b-button>                
                 <b-button
                   size="sm"
                   type="submit"
