@@ -20,7 +20,7 @@ import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 @Entity(name = "tasks")
 public class Task {
 
-    // variables
+    // variable(s)
     public static final String META_DATA_SUT_ID = "sut_id";
     public static final String META_DATA_PROJECT_ID = "project_id";
 
@@ -38,6 +38,9 @@ public class Task {
     private BigDecimal progress;
 
     @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
+
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime startedAt;
 
     @Column(columnDefinition = "TIMESTAMP")
@@ -46,7 +49,7 @@ public class Task {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime finishedAt;
 
-    // constructors
+    // constructor(s)
     public Task() {
     }
 
@@ -54,7 +57,7 @@ public class Task {
         this.canonicalName = canonicalName;
     }
 
-    // methods
+    // method(s)
     public Map<String, Object> getMetaDataTuples() {
         return JsonUtil.stringToMap(this.metaDataTuplesJson);
     }
@@ -79,7 +82,7 @@ public class Task {
         return false;
     }
 
-    // getters and setters
+    // getter(s) and setter(s)
     public Long getId() {
         return id;
     }
@@ -110,6 +113,14 @@ public class Task {
 
     public void setProgress(BigDecimal progress) {
         this.progress = progress;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getStartedAt() {

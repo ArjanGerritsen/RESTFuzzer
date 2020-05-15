@@ -1,5 +1,8 @@
 package nl.ou.se.rest.fuzzer.components.data.rmd.domain;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +18,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Entity(name = "rmd_responses")
 public class RmdResponse implements Comparable<RmdResponse> {
 
-    // variables
+    // variable(s)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,11 +30,14 @@ public class RmdResponse implements Comparable<RmdResponse> {
     @NotEmpty
     private String description;
 
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "action_id")
     private RmdAction action;
 
-    // constructor
+    // constructor(s)
     public RmdResponse() {
     }
 
@@ -40,7 +46,7 @@ public class RmdResponse implements Comparable<RmdResponse> {
         this.description = description;
     }
 
-    // methods
+    // method(s)
     public int compareTo(RmdResponse other) {
         if (this.getAction() != null && other.getAction() != null) {
             int actionCompare = this.getAction().compareTo(other.getAction());
@@ -52,7 +58,7 @@ public class RmdResponse implements Comparable<RmdResponse> {
         return this.getStatusCode().compareTo(other.getStatusCode());
     }
 
-    // getters and setters
+    // getter(s) and setter(s)
     public Long getId() {
         return id;
     }
@@ -75,6 +81,14 @@ public class RmdResponse implements Comparable<RmdResponse> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public RmdAction getAction() {

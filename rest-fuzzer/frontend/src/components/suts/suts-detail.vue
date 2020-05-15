@@ -50,18 +50,14 @@
               <dl class="dl-horizontal">
                 <dt>Identifier</dt>
                 <dd>{{this.sut.id}}</dd>
+                <dt>Description</dt>
+                <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
                 <dt>Title</dt>
                 <dd>{{this.sut.title ? this.sut.title : '-'}}</dd>
                 <dt>OAS location</dt>
                 <dd>
                   <b-link :href="this.sut.location" target="_blank">{{this.sut.location}}</b-link>
                 </dd>
-              </dl>
-            </b-col>
-            <b-col>
-              <dl class="dl-horizontal">
-                <dt>Description</dt>
-                <dd>{{this.sut.description ? this.sut.description : '-'}}</dd>
                 <dt>Created @</dt>
                 <dd>{{this.sut.createdAt | date }}</dd>
               </dl>
@@ -104,8 +100,8 @@ export default {
       actions_dependencies_fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "action.path", label: "Path" },
-        { key: "action.httpMethod", label: "HTTP method", thStyle: "width: 110px;" },
         { key: "discoveryModus", label: "Discovered", thStyle: "width: 110px;" },
+        { key: "action.httpMethod", label: "HTTP method", thStyle: "width: 110px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ]
     };

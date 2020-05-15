@@ -1,7 +1,9 @@
 package nl.ou.se.rest.fuzzer.components.data.rmd.domain;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,6 +24,7 @@ import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 @Entity(name = "rmd_parameters")
 public class RmdParameter implements Comparable<RmdParameter> {
 
+    // variable(s)
     public static final String META_DATA_PATTERN = "PATTERN";
     public static final String META_DATA_FORMAT = "FORMAT";
 
@@ -41,7 +44,6 @@ public class RmdParameter implements Comparable<RmdParameter> {
     public static final String META_DATA_ARRAY_TYPE = "ARRAY_TYPE";
     public static final String META_DATA_ARRAY_ENUM = "ARRAY_ENUM";
 
-    // variables
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -69,11 +71,14 @@ public class RmdParameter implements Comparable<RmdParameter> {
 
     private String metaDataTuplesJson;
 
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime createdAt;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "action_id")
     private RmdAction action;
 
-    // constructors
+    // constructor(s)
     public RmdParameter() {
     }
 
@@ -86,7 +91,7 @@ public class RmdParameter implements Comparable<RmdParameter> {
         this.context = ParameterContext.valueOf(context);
     }
 
-    // methods
+    // method(s)
     public int compareTo(RmdParameter other) {
         if (this.getAction() != null && other.getAction() != null) {
             int actionCompare = this.getAction().compareTo(other.getAction());
@@ -113,7 +118,7 @@ public class RmdParameter implements Comparable<RmdParameter> {
         return defaultValue;
     }
 
-    // getters and setters
+    // getter(s) and setter(s)
     public Long getId() {
         return id;
     }
@@ -168,6 +173,22 @@ public class RmdParameter implements Comparable<RmdParameter> {
 
     public void setContext(ParameterContext context) {
         this.context = context;
+    }
+
+    public String getMetaDataTuplesJson() {
+        return metaDataTuplesJson;
+    }
+
+    public void setMetaDataTuplesJson(String metaDataTuplesJson) {
+        this.metaDataTuplesJson = metaDataTuplesJson;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public RmdAction getAction() {

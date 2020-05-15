@@ -14,7 +14,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
 
 public class SequenceUtil {
 
-    // variables
+    // variable(s)
     private static final String SEPERATOR = ",";
     private static final int NUM_SEQUENCES_SINGLE_LENGTH = 3;
 
@@ -30,8 +30,9 @@ public class SequenceUtil {
         this.init();
     }
 
-    // methods
+    // method(s)
     private void init() {
+        // initialise mapped dependencies
         dependencies.forEach(d -> {
             List<Long> dependsOnActionIds = new ArrayList<>();
             Long actionId = d.getAction().getId();
@@ -42,8 +43,9 @@ public class SequenceUtil {
             this.mappedDepencies.put(actionId, dependsOnActionIds);
         });
 
-        actions.forEach(a -> {
-            mappedActions.put(a.getId(), a);
+        // initialise mapped actions
+        this.actions.forEach(a -> {
+            this.mappedActions.put(a.getId(), a);
         });
     }
 
@@ -78,16 +80,16 @@ public class SequenceUtil {
     }
 
     private Boolean satisfiesAllDependencies(String sequence) {
+        if (sequence.equals("264,261,246")) {
+            System.out.println("test");
+        }
+
         String[] actionStringIds = sequence.split(",");
         List<Long> actionIds = Arrays.asList(actionStringIds).stream().map(id -> Long.parseLong(id))
                 .collect(Collectors.toList());
 
         // only check last item, the sequence -1 is already checked and thus valid
-        if (!satisfiesDependenciesForLastItem(actionIds)) {
-            return false;
-        }
-
-        return true;
+        return satisfiesDependenciesForLastItem(actionIds);
     }
 
     private Boolean satisfiesDependenciesForLastItem(List<Long> actionIds) {
@@ -95,7 +97,7 @@ public class SequenceUtil {
         Long actionId = actionIds.get(actionIds.size() - 1);
 
         if (this.mappedDepencies.containsKey(actionId)) {
-            requiredDependencies = this.mappedDepencies.get(actionId);
+            this.mappedDepencies.get(actionId).forEach(id -> { requiredDependencies.add(id); });
         }
 
         if (!requiredDependencies.isEmpty() && actionIds.size() > 1) {
@@ -103,9 +105,7 @@ public class SequenceUtil {
             requiredDependencies.removeIf(d -> dependenciesInSequence.contains(d));
         }
 
-        Boolean satisFiesDependencies = requiredDependencies == null || requiredDependencies.isEmpty();
-
-        return satisFiesDependencies;
+        return requiredDependencies.isEmpty();
     }
 
     public List<RmdAction> getActionsFromSequence(String sequence) {

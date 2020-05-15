@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   canonical_name VARCHAR(255) NOT NULL,
   meta_data_tuples_json TEXT, 
   progress DECIMAL(5,2),
+  created_at DATETIME NULL,
   started_at DATETIME NULL,
   crashed_at DATETIME NULL,
   finished_at DATETIME NULL
@@ -26,10 +27,27 @@ CREATE TABLE IF NOT EXISTS rmd_actions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   path VARCHAR(255) NOT NULL,
   http_method ENUM('GET', 'POST', 'PATCH', 'PUT', 'DELETE') NOT NULL,
-  sut_id INT
+  sut_id INT,
+  created_at DATETIME NULL  
 ) ENGINE=INNODB;
 
 ALTER TABLE rmd_actions ADD FOREIGN KEY(sut_id) REFERENCES rmd_suts(id); 
+
+
+CREATE TABLE IF NOT EXISTS rmd_parameters (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  position INT NOT NULL,
+  name VARCHAR(64) NOT NULL,
+  required BOOLEAN NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  type ENUM('BOOLEAN', 'STRING', 'INTEGER', 'ARRAY') NOT NULL,
+  context ENUM('FORMDATA', 'HEADER', 'PATH', 'QUERY') NOT NULL,
+  meta_data_tuples_json TEXT,
+  action_id INT,
+  created_at DATETIME NULL  
+) ENGINE=INNODB;
+
+ALTER TABLE rmd_parameters ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
 
 
 CREATE TABLE IF NOT EXISTS rmd_actions_dependencies (
@@ -47,26 +65,13 @@ ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(parameter_id) REFERENCES rm
 ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_depends_on_id) REFERENCES rmd_actions(id);
 
 
-CREATE TABLE IF NOT EXISTS rmd_parameters (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  position INT NOT NULL,
-  name VARCHAR(64) NOT NULL,
-  required BOOLEAN NOT NULL,
-  description VARCHAR(255) NOT NULL,
-  type ENUM('BOOLEAN', 'STRING', 'INTEGER', 'ARRAY') NOT NULL,
-  context ENUM('FORMDATA', 'HEADER', 'PATH', 'QUERY') NOT NULL,
-  meta_data_tuples_json TEXT,
-  action_id INT
-) ENGINE=INNODB;
-
-ALTER TABLE rmd_parameters ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
-
 
 CREATE TABLE IF NOT EXISTS rmd_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
   status_code INT NOT NULL,
   description VARCHAR(255) NOT NULL,
-  action_id INT NOT NULL
+  action_id INT NOT NULL,
+  created_at DATETIME NULL  
 ) ENGINE=INNODB;
 
 
@@ -146,9 +151,9 @@ CREATE TABLE IF NOT EXISTS fuz_configurations (
 
 --------------------------- dropping all --------------------
 
-drop table fuz_sequences;
 drop table fuz_responses;
 drop table fuz_requests;
+drop table fuz_sequences;
 drop table fuz_projects;
 drop table fuz_dictionaries;
 drop table fuz_configurations;

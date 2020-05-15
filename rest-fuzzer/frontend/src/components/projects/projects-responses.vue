@@ -22,7 +22,7 @@
                   :value="method"
                 >{{ method }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>/
+              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>&nbsp;/
               <b-link @click="filter.httpMethods = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
@@ -41,7 +41,7 @@
                   :value="range"
                 >{{ range }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpResponseRanges = constants.HTTP_RESPONSE_RANGES">select all</b-link>/
+              <b-link @click="filter.httpResponseRanges = constants.HTTP_RESPONSE_RANGES">select all</b-link>&nbsp;/
               <b-link @click="filter.httpResponseRanges = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
@@ -101,29 +101,12 @@
         <b-card no-body>
           <b-tabs card pills>
             <b-tab title="Response" active>
-              <b-card-text>
-                <dl class="dl-horizontal">
-                  <dt>Created @:</dt>
-                  <dd>{{row.item.createdAt | date}}</dd>
-                  <dt>HTTP status:</dt>
-                  <dd>{{row.item.statusCode}}</dd>
-                  <dt>HTTP status description:</dt>
-                  <dd>{{row.item.statusDescription}}</dd>
-                  <dt>Exception:</dt>
-                  <dd>{{row.item.failureReason === null ? '-' : row.item.failureReason}}</dd>
-                </dl>
-                <div class="row">
-                  <div class="col" style="margin-bottom:20px">
-                    <h6>Body:</h6>
-                    <div class="json" :inner-html.prop="row.item.body | json"></div>
-                  </div>
-                </div>
-              </b-card-text>
+              <ResponseDetail :response="row.item"></ResponseDetail>
             </b-tab>
             <b-tab title="Request">
               <RequestDetail :request="row.item.request"></RequestDetail>
             </b-tab>
-            <b-tab title="REST model description">
+            <b-tab title="Action">
               <ActionDetail :action="row.item.request.action"></ActionDetail>
             </b-tab>
           </b-tabs>
@@ -150,9 +133,10 @@ import Constants from "../../shared/constants";
 
 import ActionDetail from "../shared/partial/action-detail";
 import RequestDetail from "../shared/partial/request-detail";
+import ResponseDetail from "../shared/partial/response-detail";
 
 export default {
-  components: { ActionDetail, RequestDetail },
+  components: { ActionDetail, RequestDetail, ResponseDetail },
   props: ["project", "fields", "formatters"],
   data() {
     return {

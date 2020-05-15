@@ -12,13 +12,16 @@ import nl.ou.se.rest.fuzzer.components.service.rmd.mapper.RmdActionMapper;
 public class FuzRequestMapper {
 
     public static List<FuzRequestDto> toDtos(List<FuzRequest> requests) {
-        return requests.stream().map(r -> FuzRequestMapper.toDto(r)).collect(Collectors.toList());
+        return requests.stream().map(r -> FuzRequestMapper.toDto(r, true)).collect(Collectors.toList());
     }
 
-    public static FuzRequestDto toDto(FuzRequest request) {
+    public static FuzRequestDto toDto(FuzRequest request, boolean mapResponse) {
         FuzRequestDto dto = new FuzRequestDto();
         BeanUtils.copyProperties(request, dto);
         dto.setAction(RmdActionMapper.toDto(request.getAction(), true));
+        if (mapResponse) {
+            dto.setResponse(FuzResponseMapper.toDto(request.getResponse()));
+        }
         return dto;
     }
 }

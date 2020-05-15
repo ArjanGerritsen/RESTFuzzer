@@ -102,11 +102,7 @@
       </template>
 
       <template v-slot:cell(details)="row">
-        <b-button
-          size="sm"
-          variant="primary"
-          @click="handleToggle(row)"
-        >
+        <b-button size="sm" variant="primary" @click="handleToggle(row)">
           <b-icon v-if="row.detailsShowing" icon="x" font-scale="1"></b-icon>
           <b-icon v-if="!row.detailsShowing" icon="plus" font-scale="1"></b-icon>
         </b-button>
@@ -129,28 +125,44 @@
             </dt>
           </dl>
 
-          <dl class="dl-horizontal">
-            <dt>Created @</dt>
-            <dd>{{ row.item.createdAt | date }}</dd>
-          </dl>
+          <h6>Depends on action:</h6>
+          <ul>
+            <li class="list-inline-item" style="margin:8px;">
+              <b>#{{ row.item.action.id }}</b>
+              <br />
+              path: {{ row.item.action.path}}
+              <br />
+              HTTP method: {{ row.item.action.httpMethod }}
+            </li>
+          </ul>
 
-          <dl class="dl-horizontal">
-            <dt>Parameter</dt>
-            <dd>
-              {{ row.item.parameter.name }}
-              [{{ row.item.parameter.type }}]
-            </dd>
-          </dl>
+          <hr />
 
-          <dl class="dl-horizontal">
-            <dt>Depends on</dt>
-            <dd>
-              {{ row.item.actionDependsOn | ppAction }}
-            </dd>
-            <dd v-if="row.item.parameterDependsOn">
-              {{ row.item.parameterDependsOn }}
-            </dd>
-          </dl>
+          <h6>Depends on parameter:</h6>
+          <ul>
+            <li class="list-inline-item" style="margin:8px;">
+              <b>#{{ row.item.parameter.id }}</b>
+              &nbsp;
+              <b-badge v-if="row.item.parameter.required" variant="primary">required</b-badge>
+              <br />
+              name: {{ row.item.parameter.name}}
+              <br />
+              context: {{ row.item.parameter.context }}
+              <br />
+              type: {{ row.item.parameter.type }}
+              <br />
+              extra: {{ row.item.parameter.metaDataTuplesJson === "{}" ? "-" : row.item.parameter.metaDataTuplesJson }}
+            </li>
+          </ul>
+
+          <hr />
+
+          <h6>Information from response:</h6>
+          <ul>
+            <li class="list-inline-item" style="margin:8px;">
+              parameter: {{ row.item.parameterDependsOn }}
+            </li>
+          </ul>
         </b-card>
       </template>
 
@@ -241,3 +253,10 @@ export default {
   created: function() {}
 };
 </script>
+
+<style scoped>
+ul {
+  margin: 0px;
+  padding: 0px;
+}
+</style>

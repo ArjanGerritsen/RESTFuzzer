@@ -21,18 +21,22 @@
           <b-card-text>
             <b-card no-body>
               <b-tabs card pills vertical>
-                <b-tab title="v0.05 | xx-05-2020" active>
+                <b-tab title="v0.06 | 13-06-2020" active>
                   <b-card-text>
                     <ul>
-                      <li>OPTION (nice to have) TODO Tasks overview for SUTs and projecs.</li>
                       <li>TODO Refactor createdAt to constructors instead of factories.</li>
                       <li>TODO Relation between request and action to display action details with request.</li>
                       <li>Fix: SUT selection is empty when adding new fuzzing projects.</li>
-                      <li>Fix: Clear results for fuzzing project doesn't work correct.</li>
-
                       <li>BUSY Use values for dependencies in sequence.</li>
-                      <li>BUSY Create sequences for MB fuzzing (implementing in fuzzing process + overview with fuzzing projects).</li>
-                      <br />
+                      <li>Fix. sequences are not always valid.</li>
+                      <li>Fix: Clear results for fuzzing project doesn't work correct.</li>
+                    </ul>
+                  </b-card-text>
+                </b-tab>
+                <b-tab title="v0.05 | 13-05-2020">
+                  <b-card-text>
+                    <ul>
+                      <li>Create sequences for MB fuzzing (implementing in fuzzing process + overview with fuzzing projects).</li>
                       <li>Enable basic authentication via configuration.</li>
                       <li>Improve correctness values assigned to arrays.</li>
                       <li>Dependency overview for SUTs.</li>

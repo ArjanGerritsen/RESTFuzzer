@@ -22,7 +22,7 @@
                   :value="method"
                 >{{ method }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>/
+              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>&nbsp;/
               <b-link @click="filter.httpMethods = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
@@ -90,7 +90,7 @@
                 <b-card no-body>
                   <b-tabs card pills>
                     <b-tab title="Response" active>
-                      <b-card-text>TODO</b-card-text>
+                      <ResponseDetail :response="request.response"></ResponseDetail>
                     </b-tab>
                     <b-tab title="Request">
                       <RequestDetail :request="request"></RequestDetail>
@@ -126,9 +126,10 @@ import Constants from "../../shared/constants";
 
 import ActionDetail from "../shared/partial/action-detail";
 import RequestDetail from "../shared/partial/request-detail";
+import ResponseDetail from "../shared/partial/response-detail";
 
 export default {
-  components: { ActionDetail, RequestDetail },
+  components: { ActionDetail, RequestDetail, ResponseDetail },
   props: ["project", "fields", "formatters"],
   data() {
     return {

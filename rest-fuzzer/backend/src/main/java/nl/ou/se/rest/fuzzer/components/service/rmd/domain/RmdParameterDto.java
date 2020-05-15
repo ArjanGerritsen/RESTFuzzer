@@ -1,11 +1,13 @@
 package nl.ou.se.rest.fuzzer.components.service.rmd.domain;
 
+import java.time.LocalDateTime;
+
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
 
 public class RmdParameterDto {
 
-    // variables
+    // variable(s)
     private Long id;
     private Integer position;
     private String name;
@@ -14,8 +16,9 @@ public class RmdParameterDto {
     private ParameterType type;
     private ParameterContext context;
     private String metaDataTuplesJson;
+    private LocalDateTime createdAt;
 
-    // getters and setters
+    // getter(s) and setter(s)
     public Long getId() {
         return id;
     }
@@ -78,5 +81,13 @@ public class RmdParameterDto {
 
     public void setMetaDataTuplesJson(String metaDataTuplesJson) {
         this.metaDataTuplesJson = metaDataTuplesJson;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

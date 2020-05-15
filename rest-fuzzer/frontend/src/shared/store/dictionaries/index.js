@@ -102,9 +102,6 @@ const dictionaries = {
                     }
                 );
             }
-            
-            console.log(dictionariesForSelection);
-
             return dictionariesForSelection;
         }
     }

@@ -1,13 +1,16 @@
 package nl.ou.se.rest.fuzzer.components.service.rmd.domain;
 
+import java.time.LocalDateTime;
+
 public class RmdResponseDto {
 
-    // variables
+    // variable(s)
     private Long id;
     private Integer statusCode;
     private String description;
+    private LocalDateTime createdAt;
 
-    // getters and setters
+    // getter(s) and setter(s)
     public Long getId() {
         return id;
     }
@@ -30,5 +33,13 @@ public class RmdResponseDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -16,6 +16,7 @@ public class FuzRequestDto {
     private String pathParametersJson;
     private String queryParametersJson;
     private RmdActionDto action;
+    private FuzResponseDto response;
     private LocalDateTime createdAt;
 
     // getter(s) and setter(s)
@@ -66,6 +67,12 @@ public class FuzRequestDto {
     }
     public void setAction(RmdActionDto action) {
         this.action = action;
+    }
+    public FuzResponseDto getResponse() {
+        return response;
+    }
+    public void setResponse(FuzResponseDto response) {
+        this.response = response;
     }
     public LocalDateTime getCreatedAt() {
         return createdAt;

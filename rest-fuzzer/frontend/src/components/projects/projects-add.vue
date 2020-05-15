@@ -5,6 +5,25 @@
     </template>
 
     <b-card-text>
+      <b-alert show variant="warning" v-if="configurationsForSelection.length === 0">
+        No configurations available. Please
+        <b-link to="configurations" size="sm" type="submit" variant="primary">add</b-link>&nbsp;a configuration first.
+      </b-alert>
+
+      <b-alert show variant="danger" v-if="sutsForSelection.length === 0">
+        No suts available. Please
+        <b-link to="suts" size="sm" type="submit" variant="primary">add</b-link>&nbsp;a sut first and make sure the extractor task is executed.
+      </b-alert>
+
+      <b-alert
+        show
+        variant="danger"
+        v-if="dictionariesForSelection.length === 0 && isTypeModelBased"
+      >
+        No dictionaries available. Please
+        <b-link to="suts" size="sm" type="submit" variant="primary">add</b-link>&nbsp;a least one dictionary.
+      </b-alert>
+
       <b-form>
         <b-form-group label="Description:" label-for="description" description="Describe project">
           <b-form-textarea id="description" v-model="project.description" required></b-form-textarea>
@@ -34,12 +53,11 @@
             :key="config.value"
             :value="config.value"
           >{{ config.text }}</b-form-checkbox>
+          <hr />
         </b-form-group>
 
-        <hr />
-
         <b-form-group
-          v-if="project.type === 'BASIC_FUZZER'"
+          v-if="!isTypeModelBased && !isTypeDictionary"
           label="Repetitions:"
           label-for="input-2"
           description="Set number of repetitions"
@@ -55,7 +73,7 @@
           <hr />
         </b-form-group>
 
-        <div v-if="project.type === 'MB_FUZZER' || project.type === 'MB_DICTIONARY_FUZZER'">
+        <div v-if="isTypeModelBased || isTypeDictionary">
           <b-form-group
             label="Maximum sequence length:"
             label-for="sequence-length"
@@ -74,7 +92,7 @@
           <hr />
         </div>
 
-        <div v-if="project.type === 'MB_FUZZER' || project.type === 'MB_DICTIONARY_FUZZER'">
+        <div v-if="isTypeModelBased || isTypeDictionary">
           <b-form-group
             label="Maximum number of requests:"
             label-for="max-requests"
@@ -95,7 +113,7 @@
         </div>
 
         <b-form-group
-          v-if="(project.type === 'DICTIONARY_FUZZER' || project.type === 'MB_DICTIONARY_FUZZER') && dictionariesForSelection.length > 0"
+          v-if="dictionariesForSelection.length > 0 && isTypeDictionary"
           label="Dictionaries:"
           description="Dictionaries for project (select one or more)"
         >
@@ -108,11 +126,11 @@
         </b-form-group>
 
         <b-form-group
+          v-if="sutsForSelection.length > 0"
           label="System under test:"
-          label-for="input-2"
           description="Select system under test"
         >
-          <b-form-select id="input-2" :options="sutsForSelection" v-model="project.sut.id" required>
+          <b-form-select :options="sutsForSelection" v-model="project.sut.id" required>
             <template v-slot:first>
               <b-form-select-option :value="null" disabled>-- select a system under test --</b-form-select-option>
             </template>
@@ -210,7 +228,7 @@ export default {
       });
     },
     async findAllSuts() {
-      if (this.$store.getters.suts.all === null) {
+      if (this.$store.getters.suts.all.items === null) {
         await this.$store.dispatch("findAllSuts");
       }
     },
@@ -241,6 +259,20 @@ export default {
     }
   },
   computed: {
+    isTypeModelBased() {
+      return (
+        this.project.type &&
+        (this.project.type === "MB_FUZZER" ||
+          this.project.type === "MB_DICTIONARY_FUZZER")
+      );
+    },
+    isTypeDictionary() {
+      return (
+        this.project.type &&
+        (this.project.type === "DICTIONARY_FUZZER" ||
+          this.project.type === "MB_DICTIONARY_FUZZER")
+      );
+    },
     display() {
       return (
         this.$store.getters.projects.display !== null &&
@@ -257,7 +289,6 @@ export default {
     },
     dictionariesForSelection() {
       this.findAllDictionaries();
-      console.log(this.$store.getters.dictionariesForSelection);
       return this.$store.getters.dictionariesForSelection;
     }
   }

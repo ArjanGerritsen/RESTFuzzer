@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -53,10 +54,13 @@ public class FuzRequest implements Comparable<FuzRequest> {
     @JoinColumn(name = "sequence_id")
     private FuzSequence sequence;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = false, mappedBy = "request")
+    private FuzResponse response;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "action_id")
     private RmdAction action;
-    
+
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
@@ -76,8 +80,7 @@ public class FuzRequest implements Comparable<FuzRequest> {
             return projectCompare;
         }
 
-        return new String(this.getPath() + this.getHttpMethod())
-                .compareTo(new String(other.getPath() + other.getHttpMethod()));
+        return this.getId().compareTo(other.getId());
     }
 
     public Map<String, Object> getParameterMap(ParameterContext context) {
@@ -188,20 +191,28 @@ public class FuzRequest implements Comparable<FuzRequest> {
         this.project = project;
     }
 
-    public RmdAction getAction() {
-        return action;
-    }
-
-    public void setAction(RmdAction action) {
-        this.action = action;
-    }
-
     public FuzSequence getSequence() {
         return sequence;
     }
 
     public void setSequence(FuzSequence sequence) {
         this.sequence = sequence;
+    }
+
+    public FuzResponse getResponse() {
+        return response;
+    }
+
+    public void setResponse(FuzResponse response) {
+        this.response = response;
+    }
+
+    public RmdAction getAction() {
+        return action;
+    }
+
+    public void setAction(RmdAction action) {
+        this.action = action;
     }
 
     public LocalDateTime getCreatedAt() {

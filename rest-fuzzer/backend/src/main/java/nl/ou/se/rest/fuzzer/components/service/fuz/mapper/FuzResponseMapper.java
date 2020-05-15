@@ -17,7 +17,7 @@ public class FuzResponseMapper {
     public static FuzResponseDto toDto(FuzResponse response) {
         FuzResponseDto dto = new FuzResponseDto();
         BeanUtils.copyProperties(response, dto);
-        dto.setRequest(FuzRequestMapper.toDto(response.getRequest()));
+        dto.setRequest(FuzRequestMapper.toDto(response.getRequest(), false));
         return dto;
     }
 }

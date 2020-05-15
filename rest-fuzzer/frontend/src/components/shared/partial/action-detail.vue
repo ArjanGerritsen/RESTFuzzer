@@ -1,65 +1,71 @@
 <template>
   <div>
     <h6>Parameters:</h6>
-    <li
-      class="list-inline-item"
-      style="vertical-align:top; margin:8px; width: 250px;"
-      v-for="(parameter) in action.parameters"
-      :key="getKey('prm', parameter)"
-    >
-      <b>#{{ parameter.id }}</b>
-      &nbsp;
-      <b-badge v-if="parameter.required" variant="primary">required</b-badge>
-      <br />
-      name: {{ parameter.name}}
-      <br />
-      context: {{ parameter.context }}
-      <br />
-      type: {{ parameter.type }}
-      <br />
-      extra: {{ parameter.metaDataTuplesJson === "{}" ? "-" : parameter.metaDataTuplesJson }}
-    </li>
+    <ul>
+      <li
+        class="list-inline-item"
+        style="vertical-align:top; margin:8px; width: 250px;"
+        v-for="(parameter) in action.parameters"
+        :key="getKey('prm', parameter)"
+      >
+        <b>#{{ parameter.id }}</b>
+        &nbsp;
+        <b-badge v-if="parameter.required" variant="primary">required</b-badge>
+        <br />
+        name: {{ parameter.name}}
+        <br />
+        context: {{ parameter.context }}
+        <br />
+        type: {{ parameter.type }}
+        <br />
+        extra: {{ parameter.metaDataTuplesJson === "{}" ? "-" : parameter.metaDataTuplesJson }}
+      </li>
+    </ul>
 
     <hr />
 
     <h6>Responses:</h6>
-    <li
-      class="list-inline-item"
-      style="vertical-align:top; margin:8px; width: 250px;"
-      v-for="(response) in action.responses"
-      :key="getKey('res', response)"
-    >
-      <b>#{{ response.id }}</b>
-      <br />
-      http status: {{ response.statusCode }}
-      <br />
-      description: {{ response.description }}
-    </li>
+    <ul>
+      <li
+        class="list-inline-item"
+        style="vertical-align:top; margin:8px; width: 250px;"
+        v-for="(response) in action.responses"
+        :key="getKey('res', response)"
+      >
+        <b>#{{ response.id }}</b>
+        <br />
+        http status: {{ response.statusCode }}
+        <br />
+        description: {{ response.description }}
+      </li>
+    </ul>
 
     <hr />
 
     <h6>Dependencies:</h6>
-    <li
-      class="list-inline-item"
-      style="vertical-align:top; margin:8px; width: 250px;"
-      v-for="(dependency) in action.dependencies"
-      :key="getKey('dep', dependency)"
-    >
-      <b>#{{ dependency.id }}</b>
-      &nbsp;
-      <b-badge variant="primary">{{dependency.discoveryModus}}</b-badge>
-      <br />
-      parameter: {{ dependency.parameter.name }} (#{{ dependency.parameter.id }})
-      <br />
-      depends on action: {{ dependency.actionDependsOn | ppAction }}
-      <br />
-      depends on parameter: {{ dependency.parameterDependsOn }}
-    </li>
-    <li
-      v-if="action.dependencies.length === 0"
-      class="list-inline-item"
-      style="margin:8px; width: 190px;"
-    >Not present.</li>
+    <ul>
+      <li
+        class="list-inline-item"
+        style="vertical-align:top; margin:8px; width: 250px;"
+        v-for="(dependency) in action.dependencies"
+        :key="getKey('dep', dependency)"
+      >
+        <b>#{{ dependency.id }}</b>
+        &nbsp;
+        <b-badge variant="primary">{{dependency.discoveryModus}}</b-badge>
+        <br />
+        parameter: {{ dependency.parameter.name }} (#{{ dependency.parameter.id }})
+        <br />
+        depends on action: {{ dependency.actionDependsOn | ppAction }}
+        <br />
+        depends on parameter: {{ dependency.parameterDependsOn }}
+      </li>
+      <li
+        v-if="action.dependencies.length === 0"
+        class="list-inline-item"
+        style="margin:8px; width: 190px;"
+      >Not present.</li>
+    </ul>
   </div>
 </template>
 
@@ -73,3 +79,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+ul {
+  margin: 0px;
+  padding: 0px;
+}
+</style>

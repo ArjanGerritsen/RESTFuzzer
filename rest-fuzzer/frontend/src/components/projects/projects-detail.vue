@@ -25,12 +25,7 @@
                 >
                   <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start fuzzing
                 </b-button>
-                <b-button
-                  size="sm"
-                  to="/tasks"
-                  variant="primary"
-                  title="start task to fuzz SUT"
-                >
+                <b-button size="sm" to="/tasks" variant="primary" title="start task to fuzz SUT">
                   <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;go to tasks
                 </b-button>
                 <b-button
@@ -41,7 +36,7 @@
                   title="delete all requests and responses"
                 >
                   <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;clear results
-                </b-button>                
+                </b-button>
                 <b-button
                   size="sm"
                   type="submit"
@@ -87,7 +82,7 @@
             :fields="sequenceFields"
             :formatters="sequenceFormatters"
           ></ProjectsSequences>
-        </b-tab>        
+        </b-tab>
         <b-tab :disabled="!responsesPresent" :title="responsesTitle">
           <ProjectsResponses
             :project="project"
@@ -130,14 +125,15 @@ export default {
         { key: "status" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ],
-      requestFormatters: [],
+      requestFormatters: [{ field: "createdAt", as: "dateShort" }],
       requestFields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "path" },
         { key: "httpMethod", label: "Http method", thStyle: "width: 110px;" },
+        { key: "createdAt", label: "Created @", thStyle: "width: 90px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ],
-      responseFormatters: [],
+      responseFormatters: [{ field: "createdAt", as: "dateShort" }],
       responseFields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
         { key: "request.path", label: "Path" },
@@ -147,6 +143,7 @@ export default {
           thStyle: "width: 110px;"
         },
         { key: "statusCode", label: "HTTP status", thStyle: "width: 110px;" },
+        { key: "createdAt", label: "Created @", thStyle: "width: 90px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ]
     };
@@ -210,7 +207,7 @@ export default {
     sequencesCount() {
       const count = this.$store.getters.projects.current.sequences.total;
       return count !== null && count > 0 ? count : 0;
-    },    
+    },
     requestsPresent() {
       return this.requestsCount > 0;
     },
