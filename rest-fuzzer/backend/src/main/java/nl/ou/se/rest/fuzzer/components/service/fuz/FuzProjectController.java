@@ -28,8 +28,6 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdSut;
 import nl.ou.se.rest.fuzzer.components.service.fuz.domain.FuzProjectDto;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzProjectMapper;
 import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzRequestMapper;
-import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzResponseMapper;
-import nl.ou.se.rest.fuzzer.components.service.fuz.mapper.FuzSequenceMapper;
 import nl.ou.se.rest.fuzzer.components.service.util.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
@@ -38,7 +36,7 @@ import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
 @RequestMapping("/rest/projects")
 public class FuzProjectController {
 
-    // variables
+    // variable(s)
     private Logger logger = LoggerFactory.getLogger(FuzProjectController.class);
 
     @Autowired
@@ -56,7 +54,7 @@ public class FuzProjectController {
     @Autowired
     RmdSutService sutService;
 
-    // methods
+    // method(s)
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody List<FuzProjectDto> findAll() {
         List<FuzProject> projects = projectService.findAll();
@@ -115,29 +113,6 @@ public class FuzProjectController {
         return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
     }
 
-    @RequestMapping(path = "{id}/sequences", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findSequencesByProjectId(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
-            @RequestParam(name = "filter", required = false) String filter) {
-
-        return ResponseEntity.ok(FuzSequenceMapper.toDtos(sequenceService.findByProjectId(id, FilterUtil.toPageRequest(curPage, perPage))));
-    }
-
-    @RequestMapping(path = "{id}/sequences/count", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> countSequencesByProjectId(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "filter", required = false) String filter) {
-
-        return ResponseEntity.ok(sequenceService.countByProjectId(id));
-    }
-
-    @Transactional
-    @RequestMapping(path = "{id}/sequences", method = RequestMethod.DELETE)
-    public @ResponseBody ResponseEntity<?> deleteSequencesByProjectId(@PathVariable(name = "id") Long id) {
-        Optional<FuzProject> project = projectService.findById(id);
-        sequenceService.deleteByProjectId(id);
-        return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
-    }
-
     @RequestMapping(path = "{id}/requests", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findRequestsByProjectId(@PathVariable(name = "id") Long id,
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
@@ -167,38 +142,4 @@ public class FuzProjectController {
         requestService.deleteByProjectId(id);
         return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
     }
-
-    @RequestMapping(path = "{id}/responses", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> findResponsesByProjectId(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
-            @RequestParam(name = "filter", required = false) String filter) {
-
-        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
-        List<Integer> statusCodes = FilterUtil
-                .getHttpResponseCodes(responseService.findUniqueStatusCodesForProject(id), filter);
-        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
-
-        return ResponseEntity.ok(FuzResponseMapper.toDtos(responseService.findByFilter(id, httpMethods, statusCodes,
-                FilterUtil.toLike(path), FilterUtil.toPageRequest(curPage, perPage))));
-    }
-
-    @RequestMapping(path = "{id}/responses/count", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> countResponsesByProjectId(@PathVariable(name = "id") Long id,
-            @RequestParam(name = "filter", required = false) String filter) {
-
-        List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
-        List<Integer> statusCodes = FilterUtil
-                .getHttpResponseCodes(responseService.findUniqueStatusCodesForProject(id), filter);
-        String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
-
-        return ResponseEntity.ok(responseService.countByFilter(id, httpMethods, statusCodes, FilterUtil.toLike(path)));
-    }
-
-    @Transactional
-    @RequestMapping(path = "{id}/responses", method = RequestMethod.DELETE)
-    public @ResponseBody ResponseEntity<?> deleteResponsesByProjectId(@PathVariable(name = "id") Long id) {
-        Optional<FuzProject> project = projectService.findById(id);
-        responseService.deleteByProjectId(id);
-        return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
-    }    
 }

@@ -29,4 +29,8 @@ public interface RmdActionDependencyService extends CrudRepository<RmdActionDepe
     @Modifying
     @Query(value = "DELETE FROM rmd_actions_dependencies d WHERE d.id IN (:ids)")
     Integer deleteByIds(List<Long> ids);
+
+    @Query(value = "SELECT DISTINCT d FROM rmd_actions_dependencies d LEFT JOIN d.parameter p WHERE p.id = :parameterId")
+    RmdActionDependency findByParameterId(Long parameterId);
+    
 }

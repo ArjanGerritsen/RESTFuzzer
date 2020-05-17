@@ -11,35 +11,34 @@
           </template>
           <b-card-text>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group label-size="sm" label="HTTP method(s):" label-for="input-http-method">
+              <b-form-group label-size="sm" label="Status(es):">
                 <b-form-checkbox
                   class="float-left"
                   style="margin-right:15px;"
                   size="sm"
-                  v-model="filter.httpMethods"
-                  v-for="method in httpMethods"
-                  :key="method"
-                  :value="method"
-                >{{ method }}</b-form-checkbox>
+                  v-model="filter.statuses"
+                  v-for="status in ['CREATED']"
+                  :key="status"
+                  :value="status"
+                >{{ status }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.httpMethods = constants.HTTP_METHODS">select all</b-link>&nbsp;/
-              <b-link @click="filter.httpMethods = []">select none</b-link>
+              <b-link @click="filter.statuses = ['CREATED']">select all</b-link>&nbsp;/
+              <b-link @click="filter.statuses = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group label-size="sm" label="Path:" label-for="input-path">
-                <b-input-group size="sm" label-for="input-path">
-                  <b-form-input
-                    v-model="filter.path"
-                    size="sm"
-                    type="search"
-                    id="input-path"
-                    placeholder="type to filter path"
-                  ></b-form-input>
-                  <b-input-group-append>
-                    <b-button :disabled="!filter.path" @click="filter.path = ''">clear</b-button>
-                  </b-input-group-append>
-                </b-input-group>
+              <b-form-group label-size="sm" label="Sequence length(s):">
+                <b-form-checkbox
+                  class="float-left"
+                  style="margin-right:15px;"
+                  size="sm"
+                  v-model="filter.lengths"
+                  v-for="length in [1,2,3,4,5,6,7,8]"
+                  :key="length"
+                  :value="length"
+                >{{ length }}</b-form-checkbox>
               </b-form-group>
+              <b-link @click="filter.lengths = [1,2,3,4,5,6,7,8]">select all</b-link>&nbsp;/
+              <b-link @click="filter.lengths = []">select none</b-link>
             </div>
           </b-card-text>
         </b-card>
@@ -137,10 +136,11 @@ export default {
       isBusy: false,
       perPage: Constants.PER_PAGE,
       currentPage: 1,
-      httpMethods: Constants.HTTP_METHODS,
+      statuses: [],
+      lengths: [1,2,3,4,5],
       filter: {
-        httpMethods: Constants.HTTP_METHODS,
-        path: ""
+        statuses: [],
+        lengths: [1,2,3,4,5]
       },
       filterCopy: null
     };

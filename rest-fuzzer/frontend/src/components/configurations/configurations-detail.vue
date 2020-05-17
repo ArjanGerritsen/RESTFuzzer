@@ -35,7 +35,7 @@
             <div class="col">
               <dl class="dl-horizontal">
                 <dt>Configuration</dt>
-                <dd class="json" :inner-html.prop="this.configuration.itemsJson | json"></dd>
+                <dd class="json fixed" :inner-html.prop="this.configuration.itemsJson | json"></dd>
               </dl>
             </div>
           </div>

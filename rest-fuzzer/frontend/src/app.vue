@@ -80,6 +80,11 @@ td {
   font-size: 0.85rem;
 }
 
+.fixed {
+  max-height: 550px;
+  overflow: scroll;
+}
+
 .json .key {
   font-weight: 525;
 }

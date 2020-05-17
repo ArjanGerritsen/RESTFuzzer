@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.springframework.data.domain.PageRequest;
 
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequenceStatus;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.DiscoveryModus;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 
@@ -66,6 +67,23 @@ public abstract class FilterUtil {
         }
         return values;
     }
+
+    public static List<Integer> getLengths(String filter) {
+        // TODO
+        List<Integer> values = new ArrayList<Integer>();
+        
+        for (int i = 1; i <= 20; i++) {
+            values.add(i);
+        }
+
+        return values;
+    }
+
+    public static List<FuzSequenceStatus> getStatuses(String filter) {
+        // TODO
+        List<FuzSequenceStatus> statuses = new ArrayList<>(Arrays.asList(FuzSequenceStatus.values()));
+        return statuses;
+    }    
 
     private static int getStartFromRange(String range) {
         switch (range) {

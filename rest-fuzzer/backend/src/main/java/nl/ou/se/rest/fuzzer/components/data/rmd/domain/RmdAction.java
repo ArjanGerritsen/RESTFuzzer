@@ -84,6 +84,10 @@ public class RmdAction implements Comparable<RmdAction> {
         return this.getHttpMethod().compareTo(other.getHttpMethod());
     }
 
+    public boolean equals(RmdAction other) {
+        return this.getId().equals(other.getId());
+    }
+
     public void addParameter(RmdParameter parameter) {
         parameter.setAction(this);
         this.getParameters().add(parameter);

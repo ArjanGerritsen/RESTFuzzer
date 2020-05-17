@@ -32,7 +32,7 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @RequestMapping("/rest/suts")
 public class RmdSutController {
 
-    // variables
+    // variable(s)
     private Logger logger = LoggerFactory.getLogger(RmdSutController.class);
 
     @Autowired
@@ -59,7 +59,7 @@ public class RmdSutController {
         return RmdSutMapper.toDtos(suts);
     }
 
-    // methods
+    // method(s)
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
         Optional<RmdSut> sut = sutService.findById(id);

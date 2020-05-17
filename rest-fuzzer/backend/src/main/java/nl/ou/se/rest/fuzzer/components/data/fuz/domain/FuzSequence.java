@@ -76,7 +76,7 @@ public class FuzSequence implements Comparable<FuzSequence> {
         this.requests.add(request);
     }
 
-    // getters and setters
+    // getter(s) and setter(s)
     public Long getId() {
         return id;
     }

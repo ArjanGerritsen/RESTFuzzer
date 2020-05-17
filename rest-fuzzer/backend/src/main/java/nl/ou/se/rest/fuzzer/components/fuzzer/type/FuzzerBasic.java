@@ -55,7 +55,7 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
 
         for (int i = 0; i < repetitions; i++) {
             for (RmdAction a : actions) {
-                FuzRequest request = requestUtil.getRequestFromAction(project, a);
+                FuzRequest request = requestUtil.getRequestFromAction(project, a, null);
                 requestService.save(request);
 
                 FuzResponse response = executorUtil.processRequest(request);

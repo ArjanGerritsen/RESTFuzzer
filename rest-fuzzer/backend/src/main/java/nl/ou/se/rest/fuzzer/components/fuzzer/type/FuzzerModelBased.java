@@ -74,7 +74,6 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
         SequenceUtil sequenceUtil = new SequenceUtil(actions, dependencies);
         List<String> sequences = sequenceUtil.getValidSequences(maxSequenceLength);
 
-        int count = 0;
         int total = sequenceUtil.getNumberOfRequests(sequences);
 
         // cap at maxNumRequests
@@ -86,34 +85,37 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
         // for all sequences
         int sequencePosition = 1;
         for (String sequenceString : sequences) {
+            FuzSequenceStatus status = FuzSequenceStatus.COMPLETED;
             List<RmdAction> actionsFromSequence = sequenceUtil.getActionsFromSequence(sequenceString);
 
             FuzSequence sequence = sequenceFactory.create(sequencePosition, actionsFromSequence.size(), project).build();
             sequenceService.save(sequence);
 
-            // create requests for sequence
+            // for each item in sequence
             for (RmdAction a : actionsFromSequence) {
-                FuzRequest request = requestUtil.getRequestFromAction(project, a);
+                FuzRequest request = requestUtil.getRequestFromAction(project, a, sequence);
                 requestService.save(request);
                 sequence.addRequest(request);
-            }
 
-            sequence = sequenceService.save(sequence);
+                sequence = sequenceService.save(sequence);
 
-            // execute requests for sequence
-            for (FuzRequest r : sequence.getRequests()) {
-                FuzResponse response = executorUtil.processRequest(r);
+                // execute requests
+                FuzResponse response = executorUtil.processRequest(request);
                 responseService.save(response);
-
-                count++;                
+                
+                // abort sequence
+                if (response.getStatusCode() < 200 || response.getStatusCode() >= 300) {
+                    status = FuzSequenceStatus.ABORTED;
+                    break;
+                }
             }
 
             // update sequence
-            sequence.setStatus(FuzSequenceStatus.COMPLETE);
+            sequence.setStatus(status);
             sequenceService.save(sequence);
 
             sequencePosition++;
-            saveTaskProgress(task, count, total);
+            saveTaskProgress(task, sequencePosition, sequences.size());
         }
     }
 

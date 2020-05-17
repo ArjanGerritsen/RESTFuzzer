@@ -11,8 +11,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequence;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
@@ -21,7 +23,7 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @Service
 public class ParameterUtil {
 
-    // variables
+    // variable(s)
     private static Logger logger = LoggerFactory.getLogger(ParameterUtil.class);
 
     private static final String FORMAT_IP = "ip";
@@ -31,16 +33,25 @@ public class ParameterUtil {
 
     private static final String FORMAT_INT64 = "int64";
 
-    // methods
-    public Map<String, Object> createParameterMap(List<RmdParameter> parameters) {
+    @Autowired
+    private DependencyUtil dependencyUtil;
+
+    // method(s)
+    public Map<String, Object> createParameterMap(List<RmdParameter> parameters, FuzSequence sequence) {
         Map<String, Object> parameterMap = new HashMap<>();
 
-        parameters.forEach(parameter -> parameterMap.put(parameter.getName(), getValueForParameter(parameter)));
+        parameters.forEach(parameter -> {
+            parameterMap.put(parameter.getName(), getValueForParameter(parameter, sequence));
+        });
 
         return parameterMap;
     }
 
-    private Object getValueForParameter(RmdParameter parameter) {
+    private Object getValueForParameter(RmdParameter parameter, FuzSequence sequence) {
+        if (sequence != null && dependencyUtil.hasDependency(parameter, sequence)) {
+            return dependencyUtil.getValueFromPreviousRequestInSequence(parameter, sequence);
+        }
+
         if (ParameterType.ARRAY.equals(parameter.getType())) {
             return getArrayValue(parameter);
         } else {
@@ -73,7 +84,8 @@ public class ParameterUtil {
         } else {
             ParameterType type = null;
             if (parameter.getMetaDataTuples().containsKey(RmdParameter.META_DATA_ARRAY_TYPE)) {
-                type = ParameterType.valueOf(((String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_TYPE)).toUpperCase());
+                type = ParameterType.valueOf(
+                        ((String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_ARRAY_TYPE)).toUpperCase());
             }
 
             String format = null;
@@ -86,7 +98,7 @@ public class ParameterUtil {
         }
 
         if (ParameterContext.QUERY.equals(parameter.getContext())) {
-            return list.stream().map(o -> o.toString()).collect(Collectors.joining()); 
+            return list.stream().map(o -> o.toString()).collect(Collectors.joining());
         }
 
         return list.toArray();

@@ -103,6 +103,10 @@ public class RmdParameter implements Comparable<RmdParameter> {
         return this.getPosition().compareTo(other.getPosition());
     }
 
+    public boolean equals(RmdParameter other) {
+        return this.getId().equals(other.getId());
+    }
+
     public Map<String, Object> getMetaDataTuples() {
         return JsonUtil.stringToMap(this.metaDataTuplesJson);
     }
