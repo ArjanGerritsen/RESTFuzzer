@@ -38,17 +38,21 @@ public class FuzSequenceController {
             @RequestParam(name = "curPage") int curPage, @RequestParam(name = "perPage") int perPage,
             @RequestParam(name = "filter", required = false) String filter) {
 
-        List<Integer> lengths = FilterUtil.getLengths(filter);
         List<FuzSequenceStatus> statuses = FilterUtil.getStatuses(filter);
+        List<Integer> lengths = FilterUtil.getLengths(filter);
 
-        return ResponseEntity.ok(FuzSequenceMapper.toDtos(sequenceService.findByProjectId(id, FilterUtil.toPageRequest(curPage, perPage))));
+        return ResponseEntity.ok(FuzSequenceMapper.toDtos(
+                sequenceService.findByProjectId(id, statuses, lengths, FilterUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/sequences/count", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> countSequencesByProjectId(@PathVariable(name = "id") Long id,
             @RequestParam(name = "filter", required = false) String filter) {
 
-        return ResponseEntity.ok(sequenceService.countByProjectId(id));
+        List<FuzSequenceStatus> statuses = FilterUtil.getStatuses(filter);
+        List<Integer> lengths = FilterUtil.getLengths(filter);
+
+        return ResponseEntity.ok(sequenceService.countByProjectId(id, statuses, lengths));
     }
 
     @Transactional
@@ -57,5 +61,5 @@ public class FuzSequenceController {
         Optional<FuzProject> project = projectService.findById(id);
         sequenceService.deleteByProjectId(id);
         return ResponseEntity.ok(FuzProjectMapper.toDto(project.get(), false));
-    }    
+    }
 }

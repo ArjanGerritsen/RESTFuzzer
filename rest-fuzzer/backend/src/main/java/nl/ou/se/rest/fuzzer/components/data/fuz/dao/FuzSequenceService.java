@@ -8,14 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequence;
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequenceStatus;
 
 public interface FuzSequenceService extends CrudRepository<FuzSequence, Long> {
 
-    @Query(value = "SELECT COUNT(s) FROM fuz_sequences s WHERE s.project.id = :projectId")
-    Long countByProjectId(Long projectId);
+    @Query(value = "SELECT COUNT(s) FROM fuz_sequences s WHERE s.project.id = :projectId AND s.status IN (:statuses) AND s.length IN (:lengths)")
+    Long countByProjectId(Long projectId, List<FuzSequenceStatus> statuses, List<Integer> lengths);
 
-    @Query(value = "SELECT s FROM fuz_sequences s WHERE s.project.id = :projectId")
-    List<FuzSequence> findByProjectId(Long projectId, Pageable pageable);
+    @Query(value = "SELECT s FROM fuz_sequences s WHERE s.project.id = :projectId AND s.status IN (:statuses) AND s.length IN (:lengths)")
+    List<FuzSequence> findByProjectId(Long projectId, List<FuzSequenceStatus> statuses, List<Integer> lengths, Pageable pageable);
 
     @Modifying
     @Query(value = "DELETE FROM fuz_sequences s WHERE s.project.id = :projectId")

@@ -16,14 +16,14 @@
                   class="float-left"
                   style="margin-right:15px;"
                   size="sm"
-                  v-model="filter.statuses"
-                  v-for="status in ['CREATED']"
+                  v-model="filter.sequenceStatuses"
+                  v-for="status in sequenceStatuses"
                   :key="status"
                   :value="status"
                 >{{ status }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.statuses = ['CREATED']">select all</b-link>&nbsp;/
-              <b-link @click="filter.statuses = []">select none</b-link>
+              <b-link @click="filter.sequenceStatuses = sequenceStatuses">select all</b-link>&nbsp;/
+              <b-link @click="filter.sequenceStatuses = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
               <b-form-group label-size="sm" label="Sequence length(s):">
@@ -31,14 +31,14 @@
                   class="float-left"
                   style="margin-right:15px;"
                   size="sm"
-                  v-model="filter.lengths"
-                  v-for="length in [1,2,3,4,5,6,7,8]"
+                  v-model="filter.sequenceLengths"
+                  v-for="length in sequenceLengths"
                   :key="length"
                   :value="length"
                 >{{ length }}</b-form-checkbox>
               </b-form-group>
-              <b-link @click="filter.lengths = [1,2,3,4,5,6,7,8]">select all</b-link>&nbsp;/
-              <b-link @click="filter.lengths = []">select none</b-link>
+              <b-link @click="filter.sequenceLengths = sequenceLengths">select all</b-link>&nbsp;/
+              <b-link @click="filter.sequenceLengths = []">select none</b-link>
             </div>
           </b-card-text>
         </b-card>
@@ -136,11 +136,11 @@ export default {
       isBusy: false,
       perPage: Constants.PER_PAGE,
       currentPage: 1,
-      statuses: [],
-      lengths: [1,2,3,4,5],
+      sequenceStatuses: Constants.SEQUENCE_STATUSES,
+      sequenceLengths: Constants.SEQUENCE_LENGTHS,
       filter: {
-        statuses: [],
-        lengths: [1,2,3,4,5]
+        sequenceStatuses: Constants.SEQUENCE_STATUSES,
+        sequenceLengths: Constants.SEQUENCE_LENGTHS
       },
       filterCopy: null
     };

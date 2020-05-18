@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -22,6 +23,8 @@ public abstract class FilterUtil {
     private static final String HTTP_METHODS = "httpMethods";
     private static final String DISCOVERY_MODES = "discoveryModes";
     private static final String HTTP_RESPONSE_RANGES = "httpResponseRanges";
+    private static final Object SEQUENCE_STATUSES = "sequenceStatuses";
+    private static final Object SEQUENCE_LENGTHS = "sequenceLengths";
 
     // methods
     public static String toLike(String query) {
@@ -60,7 +63,7 @@ public abstract class FilterUtil {
                 JSONArray rangesArray = (JSONArray) items.get(HTTP_RESPONSE_RANGES);
                 rangesArray.forEach(o -> {
                     int startRange = getStartFromRange(o.toString());
-                    values.addAll(defaultValues.stream().filter(v -> v >= startRange && v <= (startRange + 99) )
+                    values.addAll(defaultValues.stream().filter(v -> v >= startRange && v <= (startRange + 99))
                             .collect(Collectors.toList()));
                 });
             }
@@ -69,21 +72,35 @@ public abstract class FilterUtil {
     }
 
     public static List<Integer> getLengths(String filter) {
-        // TODO
-        List<Integer> values = new ArrayList<Integer>();
-        
-        for (int i = 1; i <= 20; i++) {
-            values.add(i);
+        List<Integer> values = IntStream.range(1, 9).boxed().collect(Collectors.toList());
+        if (filter != null) {
+            values.clear();
+            Map<String, Object> items = JsonUtil.stringToMap(filter);
+            if (items.get(SEQUENCE_LENGTHS) != null) {
+                JSONArray lengthsArray = (JSONArray) items.get(SEQUENCE_LENGTHS);
+                lengthsArray.forEach(o -> {
+                    values.add((Integer) o);
+                });
+            }
         }
 
         return values;
     }
 
     public static List<FuzSequenceStatus> getStatuses(String filter) {
-        // TODO
         List<FuzSequenceStatus> statuses = new ArrayList<>(Arrays.asList(FuzSequenceStatus.values()));
+        if (filter != null) {
+            Map<String, Object> items = JsonUtil.stringToMap(filter);
+            if (items.get(SEQUENCE_STATUSES) != null) {
+                statuses.clear();
+                JSONArray statusesArray = (JSONArray) items.get(SEQUENCE_STATUSES);
+                statusesArray.forEach(o -> {
+                    statuses.add(FuzSequenceStatus.valueOf(o.toString()));
+                });
+            }
+        }
         return statuses;
-    }    
+    }
 
     private static int getStartFromRange(String range) {
         switch (range) {
