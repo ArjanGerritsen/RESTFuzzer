@@ -1,44 +1,16 @@
 <template>
   <div>
     <h6>Parameters:</h6>
-    <ul>
-      <li
-        class="list-inline-item"
-        style="vertical-align:top; margin:8px; width: 250px;"
-        v-for="(parameter) in action.parameters"
-        :key="getKey('prm', parameter)"
-      >
-        <b>#{{ parameter.id }}</b>
-        &nbsp;
-        <b-badge v-if="parameter.required" variant="primary">required</b-badge>
-        <br />
-        name: {{ parameter.name}}
-        <br />
-        context: {{ parameter.context }}
-        <br />
-        type: {{ parameter.type }}
-        <br />
-        extra: {{ parameter.metaDataTuplesJson === "{}" ? "-" : parameter.metaDataTuplesJson }}
-      </li>
-    </ul>
+    <div v-for="(parameter) in action.parameters" :key="getKey('prm', parameter)">
+      <ParameterDetail :parameter="parameter"></ParameterDetail>
+    </div>
 
     <hr />
 
     <h6>Responses:</h6>
-    <ul>
-      <li
-        class="list-inline-item"
-        style="vertical-align:top; margin:8px; width: 250px;"
-        v-for="(response) in action.responses"
-        :key="getKey('res', response)"
-      >
-        <b>#{{ response.id }}</b>
-        <br />
-        http status: {{ response.statusCode }}
-        <br />
-        description: {{ response.description }}
-      </li>
-    </ul>
+    <div v-for="(response) in action.responses" :key="getKey('res1', response)">
+      <ActionResponseDetail :response="response"></ActionResponseDetail>
+    </div>
 
     <hr />
 
@@ -70,8 +42,12 @@
 </template>
 
 <script>
+import ParameterDetail from "../../shared/partial/parameter-detail";
+import ActionResponseDetail from "../../shared/partial/action-response-detail";
+
 export default {
   props: ["action"],
+  components: { ParameterDetail, ActionResponseDetail },
   methods: {
     getKey: function(prefix, object) {
       return `${prefix}_${object.id}`;

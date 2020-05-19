@@ -24,7 +24,7 @@ public class RmdResponse implements Comparable<RmdResponse> {
     private Long id;
 
     @NotNull
-    private Integer statusCode;
+    private Integer httpStatusCode;
 
     @NotNull
     @NotEmpty
@@ -41,8 +41,8 @@ public class RmdResponse implements Comparable<RmdResponse> {
     public RmdResponse() {
     }
 
-    public RmdResponse(Integer statusCode, String description) {
-        this.statusCode = statusCode;
+    public RmdResponse(Integer httpStatusCode, String description) {
+        this.httpStatusCode = httpStatusCode;
         this.description = description;
     }
 
@@ -55,7 +55,7 @@ public class RmdResponse implements Comparable<RmdResponse> {
             }
         }
 
-        return this.getStatusCode().compareTo(other.getStatusCode());
+        return this.getHttpStatusCode().compareTo(other.getHttpStatusCode());
     }
 
     // getter(s) and setter(s)
@@ -67,12 +67,12 @@ public class RmdResponse implements Comparable<RmdResponse> {
         this.id = id;
     }
 
-    public Integer getStatusCode() {
-        return statusCode;
+    public Integer getHttpStatusCode() {
+        return httpStatusCode;
     }
 
-    public void setStatusCode(Integer statusCode) {
-        this.statusCode = statusCode;
+    public void setHttpStatusCode(Integer httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
     }
 
     public String getDescription() {

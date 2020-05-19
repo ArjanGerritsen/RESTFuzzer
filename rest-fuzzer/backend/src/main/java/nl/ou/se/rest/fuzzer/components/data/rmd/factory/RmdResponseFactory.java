@@ -1,19 +1,22 @@
 package nl.ou.se.rest.fuzzer.components.data.rmd.factory;
 
+import java.time.LocalDateTime;
+
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdResponse;
 
 public class RmdResponseFactory {
 
-	// variables
-	private RmdResponse response;
+    // variable(s)
+    private RmdResponse response;
 
-	// methods
-	public RmdResponseFactory create(Integer statusCode, String description) {
-		response = new RmdResponse(statusCode, description);
-		return this;
-	}
+    // method(s)
+    public RmdResponseFactory create(Integer statusCode, String description) {
+        response = new RmdResponse(statusCode, description);
+        response.setCreatedAt(LocalDateTime.now());
+        return this;
+    }
 
-	public RmdResponse build() {
-		return this.response;
-	}
+    public RmdResponse build() {
+        return this.response;
+    }
 }

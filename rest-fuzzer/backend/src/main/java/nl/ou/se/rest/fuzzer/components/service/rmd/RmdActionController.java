@@ -39,7 +39,7 @@ public class RmdActionController {
     @RequestMapping(path = "{actionId}/parameters", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> findAllParametersBySutIdAndActionId(@PathVariable(name = "id") Long id,
             @PathVariable(name = "actionId") Long actionId) {
-        return ResponseEntity.ok(RmdParameterMapper.toDtos(parameterService.findByActionId(actionId)));
+        return ResponseEntity.ok(RmdParameterMapper.toDtos(parameterService.findByActionId(actionId), false));
     }
 
     @RequestMapping(path = "count", method = RequestMethod.GET)

@@ -25,12 +25,7 @@
                 >
                   <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start extract task
                 </b-button>
-                  <b-button
-                  size="sm"
-                  to="/tasks"
-                  variant="primary"
-                  title="go to tasks"
-                >
+                <b-button size="sm" to="/tasks" variant="primary" title="go to tasks">
                   <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;go to tasks
                 </b-button>
                 <b-button
@@ -67,6 +62,13 @@
         <b-tab :disabled="this.actionsCount === 0" :title="actionsTitle">
           <SutsActions :sut="sut" :fields="actions_fields" :formatters="actions_formatters"></SutsActions>
         </b-tab>
+        <b-tab :disabled="this.parametersCount === 0" :title="parametersTitle">
+          <SutsParameters
+            :sut="sut"
+            :fields="parameters_fields"
+            :formatters="parameters_formatters"
+          ></SutsParameters>
+        </b-tab>
         <b-tab :disabled="this.actionsCount === 0" :title="actionsDependenciesTitle">
           <SutsActionsDependencies
             :sut="sut"
@@ -83,25 +85,48 @@
 import Constants from "../../shared/constants";
 
 import SutsActions from "./suts-actions";
+import SutsParameters from "./suts-parameters";
 import SutsActionsDependencies from "./suts-actions-dependencies";
 
 export default {
-  components: { SutsActions, SutsActionsDependencies },
+  components: { SutsActions, SutsParameters, SutsActionsDependencies },
   data() {
     return {
       actions_formatters: [],
       actions_fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
-        { key: "path" },
         { key: "httpMethod", label: "HTTP method", thStyle: "width: 110px;" },
+        { key: "path", label: "Path" },
+        { key: "details", label: "Details", thStyle: "width: 60px;" }
+      ],
+      parameters_formatters: [],
+      parameters_fields: [
+        { key: "id", label: "#", thStyle: "width: 50px;" },
+        {
+          key: "action.httpMethod",
+          label: "HTTP method",
+          thStyle: "width: 110px;"
+        },
+        { key: "action.path", label: "Path" },
+        { key: "name" },
+        { key: "context", thStyle: "width: 80px;" },
+        { key: "type", thStyle: "width: 80px;" },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ],
       actions_dependencies_formatters: [],
       actions_dependencies_fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
+        {
+          key: "action.httpMethod",
+          label: "HTTP method",
+          thStyle: "width: 110px;"
+        },
         { key: "action.path", label: "Path" },
-        { key: "discoveryModus", label: "Discovered", thStyle: "width: 110px;" },
-        { key: "action.httpMethod", label: "HTTP method", thStyle: "width: 110px;" },
+        {
+          key: "discoveryModus",
+          label: "Discovered",
+          thStyle: "width: 110px;"
+        },
         { key: "details", label: "Details", thStyle: "width: 60px;" }
       ]
     };
@@ -113,6 +138,7 @@ export default {
         this.$store.dispatch("findSut", this.sut.id);
         this.$store.dispatch("findAllSuts");
         this.$root.$emit("bv::refresh::table", "sut-actions");
+        this.$root.$emit("bv::refresh::table", "sut-parameters");
         this.$root.$emit("bv::refresh::table", "sut-actions-dependencies");
         return;
       }
@@ -158,6 +184,17 @@ export default {
     },
     actionsCount() {
       const count = this.$store.getters.suts.current.actions.total;
+      return count !== null && count > 0 ? count : 0;
+    },
+    parametersTitle() {
+      let title = "Parameters";
+      if (this.parametersCount > 0) {
+        title += ` [${this.parametersCount}]`;
+      }
+      return title;
+    },
+    parametersCount() {
+      const count = this.$store.getters.suts.current.parameters.total;
       return count !== null && count > 0 ? count : 0;
     },
     actionsDependenciesTitle() {

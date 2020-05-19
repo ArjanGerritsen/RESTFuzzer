@@ -16,6 +16,7 @@ public class RmdParameterDto {
     private ParameterType type;
     private ParameterContext context;
     private String metaDataTuplesJson;
+    private RmdActionDto action;
     private LocalDateTime createdAt;
 
     // getter(s) and setter(s)
@@ -81,6 +82,14 @@ public class RmdParameterDto {
 
     public void setMetaDataTuplesJson(String metaDataTuplesJson) {
         this.metaDataTuplesJson = metaDataTuplesJson;
+    }
+
+    public RmdActionDto getAction() {
+        return action;
+    }
+
+    public void setAction(RmdActionDto action) {
+        this.action = action;
     }
 
     public LocalDateTime getCreatedAt() {

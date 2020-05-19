@@ -68,7 +68,7 @@ ALTER TABLE rmd_actions_dependencies ADD FOREIGN KEY(action_depends_on_id) REFER
 
 CREATE TABLE IF NOT EXISTS rmd_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  status_code INT NOT NULL,
+  http_status_code INT NOT NULL,
   description VARCHAR(255) NOT NULL,
   action_id INT NOT NULL,
   created_at DATETIME NULL  

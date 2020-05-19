@@ -14,17 +14,22 @@ import org.springframework.data.domain.PageRequest;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequenceStatus;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.DiscoveryModus;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
 
 public abstract class FilterUtil {
 
     // variables
     public static final String PATH = "path";
+    public static final String NAME = "name";
 
     private static final String HTTP_METHODS = "httpMethods";
     private static final String DISCOVERY_MODES = "discoveryModes";
     private static final String HTTP_RESPONSE_RANGES = "httpResponseRanges";
     private static final Object SEQUENCE_STATUSES = "sequenceStatuses";
     private static final Object SEQUENCE_LENGTHS = "sequenceLengths";
+    private static final Object PARAMETER_CONTEXTS = "parameterContexts";
+    private static final Object PARAMETER_TYPES = "parameterTypes";
 
     // methods
     public static String toLike(String query) {
@@ -69,6 +74,36 @@ public abstract class FilterUtil {
             }
         }
         return values;
+    }
+
+    public static List<ParameterContext> getParameterContexts(String filter) {
+        List<ParameterContext> parameterContexts = new ArrayList<>(Arrays.asList(ParameterContext.values()));
+        if (filter != null) {
+            Map<String, Object> items = JsonUtil.stringToMap(filter);
+            if (items.get(PARAMETER_CONTEXTS) != null) {
+                parameterContexts.clear();
+                JSONArray parameterContextsArray = (JSONArray) items.get(PARAMETER_CONTEXTS);
+                parameterContextsArray.forEach(o -> {
+                    parameterContexts.add(ParameterContext.valueOf(o.toString()));
+                });
+            }
+        }
+        return parameterContexts;
+    }
+
+    public static List<ParameterType> getParameterTypes(String filter) {
+        List<ParameterType> parameterTypes = new ArrayList<>(Arrays.asList(ParameterType.values()));
+        if (filter != null) {
+            Map<String, Object> items = JsonUtil.stringToMap(filter);
+            if (items.get(PARAMETER_TYPES) != null) {
+                parameterTypes.clear();
+                JSONArray parameterTypesArray = (JSONArray) items.get(PARAMETER_TYPES);
+                parameterTypesArray.forEach(o -> {
+                    parameterTypes.add(ParameterType.valueOf(o.toString()));
+                });
+            }
+        }
+        return parameterTypes;
     }
 
     public static List<Integer> getLengths(String filter) {

@@ -20,7 +20,7 @@ public class RmdActionDependencyMapper {
         RmdActionDependencyDto dto = new RmdActionDependencyDto();
         BeanUtils.copyProperties(actionDependency, dto);
         dto.setAction(RmdActionMapper.toDto(actionDependency.getAction(), false));
-        dto.setParameter(RmdParameterMapper.toDto(actionDependency.getParameter()));
+        dto.setParameter(RmdParameterMapper.toDto(actionDependency.getParameter(), false));
         dto.setActionDependsOn(RmdActionMapper.toDto(actionDependency.getActionDependsOn(), false));
         return dto;
     }

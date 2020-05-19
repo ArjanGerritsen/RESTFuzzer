@@ -16,6 +16,22 @@ function getCountActions({ commit }, data) {
     });
 }
 
+function getCountParameters({ commit }, data) {
+    return new Promise((resolve, reject) => {
+        let queryParams = '';
+        if (data.context && data.context.filter !== null) { queryParams += `?filter=${data.context.filter}`; }
+        axios
+            .get(`/rest/suts/${data.sut_id}/parameters/count${queryParams}`)
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut parameter count for sut with id ${data.sut_id}`, err: error } });
+                reject(error);
+            })
+    });
+}
+
 function getCountActionsDependencies({ commit }, data) {
     return new Promise((resolve, reject) => {
         let queryParams = '';
@@ -42,6 +58,11 @@ const suts = {
                 item: null,
                 queued_or_running_tasks_count: null,
                 actions: {
+                    items: null,
+                    total: null,
+                    count: null
+                },
+                parameters: {
                     items: null,
                     total: null,
                     count: null
@@ -80,6 +101,16 @@ const suts = {
         },
         set_sut_actions_count(state, payload) {
             state.suts.current.actions.count = payload.count
+        },
+
+        set_sut_parameters(state, payload) {
+            state.suts.current.parameters.items = payload.items
+        },
+        set_sut_parameters_total(state, payload) {
+            state.suts.current.parameters.total = payload.total
+        },
+        set_sut_parameters_count(state, payload) {
+            state.suts.current.parameters.count = payload.count
         },
 
         set_sut_actions_dependencies(state, payload) {
@@ -129,6 +160,7 @@ const suts = {
                     .then(response => {
                         commit("set_sut", { item: response.data });
                         dispatch("countAllSutActions", { sut_id: id });
+                        dispatch("countAllSutParameters", { sut_id: id });
                         dispatch("countAllSutActionsDependencies", { sut_id: id });
                         resolve();
                     })
@@ -183,6 +215,36 @@ const suts = {
             getCountActions({ commit }, data)
                 .then(count => {
                     commit("set_sut_actions_count", { count: count });
+                });
+        },
+        findSutParameters({ commit, dispatch }, data) {
+            return new Promise((resolve, reject) => {
+                let queryParams = `?curPage=${data.context.currentPage}&perPage=${data.context.perPage}`;
+                if (data.context.filter !== null) { queryParams += `&filter=${data.context.filter}`; }
+                axios
+                    .get(`/rest/suts/${data.sut_id}/parameters/paginated/${queryParams}`)
+                    .then(response => {
+                        commit("set_sut_parameters", { items: response.data });
+                        dispatch("countSutParameters", data);
+                        resolve();
+                    })
+                    .catch(error => {
+                        commit("set_sut_parameters", { items: null });
+                        commit("message_add", { message: { type: "error", text: `Couldn't retrieve sut parameters for sut with id ${data.sut_id}`, err: error } });
+                        reject(error);
+                    })
+            })
+        },
+        countAllSutParameters({ commit }, data) {
+            getCountParameters({ commit }, data)
+                .then(total => {
+                    commit("set_sut_parameters_total", { total: total });
+                });
+        },
+        countSutParameters({ commit }, data) {
+            getCountParameters({ commit }, data)
+                .then(count => {
+                    commit("set_sut_parameters_count", { count: count });
                 });
         },
         findSutActionsDependencies({ commit, dispatch }, data) {
