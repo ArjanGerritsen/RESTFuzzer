@@ -31,16 +31,3 @@ export default {
   props: ["parameter"]
 };
 </script>
-
-<style scoped>
-dl {
-  margin: 20px 0px 20px 0px;
-  line-height: 1.1em;
-}
-dt {
-  font-weight: normal;
-}
-dd {
-  font-style: italic;
-}
-</style>

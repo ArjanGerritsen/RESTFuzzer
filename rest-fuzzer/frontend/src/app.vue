@@ -106,6 +106,24 @@ td {
   color: #bb2528;
 }
 
+dl {
+  margin: 20px 0px 20px 0px !important;
+  line-height: 1.1em !important;
+}
+
+dt {
+  font-weight: normal !important;
+}
+
+dd {
+  font-style: italic;
+}
+
+.dl-div {
+  margin: 20px 0px 20px 15px;
+  line-height: 1.1em;
+}
+
 html {
   background: url("assets/background.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;

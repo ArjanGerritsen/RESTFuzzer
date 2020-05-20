@@ -61,7 +61,7 @@ Vue.filter('ppAction', function (action) {
   return `${action.path} [${action.httpMethod}]`;
 });
 
-Vue.filter('ppParam', function (parameter) {
+Vue.filter('ppParameter', function (parameter) {
   if (!parameter) {
     return '-';
   }
