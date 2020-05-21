@@ -1,23 +1,24 @@
 <template>
   <div>
-    <div class="row" style="margin-bottom:20px">
-      <div class="col">
-        <h6>Other:</h6>
-        Created @: {{response.createdAt | date}}
-        <br />
-        HTTP status: {{response.statusCode}}
-        <br />
-        HTTP status description: {{response.statusDescription}}
-        <br />
-        Exception: {{response.failureReason === null ? '-' : response.failureReason}}
-      </div>
-    </div>
-    <div class="row" style="margin-bottom:20px">
-      <div class="col">
-        <h6>Body:</h6>
-        <div class="json fixed" :inner-html.prop="response.body | json"></div>
-      </div>
-    </div>
+    <h6>Information:</h6>
+    <dl class="row overview">
+      <dt class="col-sm-2">identifier</dt>
+      <dd class="col-sm-10">
+        <b>#{{response.id}}</b>
+      </dd>
+      <dt class="col-sm-2">code</dt>
+      <dd class="col-sm-10">{{response.statusCode}}</dd>
+      <dt class="col-sm-2">description</dt>
+      <dd class="col-sm-10">{{response.statusDescription | nullFill }}</dd>
+      <dt class="col-sm-2">exception</dt>
+      <dd class="col-sm-10">{{ response.failureReason | nullFill}}</dd>
+      <dt class="col-sm-2">body</dt>
+      <dd class="col-sm-10">
+        <div class="json" :inner-html.prop="response.body | json"></div>
+      </dd>
+      <dt class="col-sm-2">created @</dt>
+      <dd class="col-sm-10">{{response.createdAt | date}}</dd>
+    </dl>
   </div>
 </template>
 

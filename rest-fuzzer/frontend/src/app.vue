@@ -106,16 +106,16 @@ td {
   color: #bb2528;
 }
 
-dl {
+dl.overview {
   margin: 20px 0px 20px 0px !important;
   line-height: 1.1em !important;
 }
 
-dt {
+dl.overview dt {
   font-weight: normal !important;
 }
 
-dd {
+dl.overview dd {
   font-style: italic;
 }
 

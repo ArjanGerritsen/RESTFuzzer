@@ -16,7 +16,7 @@
 
     <h6>Dependencies:</h6>
     <div v-for="(dependency) in action.dependencies" :key="getKey('dep', dependency)">
-      <dl class="row">
+      <dl class="row overview">
         <dt class="col-sm-2">identifier</dt>
         <dd class="col-sm-10">
           <b>#{{dependency.id}}</b> &nbsp;

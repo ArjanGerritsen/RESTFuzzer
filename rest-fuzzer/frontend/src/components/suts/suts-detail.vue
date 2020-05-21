@@ -92,6 +92,7 @@ export default {
   components: { SutsActions, SutsParameters, SutsActionsDependencies },
   data() {
     return {
+      tab: 0,
       actions_formatters: [],
       actions_fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <dl class="row">
+    <dl class="row overview">
       <dt class="col-sm-2">identifier</dt>
       <dd class="col-sm-10">
         <b>#{{parameter.id}}</b>&nbsp;
@@ -16,8 +16,6 @@
       <dd class="col-sm-10">{{parameter.type}}</dd>
       <dt class="col-sm-2">description</dt>
       <dd class="col-sm-10">{{parameter.description}}</dd>
-      <dt class="col-sm-2">created @</dt>
-      <dd class="col-sm-10">{{parameter.createdAt | date }}</dd>
       <dt class="col-sm-2">metadata</dt>
       <dd class="col-sm-10">
         <div class="json" :inner-html.prop="parameter.metaDataTuplesJson | json"></div>

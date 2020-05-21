@@ -96,7 +96,7 @@
 
       <template
         v-for="formatter in formatters"
-        v-slot:[`cell(${formatter.field})`]="data"
+        v-slot[`cell(${formatter.field})`]="data"
       >
         <template>{{ data.value | dynamicFilter($options.filters[formatter.as]) }}</template>
       </template>
@@ -110,59 +110,7 @@
 
       <template v-slot:row-details="row">
         <b-card>
-          <dl class="dl-horizontal">
-            <dt>
-              <b-button
-                v-if="row.item.discoveryModus === constants.MANUAL"
-                size="sm"
-                type="submit"
-                v-b-modal.suts-actions-dependencies-delete
-                variant="outline-danger"
-                title="delete this dependency"
-              >
-                <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
-              </b-button>
-            </dt>
-          </dl>
-
-          <h6>Depends on action:</h6>
-          <ul>
-            <li class="list-inline-item" style="margin:8px;">
-              <b>#{{ row.item.action.id }}</b>
-              <br />
-              path: {{ row.item.action.path}}
-              <br />
-              HTTP method: {{ row.item.action.httpMethod }}
-            </li>
-          </ul>
-
-          <hr />
-
-          <h6>Depends on parameter:</h6>
-          <ul>
-            <li class="list-inline-item" style="margin:8px;">
-              <b>#{{ row.item.parameter.id }}</b>
-              &nbsp;
-              <b-badge v-if="row.item.parameter.required" variant="primary">required</b-badge>
-              <br />
-              name: {{ row.item.parameter.name}}
-              <br />
-              context: {{ row.item.parameter.context }}
-              <br />
-              type: {{ row.item.parameter.type }}
-              <br />
-              extra: {{ row.item.parameter.metaDataTuplesJson === "{}" ? "-" : row.item.parameter.metaDataTuplesJson }}
-            </li>
-          </ul>
-
-          <hr />
-
-          <h6>Information from response:</h6>
-          <ul>
-            <li class="list-inline-item" style="margin:8px;">
-              parameter: {{ row.item.parameterDependsOn }}
-            </li>
-          </ul>
+          <ActionDepedencyDetail :dependency="row.item"></ActionDepedencyDetail>
         </b-card>
       </template>
 
@@ -180,19 +128,22 @@
     ></b-pagination>
 
     <SutsActionsDependenciesAdd :sut="this.sut"></SutsActionsDependenciesAdd>
-    <SutsActionsDependenciesDelete :sut="this.sut" :dependency="selectedDependency"></SutsActionsDependenciesDelete>
   </div>
 </template>
 
 <script>
 import Constants from "../../shared/constants";
 
+import ActionDepedencyDetail from "../shared/partial/action-dependency-detail";
+
 import SutsActionsDependenciesAdd from "./suts-actions-dependencies-add";
-import SutsActionsDependenciesDelete from "./suts-actions-dependencies-delete";
 
 export default {
   props: ["sut", "fields", "formatters"],
-  components: { SutsActionsDependenciesAdd, SutsActionsDependenciesDelete },
+  components: {
+    ActionDepedencyDetail,
+    SutsActionsDependenciesAdd
+  },
   data() {
     return {
       constants: Constants,

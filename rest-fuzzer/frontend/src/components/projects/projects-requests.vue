@@ -81,7 +81,7 @@
             <b-tab title="Request" active>
               <RequestDetail :request="row.item"></RequestDetail>
             </b-tab>
-            <b-tab title="Action">
+            <b-tab title="REST model description">
               <ActionDetail :action="row.item.action"></ActionDetail>
             </b-tab>
           </b-tabs>

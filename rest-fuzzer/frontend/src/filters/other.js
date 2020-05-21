@@ -67,3 +67,7 @@ Vue.filter('ppParameter', function (parameter) {
   }
   return `${parameter.name} [${parameter.type}]`;
 });
+
+Vue.filter('nullFill', function (object, nullReplace = '-') {
+  return object === null ? nullReplace : object;
+});

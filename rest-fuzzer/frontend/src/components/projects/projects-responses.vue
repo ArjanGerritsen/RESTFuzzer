@@ -106,7 +106,7 @@
             <b-tab title="Request">
               <RequestDetail :request="row.item.request"></RequestDetail>
             </b-tab>
-            <b-tab title="Action">
+            <b-tab title="REST model description">
               <ActionDetail :action="row.item.request.action"></ActionDetail>
             </b-tab>
           </b-tabs>

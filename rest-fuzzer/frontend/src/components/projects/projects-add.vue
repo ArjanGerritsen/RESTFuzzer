@@ -18,7 +18,7 @@
       <b-alert
         show
         variant="danger"
-        v-if="dictionariesForSelection.length === 0 && isTypeModelBased"
+        v-if="dictionariesForSelection.length === 0 && isTypeDictionary"
       >
         No dictionaries available. Please
         <b-link to="suts" size="sm" type="submit" variant="primary">add</b-link>&nbsp;a least one dictionary.
