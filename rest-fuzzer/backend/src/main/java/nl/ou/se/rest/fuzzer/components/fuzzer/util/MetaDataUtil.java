@@ -32,11 +32,13 @@ public class MetaDataUtil {
         public static final String EXCLUDE_ACTIONS = "excludeActions";
         public static final String ACTION = "action";
         public static final String ACTION_PATH = "path";
-        public static final String ACTION_METHOD = "method";
+        public static final String ACTION_METHOD = "httpMethod";
 
         public static final String EXCLUDE_PARAMETERS = "excludeParameters";
         public static final String PARAMETER = "parameter";
         public static final String PARAMETER_NAME = "name";
+        
+        public static final String DEFAULTS = "defaults";
 
         // basic fuzzer
         public static final String REPITITIONS = "repetitions";
@@ -99,7 +101,7 @@ public class MetaDataUtil {
         }
 
         if (excludeActions != null && !excludeActions.isEmpty()) {
-            actions = actions.stream().filter(action -> !isActionMatched(action, includeActions))
+            actions = actions.stream().filter(action -> !isActionMatched(action, excludeActions))
                     .collect(Collectors.toList());
         }
 
@@ -139,7 +141,7 @@ public class MetaDataUtil {
         return authentication;
     }
 
-    private Boolean isActionMatched(RmdAction action, List<Map<String, String>> actions) {
+    public static Boolean isActionMatched(RmdAction action, List<Map<String, String>> actions) {
         for (Map<String, String> actionMap : actions) {
             if (isActionMatched(action, actionMap)) {
                 return true;
@@ -149,9 +151,9 @@ public class MetaDataUtil {
         return false;
     }
 
-    private Boolean isActionMatched(RmdAction action, Map<String, String> actionMap) {
+    public static Boolean isActionMatched(RmdAction action, Map<String, String> actionMap) {
         String pathRegex = (String) actionMap.get(Meta.ACTION_PATH);
-        String httpMethodRegex = (String) actionMap.get(Meta.ACTION_PATH);
+        String httpMethodRegex = (String) actionMap.get(Meta.ACTION_METHOD);
 
         if ((action.getPath().matches(pathRegex)) && (action.getHttpMethod().toString().matches(httpMethodRegex))) {
             return true;
@@ -160,7 +162,7 @@ public class MetaDataUtil {
         return false;
     }
 
-    private Boolean isParameterMatched(RmdParameter parameter, Map<String, String> parameterMap) {
+    public static Boolean isParameterMatched(RmdParameter parameter, Map<String, String> parameterMap) {
         String nameRegex = (String) parameterMap.get(Meta.PARAMETER_NAME);
         return parameter.getName().matches(nameRegex);
     }

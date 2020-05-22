@@ -110,7 +110,7 @@
 
       <template v-slot:row-details="row">
         <b-card>
-          <ActionDepedencyDetail :dependency="row.item"></ActionDepedencyDetail>
+          <ActionDepedencyDetail :sut="sut" :dependency="row.item"></ActionDepedencyDetail>
         </b-card>
       </template>
 

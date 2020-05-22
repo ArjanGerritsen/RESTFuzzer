@@ -39,6 +39,8 @@
       <dt class="col-sm-2">parameter</dt>
       <dd class="col-sm-10">{{ dependency.parameterDependsOn }}</dd>
     </dl>
+
+    <DependencyDelete :sut="sut" :dependency="dependency"></DependencyDelete>
   </div>
 </template>
 
@@ -47,9 +49,11 @@ import Constants from "../../../shared/constants";
 
 import ParameterDetail from "../../shared/partial/parameter-detail";
 
+import DependencyDelete from "../../suts/suts-actions-dependencies-delete";
+
 export default {
-  props: ["dependency"],
-  components: { ParameterDetail },
+  props: ["sut", "dependency"],
+  components: { ParameterDetail, DependencyDelete },
   data() {
     return {
       constants: Constants

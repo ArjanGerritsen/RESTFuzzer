@@ -13,20 +13,21 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 @Service
 public class RequestUtil {
 
-	// variables
-	private static FuzRequestFactory requestFactory = new FuzRequestFactory();
+    // variable(s)
+    private static FuzRequestFactory requestFactory = new FuzRequestFactory();
 
-	@Autowired
-	private ParameterUtil parameterService;
+    @Autowired
+    private ParameterUtil parameterUtil;
 
-	public FuzRequest getRequestFromAction(FuzProject project, RmdAction action, FuzSequence sequence) {
-		requestFactory.create(project, action, action.getPath(), action.getHttpMethod());
+    // method(s)
+    public FuzRequest getRequestFromAction(FuzProject project, RmdAction action, FuzSequence sequence) {
+        requestFactory.create(project, action, action.getPath(), action.getHttpMethod());
 
-		for (ParameterContext context : ParameterContext.values()) {
-			requestFactory.addParameterMap(context,
-					parameterService.createParameterMap(action.getParametersByContext(context), sequence));
-		}
+        for (ParameterContext context : ParameterContext.values()) {
+            requestFactory.addParameterMap(context,
+                    parameterUtil.createParameterMap(action.getParametersByContext(context), sequence));
+        }
 
-		return requestFactory.build();
-	}
+        return requestFactory.build();
+    }
 }

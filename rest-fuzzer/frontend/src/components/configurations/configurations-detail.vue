@@ -18,6 +18,16 @@
                 >
                   <b-icon icon="trash" font-scale="1"></b-icon>&nbsp;delete
                 </b-button>
+
+                <b-button
+                  size="sm"
+                  type="submit"
+                  variant="primary"
+                  title="delete this configuration"
+                  @click="copy"
+                >
+                  <b-icon icon="clipboard" font-scale="1"></b-icon>&nbsp;copy json to clipboard
+                </b-button>
               </div>
             </div>
           </div>
@@ -49,6 +59,20 @@
 export default {
   data() {
     return {};
+  },
+  methods: {
+    copy() {
+      this.$copyText(
+        JSON.stringify(JSON.parse(this.configuration.itemsJson), null, 2)
+      ).then(
+        function(e) {
+          // succes
+        },
+        function(e) {
+          // fail
+        }
+      );
+    }
   },
   computed: {
     configuration() {

@@ -25,6 +25,15 @@
                 >
                   <b-icon icon="play" font-scale="1"></b-icon>&nbsp;start fuzzing
                 </b-button>
+                <b-button
+                  size="sm"
+                  variant="primary"
+                  title="go to SUT"
+                  :to="{ name: 'sut', params: { id: this.project.sut.id } }"
+                >
+                  <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;
+                  go to SUT
+                </b-button>
                 <b-button size="sm" to="/tasks" variant="primary" title="start task to fuzz SUT">
                   <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;go to tasks
                 </b-button>

@@ -5,6 +5,11 @@ import App from "./app.vue";
 import router from './router';
 import store from "./shared/store";
 
+/* clipboard */
+import VueClipboard from 'vue-clipboard2'
+ 
+Vue.use(VueClipboard)
+
 /* timers */
 import VueTimers from 'vue-timers'
 

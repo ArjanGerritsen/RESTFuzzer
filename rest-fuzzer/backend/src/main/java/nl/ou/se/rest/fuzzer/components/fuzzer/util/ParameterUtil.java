@@ -48,6 +48,11 @@ public class ParameterUtil {
     }
 
     private Object getValueForParameter(RmdParameter parameter, FuzSequence sequence) {
+        Object object = getDefault(parameter);
+        if (object != null) {
+            return object;
+        }
+
         if (sequence != null && dependencyUtil.hasDependency(parameter, sequence)) {
             return dependencyUtil.getValueFromPreviousRequestInSequence(parameter, sequence);
         }
@@ -58,6 +63,10 @@ public class ParameterUtil {
             String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_FORMAT);
             return getValueForParameter(parameter, parameter.getType(), format);
         }
+    }
+
+    private Object getDefault(RmdParameter parameter) {
+        return null;
     }
 
     private Object getValueForParameter(RmdParameter parameter, ParameterType type, String format) {
