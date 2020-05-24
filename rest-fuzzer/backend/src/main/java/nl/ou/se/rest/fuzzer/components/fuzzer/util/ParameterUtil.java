@@ -48,11 +48,6 @@ public class ParameterUtil {
     }
 
     private Object getValueForParameter(RmdParameter parameter, FuzSequence sequence) {
-        Object object = getDefault(parameter);
-        if (object != null) {
-            return object;
-        }
-
         if (sequence != null && dependencyUtil.hasDependency(parameter, sequence)) {
             return dependencyUtil.getValueFromPreviousRequestInSequence(parameter, sequence);
         }
@@ -63,10 +58,6 @@ public class ParameterUtil {
             String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_FORMAT);
             return getValueForParameter(parameter, parameter.getType(), format);
         }
-    }
-
-    private Object getDefault(RmdParameter parameter) {
-        return null;
     }
 
     private Object getValueForParameter(RmdParameter parameter, ParameterType type, String format) {
@@ -125,7 +116,7 @@ public class ParameterUtil {
             case FORMAT_URI:
                 return "/uri";
             case FORMAT_EMAIL:
-                return "test@test.nl";
+                return generateRandomValidEmail();
             case FORMAT_DATETIME:
                 return "2020-01-01 00:00:00";
             default:
@@ -134,6 +125,12 @@ public class ParameterUtil {
         }
 
         return RandomStringUtils.randomAlphabetic(5);
+    }
+
+    private String generateRandomValidEmail() {
+        return String.format("%s@%s.%s", RandomStringUtils.randomAlphabetic(5).toLowerCase(),
+                RandomStringUtils.randomAlphabetic(5).toLowerCase(),
+                RandomStringUtils.randomAlphabetic(2).toLowerCase());
     }
 
     private Object getIntegerValue(RmdParameter parameter, String format) {

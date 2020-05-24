@@ -49,10 +49,10 @@ const DEFAULT_CONFIGURATION = {
   includeActions: [{ path: ".*", httpMethod: ".*" }],
   excludeActions: [],
   excludeParameters: [
-    { action: { path: ".*", httpMethod: ".*" }, parameter: { name: ".*" } }
+    { action: { path: ".*", httpMethod: ".*" }, parameter: { name: ".*", required: ".*" } }
   ],
   defaults: [
-    { action: { path: ".*", httpMethod: ".*" }, parameter: { name: ".*" }, default: "" }
+    { action: { path: ".*", httpMethod: ".*" }, parameter: { name: ".*", required: ".*" }, default: "" }
   ]
 };
 

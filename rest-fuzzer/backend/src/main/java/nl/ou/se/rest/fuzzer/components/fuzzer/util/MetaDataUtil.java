@@ -1,6 +1,7 @@
 package nl.ou.se.rest.fuzzer.components.fuzzer.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,7 +38,8 @@ public class MetaDataUtil {
         public static final String EXCLUDE_PARAMETERS = "excludeParameters";
         public static final String PARAMETER = "parameter";
         public static final String PARAMETER_NAME = "name";
-        
+        public static final String PARAMETER_REQUIRED = "required";
+
         public static final String DEFAULTS = "defaults";
 
         // basic fuzzer
@@ -46,12 +48,15 @@ public class MetaDataUtil {
         // model based fuzzers
         public static final String MAX_SEQUENCE_LENGTH = "maxSequenceLength";
         public static final String MAX_NUMBER_REQUESTS = "maxNumRequests";
-        
+
         // dictionary fuzzers
-        
+
     }
 
     private Logger logger = LoggerFactory.getLogger(MetaDataUtil.class);
+
+    private static final String TRUE = "TRUE";
+    private static final String FALSE = "FALSE";
 
     private Map<String, Object> metaDataTuples;
     private Map<String, Object> configurationMetaDataTuples;
@@ -121,8 +126,8 @@ public class MetaDataUtil {
     public Authentication getAuthentication() {
         Authentication authentication = null;
 
-        Map<String, String> authenticationMap = (Map<String, String>) this
-                .getValue(this.configurationMetaDataTuples, Meta.AUTHENTICATION);
+        Map<String, String> authenticationMap = (Map<String, String>) this.getValue(this.configurationMetaDataTuples,
+                Meta.AUTHENTICATION);
 
         if (authenticationMap != null && !authenticationMap.isEmpty()) {
             String method = authenticationMap.get(Meta.AUTH_METHOD);
@@ -137,8 +142,17 @@ public class MetaDataUtil {
                 break;
             }
         }
-        
+
         return authentication;
+    }
+
+    public Map<RmdParameter, Object> getDefaultValuesForParameters() {
+        Map<RmdParameter, Object> defaults = new HashMap<>();
+
+        List<Map<String, Object>> defaultsMap = (ArrayList<Map<String, Object>>) this
+                .getValue(this.configurationMetaDataTuples, Meta.DEFAULTS);
+
+        return defaults;
     }
 
     public static Boolean isActionMatched(RmdAction action, List<Map<String, String>> actions) {
@@ -164,7 +178,27 @@ public class MetaDataUtil {
 
     public static Boolean isParameterMatched(RmdParameter parameter, Map<String, String> parameterMap) {
         String nameRegex = (String) parameterMap.get(Meta.PARAMETER_NAME);
-        return parameter.getName().matches(nameRegex);
+        String requiredString = (String) parameterMap.get(Meta.PARAMETER_REQUIRED); // optional
+
+        Boolean required = null;
+        if (requiredString != null) {
+            switch (requiredString.toUpperCase()) {
+            case TRUE:
+                required = true;
+                break;
+            case FALSE:
+                required = false;
+                break;
+            default:
+                break;
+            }
+        }
+
+        if (required == null) {
+            return parameter.getName().matches(nameRegex);
+        }
+
+        return parameter.getName().matches(nameRegex) && parameter.getRequired() == required;
     }
 
     @SuppressWarnings("unchecked")
