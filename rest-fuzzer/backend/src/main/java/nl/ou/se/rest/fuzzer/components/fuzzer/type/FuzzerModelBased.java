@@ -21,7 +21,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.fuzzer.executor.ExecutorUtil;
-import nl.ou.se.rest.fuzzer.components.fuzzer.util.MetaDataUtil;
+import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.RequestUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.SequenceUtil;
 
@@ -65,9 +65,11 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
         // authentication
         executorUtil.setAuthentication(metaDataUtil.getAuthentication());
 
+        System.out.println(metaDataUtil.getDefaults());
+
         // get sequences
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
-        actions = metaDataUtil.filterActions(actions);
+        actions = metaDataUtil.getFilteredActions(actions);
 
         List<RmdActionDependency> dependencies = actionDependencyService.findBySutId(this.project.getSut().getId());
 

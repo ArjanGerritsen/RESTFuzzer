@@ -1,0 +1,56 @@
+{
+  "authentication": {
+    "method": "BASIC",
+    "username": "wordpress",
+    "password": "wordpress"
+  },
+  "includeActions": [
+    {
+      "path": ".*",
+      "httpMethod": ".*"
+    }
+  ],
+  "excludeActions": [
+    {
+      "path": "/wp/v2/users/me",
+      "httpMethod": ".*"
+    },
+    {
+      "path": "/wp/v2/taxonomies/\\{taxonomy\\}",
+      "httpMethod": "GET"
+    },
+    {
+      "path": "/wp/v2/types/\\{type\\}",
+      "httpMethod": "GET"
+    },
+    {
+      "path": "/wp/v2/statuses/\\{status\\}",
+      "httpMethod": "GET"
+    }
+  ],
+  "excludeParameters": [
+    {
+      "action": {
+        "path": ".*",
+        "httpMethod": ".*"
+      },
+      "parameter": {
+        "name": "template|meta|subtype|status|username|roles|parent",
+        "required": "false"
+      }
+    }
+  ],
+  "defaults": [
+    {
+      "action": {
+        "path": ".*",
+        "httpMethod": ".*"
+      },
+      "parameter": {
+        "name": "sticky",
+        "required": ".*"
+      },
+      "default": "false"
+    }
+  ]
+}

@@ -15,7 +15,8 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.fuzzer.executor.ExecutorUtil;
-import nl.ou.se.rest.fuzzer.components.fuzzer.util.MetaDataUtil;
+import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil;
+import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil.Meta;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.RequestUtil;
 
 @Service
@@ -44,9 +45,9 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
         this.project = project;
 
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
-        actions = metaDataUtil.filterActions(actions);
+        actions = metaDataUtil.getFilteredActions(actions);
 
-        Integer repetitions = metaDataUtil.getIntegerValue(MetaDataUtil.Meta.REPITITIONS);
+        Integer repetitions = metaDataUtil.getIntegerValue(Meta.REPITITIONS);
 
         int count = 0;
         int total = repetitions * actions.size();
@@ -69,6 +70,6 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
         this.metaDataUtil = new MetaDataUtil(metaDataTuples);
-        return metaDataUtil.isValid(MetaDataUtil.Meta.REPITITIONS);
+        return metaDataUtil.isValid(Meta.REPITITIONS);
     }
 }
