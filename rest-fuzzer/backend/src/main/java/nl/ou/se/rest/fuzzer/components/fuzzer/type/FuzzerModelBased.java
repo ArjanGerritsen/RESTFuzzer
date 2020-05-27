@@ -65,8 +65,6 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
         // authentication
         executorUtil.setAuthentication(metaDataUtil.getAuthentication());
 
-        System.out.println(metaDataUtil.getDefaults());
-
         // get sequences
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
         actions = metaDataUtil.getFilteredActions(actions);
@@ -84,6 +82,9 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
             total = maxNumRequests;
         }
 
+        // init requestUtil
+        requestUtil.init(project, metaDataUtil.getDefaults());
+
         // for all sequences
         int sequencePosition = 1;
         for (String sequenceString : sequences) {
@@ -95,7 +96,7 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
 
             // for each item in sequence
             for (RmdAction a : actionsFromSequence) {
-                FuzRequest request = requestUtil.getRequestFromAction(project, a, sequence);
+                FuzRequest request = requestUtil.getRequestFromAction(a, sequence);
                 requestService.save(request);
                 sequence.addRequest(request);
 

@@ -60,6 +60,11 @@ public class MetaDataUtil {
     private static final String TRUE = "TRUE";
     private static final String FALSE = "FALSE";
 
+    private static final String ARRAY_START = "[";
+    private static final String ARRAY_END = "]";
+    private static final String EMPTY_STRING = "";
+    private static final String ESCAPE_REGEX = "\\";
+
     private Map<String, Object> tuplesMetaData;
     private Map<String, Object> tuplesConfiguration; // Everything within the configuration block
 
@@ -85,7 +90,8 @@ public class MetaDataUtil {
         }
 
         if (isValid) {
-            this.tuplesConfiguration = ((JSONObject) this.getValueForKey(this.tuplesMetaData, Meta.CONFIGURATION)).toMap();
+            this.tuplesConfiguration = ((JSONObject) this.getValueForKey(this.tuplesMetaData, Meta.CONFIGURATION))
+                    .toMap();
         }
 
         return isValid;
@@ -216,7 +222,7 @@ public class MetaDataUtil {
         } else if (FALSE.equalsIgnoreCase(value)) {
             return false;
         }
-        
+
         // integer
         Integer iValue = null;
         try {
@@ -225,8 +231,18 @@ public class MetaDataUtil {
             // do nothing
         }
 
-        if (iValue != null) { return iValue; }
-        
+        if (iValue != null) {
+            return iValue;
+        }
+
+        // array
+        if (value.startsWith(ARRAY_START) && value.endsWith(ARRAY_END)) {
+            value = value.replaceAll(ESCAPE_REGEX + ARRAY_START, EMPTY_STRING).replaceAll(ARRAY_END, EMPTY_STRING);
+            List<String> array = new ArrayList<>();
+            array.add(value);
+            return array;
+        }
+
         // string
         return value;
     }

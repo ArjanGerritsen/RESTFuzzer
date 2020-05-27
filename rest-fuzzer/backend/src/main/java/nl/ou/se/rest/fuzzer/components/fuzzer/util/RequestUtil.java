@@ -1,5 +1,7 @@
 package nl.ou.se.rest.fuzzer.components.fuzzer.util;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,7 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequence;
 import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzRequestFactory;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
+import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.ConfigurationParameter;
 
 @Service
 public class RequestUtil {
@@ -18,10 +21,17 @@ public class RequestUtil {
 
     @Autowired
     private ParameterUtil parameterUtil;
+    
+    private FuzProject project;
 
     // method(s)
-    public FuzRequest getRequestFromAction(FuzProject project, RmdAction action, FuzSequence sequence) {
-        requestFactory.create(project, action, action.getPath(), action.getHttpMethod());
+    public void init(FuzProject project, Map<ConfigurationParameter, Object> defaults) {
+        this.project = project;
+        this.parameterUtil.init(defaults);
+    }
+
+    public FuzRequest getRequestFromAction(RmdAction action, FuzSequence sequence) {
+        requestFactory.create(this.project, action);
 
         for (ParameterContext context : ParameterContext.values()) {
             requestFactory.addParameterMap(context,

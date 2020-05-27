@@ -4,6 +4,9 @@
     <div v-for="(parameter) in action.parameters" :key="getKey('prm', parameter)">
       <ParameterDetail :parameter="parameter"></ParameterDetail>
     </div>
+    <div class="dl-div" v-if="action.parameters.length == 0">
+      No parameters.
+    </div>
 
     <hr />
 

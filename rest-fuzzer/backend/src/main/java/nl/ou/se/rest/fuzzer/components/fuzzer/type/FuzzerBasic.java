@@ -44,19 +44,25 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
     public void start(FuzProject project, Task task) {
         this.project = project;
 
+        // authentication
+        executorUtil.setAuthentication(metaDataUtil.getAuthentication());
+
+        // get meta
+        Integer repetitions = metaDataUtil.getIntegerValue(Meta.REPITITIONS);
+
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
         actions = metaDataUtil.getFilteredActions(actions);
 
-        Integer repetitions = metaDataUtil.getIntegerValue(Meta.REPITITIONS);
 
         int count = 0;
         int total = repetitions * actions.size();
 
-        executorUtil.setAuthentication(metaDataUtil.getAuthentication());
+        // init requestUtil
+        requestUtil.init(project, metaDataUtil.getDefaults());
 
         for (int i = 0; i < repetitions; i++) {
             for (RmdAction a : actions) {
-                FuzRequest request = requestUtil.getRequestFromAction(project, a, null);
+                FuzRequest request = requestUtil.getRequestFromAction(a, null);
                 requestService.save(request);
 
                 FuzResponse response = executorUtil.processRequest(request);

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,6 +19,7 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequence;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
+import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.ConfigurationParameter;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service
@@ -36,7 +38,13 @@ public class ParameterUtil {
     @Autowired
     private DependencyUtil dependencyUtil;
 
+    private Map<ConfigurationParameter, Object> defaults;
+
     // method(s)
+    public void init(Map<ConfigurationParameter, Object> defaults) {
+        this.defaults = defaults;
+    }
+
     public Map<String, Object> createParameterMap(List<RmdParameter> parameters, FuzSequence sequence) {
         Map<String, Object> parameterMap = new HashMap<>();
 
@@ -48,6 +56,11 @@ public class ParameterUtil {
     }
 
     private Object getValueForParameter(RmdParameter parameter, FuzSequence sequence) {
+        Object defaultValue = getDefaultValue(parameter);
+        if (defaultValue != null) {
+            return defaultValue;
+        }
+
         if (sequence != null && dependencyUtil.hasDependency(parameter, sequence)) {
             return dependencyUtil.getValueFromPreviousRequestInSequence(parameter, sequence);
         }
@@ -58,6 +71,16 @@ public class ParameterUtil {
             String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_FORMAT);
             return getValueForParameter(parameter, parameter.getType(), format);
         }
+    }
+
+    private Object getDefaultValue(RmdParameter parameter) {
+        Optional<Entry<ConfigurationParameter, Object>> entry = this.defaults.entrySet().stream()
+                .filter(cp -> cp.getKey().matches(parameter)).limit(1).findFirst();
+
+        if (entry.isPresent()) {
+            return entry.get().getValue();
+        }
+        return null;
     }
 
     private Object getValueForParameter(RmdParameter parameter, ParameterType type, String format) {
@@ -146,6 +169,6 @@ public class ParameterUtil {
             }
         }
 
-        return new Random().nextInt(10);
+        return RandomUtils.nextInt(1, 10);
     }
 }

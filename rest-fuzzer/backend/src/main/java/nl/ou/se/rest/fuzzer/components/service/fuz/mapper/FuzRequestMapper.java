@@ -19,7 +19,7 @@ public class FuzRequestMapper {
         FuzRequestDto dto = new FuzRequestDto();
         BeanUtils.copyProperties(request, dto);
         dto.setAction(RmdActionMapper.toDto(request.getAction(), true));
-        if (mapResponse) {
+        if (mapResponse && request.getResponse() != null) {
             dto.setResponse(FuzResponseMapper.toDto(request.getResponse()));
         }
         return dto;
