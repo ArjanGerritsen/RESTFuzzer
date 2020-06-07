@@ -120,6 +120,7 @@ ALTER TABLE fuz_requests ADD FOREIGN KEY(project_id) REFERENCES fuz_projects(id)
 ALTER TABLE fuz_requests ADD FOREIGN KEY(action_id) REFERENCES rmd_actions(id);
 ALTER TABLE fuz_requests ADD FOREIGN KEY(sequence_id) REFERENCES fuz_sequences(id);
 
+CREATE INDEX idx_fuz_requests_http_method_path ON fuz_requests (http_method, path);
 
 CREATE TABLE IF NOT EXISTS fuz_responses (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -134,6 +135,8 @@ CREATE TABLE IF NOT EXISTS fuz_responses (
 
 ALTER TABLE fuz_responses ADD FOREIGN KEY(project_id) REFERENCES fuz_projects(id);
 ALTER TABLE fuz_responses ADD FOREIGN KEY(request_id) REFERENCES fuz_requests(id);
+
+CREATE INDEX idx_fuz_responses_status_code ON fuz_responses (status_code);
 
 CREATE TABLE IF NOT EXISTS fuz_dictionaries (
   id INT AUTO_INCREMENT PRIMARY KEY,

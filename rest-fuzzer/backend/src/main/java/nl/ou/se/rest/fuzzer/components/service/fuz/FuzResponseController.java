@@ -52,8 +52,7 @@ public class FuzResponseController {
             @RequestParam(name = "filter", required = false) String filter) {
 
         List<HttpMethod> httpMethods = FilterUtil.getHttpMethods(filter);
-        List<Integer> statusCodes = FilterUtil
-                .getHttpResponseCodes(responseService.findUniqueStatusCodesForProject(id), filter);
+        List<Integer> statusCodes = FilterUtil.getHttpResponseCodes(responseService.findUniqueStatusCodesForProject(id), filter);
         String path = FilterUtil.getValueFromFilter(filter, FilterUtil.PATH);
 
         return ResponseEntity.ok(responseService.countByFilter(id, httpMethods, statusCodes, FilterUtil.toLike(path)));

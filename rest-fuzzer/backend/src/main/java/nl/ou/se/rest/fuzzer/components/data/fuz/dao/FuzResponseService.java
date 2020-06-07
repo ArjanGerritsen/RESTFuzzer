@@ -18,7 +18,7 @@ public interface FuzResponseService extends CrudRepository<FuzResponse, Long> {
     @Query(value = "SELECT r FROM fuz_responses r LEFT JOIN FETCH r.request req WHERE r.project.id = :projectId AND req.httpMethod IN (:httpMethods) AND r.statusCode IN (:statusCodes) AND r.request.path LIKE :path")
     List<FuzResponse> findByFilter(Long projectId, List<HttpMethod> httpMethods, List<Integer> statusCodes, String path, Pageable pageable);
 
-    @Query(value = "SELECT DISTINCT(r.statusCode) FROM fuz_responses r LEFT JOIN r.request req WHERE r.project.id = :projectId")
+    @Query(value = "SELECT DISTINCT(r.statusCode) FROM fuz_responses r WHERE r.project.id = :projectId")
     List<Integer> findUniqueStatusCodesForProject(Long projectId);
 
     @Modifying
