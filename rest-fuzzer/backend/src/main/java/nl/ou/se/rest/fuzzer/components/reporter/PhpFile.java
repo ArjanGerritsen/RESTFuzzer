@@ -2,14 +2,15 @@ package nl.ou.se.rest.fuzzer.components.reporter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhpFile {
 
     // variable(s)
     private String name;
-    private Map<Integer, LineWithCode> linesWithCode = new HashMap<>();
+    private List<Integer> linesExecuted = new ArrayList<>();
+    private List<Integer> linesNotExecuted = new ArrayList<>();
 
     // method(s)
     public void merge(PhpFile phpFile) {
@@ -21,25 +22,18 @@ public class PhpFile {
             throw new IllegalArgumentException("Names should match");
         }
 
-        this.linesWithCode.entrySet().forEach(entry -> {
-            entry.getValue().merge(phpFile.getLinesWithCode().get(entry.getKey()));
+        phpFile.getLinesExecuted().forEach(line -> {
+            if (!this.getLinesExecuted().contains(line)) {
+                this.getLinesExecuted().add(line);
+                this.getLinesNotExecuted().remove(line);
+            }
         });
     }
 
     public double codeCoveragePercentage() {
-        Double locExecuted = (double) this.locCount(true);
-        Double locNotExecuted = (double) this.locCount(false);
+        Double locExecuted = Double.valueOf(this.getLinesExecuted().size());
+        Double locNotExecuted = Double.valueOf(this.getLinesNotExecuted().size());
         return (locExecuted / (locExecuted + locNotExecuted)) * 100;
-    }
-
-    public int locCount(boolean isExecuted) {
-        int count = 0;
-        for (LineWithCode line : this.linesWithCode.values()) {
-            if (isExecuted == line.isExecuted()) {
-                count += 1;
-            }
-        }
-        return count;
     }
 
     public String path() {
@@ -61,11 +55,19 @@ public class PhpFile {
         this.name = name;
     }
 
-    public Map<Integer, LineWithCode> getLinesWithCode() {
-        return linesWithCode;
+    public List<Integer> getLinesExecuted() {
+        return linesExecuted;
     }
 
-    public void setLinesWithCode(Map<Integer, LineWithCode> linesWithCode) {
-        this.linesWithCode = linesWithCode;
+    public void setLinesExecuted(List<Integer> linesExecuted) {
+        this.linesExecuted = linesExecuted;
+    }
+
+    public List<Integer> getLinesNotExecuted() {
+        return linesNotExecuted;
+    }
+
+    public void setLinesNotExecuted(List<Integer> linesNotExecuted) {
+        this.linesNotExecuted = linesNotExecuted;
     }
 }
