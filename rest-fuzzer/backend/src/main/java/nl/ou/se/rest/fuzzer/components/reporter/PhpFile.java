@@ -1,5 +1,7 @@
 package nl.ou.se.rest.fuzzer.components.reporter;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +26,13 @@ public class PhpFile {
         });
     }
 
-    public int getLocCount(boolean isExecuted) {
+    public double codeCoveragePercentage() {
+        Double locExecuted = (double) this.locCount(true);
+        Double locNotExecuted = (double) this.locCount(false);
+        return (locExecuted / (locExecuted + locNotExecuted)) * 100;
+    }
+
+    public int locCount(boolean isExecuted) {
         int count = 0;
         for (LineWithCode line : this.linesWithCode.values()) {
             if (isExecuted == line.isExecuted()) {
@@ -32,6 +40,16 @@ public class PhpFile {
             }
         }
         return count;
+    }
+
+    public String path() {
+        Path path = Paths.get(this.name);
+        return path.getParent().toString();
+    }
+
+    public String shortName() {
+        Path path = Paths.get(this.name);
+        return path.getFileName().toString();
     }
 
     // getter(s) and setter(s)

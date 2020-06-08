@@ -25,18 +25,27 @@ public class Reporter {
     // variable(s)
     private static Logger logger = LoggerFactory.getLogger(Reporter.class);
 
-//    private static Map<LocalDateTime, Report> reports = new HashMap<>();
+    private static ReportTable reportTable = new ReportTable();
 
     public static void main(String[] args) {
 
-        String directoryName = "C://temp";
+        // TODO inputs
+        String directoryName = "C://temp"; // directory were to find XDEBUG output
+        Integer interval = 1; // interval, number of requests, point reductions in graph
 
         List<Path> files = Stream.of(new File(directoryName).listFiles()).filter(file -> !file.isDirectory())
                 .map(file -> file.toPath()).collect(Collectors.toList());
 
         Report current = null;
         Report previous = null;
+
+        Integer requestCount = 0;
+
+        reportTable.setOrigin("requests");
+
         for (Path file : files) {
+            requestCount++;
+
             try {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS");
                 LocalDateTime localDateTime = LocalDateTime.parse(file.getFileName().toString(), formatter);
@@ -49,19 +58,28 @@ public class Reporter {
 
                 previous = current;
 
-//                reports.put(localDateTime, current);
+//                for (Entry<String, PhpFile> entry : current.getPhpFiles().entrySet()) {
+//                    Object rowKey = requestCount;
+//                    Object columnKey = entry.getValue().getShortName();
+//                    Object value = entry.getValue().getPercentageExecuted();
+//
+//                    reportTable.addValue(columnKey, rowKey, value);
+//                }
 
-                int locExecuted = current.locCount(true);
-                int locNotExecuted = current.locCount(false);
-                logger.debug(
-                        String.format("%s #files, Loc executed: %s, Loc !executed: %s, percentage executed: %.2f%%",
-                                current.fileCount(), locExecuted, locNotExecuted,
-                                ((Double.valueOf(locExecuted) / (locExecuted + locNotExecuted)) * 100)));
+                if (requestCount == 1 || (requestCount % interval == 0)) {
+                    Object rowKey = requestCount;
+                    Object endpoints = current.codeCoveragePercentageFiltered("C:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\");
+                    Object total = current.codeCoveragePercentage();
+                    reportTable.addValue("endpoints", rowKey, endpoints);
+                    reportTable.addValue("total", rowKey, total);
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        reportTable.printTable();
     }
 
     private static Report processFile(Path path, LocalDateTime localDateTime) throws IOException {
