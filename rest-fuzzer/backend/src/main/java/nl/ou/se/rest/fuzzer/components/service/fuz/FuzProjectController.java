@@ -37,7 +37,7 @@ import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
 public class FuzProjectController {
 
     // variable(s)
-    private Logger logger = LoggerFactory.getLogger(FuzProjectController.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     @Autowired
     FuzProjectService projectService;

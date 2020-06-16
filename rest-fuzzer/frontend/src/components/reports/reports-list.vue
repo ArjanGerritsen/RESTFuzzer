@@ -31,34 +31,37 @@ export default {
     return {
       formatters: [
         { field: "type", as: "enumToHuman" },
-        { field: "createdAt", as: "dateShort" }
+        { field: "createdAt", as: "dateShort" },
+        { field: "completedAt", as: "dateShort" }
       ],
       fields: [
         { key: "id", label: "#", thStyle: "width: 50px;" },
-        { key: "type", thStyle: "width: 250px;" },
-        { key: "sut.title", label: "System under test" },
-        { key: "createdAt", label: "Created @", thStyle: "width: 110px;" }
+        { key: "type" },
+        { key: "description" },
+        { key: "project.id", label: "Project #" },
+        { key: "createdAt", label: "Created @", thStyle: "width: 110px;" },
+        { key: "completedAt", label: "Completed @", thStyle: "width: 110px;" }
       ]
     };
   },
   methods: {
-    select(project) {
-      this.$router.push({ name: "project", params: { id: project.id } });
-      this.$store.commit("set_project_display", { display: null });
-      this.$store.dispatch("findProject", project.id);
+    select(report) {
+      this.$router.push({ name: "report", params: { id: report.id } });
+      this.$store.commit("set_report_display", { display: null });
+      this.$store.dispatch("findReport", report.id);
     },
     add() {
-      this.$store.commit("set_project", { item: null });
-      this.$store.commit("set_project_display", { display: "add" });
+      this.$store.commit("set_report", { item: null });
+      this.$store.commit("set_report_display", { display: "add" });
     }
   },
   computed: {
     projects() {
-      return this.$store.getters.projects.all.items;
+      return this.$store.getters.reports.all.items;
     }
   },
   created: function() {
-    this.$store.dispatch("findAllProjects");
+    this.$store.dispatch("findAllReports");
   }
 };
 </script>

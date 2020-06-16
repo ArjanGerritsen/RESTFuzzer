@@ -9,8 +9,7 @@
           <b-dropdown-item to="/dictionaries">Dictionaries</b-dropdown-item>
           <b-dropdown-item to="/configurations">Configurations</b-dropdown-item>
         </b-nav-item-dropdown>
-        <b-nav-item to="/reports">Reports (data)</b-nav-item>
-        </b-nav-item-dropdown>        
+        <b-nav-item to="/reports">Reports</b-nav-item>
         <b-nav-item to="/tasks">Tasks</b-nav-item>
         <b-nav-item to="/about">About</b-nav-item>
       </b-navbar-nav>

@@ -33,7 +33,7 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 public class RmdSutController {
 
     // variable(s)
-    private Logger logger = LoggerFactory.getLogger(RmdSutController.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     @Autowired
     private RmdSutService sutService;

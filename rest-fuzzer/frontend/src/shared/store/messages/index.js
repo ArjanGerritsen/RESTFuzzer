@@ -18,4 +18,4 @@ const messages = {
     }
 }
 
-export default messages
+export default messages;

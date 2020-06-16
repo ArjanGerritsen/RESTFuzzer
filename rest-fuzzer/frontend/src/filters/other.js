@@ -15,10 +15,11 @@ Vue.filter('downCase', function (string) {
 Vue.filter('enumToHuman', function (string) {
   string = string.split("_").map(
     s => {
-      return s[0].toUpperCase() +
-        s.substring(1).toLowerCase();
+      return s.toLowerCase();
     }
-  ).join("");
+  ).join(" ");
+
+  string = string[0].toUpperCase() + string.substring(1).toLowerCase();;
 
   return string;
 });

@@ -11,7 +11,7 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 public class TaskExecutionBase {
 
 	// variable(s)
-	private Logger logger = LoggerFactory.getLogger(TaskExecutionBase.class);
+	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
 	private Task task;
 

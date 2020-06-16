@@ -107,4 +107,4 @@ const dictionaries = {
     }
 }
 
-export default dictionaries
+export default dictionaries;

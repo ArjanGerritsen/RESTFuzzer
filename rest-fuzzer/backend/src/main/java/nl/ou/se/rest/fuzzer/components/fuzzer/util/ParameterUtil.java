@@ -74,6 +74,10 @@ public class ParameterUtil {
     }
 
     private Object getDefaultValue(RmdParameter parameter) {
+        if (this.defaults == null) {
+            return null;
+        }
+
         Optional<Entry<ConfigurationParameter, Object>> entry = this.defaults.entrySet().stream()
                 .filter(cp -> cp.getKey().matches(parameter)).limit(1).findFirst();
 

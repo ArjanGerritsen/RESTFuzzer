@@ -30,6 +30,17 @@
                   go to project
                 </b-button>
                 <b-button
+                  v-if="hasRouteFor('report')"
+                  size="sm"
+                  variant="primary"
+                  title="go to report"
+                  :to="getRouteFor('report')"
+                >
+                  <b-icon icon="link45deg" font-scale="1"></b-icon>&nbsp;
+                  go to report
+                </b-button>
+
+                <b-button
                   size="sm"
                   v-b-modal.task-delete
                   variant="outline-danger"

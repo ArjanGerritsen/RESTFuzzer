@@ -156,12 +156,13 @@ CREATE TABLE IF NOT EXISTS fuz_configurations (
 
 CREATE TABLE IF NOT EXISTS reports (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  type ENUM('CODE_COVERAGE', 'RESPONSES') NOT NULL,
   description VARCHAR(255) NOT NULL,
-  meta_data_tuples_json TEXT, 
+  meta_data_tuples_json TEXT,
   output TEXT,
   project_id INT,
   created_at DATETIME NULL,
-  completed_at DATETIME NUL
+  completed_at DATETIME NULL
 ) ENGINE=INNODB;
 
 

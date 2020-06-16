@@ -28,7 +28,7 @@ public class FuzProjectMapper {
 	public static FuzProject toDomain(FuzProjectDto dto) {
 		FuzProject project = new FuzProject();
 		BeanUtils.copyProperties(dto, project);
-		project.setType(dto.getType());
+		project.setType(dto.getType()); // TODO, kan weg?
 		return project;
 	}
 }

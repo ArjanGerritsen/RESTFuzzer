@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.extractor.ExtractorTask;
 import nl.ou.se.rest.fuzzer.components.fuzzer.type.FuzzerTask;
+import nl.ou.se.rest.fuzzer.components.reporter.ReporterTask;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service
@@ -21,6 +22,9 @@ public class TaskExecutionFactory {
 
 	@Autowired
 	private FuzzerTask fuzzerTask;
+	
+	@Autowired
+	private ReporterTask reporterTask;
 
 	private String executionName;
 
@@ -43,6 +47,8 @@ public class TaskExecutionFactory {
 			taskExecution = extractorTask;
 		} else if (FuzzerTask.class.getCanonicalName().equals(executionName)) {
 			taskExecution = fuzzerTask;
+        } else if (ReporterTask.class.getCanonicalName().equals(executionName)) {
+            taskExecution = reporterTask;
 		} else {
 			logger.error(String.format(Constants.Task.EXECUTION_FACTORY_UNKNOWN, executionName));
 			return null;

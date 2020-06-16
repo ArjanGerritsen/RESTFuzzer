@@ -342,8 +342,24 @@ const projects = {
     getters: {
         projects: state => {
             return state.projects
-        }
+        },
+        projectsForSelection: state => {
+            let projectsForSelection = []
+
+            if (state.projects.all.items !== null) {
+                projectsForSelection = state.projects.all.items.filter(project => project.description !== null).map(
+                    project => {
+                        const newProject = {};
+                        newProject["value"] = project.id;
+                        newProject["text"] = project.description;
+                        return newProject;
+                    }
+                );
+            }
+
+            return projectsForSelection;
+        }        
     }
 }
 
-export default projects
+export default projects;

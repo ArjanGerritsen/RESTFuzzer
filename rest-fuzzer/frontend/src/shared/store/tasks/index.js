@@ -165,4 +165,4 @@ const tasks = {
     }
 }
 
-export default tasks
+export default tasks;

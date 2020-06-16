@@ -35,7 +35,7 @@ import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
 public class RmdActionDependencyController {
 
     // variable(s)
-    private Logger logger = LoggerFactory.getLogger(RmdActionDependencyController.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     @Autowired
     private RmdActionService actionService;

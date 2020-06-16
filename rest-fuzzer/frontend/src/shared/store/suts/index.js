@@ -342,7 +342,7 @@ const suts = {
                     .delete(`/rest/suts/${sut.id}`)
                     .then(response => {
                         commit("message_add", { message: { type: "info", title: "Delete system under test", text: `System under test ${response.data.location} deleted successful.` } });
-                        commit("set_sut", { sut: null });
+                        commit("set_sut", { item: null });
                         resolve();
                     })
                     .catch(error => {
@@ -469,4 +469,4 @@ const suts = {
     }
 }
 
-export default suts
+export default suts;

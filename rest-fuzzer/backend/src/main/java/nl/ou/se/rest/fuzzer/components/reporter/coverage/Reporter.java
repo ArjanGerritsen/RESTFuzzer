@@ -25,7 +25,7 @@ import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 public class Reporter {
 
     // variable(s)
-    private static Logger logger = LoggerFactory.getLogger(Reporter.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     private static ReportTable reportTable = new ReportTable();
 
@@ -100,7 +100,7 @@ public class Reporter {
         coverageReport.setPhpFiles(phpFiles);
 
         long millisPassed = ChronoUnit.MILLIS.between(from, LocalDateTime.now());
-        logger.debug(String.format("processed file %s in %s ms", path.getFileName().toFile(), millisPassed));
+        // logger.debug(String.format("processed file %s in %s ms", path.getFileName().toFile(), millisPassed));
 
         return coverageReport;
     }

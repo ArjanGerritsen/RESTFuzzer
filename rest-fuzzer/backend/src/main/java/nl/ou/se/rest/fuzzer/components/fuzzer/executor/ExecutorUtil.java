@@ -25,7 +25,7 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzResponseFactory;
 public class ExecutorUtil {
 
     // variable(s)
-    private Logger logger = LoggerFactory.getLogger(ExecutorUtil.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     private static final int TIMEOUT_MS = 5 * 1000;
 

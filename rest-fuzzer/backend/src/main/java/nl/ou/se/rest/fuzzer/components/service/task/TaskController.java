@@ -19,17 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import nl.ou.se.rest.fuzzer.components.data.task.dao.TaskService;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.extractor.ExtractorTask;
 import nl.ou.se.rest.fuzzer.components.fuzzer.type.FuzzerTask;
+import nl.ou.se.rest.fuzzer.components.reporter.ReporterTask;
 import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 import nl.ou.se.rest.fuzzer.components.service.task.domain.TaskDto;
 import nl.ou.se.rest.fuzzer.components.service.task.mapper.TaskMapper;
-import nl.ou.se.rest.fuzzer.components.service.util.HttpResponseDto;
+import nl.ou.se.rest.fuzzer.components.service.util.ValidatorUtil;
 import nl.ou.se.rest.fuzzer.components.shared.Constants;
 import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
 
@@ -38,10 +36,11 @@ import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
 public class TaskController {
 
     // variable(s)
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     private static final String EXTRACTOR = "extractor";
     private static final String FUZZER = "fuzzer";
+    private static final String REPORTER = "reporter";
     private static final int MAX_TASKS_ENDED_SPECIFIC = 250;
 
     @Autowired
@@ -126,22 +125,19 @@ public class TaskController {
         case FUZZER:
             task = new Task(FuzzerTask.class.getCanonicalName());
             break;
+        case REPORTER:
+            task = new Task(ReporterTask.class.getCanonicalName());
+            break;
         default:
-            String json = "";
-            try {
-                HttpResponseDto response = new HttpResponseDto("Unkown task name.");
-                json = new ObjectMapper().writeValueAsString(response);
-            } catch (JsonProcessingException e) {
-                logger.warn(e.getMessage());
-            }
-            return ResponseEntity.badRequest().body(json);
+            return ValidatorUtil.getResponseForViolation("Unkown task name.");
         }
 
         task.setMetaDataTuples(metaDataTuples);
         taskService.save(task);
+
         return ResponseEntity.ok().body(TaskMapper.toDto(task));
     }
-    
+
     @RequestMapping(path = "{id}", method = RequestMethod.DELETE)
     public @ResponseBody ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         Optional<Task> task = taskService.findById(id);
@@ -152,6 +148,7 @@ public class TaskController {
         }
 
         taskService.deleteById(id);
+
         return ResponseEntity.ok(TaskMapper.toDto(task.get()));
-    }    
+    }
 }

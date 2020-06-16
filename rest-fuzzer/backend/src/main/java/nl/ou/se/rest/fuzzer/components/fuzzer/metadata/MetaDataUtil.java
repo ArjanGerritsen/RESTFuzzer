@@ -55,7 +55,7 @@ public class MetaDataUtil {
 
     }
 
-    private Logger logger = LoggerFactory.getLogger(MetaDataUtil.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     private static final String TRUE = "TRUE";
     private static final String FALSE = "FALSE";
@@ -154,6 +154,10 @@ public class MetaDataUtil {
         List<Map<String, Object>> defaultsMaps = (ArrayList<Map<String, Object>>) this
                 .getValueForKey(this.tuplesConfiguration, Meta.DEFAULTS);
 
+        if (defaultsMaps == null) {
+            return defaults;
+        }
+
         defaultsMaps.forEach(map -> {
             ConfigurationParameter cp = getParameter(map);
             Object value = getDefault(map);
@@ -166,18 +170,27 @@ public class MetaDataUtil {
     private List<ConfigurationAction> getIncludeActions() {
         List<Map<String, String>> actionsMap = (ArrayList<Map<String, String>>) getValueForKey(this.tuplesConfiguration,
                 Meta.INCLUDE_ACTIONS);
+        if (actionsMap == null) {
+            return null;
+        }
         return actionsMap.stream().map(m -> getAction(m)).collect(Collectors.toList());
     }
 
     private List<ConfigurationAction> getExcludeActions() {
         List<Map<String, String>> actionsMap = (ArrayList<Map<String, String>>) getValueForKey(this.tuplesConfiguration,
                 Meta.EXCLUDE_ACTIONS);
+        if (actionsMap == null) {
+            return null;
+        }
         return actionsMap.stream().map(m -> getAction(m)).collect(Collectors.toList());
     }
 
     private List<ConfigurationParameter> getExcludeParameters() {
         List<Map<String, Object>> parametersMap = (ArrayList<Map<String, Object>>) getValueForKey(
                 this.tuplesConfiguration, Meta.EXCLUDE_PARAMETERS);
+        if (parametersMap == null) {
+            return null;
+        }
         return parametersMap.stream().map(m -> getParameter(m)).collect(Collectors.toList());
     }
 

@@ -24,7 +24,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.factory.RmdActionDependencyFacto
 public class DependencyFinder {
 
     // variable(s)
-    private Logger logger = LoggerFactory.getLogger(DependencyFinder.class);
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     private static final String ID = "id";
 

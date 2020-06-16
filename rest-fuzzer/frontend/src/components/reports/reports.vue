@@ -5,25 +5,26 @@
         <reports-list></reports-list>
       </div>
       <div class="col-6">
-        reports-add
-        reports-detail
+        <reports-add></reports-add>
+        <reports-detail></reports-detail>
       </div>
-    </div>reports-delete
+    </div>
+    <reports-delete></reports-delete>
   </div>
 </template>
 
 <script>
-// import ReportsAdd from "./reports-add";
+import ReportsAdd from "./reports-add";
 import ReportsList from "./reports-list";
-// import ReportsDetail from "./reports-detail";
-// import ReportsDelete from "./reports-delete";
+import ReportsDetail from "./reports-detail";
+import ReportsDelete from "./reports-delete";
 
 export default {
   components: {
-    // ReportsAdd,
+    ReportsAdd,
     ReportsList,
-    // ReportsDetail,
-    // ReportsDelete
+    ReportsDetail,
+    ReportsDelete
   },
   methods: {
     navigate() {
