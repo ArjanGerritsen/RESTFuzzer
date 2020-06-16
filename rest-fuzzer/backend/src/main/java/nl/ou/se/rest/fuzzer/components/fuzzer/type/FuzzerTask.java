@@ -60,7 +60,7 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
             fuzzer.start(project, this.getTask());
         }
 
-        projectService.save(project);
+        projectService.save(project); // TODO Kan dit niet weg?
 
         this.logStop(FuzzerTask.class.getTypeName());
     }

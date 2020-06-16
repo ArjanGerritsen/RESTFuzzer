@@ -1,6 +1,7 @@
 package nl.ou.se.rest.fuzzer.components.data.report.domain;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
+import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 
 @Entity(name = "reports")
 public class Report {
@@ -49,6 +51,15 @@ public class Report {
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime completedAt;
+
+    // method(s)
+    public Map<String, Object> getMetaDataTuples() {
+        return JsonUtil.stringToMap(this.metaDataTuplesJson);
+    }
+
+    public void setMetaDataTuples(Map<String, Object> metaDataTuples) {
+        this.metaDataTuplesJson = JsonUtil.mapToString(metaDataTuples);
+    }
 
     // getter(s) and setter(s)
     public Long getId() {

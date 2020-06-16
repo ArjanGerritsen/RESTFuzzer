@@ -73,7 +73,7 @@ td {
   font-size: 0.85rem;
 }
 
-.json {
+.json, .data {
   border: 1px solid #dddddd;
   padding: 10px;
   white-space: pre-wrap;

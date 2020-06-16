@@ -79,7 +79,7 @@
               <dl class="dl-horizontal">
                 <dt>Meta data</dt>
                 <dd>
-                  <div class="json fixed" :inner-html.prop="project.metaDataTuplesJson | json"></div>
+                  <div class="data fixed" :inner-html.prop="project.metaDataTuplesJson | json"></div>
                 </dd>
               </dl>
             </div>

@@ -53,7 +53,6 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
         actions = metaDataUtil.getFilteredActions(actions);
 
-
         int count = 0;
         int total = repetitions * actions.size();
 
@@ -76,6 +75,6 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
         this.metaDataUtil = new MetaDataUtil(metaDataTuples);
-        return metaDataUtil.isValid(Meta.REPITITIONS);
+        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.REPITITIONS);
     }
 }

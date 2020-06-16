@@ -44,6 +44,25 @@
           </b-form-select>
           <hr />
         </b-form-group>
+
+        <div v-if="isTypeRepsonses">
+          <b-form-group
+            label="Interval (seconds):"
+            label-for="interval"
+            description="Set interval in seconds"
+          >
+            <b-form-input
+              id="interval"
+              v-model="metaDataTuplesJson.interval"
+              type="range"
+              min="10"
+              max="250"
+            ></b-form-input>
+            <div class="mt-2">Interval: {{ metaDataTuplesJson.interval }}</div>
+          </b-form-group>
+
+          <hr />
+        </div>        
       </b-form>
     </b-card-text>
 
@@ -61,8 +80,9 @@
 </template>
 
 <script>
+import constants from '../../shared/constants';
 const DEFAULT_META = {
-  interval: 100,
+  interval: 10,
 };
 
 export default {
@@ -124,6 +144,9 @@ export default {
         this.$store.getters.reports.display !== null &&
         this.$store.getters.reports.display === "add"
       );
+    },
+    isTypeRepsonses() {
+      return this.report.type === "RESPONSES";
     },
     projectsForSelection() {
       this.findAllProjects();

@@ -32,7 +32,7 @@ public interface FuzResponseService extends CrudRepository<FuzResponse, Long> {
     @Query(value = "SELECT MIN(r.createdAt) FROM fuz_responses r WHERE r.project.id = :projectId")
     LocalDateTime findMinCreatedByProjectId(Long projectId);
 
-    @Query(value = "SELECT COUNT(r) AS count, r.statusCode FROM fuz_responses r WHERE r.project.id = :projectId AND r.createdAt >= :from AND r.createdAt < :to GROUP BY r.statusCode")
+    @Query(value = "SELECT r.statusCode, COUNT(r) AS count FROM fuz_responses r WHERE r.project.id = :projectId AND r.createdAt >= :from AND r.createdAt < :to GROUP BY r.statusCode")
     List<Object[]> findStatusCodesAndCountsByProjectIdAndDateAndInterval(Long projectId, LocalDateTime from, LocalDateTime to);
 
 }

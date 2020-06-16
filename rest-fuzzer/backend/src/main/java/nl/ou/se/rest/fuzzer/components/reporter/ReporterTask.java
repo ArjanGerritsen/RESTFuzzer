@@ -3,20 +3,32 @@ package nl.ou.se.rest.fuzzer.components.reporter;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import nl.ou.se.rest.fuzzer.components.data.report.dao.ReportService;
 import nl.ou.se.rest.fuzzer.components.data.report.domain.Report;
 import nl.ou.se.rest.fuzzer.components.extractor.ExtractorTask;
+import nl.ou.se.rest.fuzzer.components.reporter.coverage.CoverageReporter;
+import nl.ou.se.rest.fuzzer.components.reporter.responses.ResponsesReporter;
 import nl.ou.se.rest.fuzzer.components.task.TaskExecution;
 import nl.ou.se.rest.fuzzer.components.task.TaskExecutionBase;
 
+@Service
 public class ReporterTask extends TaskExecutionBase implements TaskExecution {
 
     // variable(s)
     public static final String KEY_REPORT_ID = "report_id";
 
+    private Reporter reporter;
+
     @Autowired
     private ReportService reportService;
+    
+    @Autowired
+    private CoverageReporter coverageReporter;
+    
+    @Autowired
+    private ResponsesReporter responsesReporter;
 
     // method(s)
     public void execute() {
@@ -38,17 +50,18 @@ public class ReporterTask extends TaskExecutionBase implements TaskExecution {
 
         switch (report.getType()) {
         case CODE_COVERAGE:
+            reporter = coverageReporter;
             break;
         case RESPONSES:
+            reporter = responsesReporter;
             break;
         default:
             break;
         }
 
-        // TODO ...
-        
-//        getTask().setProgress(new BigDecimal(100));
-//        taskService.save(getTask());
+        if (reporter.isMetaDataValid(report.getMetaDataTuples())) {
+            reporter.generate(report, this.getTask());
+        }
 
         this.logStop(ReporterTask.class.getTypeName());
     }

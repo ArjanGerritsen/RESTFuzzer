@@ -76,6 +76,33 @@
             </div>
           </div>
         </b-tab>
+        <b-tab v-if="report.completedAt" title="Output">
+          <div class="row">
+            <div class="col">
+              <div class="button-group-left">
+                <b-button
+                  size="sm"
+                  type="submit"
+                  variant="primary"
+                  title="download CSV"
+                  :href="getCsvAsHref()"
+                >
+                  <b-icon icon="download" font-scale="1"></b-icon>&nbsp;download
+                </b-button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <dl class="dl-horizontal">
+                <dt>Raw</dt>
+                <dd>
+                  <div class="data fixed">{{ report.output }}</div>
+                </dd>
+              </dl>
+            </div>
+          </div>          
+        </b-tab>
       </b-tabs>
     </b-card-text>
   </b-card>
@@ -119,6 +146,9 @@ export default {
               this.$timer.start("refreshProject");
             });
         });
+    },
+    getCsvAsHref() {
+      return 'data:text/csv;charset=utf-8,' + encodeURIComponent(this.report.output);
     }
   },
   computed: {

@@ -6,14 +6,18 @@ import java.util.Map.Entry;
 
 import org.springframework.stereotype.Service;
 
+import nl.ou.se.rest.fuzzer.components.data.report.domain.Report;
+import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
+import nl.ou.se.rest.fuzzer.components.reporter.Reporter;
+
 @Service
-public class CoverageReport {
+public class CoverageReporter implements Reporter {
 
     // variable(s)
     private Map<String, PhpFile> phpFiles = new HashMap<>();
 
     // method(s)
-    public void merge(CoverageReport report) {
+    public void merge(CoverageReporter report) {
         if (report == null) {
             return;
         }
@@ -68,5 +72,17 @@ public class CoverageReport {
 
     public void setPhpFiles(Map<String, PhpFile> phpFiles) {
         this.phpFiles = phpFiles;
+    }
+
+    @Override
+    public void generate(Report report, Task task) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

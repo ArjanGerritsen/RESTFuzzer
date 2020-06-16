@@ -52,6 +52,10 @@ public class MetaDataUtil {
         public static final String MAX_NUMBER_REQUESTS = "maxNumRequests";
 
         // dictionary fuzzers
+        // TODO
+
+        // responses reporter
+        public static final String INTERVAL = "interval";
 
     }
 
@@ -77,11 +81,6 @@ public class MetaDataUtil {
     public Boolean isValid(String... keys) {
         Boolean isValid = true;
 
-        if (!this.tuplesMetaData.containsKey(Meta.CONFIGURATION)) {
-            logger.error(String.format(Constants.Fuzzer.META_DATA_MISSING, MetaDataUtil.class, Meta.CONFIGURATION));
-            isValid = false;
-        }
-
         for (String key : keys) {
             if (!this.tuplesMetaData.containsKey(key)) {
                 logger.error(String.format(Constants.Fuzzer.META_DATA_MISSING, MetaDataUtil.class, key));
@@ -89,7 +88,7 @@ public class MetaDataUtil {
             }
         }
 
-        if (isValid) {
+        if (isValid && this.tuplesMetaData.containsKey(Meta.CONFIGURATION)) {
             this.tuplesConfiguration = ((JSONObject) this.getValueForKey(this.tuplesMetaData, Meta.CONFIGURATION))
                     .toMap();
         }

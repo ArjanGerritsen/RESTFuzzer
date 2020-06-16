@@ -22,6 +22,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdActionDependency;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.fuzzer.executor.ExecutorUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil;
+import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil.Meta;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.RequestUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.util.SequenceUtil;
 
@@ -43,7 +44,7 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
 
     @Autowired
     private FuzResponseService responseService;
-    
+
     @Autowired
     private FuzSequenceService sequenceService;
 
@@ -91,7 +92,8 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
             FuzSequenceStatus status = FuzSequenceStatus.COMPLETED;
             List<RmdAction> actionsFromSequence = sequenceUtil.getActionsFromSequence(sequenceString);
 
-            FuzSequence sequence = sequenceFactory.create(sequencePosition, actionsFromSequence.size(), project).build();
+            FuzSequence sequence = sequenceFactory.create(sequencePosition, actionsFromSequence.size(), project)
+                    .build();
             sequenceService.save(sequence);
 
             // for each item in sequence
@@ -105,7 +107,7 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
                 // execute requests
                 FuzResponse response = executorUtil.processRequest(request);
                 responseService.save(response);
-                
+
                 // abort sequence
                 if (response.getStatusCode() < 200 || response.getStatusCode() >= 300) {
                     status = FuzSequenceStatus.ABORTED;
@@ -124,6 +126,6 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
         this.metaDataUtil = new MetaDataUtil(metaDataTuples);
-        return metaDataUtil.isValid(MetaDataUtil.Meta.MAX_SEQUENCE_LENGTH, MetaDataUtil.Meta.MAX_NUMBER_REQUESTS);
+        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.MAX_SEQUENCE_LENGTH, Meta.MAX_NUMBER_REQUESTS);
     }
 }

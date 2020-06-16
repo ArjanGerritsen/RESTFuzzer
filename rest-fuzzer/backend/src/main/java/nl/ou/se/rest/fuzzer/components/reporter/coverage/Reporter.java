@@ -38,8 +38,8 @@ public class Reporter {
         List<Path> files = Stream.of(new File(directoryName).listFiles()).filter(file -> !file.isDirectory())
                 .map(file -> file.toPath()).collect(Collectors.toList());
 
-        CoverageReport current = null;
-        CoverageReport previous = null;
+        CoverageReporter current = null;
+        CoverageReporter previous = null;
 
         Integer requestCount = 0;
 
@@ -85,13 +85,13 @@ public class Reporter {
         reportTable.printTable();
     }
 
-    private static CoverageReport processFile(Path path) throws IOException {
+    private static CoverageReporter processFile(Path path) throws IOException {
         LocalDateTime from = LocalDateTime.now();
 
         String fileContent = Files.readString(path, StandardCharsets.UTF_8);
         Map<String, Object> objects = JsonUtil.stringToMap(fileContent);
 
-        CoverageReport coverageReport = new CoverageReport();
+        CoverageReporter coverageReport = new CoverageReporter();
         
 	Map<String, PhpFile> phpFiles = new HashMap<>();
         objects.entrySet().forEach(entry -> {
