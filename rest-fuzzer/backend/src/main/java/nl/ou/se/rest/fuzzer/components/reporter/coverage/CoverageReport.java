@@ -1,16 +1,16 @@
-package nl.ou.se.rest.fuzzer.components.reporter;
+package nl.ou.se.rest.fuzzer.components.reporter.coverage;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class Report {
+public class CoverageReport {
 
     // variable(s)
     private Map<String, PhpFile> phpFiles = new HashMap<>();
 
     // method(s)
-    public void merge(Report report) {
+    public void merge(CoverageReport report) {
         if (report == null) {
             return;
         }

@@ -1,5 +1,6 @@
 package nl.ou.se.rest.fuzzer.components.data.fuz.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -27,5 +28,11 @@ public interface FuzResponseService extends CrudRepository<FuzResponse, Long> {
 
     @Query(value = "SELECT r, req, a, d FROM fuz_responses r LEFT JOIN r.request req LEFT JOIN req.sequence s LEFT JOIN FETCH req.action a LEFT JOIN FETCH a.dependencies d WHERE s.id = :sequenceId")
     List<FuzResponse> findBySequenceId(Long sequenceId);
+
+    @Query(value = "SELECT MIN(r.createdAt) FROM fuz_responses r WHERE r.project.id = :projectId")
+    LocalDateTime findMinCreatedByProjectId(Long projectId);
+
+    @Query(value = "SELECT COUNT(r) AS count, r.statusCode FROM fuz_responses r WHERE r.project.id = :projectId AND r.createdAt >= :from AND r.createdAt < :to GROUP BY r.statusCode")
+    List<Object[]> findStatusCodesAndCountsByProjectIdAndDateAndInterval(Long projectId, LocalDateTime from, LocalDateTime to);
 
 }

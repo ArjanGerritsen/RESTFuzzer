@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.components.reporter;
+package nl.ou.se.rest.fuzzer.components.reporter.coverage;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,8 +37,8 @@ public class Reporter {
         List<Path> files = Stream.of(new File(directoryName).listFiles()).filter(file -> !file.isDirectory())
                 .map(file -> file.toPath()).collect(Collectors.toList());
 
-        Report current = null;
-        Report previous = null;
+        CoverageReport current = null;
+        CoverageReport previous = null;
 
         Integer requestCount = 0;
 
@@ -73,7 +73,7 @@ public class Reporter {
         reportTable.printTable();
     }
 
-    private static Report processFile(Path path) throws IOException {
+    private static CoverageReport processFile(Path path) throws IOException {
         LocalDateTime from = LocalDateTime.now();
         long millisPassed = 0;
 
@@ -83,7 +83,7 @@ public class Reporter {
         millisPassed = ChronoUnit.MILLIS.between(from, LocalDateTime.now());
         logger.debug(String.format("converted to map in %s ms", millisPassed));
 
-        Report report = new Report();
+        CoverageReport report = new CoverageReport();
         Map<String, PhpFile> phpFiles = new HashMap<>();
         objects.entrySet().forEach(entry -> {
             phpFiles.put(entry.getKey(), processFileEntry(entry));

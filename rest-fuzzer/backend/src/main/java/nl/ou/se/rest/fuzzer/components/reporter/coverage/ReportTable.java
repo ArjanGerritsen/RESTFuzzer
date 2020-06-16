@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.components.reporter;
+package nl.ou.se.rest.fuzzer.components.reporter.coverage;
 
 import java.util.HashMap;
 import java.util.SortedSet;
