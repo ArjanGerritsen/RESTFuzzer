@@ -6,16 +6,16 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdResponse;
 
 public class RmdActionFactory {
 
-    // variables
+    // variable(s)
     private RmdAction action;
 
-    // constructor
+    // constructor(s)
     public RmdActionFactory create(String url, String httpMethod) {
         action = new RmdAction(url, httpMethod);
         return this;
     }
 
-    // methods
+    // method(s)
     public RmdActionFactory addParameter(RmdParameter parameter) {
         parameter.setPosition(action.getParameters().size() + 1);
         action.addParameter(parameter);

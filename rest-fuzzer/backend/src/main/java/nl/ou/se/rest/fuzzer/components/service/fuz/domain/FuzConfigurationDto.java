@@ -5,7 +5,7 @@ import java.util.List;
 
 public class FuzConfigurationDto {
 
-    // variables
+    // variable(s)
     private Long id;
     private String name;
     private String itemsJson;

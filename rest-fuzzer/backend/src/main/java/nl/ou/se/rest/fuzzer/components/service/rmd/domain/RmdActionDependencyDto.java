@@ -6,7 +6,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.DiscoveryModus;
 
 public class RmdActionDependencyDto {
 
-    // variables
+    // variable(s)
     private Long id;
     private RmdActionDto action;
     private RmdParameterDto parameter;

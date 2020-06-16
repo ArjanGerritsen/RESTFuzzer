@@ -10,7 +10,7 @@ import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 
 public abstract class RmdSutMapper {
 
-	// methods
+	// method(s)
 	public static List<RmdSutDto> toDtos(List<RmdSut> suts) {
 		return suts.stream().map(s -> RmdSutMapper.toDto(s, false)).collect(Collectors.toList());
 	}

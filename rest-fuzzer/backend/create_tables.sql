@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS rmd_suts (
 ) ENGINE=INNODB;
 
 
+
 CREATE TABLE IF NOT EXISTS rmd_actions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   path VARCHAR(255) NOT NULL,
@@ -152,6 +153,20 @@ CREATE TABLE IF NOT EXISTS fuz_configurations (
   created_at DATETIME NOT NULL  
 ) ENGINE=INNODB;
 
+
+CREATE TABLE IF NOT EXISTS reports (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  description VARCHAR(255) NOT NULL,
+  meta_data_tuples_json TEXT, 
+  output TEXT,
+  project_id INT,
+  created_at DATETIME NULL,
+  completed_at DATETIME NUL
+) ENGINE=INNODB;
+
+
+CREATE INDEX idx_reports_project_id ON fuz_responses (project_id);
+
 --------------------------- dropping all --------------------
 
 drop table fuz_responses;
@@ -168,6 +183,7 @@ drop table rmd_actions;
 drop table rmd_suts;
 
 drop table tasks;
+drop table reports;
 
 --------------------------- other ---------------------------
 

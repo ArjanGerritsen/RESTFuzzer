@@ -21,15 +21,29 @@
           <b-card-text>
             <b-card no-body>
               <b-tabs card pills vertical>
-                <b-tab title="v0.06 | 13-06-2020" active>
+                <b-tab title="v0.07 | xx-07-2020" active>
                   <b-card-text>
                     <ul>
+                      <li>TODO Add CRUD for reports (code coverage and responses status codes).</li>
                       <li>TODO Refactor createdAt to constructors instead of factories.</li>
                       <li>TODO Relation between request and action to display action details with request.</li>
                       <li>Fix: SUT selection is empty when adding new fuzzing projects.</li>
-                      <li>BUSY Use values for dependencies in sequence.</li>
-                      <li>Fix. sequences are not always valid.</li>
                       <li>Fix: Clear results for fuzzing project doesn't work correct.</li>
+
+                      <li>Add favicon for the application.</li>
+                    </ul>
+                  </b-card-text>
+                </b-tab>
+                <b-tab title="v0.06 | 13-06-2020">
+                  <b-card-text>
+                    <ul>
+                      <li>View all information with sequences for projects.</li>
+                      <li>Improve (make consistent) viewing all request, response and sequence information with projects/SUTs.</li>
+                      <li>Add isRequired (true/false/*) for parameters in configuration.</li>
+                      <li>Default values in configuration.</li>
+                      <li>Relation between request and action to display action details with request.</li>
+                      <li>Use values from dependencies in sequence.</li>
+                      <li>Fix. Sequences are not always valid.</li>
                     </ul>
                   </b-card-text>
                 </b-tab>

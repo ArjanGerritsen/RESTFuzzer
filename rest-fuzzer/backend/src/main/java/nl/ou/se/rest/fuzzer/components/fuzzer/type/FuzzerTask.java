@@ -13,7 +13,7 @@ import nl.ou.se.rest.fuzzer.components.task.TaskExecutionBase;
 @Service
 public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
 
-    // variables
+    // variable(s)
     public static final String KEY_PROJECT_ID = "project_id";
 
     @Autowired

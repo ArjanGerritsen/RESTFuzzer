@@ -38,7 +38,7 @@ public class Extractor {
         this.sut = sut;
     }
 
-    // methods
+    // method(s)
     public void processV2() {
         Swagger s = new SwaggerParser().read(this.sut.getLocation());
 

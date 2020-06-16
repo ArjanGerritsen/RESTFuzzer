@@ -24,7 +24,7 @@ import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 
 public abstract class ExecutorUtilHelper {
 
-    // variables
+    // variable(s)
     private static Logger logger = LoggerFactory.getLogger(ExecutorUtilHelper.class);
 
     private static final String PLACEHOLDER_PATH_VARIABLE = "\\{%s\\}";
@@ -32,7 +32,7 @@ public abstract class ExecutorUtilHelper {
     private static final String HEADER_ACCEPT = "Accept";
     private static final String HEADER_CONTENT_TYPE = "Content-type";
 
-    // methods
+    // method(s)
     public static HttpUriRequest getRequest(FuzRequest request) {
         HttpUriRequest httpUriRequest = null;
 

@@ -21,7 +21,7 @@ import nl.ou.se.rest.fuzzer.components.task.TaskExecutionBase;
 @Service
 public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
 
-    // variables
+    // variable(s)
     public static final String KEY_SUT_ID = "sut_id";
 
     @Autowired
@@ -36,7 +36,7 @@ public class ExtractorTask extends TaskExecutionBase implements TaskExecution {
     @Autowired
     private TaskService taskService;
 
-    // methods
+    // method(s)
     public void execute() {
     	this.logStart(ExtractorTask.class.getTypeName());
 

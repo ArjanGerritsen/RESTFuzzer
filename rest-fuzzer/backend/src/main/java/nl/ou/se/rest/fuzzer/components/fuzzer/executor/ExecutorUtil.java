@@ -24,7 +24,7 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzResponseFactory;
 @Service
 public class ExecutorUtil {
 
-    // variables
+    // variable(s)
     private Logger logger = LoggerFactory.getLogger(ExecutorUtil.class);
 
     private static final int TIMEOUT_MS = 5 * 1000;
@@ -34,12 +34,12 @@ public class ExecutorUtil {
     private CloseableHttpClient httpClient;
     private Authentication authentication;
 
-    // constructors
+    // constructor(s)
     private ExecutorUtil() {
         this.init();
     }
 
-    // methods
+    // method(s)
     private void init() {
         RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT_MS)
                 .setConnectionRequestTimeout(TIMEOUT_MS).setSocketTimeout(TIMEOUT_MS).build();

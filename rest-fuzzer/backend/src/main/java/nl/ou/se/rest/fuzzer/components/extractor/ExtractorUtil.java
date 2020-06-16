@@ -24,7 +24,7 @@ public abstract class ExtractorUtil {
 
     private static final String ERROR_UNKOWN_PARAM_TYPE = "Unknown parametertype: %s";
 
-    // methods
+    // method(s)
     public static Map<String, Object> getTypeAndMetas(Parameter parameter) {
         Map<String, Object> values = new HashMap<>();
 

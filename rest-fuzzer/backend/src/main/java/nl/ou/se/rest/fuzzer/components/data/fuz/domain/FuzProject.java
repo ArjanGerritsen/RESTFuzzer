@@ -31,7 +31,7 @@ import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 @Entity(name = "fuz_projects")
 public class FuzProject implements Comparable<FuzProject> {
 
-    // variables
+    // variable(s)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -72,7 +72,7 @@ public class FuzProject implements Comparable<FuzProject> {
     @SortNatural
     private SortedSet<FuzResponse> responses = new TreeSet<>();
 
-    // methods
+    // method(s)
     public int compareTo(FuzProject other) {
         return this.getId().compareTo(other.getId());
     }

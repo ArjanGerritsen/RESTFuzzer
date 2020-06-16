@@ -17,7 +17,7 @@ import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 @Entity(name = "fuz_configurations")
 public class FuzConfiguration {
 
-    // variables
+    // variable(s)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +34,7 @@ public class FuzConfiguration {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    // constructors
+    // constructor(s)
     public FuzConfiguration() {
     }
 
@@ -43,7 +43,7 @@ public class FuzConfiguration {
         this.itemsJson = itemsJson;
     }
     
-    // methods
+    // method(s)
     public Map<String, Object> getItemTuples() {
         return JsonUtil.stringToMap(this.itemsJson);
     }

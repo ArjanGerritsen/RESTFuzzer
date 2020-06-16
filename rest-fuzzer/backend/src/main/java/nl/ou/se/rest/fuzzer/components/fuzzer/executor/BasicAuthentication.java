@@ -5,7 +5,7 @@ import java.util.Base64;
 
 public class BasicAuthentication implements Authentication {
 
-    // variables
+    // variable(s)
     private String username;
     private String password;
 
@@ -15,7 +15,7 @@ public class BasicAuthentication implements Authentication {
         this.password = password;
     }
 
-    // methods
+    // method(s)
     public String getHeader() {
         String auth = String.format("%s:%s", this.username, this.password);
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));

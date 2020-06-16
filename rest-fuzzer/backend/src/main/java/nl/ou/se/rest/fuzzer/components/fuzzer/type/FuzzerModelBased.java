@@ -28,7 +28,7 @@ import nl.ou.se.rest.fuzzer.components.fuzzer.util.SequenceUtil;
 @Service
 public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
 
-    // variables
+    // variable(s)
     private FuzProject project = null;
     private MetaDataUtil metaDataUtil = null;
 

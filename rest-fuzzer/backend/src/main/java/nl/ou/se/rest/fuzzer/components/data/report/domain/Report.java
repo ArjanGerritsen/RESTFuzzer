@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -22,6 +24,8 @@ public class Report {
     private String description;
     
     @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "project_id")
     private FuzProject project;
 
     private String metaDataTuplesJson;

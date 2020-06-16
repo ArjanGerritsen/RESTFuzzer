@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class FuzResponseDto {
 
-    // variables
+    // variable(s)
     private Long id;
     private int statusCode;
     private String statusDescription;

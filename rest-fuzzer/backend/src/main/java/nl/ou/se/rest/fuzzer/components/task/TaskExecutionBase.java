@@ -10,12 +10,12 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 public class TaskExecutionBase {
 
-	// variables
+	// variable(s)
 	private Logger logger = LoggerFactory.getLogger(TaskExecutionBase.class);
 
 	private Task task;
 
-	// methods
+	// method(s)
 	public void logStart(String className) {
 		logger.info(String.format(Constants.Task.START, className));
 	}

@@ -19,7 +19,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
 
 public abstract class FilterUtil {
 
-    // variables
+    // variable(s)
     public static final String PATH = "path";
     public static final String NAME = "name";
 
@@ -31,7 +31,7 @@ public abstract class FilterUtil {
     private static final Object PARAMETER_CONTEXTS = "parameterContexts";
     private static final Object PARAMETER_TYPES = "parameterTypes";
 
-    // methods
+    // method(s)
     public static String toLike(String query) {
         if (StringUtils.isAllBlank(query)) {
             return "%";

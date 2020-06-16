@@ -19,7 +19,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Entity(name = "fuz_responses")
 public class FuzResponse implements Comparable<FuzResponse> {
 
-    // variables
+    // variable(s)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,7 +49,7 @@ public class FuzResponse implements Comparable<FuzResponse> {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    // methods
+    // method(s)
     public int compareTo(FuzResponse other) {
         int projectCompare = this.getProject().compareTo(other.getProject());
         if (projectCompare != 0) {

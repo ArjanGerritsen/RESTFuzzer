@@ -10,7 +10,7 @@ import nl.ou.se.rest.fuzzer.components.service.task.domain.TaskDto;
 
 public abstract class TaskMapper {
 
-	// methods
+	// method(s)
 	public static List<TaskDto> toDtos(List<Task> tasks) {
 		return tasks.stream().map(t -> TaskMapper.toDto(t)).collect(Collectors.toList());
 	}

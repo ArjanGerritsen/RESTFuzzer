@@ -37,7 +37,7 @@ import nl.ou.se.rest.fuzzer.components.shared.FilterUtil;
 @RequestMapping("/rest/tasks")
 public class TaskController {
 
-    // variables
+    // variable(s)
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String EXTRACTOR = "extractor";
@@ -47,7 +47,7 @@ public class TaskController {
     @Autowired
     TaskService taskService;
 
-    // methods
+    // method(s)
     @RequestMapping(path = "active", method = RequestMethod.GET)
     public @ResponseBody List<TaskDto> findAllActive() {
         List<Task> tasks = new ArrayList<>();

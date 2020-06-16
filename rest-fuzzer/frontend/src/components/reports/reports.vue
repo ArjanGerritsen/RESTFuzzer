@@ -8,23 +8,22 @@
         reports-add
         reports-detail
       </div>
-    </div>
-    reports-delete
+    </div>reports-delete
   </div>
 </template>
 
 <script>
-import ReportsAdd from "./reports-add";
+// import ReportsAdd from "./reports-add";
 import ReportsList from "./reports-list";
-import ReportsDetail from "./reports-detail";
-import ReportsDelete from "./reports-delete";
+// import ReportsDetail from "./reports-detail";
+// import ReportsDelete from "./reports-delete";
 
 export default {
   components: {
-	ReportsAdd,
-	ReportsList,
-	ReportsDetail,
-	ReportsDelete
+    // ReportsAdd,
+    ReportsList,
+    // ReportsDetail,
+    // ReportsDelete
   },
   methods: {
     navigate() {

@@ -23,7 +23,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.factory.RmdActionDependencyFacto
 
 public class DependencyFinder {
 
-    // variables
+    // variable(s)
     private Logger logger = LoggerFactory.getLogger(DependencyFinder.class);
 
     private static final String ID = "id";
@@ -38,12 +38,12 @@ public class DependencyFinder {
     private RmdSut sut;
     private Set<RmdActionDependency> actionDependencies = new TreeSet<>();
 
-    // constructor
+    // constructor(s)
     public DependencyFinder(RmdSut sut) {
         this.sut = sut;
     }
 
-    // methods
+    // method(s)
     public void process() {
         this.sut.getActions().forEach(a -> a.getParameters().forEach(p -> processParameter(p)));
     }

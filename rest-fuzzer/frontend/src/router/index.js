@@ -6,6 +6,7 @@ import Suts from "../components/suts/suts";
 import Projects from "../components/projects/projects"
 import Dictionaries from "../components/dictionaries/dictionaries";
 import Configurations from "../components/configurations/configurations";
+import Reports from "../components/reports/reports";
 import Tasks from "../components/tasks/tasks";
 import About from "../components/about/about";
 
@@ -57,7 +58,16 @@ const routes = [
     name: "configuration",
     component: Configurations
   },
-
+  {
+    path: "/reports",
+    name: "reports",
+    component: Reports
+  },
+  {
+    path: "/reports/:id",
+    name: "report",
+    component: Reports
+  },
   {
     path: "/tasks",
     name: "tasks",
@@ -73,15 +83,6 @@ const routes = [
     name: "about",
     component: About
   }
-  // {
-  //   path: "/about",
-  //   name: "about",
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ "../views/About.vue")
-  // }
 ];
 
 const router = new VueRouter({

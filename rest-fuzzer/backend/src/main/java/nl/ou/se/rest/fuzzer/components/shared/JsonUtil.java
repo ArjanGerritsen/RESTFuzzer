@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public abstract class JsonUtil {
 
-    // methods
+    // method(s)
     public static Map<String, Object> stringToMap(String json) {
         Map<String, Object> result = new HashMap<String, Object>();
 

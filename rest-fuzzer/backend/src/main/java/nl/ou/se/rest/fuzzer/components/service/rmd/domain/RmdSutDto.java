@@ -6,7 +6,7 @@ import java.util.List;
 
 public class RmdSutDto {
 
-    // variables
+    // variable(s)
     private Long id;
     private String location;
     private String title;

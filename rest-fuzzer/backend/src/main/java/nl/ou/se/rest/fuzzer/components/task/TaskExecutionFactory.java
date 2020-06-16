@@ -13,7 +13,7 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @Service
 public class TaskExecutionFactory {
 
-	// variables
+	// variable(s)
 	private Task task;
 
 	@Autowired

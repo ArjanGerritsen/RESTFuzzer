@@ -22,7 +22,7 @@ import nl.ou.se.rest.fuzzer.components.fuzzer.util.RequestUtil;
 @Service
 public class FuzzerBasic extends FuzzerBase implements Fuzzer {
 
-    // variables
+    // variable(s)
     private FuzProject project = null;
     private MetaDataUtil metaDataUtil = null;
 

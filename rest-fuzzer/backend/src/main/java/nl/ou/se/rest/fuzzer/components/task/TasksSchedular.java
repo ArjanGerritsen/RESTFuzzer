@@ -15,7 +15,7 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @Service
 public class TasksSchedular {
 
-	// variables
+	// variable(s)
 	@Autowired
 	private TasksExecutor executor;
 
@@ -27,7 +27,7 @@ public class TasksSchedular {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-	// methods
+	// method(s)
 	@Scheduled(cron = "*/10 * * * * *")
 	public void runJobs() {
 		List<Task> tasksToRun = taskService.findQueued();

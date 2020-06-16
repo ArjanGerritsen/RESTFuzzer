@@ -2,7 +2,7 @@ package nl.ou.se.rest.fuzzer.components.reporter.coverage;
 
 public class ReportTableId {
 
-    // variables
+    // variable(s)
     private Object rowKey;
     private Object columnnKey;
 

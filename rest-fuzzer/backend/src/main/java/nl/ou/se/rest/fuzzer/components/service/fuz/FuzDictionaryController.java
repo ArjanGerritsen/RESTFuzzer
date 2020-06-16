@@ -27,13 +27,13 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @RequestMapping("/rest/dictionaries")
 public class FuzDictionaryController {
 
-    // variables
+    // variable(s)
     private Logger logger = LoggerFactory.getLogger(FuzDictionaryController.class);
 
     @Autowired
     FuzDictionaryService dictionaryService;
 
-    // methods
+    // method(s)
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody List<FuzDictionaryDto> findAll() {
         List<FuzDictionary> dictionaries = dictionaryService.findAll();

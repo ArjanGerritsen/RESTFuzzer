@@ -21,7 +21,7 @@ public class FuzDictionary {
 
     private static final String ITEM_SEPERATOR = "\n";
 
-    // variables
+    // variable(s)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,7 +38,7 @@ public class FuzDictionary {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    // constructors
+    // constructor(s)
     public FuzDictionary() {
     }
 
@@ -47,7 +47,7 @@ public class FuzDictionary {
         this.itemsText = itemsText;
     }
 
-    // methods
+    // method(s)
     public List<String> getItems() {
         return Arrays.asList(this.itemsText.split(ITEM_SEPERATOR));
     }

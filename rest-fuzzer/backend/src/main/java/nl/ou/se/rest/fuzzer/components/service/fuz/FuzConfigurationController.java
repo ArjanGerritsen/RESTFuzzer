@@ -26,13 +26,13 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @RequestMapping("/rest/configurations")
 public class FuzConfigurationController {
 
-    // variables
+    // variable(s)
     private Logger logger = LoggerFactory.getLogger(FuzDictionaryController.class);
 
     @Autowired
     FuzConfigurationService configurationService;
 
-    // methods
+    // method(s)
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody List<FuzConfigurationDto> findAll() {
         List<FuzConfiguration> configurations = configurationService.findAll();

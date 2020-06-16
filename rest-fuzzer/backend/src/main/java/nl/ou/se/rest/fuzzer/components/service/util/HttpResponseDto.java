@@ -5,10 +5,10 @@ import java.util.List;
 
 public class HttpResponseDto {
 
-	// variables
+	// variable(s)
 	private List<String> violations = new ArrayList<>();
 
-	// constructors
+	// constructor(s)
 	public HttpResponseDto(List<String> violations) {
 		this.violations = violations;
 	}

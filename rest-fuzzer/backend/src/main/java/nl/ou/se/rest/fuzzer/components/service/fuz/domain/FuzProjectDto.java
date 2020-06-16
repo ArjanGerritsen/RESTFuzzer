@@ -7,7 +7,7 @@ import nl.ou.se.rest.fuzzer.components.service.rmd.domain.RmdSutDto;
 
 public class FuzProjectDto {
 
-    // variables
+    // variable(s)
     private Long id;
     private String description;
     private FuzProjectType type;

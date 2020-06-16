@@ -19,7 +19,7 @@ public class ValidatorUtil {
 
     private static Logger logger = LoggerFactory.getLogger(ValidatorUtil.class);
 
-    // methods
+    // method(s)
     public static List<String> getViolations(Object o) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
