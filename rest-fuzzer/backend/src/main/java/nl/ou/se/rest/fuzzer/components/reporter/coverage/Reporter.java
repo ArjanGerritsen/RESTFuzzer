@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +45,17 @@ public class Reporter {
 
         reportTable.setOrigin("requests");
 
+        LocalDateTime startTime = null;
+
         for (Path file : files) {
             requestCount++;
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS");
+            LocalDateTime localDateTime = LocalDateTime.parse(file.getFileName().toString(), formatter);
+
+            if (startTime == null) {
+                startTime = localDateTime;
+            }
 
             try {
                 current = processFile(file);
@@ -58,9 +68,11 @@ public class Reporter {
 
                 if (requestCount == 1 || (requestCount % interval == 0)) {
                     Object rowKey = requestCount;
+                    Object secondsPassed = ChronoUnit.SECONDS.between(startTime, localDateTime);
                     Object endpoints = current.codeCoveragePercentageFiltered(
                             "C:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\");
                     Object total = current.codeCoveragePercentage();
+                    reportTable.addValue("secondspassed", rowKey, secondsPassed);
                     reportTable.addValue("endpoints", rowKey, endpoints);
                     reportTable.addValue("total", rowKey, total);
                 }
@@ -75,25 +87,22 @@ public class Reporter {
 
     private static CoverageReport processFile(Path path) throws IOException {
         LocalDateTime from = LocalDateTime.now();
-        long millisPassed = 0;
 
         String fileContent = Files.readString(path, StandardCharsets.UTF_8);
         Map<String, Object> objects = JsonUtil.stringToMap(fileContent);
 
-        millisPassed = ChronoUnit.MILLIS.between(from, LocalDateTime.now());
-        logger.debug(String.format("converted to map in %s ms", millisPassed));
-
-        CoverageReport report = new CoverageReport();
-        Map<String, PhpFile> phpFiles = new HashMap<>();
+        CoverageReport coverageReport = new CoverageReport();
+        
+	Map<String, PhpFile> phpFiles = new HashMap<>();
         objects.entrySet().forEach(entry -> {
             phpFiles.put(entry.getKey(), processFileEntry(entry));
         });
-        report.setPhpFiles(phpFiles);
+        coverageReport.setPhpFiles(phpFiles);
 
-        millisPassed = ChronoUnit.MILLIS.between(from, LocalDateTime.now());
+        long millisPassed = ChronoUnit.MILLIS.between(from, LocalDateTime.now());
         logger.debug(String.format("processed file %s in %s ms", path.getFileName().toFile(), millisPassed));
 
-        return report;
+        return coverageReport;
     }
 
     private static PhpFile processFileEntry(Entry<String, Object> entry) {

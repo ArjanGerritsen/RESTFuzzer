@@ -68,8 +68,7 @@
 
       <template slot="empty">No data present.</template>
     </b-table>
-    "{{rows}}"
-    "{{displayPagination}}"
+
     <b-pagination
       v-if="!isBusy && displayPagination"
       size="sm"

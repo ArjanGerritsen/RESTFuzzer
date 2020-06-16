@@ -16,7 +16,7 @@
       "httpMethod": ".*"
     },
     {
-      "path": "/wp/v2/taxonomies/\\{taxonomy\\}",
+      "path": "/wp/v2/taxonomies.*",
       "httpMethod": "GET"
     },
     {
@@ -51,6 +51,17 @@
         "required": ".*"
       },
       "default": "false"
+    },
+    {
+      "action": {
+        "path": "/wp/v2/themes",
+        "httpMethod": "GET"
+      },
+      "parameter": {
+        "name": "status",
+        "required": ".*"
+      },
+      "default": "[active]"
     }
   ]
 }
