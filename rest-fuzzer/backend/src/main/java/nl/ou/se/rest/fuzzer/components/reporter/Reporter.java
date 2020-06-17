@@ -7,7 +7,9 @@ import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 
 public interface Reporter {
 
-    public void generate(Report report, Task task);
+    public void init(Report report, Task task);
+
+    public void generate();
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples);
 

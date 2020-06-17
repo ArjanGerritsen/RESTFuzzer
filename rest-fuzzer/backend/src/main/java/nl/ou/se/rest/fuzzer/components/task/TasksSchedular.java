@@ -15,37 +15,40 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 @Service
 public class TasksSchedular {
 
-	// variable(s)
-	@Autowired
-	private TasksExecutor executor;
+    // variable(s)
+    @Autowired
+    private TasksExecutor executor;
 
-	@Autowired
-	private TaskService taskService;
+    @Autowired
+    private TaskService taskService;
 
-	@Autowired
-	private TaskExecutionFactory taskExecutionFactory;
+    @Autowired
+    private TaskExecutionFactory taskExecutionFactory;
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-	// method(s)
-	@Scheduled(cron = "*/10 * * * * *")
-	public void runJobs() {
-		List<Task> tasksToRun = taskService.findQueued();
-		logger.info(String.format(Constants.Task.SCHEDULAR_START, tasksToRun.size()));
+    // method(s)
+    @Scheduled(cron = "*/10 * * * * *")
+    public void runJobs() {
+        List<Task> tasksToRun = taskService.findQueued();
 
-		tasksToRun.forEach(t -> executeTask(t));
-	}
+        if (!tasksToRun.isEmpty()) {
+            logger.info(String.format(Constants.Task.SCHEDULAR_START, tasksToRun.size()));
+        }
 
-	private void executeTask(Task task) {
-		TaskExecution execution = taskExecutionFactory.create(task.getCanonicalName()).setTask(task).build();
-		if (execution == null) {
-			logger.warn(
-					String.format(Constants.Task.SCHEDULAR_TASK_NOT_STARTED, task.getCanonicalName(), task.getId()));
-			return;
-		}
+        tasksToRun.forEach(t -> executeTask(t));
+    }
 
-		logger.info(String.format(Constants.Task.SCHEDULAR_START_TASK, task.getCanonicalName(), task.getId()));
+    private void executeTask(Task task) {
+        TaskExecution execution = taskExecutionFactory.create(task.getCanonicalName()).setTask(task).build();
+        if (execution == null) {
+            logger.warn(
+                    String.format(Constants.Task.SCHEDULAR_TASK_NOT_STARTED, task.getCanonicalName(), task.getId()));
+            return;
+        }
 
-		executor.run(task, execution);
-	}
+        logger.info(String.format(Constants.Task.SCHEDULAR_START_TASK, task.getCanonicalName(), task.getId()));
+
+        executor.run(task, execution);
+    }
 }

@@ -14,9 +14,16 @@ import nl.ou.se.rest.fuzzer.components.reporter.Reporter;
 public class CoverageReporter implements Reporter {
 
     // variable(s)
+    private Report report;
+    private Task task;
     private Map<String, PhpFile> phpFiles = new HashMap<>();
 
     // method(s)
+    public void init(Report report, Task task) {
+        this.report = report;
+        this.task = task;
+    }
+
     public void merge(CoverageReporter report) {
         if (report == null) {
             return;
@@ -75,7 +82,7 @@ public class CoverageReporter implements Reporter {
     }
 
     @Override
-    public void generate(Report report, Task task) {
+    public void generate() {
         // TODO Auto-generated method stub
         
     }

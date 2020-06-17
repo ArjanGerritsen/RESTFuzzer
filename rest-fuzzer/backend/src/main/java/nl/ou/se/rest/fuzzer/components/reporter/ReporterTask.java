@@ -60,7 +60,8 @@ public class ReporterTask extends TaskExecutionBase implements TaskExecution {
         }
 
         if (reporter.isMetaDataValid(report.getMetaDataTuples())) {
-            reporter.generate(report, this.getTask());
+            reporter.init(report, this.getTask());
+            reporter.generate();
         }
 
         this.logStop(ReporterTask.class.getTypeName());

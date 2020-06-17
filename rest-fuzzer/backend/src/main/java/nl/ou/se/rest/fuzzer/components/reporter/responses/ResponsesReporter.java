@@ -1,14 +1,22 @@
 package nl.ou.se.rest.fuzzer.components.reporter.responses;
 
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +36,16 @@ public class ResponsesReporter implements Reporter {
     private static final String SEPERATOR_COLUMN = ",";
     private static final String SEPERATOR_ROW = "\n";
 
-    private static final String HEADER_TIME_PASSED = "time";
-    private static final String HEADER_TOTAL_REQUESTS = "requests";
+    private static final String SEPERATOR_TAB = "\t";
 
+    private static final String HEADER_TIME_PASSED = "time";
+    private static final String HEADER_TOTAL_REQUESTS = "reqs";
+
+    // variable(s) for velocity template 
+    private static final String VM_LINES = "lines";
+
+    private Report report;
+    private Task task;
     private MetaDataUtil metaDataUtil = null;
     private SortedMap<Long, List<Object[]>> data = new TreeMap<>();
 
@@ -48,21 +63,22 @@ public class ResponsesReporter implements Reporter {
     }
 
     // method(s)
-    public void generate(Report report, Task task) {
+    public void init(Report report, Task task) {
+        this.report = report;
+        this.task = task;
+
         data.clear(); // reset
+    }
 
-        Integer interval = this.metaDataUtil.getIntegerValue(Meta.INTERVAL);
-
-        LocalDateTime start = responseService.findMinCreatedByProjectId(report.getProject().getId());
-
+    public void generate() {
         task.setProgress(new BigDecimal(10));
         taskService.save(task);
 
-        gatherData(report, task, interval, start);
+        gatherData();
 
-        List<Integer> statusCodes = responseService.findUniqueStatusCodesForProject(report.getProject().getId());
+        convertAndSettData();
 
-        convertAndSettData(report, statusCodes);
+        getOutput();
 
         reportService.save(report);
 
@@ -70,7 +86,84 @@ public class ResponsesReporter implements Reporter {
         taskService.save(task);
     }
 
-    private void gatherData(Report report, Task task, Integer interval, LocalDateTime start) {
+    private void getOutput() {
+        Properties properties = new Properties();
+        properties.setProperty("resource.loaders", "class");
+        properties.setProperty("class.resource.loader.class",
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+
+        VelocityEngine ve = new VelocityEngine();
+        ve.init(properties);
+
+        Template t = ve.getTemplate("velocity/report-responses.vm");
+
+        VelocityContext vc = new VelocityContext();
+        vc.put(VM_LINES, getDataLines());
+
+        StringWriter sw = new StringWriter();
+        t.merge(vc, sw);
+
+        System.out.println(sw);
+    }
+
+    private List<String> getDataLines() {
+        List<String> lines = new ArrayList<>();
+        List<Integer> statusCodes = responseService.findUniqueStatusCodesForProject(report.getProject().getId());
+
+        // header line
+        List<String> columnHeaders = new ArrayList<String>();
+        columnHeaders.add(HEADER_TIME_PASSED);
+        columnHeaders.add(HEADER_TOTAL_REQUESTS);
+        statusCodes.forEach(c -> columnHeaders.add(c.toString()));
+        lines.add(columnHeaders.stream().collect(Collectors.joining(SEPERATOR_TAB)));
+
+        // line with zeros for each column
+        List<Integer> zeros = new ArrayList<>();
+        IntStream.rangeClosed(1, columnHeaders.size()).forEach(i -> zeros.add(0));
+        lines.add(zeros.stream().map(z -> z.toString()).collect(Collectors.joining(SEPERATOR_TAB)));
+
+        // values
+        Integer totalRequests = 0;
+        List<Integer> dataLine = new ArrayList<>();
+        SortedMap<Integer, Integer> statusCodesTotals = new TreeMap<>();
+
+        for (Entry<Long, List<Object[]>> entry : this.data.entrySet()) {
+            dataLine.add(entry.getKey().intValue()); // time passed
+
+            totalRequests += entry.getValue().stream().mapToInt(statusAndCount -> {
+                return Long.valueOf((long) statusAndCount[1]).intValue();
+            }).sum();
+
+            // cumulative response count total
+            dataLine.add(totalRequests);
+
+            for (Integer statusCode : statusCodes) {
+                Integer statusCodeCount = entry.getValue().stream().filter(statusAndCount -> {
+                    return statusAndCount[0].equals(statusCode);
+                }).mapToInt(statusAndCount -> {
+                    return Long.valueOf((long) statusAndCount[1]).intValue();
+                }).sum();
+
+                if (statusCodesTotals.containsKey(statusCode)) {
+                    statusCodeCount += statusCodesTotals.get(statusCode);
+                }
+                statusCodesTotals.put(statusCode, statusCodeCount);
+
+                // cumulative response count for current response type
+                dataLine.add(statusCodeCount);
+            }
+
+            lines.add(dataLine.stream().map(z -> z.toString()).collect(Collectors.joining(SEPERATOR_TAB)));
+            dataLine.clear();
+        }
+
+        return lines;
+    }
+
+    private void gatherData() {
+        LocalDateTime start = responseService.findMinCreatedByProjectId(report.getProject().getId());
+        Integer interval = this.metaDataUtil.getIntegerValue(Meta.INTERVAL);
+
         LocalDateTime from = null;
         LocalDateTime to = null;
 
@@ -87,15 +180,15 @@ public class ResponsesReporter implements Reporter {
 
             data.put(ChronoUnit.SECONDS.between(start, to), statusCodesAndCounts);
 
-            task.setProgress(task.getProgress().add(new BigDecimal(0.1)));
-            taskService.save(task);
         } while (true);
 
-        task.setProgress(new BigDecimal(90));
+        task.setProgress(new BigDecimal(50));
         taskService.save(task);
     }
 
-    private void convertAndSettData(Report report, List<Integer> statusCodes) {
+    private void convertAndSettData() {
+        List<Integer> statusCodes = responseService.findUniqueStatusCodesForProject(report.getProject().getId());
+
         StringBuilder sb = new StringBuilder();
 
         // header
@@ -111,23 +204,34 @@ public class ResponsesReporter implements Reporter {
         sb.append(SEPERATOR_ROW);
 
         // data
+        Integer totalRequests = 0;
+        SortedMap<Integer, Integer> statusCodesTotals = new TreeMap<>();
+
         for (Entry<Long, List<Object[]>> entry : this.data.entrySet()) {
             sb.append(entry.getKey());
             sb.append(SEPERATOR_COLUMN);
-            sb.append(entry.getValue().stream().mapToLong(statusAndCount -> {
-                return (long) statusAndCount[1];
-            }).sum());
+
+            totalRequests += entry.getValue().stream().mapToInt(statusAndCount -> {
+                return Long.valueOf((long) statusAndCount[1]).intValue();
+            }).sum();
+
+            sb.append(totalRequests);
 
             for (Integer statusCode : statusCodes) {
                 sb.append(SEPERATOR_COLUMN);
 
-                Long count = entry.getValue().stream().filter(statusAndCount -> {
+                Integer statusCodeCount = entry.getValue().stream().filter(statusAndCount -> {
                     return statusAndCount[0].equals(statusCode);
-                }).mapToLong(statusAndCount -> {
-                    return (long) statusAndCount[1];
+                }).mapToInt(statusAndCount -> {
+                    return Long.valueOf((long) statusAndCount[1]).intValue();
                 }).sum();
 
-                sb.append(count);
+                if (statusCodesTotals.containsKey(statusCode)) {
+                    statusCodeCount += statusCodesTotals.get(statusCode);
+                }
+                statusCodesTotals.put(statusCode, statusCodeCount);
+
+                sb.append(statusCodeCount);
             }
 
             sb.append(SEPERATOR_ROW);
@@ -135,6 +239,9 @@ public class ResponsesReporter implements Reporter {
 
         report.setCompletedAt(LocalDateTime.now());
         report.setOutput(sb.toString());
+
+        task.setProgress(new BigDecimal(90));
+        taskService.save(task);
     }
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
