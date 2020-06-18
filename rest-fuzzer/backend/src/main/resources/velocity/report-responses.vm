@@ -1,61 +1,72 @@
+\tiny
+
+\pgfplotscreateplotcyclelist{line styles}{
+  solid, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=otimes\\%
+  solid, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=star\\%
+  solid, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=*\\%
+  solid, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=square*\\%
+  solid, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=triangle*\\%
+  solid, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=diamond*\\%
+  dotted, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=otimes\\%
+  dotted, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=star\\%
+  dotted, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=*\\%
+  dotted, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=square*\\%
+  dotted, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=triangle*\\%
+  dotted, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=diamond*\\%
+}
+
 \pgfplotstableread[col sep = tab]{
- #foreach( $line in $lines )
- $line
+ #foreach($dataRow in $dataRows)
+ $dataRow
  #end
 }{\reponsesReportOne}
 
-   \begin{tikzpicture}[]
+\begin{tikzpicture}[]
+  
   \pgfplotsset{
-    every axis plot/.append style={thick},
+    every axis plot/.append style={thin},
     scale only axis,
     legend style={at={(1.15,0.5)},anchor=west,draw=none,mark=none},
+    cycle list name=line styles,
   }
+
   \begin{axis}[
-          hide y axis,
-          xticklabel pos=right,
-          xlabel={requests},
-          xlabel near ticks,
-          axis x line*={top},
-          xmajorgrids=true,
-          grid style=dotted,
-          xmin=0,
-          ymin=0,
-          xtick={105,210,316,421,525,630,735,840,946,1051},
-          width=\textwidth,
-          height=8cm          
-        ]
-          \addplot[
-            mark=+,
-            color=red,
-            draw opacity=0,
-          ]
-          table[x = requests, y = 200] from \reponsesReportOne;
-        \end{axis}
+    hide y axis,
+    xticklabel pos=right,
+    xlabel={requests},
+    xlabel near ticks,
+    axis x line*={top},
+    xmajorgrids=true,
+    grid style=dotted,
+    xmin=0,
+    ymin=0,
+    xtick={$xTickTop},
+    width=\textwidth,
+    height=8cm    
+  ]
+    \addplot[mark=+, color=white, draw opacity=0] table[x = reqs, y = $plots[0]] from \reponsesReportOne;
+  \end{axis}
+
   \begin{axis}[
     legend cell align={left},
-       title={},
-          xlabel={time [seconds]},
-          ylabel={cummulative response count},
-          xmin=0,
-          ymin=0,
-          xtick={50,100,150,200,250,300,350,400},
-          ytick={0,50,100,150,200,250},
-          legend pos=north west,
-          ymajorgrids=true,
-          grid style=dotted,
-          width=\textwidth,
-          height=8cm
+    title={},
+    xlabel={time [seconds]},
+    ylabel={cummulative response count},
+    xmin=0,
+    ymin=0,
+    xtick={$xTickBottom},
+    ytick={$yTick},
+    legend pos=north west,
+    ymajorgrids=true,
+    grid style=dotted,
+    width=\textwidth,
+    height=8cm
   ]
-       \addplot[
-            mark=+,
-            color=blue,
-          ] table[x = time, y = 200] from \reponsesReportOne;
-          \addlegendentry{http 200}
-          \addplot[
-            mark=+,
-            color=red,
-          ]
-          table[x = time, y = 400] from \reponsesReportOne;
-          \addlegendentry{http 400}
-        \end{axis}
-      \end{tikzpicture}
+    #foreach($plot in $plots)
+     \addplot table[x = time, y = $plot] from \reponsesReportOne;
+     \addlegendentry{http $plot}
+    #end
+  \end{axis}
+\end{tikzpicture}
+
+\captionsetup{font=normalsize}

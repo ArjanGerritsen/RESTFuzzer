@@ -55,8 +55,9 @@ public class MetaDataUtil {
         // TODO
 
         // responses reporter
-        public static final String INTERVAL = "interval";
-
+        public static final String POINTS_INTERVAL = "pointsInterval";
+        public static final String X_TICK_INTERVAL = "xTickInterval";
+        public static final String Y_TICK_INTERVAL = "yTickInterval";
     }
 
     private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
