@@ -45,24 +45,65 @@
           <hr />
         </b-form-group>
 
-        <div v-if="isTypeRepsonses">
+        <div>
           <b-form-group
             label="Interval (seconds):"
-            label-for="interval"
-            description="Set interval in seconds"
+            label-for="points-interval"
+            description="Set interval points in seconds"
           >
             <b-form-input
-              id="interval"
-              v-model="metaDataTuplesJson.interval"
+              id="points-interval"
+              v-model="metaDataTuplesJson.pointsInterval"
               type="range"
               min="10"
               max="250"
+              step="5"
             ></b-form-input>
-            <div class="mt-2">Interval: {{ metaDataTuplesJson.interval }}</div>
+            <div class="mt-2">Points interval: {{ metaDataTuplesJson.pointsInterval }}</div>
           </b-form-group>
 
           <hr />
-        </div>        
+        </div>
+
+        <div>
+          <b-form-group
+            label="Grid interval x-axis:"
+            label-for="x-tick-interval"
+            description="Set interval grid x-axis"
+          >
+            <b-form-input
+              id="x-tick-interval"
+              v-model="metaDataTuplesJson.xTickInterval"
+              type="range"
+              min="10"
+              max="1000"
+              step="10"
+            ></b-form-input>
+            <div class="mt-2">Grid interval x-axis: {{ metaDataTuplesJson.xTickInterval }}</div>
+          </b-form-group>
+
+          <hr />
+        </div>
+
+        <div>
+          <b-form-group
+            label="Grid interval y-axis:"
+            label-for="y-tick-interval"
+            description="Set interval grid y-axis"
+          >
+            <b-form-input
+              id="y-tick-interval"
+              v-model="metaDataTuplesJson.yTickInterval"
+              type="range"
+              min="10"
+              max="1000"
+              step="10"
+            ></b-form-input>
+            <div class="mt-2">Grid interval y-axis: {{ metaDataTuplesJson.yTickInterval }}</div>
+          </b-form-group>
+
+          <hr />
+        </div>
       </b-form>
     </b-card-text>
 
@@ -80,7 +121,7 @@
 </template>
 
 <script>
-import constants from '../../shared/constants';
+import constants from "../../shared/constants";
 const DEFAULT_META = {
   pointsInterval: 10,
   xTickInterval: 50,
@@ -98,7 +139,9 @@ export default {
         },
         metaDataTuplesJson: null
       },
-      interval: null,
+      pointsInterval: null,
+      xTickInterval: null,
+      yTickInterval: null,
       metaDataTuplesJson: DEFAULT_META,
       types: [
         { value: "CODE_COVERAGE", text: "Code coverage" },
@@ -117,13 +160,17 @@ export default {
       this.$store.commit("set_report_display", { display: null });
     },
     setMetaDataTuplesJson() {
-      if (this.report.type === "RESPONSES") {
-        this.metaDataTuplesJson.interval = Number(
-          this.metaDataTuplesJson.interval
-        );
-      } else {
-        delete this.metaDataTuplesJson.interval;
-      }
+      this.metaDataTuplesJson.pointsInterval = Number(
+        this.metaDataTuplesJson.pointsInterval
+      );
+
+      this.metaDataTuplesJson.xTickInterval = Number(
+        this.metaDataTuplesJson.xTickInterval
+      );
+
+      this.metaDataTuplesJson.yTickInterval = Number(
+        this.metaDataTuplesJson.yTickInterval
+      );
 
       this.report.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);
     },
@@ -146,9 +193,6 @@ export default {
         this.$store.getters.reports.display !== null &&
         this.$store.getters.reports.display === "add"
       );
-    },
-    isTypeRepsonses() {
-      return this.report.type === "RESPONSES";
     },
     projectsForSelection() {
       this.findAllProjects();

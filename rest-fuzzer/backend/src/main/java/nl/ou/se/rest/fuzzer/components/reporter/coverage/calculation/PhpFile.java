@@ -1,4 +1,4 @@
-package nl.ou.se.rest.fuzzer.components.reporter.coverage;
+package nl.ou.se.rest.fuzzer.components.reporter.coverage.calculation;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
