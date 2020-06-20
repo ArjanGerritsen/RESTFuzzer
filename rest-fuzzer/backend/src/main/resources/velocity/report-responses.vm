@@ -1,5 +1,3 @@
-\tiny
-
 \pgfplotscreateplotcyclelist{line styles}{
   solid, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=otimes\\%
   solid, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=star\\%
@@ -15,58 +13,63 @@
   dotted, colour-blue-light,every mark/.append style={solid, fill=colour-blue-light!30!white},mark=diamond*\\%
 }
 
-\pgfplotstableread[col sep = tab]{
+\pgfplotstableread[col sep = comma]{
  #foreach($dataRow in $dataRows)
  $dataRow
  #end
 }{\reponsesReportOne}
 
-\begin{tikzpicture}[]
+\begin{figure}
+  \tiny
+  \captionsetup{font=tiny}
+
+  \begin{tikzpicture}[]
   
-  \pgfplotsset{
-    every axis plot/.append style={thin},
-    scale only axis,
-    legend style={at={(1.15,0.5)},anchor=west,draw=none,mark=none},
-    cycle list name=line styles,
-  }
+    \pgfplotsset{
+      every axis plot/.append style={thin},
+      scale only axis,
+      legend style={at={(1.15,0.5)},anchor=west,draw=none,mark=none},
+      cycle list name=line styles,
+      width=\textwidth,
+      xmin=0,
+      xmax=$xMax,
+      ymin=0,
+      ytick={$yTicks},
+      height=8cm,    
+      grid style=dotted,
+    }
 
-  \begin{axis}[
-    hide y axis,
-    xticklabel pos=right,
-    xlabel={requests},
-    xlabel near ticks,
-    axis x line*={top},
-    xmajorgrids=true,
-    grid style=dotted,
-    xmin=0,
-    ymin=0,
-    xtick={$xTickTop},
-    width=\textwidth,
-    height=8cm    
-  ]
-    \addplot[mark=+, color=white, draw opacity=0] table[x = reqs, y = $plots[0]] from \reponsesReportOne;
-  \end{axis}
+    \begin{axis}[
+      xlabel={number of responses},
+      hide y axis,
+      xticklabel pos=right,
+      xlabel near ticks,
+      axis x line*={top},
+      xtick={$xTicks},
+      xticklabels={$xTicksLabels},    
+    ]
+      \addplot[color=white, draw opacity=0] table[x = time, y = $plots[0]] from \reponsesReportOne;
+    \end{axis}
 
-  \begin{axis}[
-    legend cell align={left},
-    title={},
-    xlabel={time [seconds]},
-    ylabel={cummulative response count},
-    xmin=0,
-    ymin=0,
-    xtick={$xTickBottom},
-    ytick={$yTick},
-    legend pos=north west,
-    ymajorgrids=true,
-    grid style=dotted,
-    width=\textwidth,
-    height=8cm
-  ]
-    #foreach($plot in $plots)
-     \addplot table[x = time, y = $plot] from \reponsesReportOne;
-     \addlegendentry{http $plot}
-    #end
-  \end{axis}
-\end{tikzpicture}
+    \begin{axis}[
+      xmajorgrids=true,
+      ymajorgrids=true,
+      xlabel={time [seconds]},
+      xtick={$xTicks},
+      ylabel={cummulative response count},
+      legend cell align={left},
+      legend pos=north west,
+    ]
+      #foreach($plot in $plots)
+       \addplot table[x = time, y = $plot] from \reponsesReportOne;
+       \addlegendentry{HTTP status: $plot}
+      #end
+    \end{axis}
+  \end{tikzpicture}
 
-\captionsetup{font=normalsize}
+  \caption{TODO: Caption here}
+  \label{figure:report-responses}
+
+  \normalsize
+  \captionsetup{font=normalsize}  
+\end{figure}

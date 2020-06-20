@@ -24,6 +24,17 @@ Vue.filter('enumToHuman', function (string) {
   return string;
 });
 
+Vue.filter('toFilename', function (string) {
+  string = string.split(" ").map(
+    s => {
+      return s.toLowerCase();
+    }
+  ).join("_");
+
+  return string;
+});
+
+
 Vue.filter('json', function (json) {
   json = JSON.stringify(JSON.parse(json), null, 2);
 

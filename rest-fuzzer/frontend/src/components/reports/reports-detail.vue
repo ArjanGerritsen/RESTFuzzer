@@ -84,8 +84,19 @@
                   size="sm"
                   type="submit"
                   variant="primary"
-                  title="download CSV"
-                  :href="getCsvAsHref()"
+                  title="copy output of report to clipboard"
+                  @click="copy"
+                >
+                  <b-icon icon="clipboard" font-scale="1"></b-icon>&nbsp;copy output to clipboard
+                </b-button>
+
+                <b-button
+                  size="sm"
+                  type="submit"
+                  variant="primary"
+                  title="download"
+                  :download="getDownload()"
+                  :href="getHref()"
                 >
                   <b-icon icon="download" font-scale="1"></b-icon>&nbsp;download
                 </b-button>
@@ -101,7 +112,7 @@
                 </dd>
               </dl>
             </div>
-          </div>          
+          </div>
         </b-tab>
       </b-tabs>
     </b-card-text>
@@ -147,8 +158,23 @@ export default {
             });
         });
     },
-    getCsvAsHref() {
-      return 'data:text/csv;charset=utf-8,' + encodeURIComponent(this.report.output);
+    getDownload() {
+      return `${this.$options.filters.toFilename(this.report.description)}.tex`;
+    },
+    getHref() {
+      return (
+        "data:application/octet-stream;charset=utf-8," + encodeURIComponent(this.report.output)
+      );
+    },
+    copy() {
+      this.$copyText(this.report.output).then(
+        function(e) {
+          // succes
+        },
+        function(e) {
+          // fail
+        }
+      );
     }
   },
   computed: {

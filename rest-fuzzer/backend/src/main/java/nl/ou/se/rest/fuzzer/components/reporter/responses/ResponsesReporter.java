@@ -33,15 +33,18 @@ import nl.ou.se.rest.fuzzer.components.reporter.Reporter;
 public class ResponsesReporter implements Reporter {
 
     // variable(s)
+    private static final String SEPERATOR_COMMA = ",";
+
     private static final String HEADER_TIME_PASSED = "time";
-    private static final String HEADER_TOTAL_REQUESTS = "reqs";
+    private static final String HEADER_TOTAL_REQUESTS = "responses";
 
     // variable(s) for velocity template
     private static final String VM_DATA_ROWS = "dataRows";
     private static final String VM_PLOTS = "plots";
-    private static final String VM_X_TICK_TOP = "xTickTop";
-    private static final String VM_X_TICK_BOTTOM = "xTickBottom";
-    private static final String VM_Y_TICK = "yTick";
+    private static final String VM_X_TICKS_LABELS = "xTicksLabels";
+    private static final String VM_X_TICKS = "xTicks";
+    private static final String VM_X_MAX = "xMax";
+    private static final String VM_Y_TICKS = "yTicks";
 
     private Report report;
     private Task task;
@@ -124,17 +127,24 @@ public class ResponsesReporter implements Reporter {
         VelocityContext vc = new VelocityContext();
 
         List<List<Object>> dataLines = getDataLines();
+        List<String> dataLineStrings = dataLines.stream().map(line -> ObjectListtoString(line, SEPERATOR_COMMA))
+                .collect(Collectors.toList());
 
-        vc.put(VM_DATA_ROWS, dataLines);
+        vc.put(VM_DATA_ROWS, dataLineStrings);
         vc.put(VM_PLOTS, getPlots());
-        vc.put(VM_Y_TICK, IntListtoString(getYticks(dataLines)));
-        vc.put(VM_X_TICK_BOTTOM, IntListtoString(getXticksBottom(dataLines)));
-        vc.put(VM_X_TICK_TOP, IntListtoString(getXticksTop(dataLines)));
+
+        List<Integer> xTicks = getXticks(dataLines);
+
+        vc.put(VM_X_MAX, xTicks.remove(xTicks.size() - 1));
+        vc.put(VM_X_TICKS, ObjectListtoString(xTicks, SEPERATOR_COMMA));
+        vc.put(VM_X_TICKS_LABELS, ObjectListtoString(getXticksLabels(dataLines, xTicks), SEPERATOR_COMMA));
+        vc.put(VM_Y_TICKS, ObjectListtoString(getYticks(dataLines), SEPERATOR_COMMA));
 
         StringWriter sw = new StringWriter();
         t.merge(vc, sw);
 
         this.report.setOutput(sw.toString());
+        this.report.setCompletedAt(LocalDateTime.now());
         reportService.save(this.report);
     }
 
@@ -206,7 +216,7 @@ public class ResponsesReporter implements Reporter {
         return getTicks(interval, max);
     }
 
-    private List<Integer> getXticksBottom(List<List<Object>> dataLines) {
+    private List<Integer> getXticks(List<List<Object>> dataLines) {
         Integer interval = this.metaDataUtil.getIntegerValue(Meta.X_TICK_INTERVAL);
 
         List<Object> lastLine = dataLines.get(dataLines.size() - 1);
@@ -215,22 +225,21 @@ public class ResponsesReporter implements Reporter {
         return getTicks(interval, max);
     }
 
-    private List<Integer> getXticksTop(List<List<Object>> dataLines) {
-        List<Integer> xTicksBottom = getXticksBottom(dataLines);
-        List<Integer> xTicksTop = new ArrayList<>();
+    private List<Integer> getXticksLabels(List<List<Object>> dataLines, List<Integer> xTicks) {
+        List<Integer> xTicksLabels = new ArrayList<>();
 
-        for (Integer xTickBottom : xTicksBottom) {
+        for (Integer xTick : xTicks) {
             for (List<Object> dataLine : dataLines.subList(1, dataLines.size())) {
                 Integer time = (Integer) dataLine.get(0);
-                if (time.equals(xTickBottom)) {
+                if (time.equals(xTick)) {
                     Integer numRequests = (Integer) dataLine.get(1);
-                    xTicksTop.add(numRequests);
+                    xTicksLabels.add(numRequests);
                     break;
                 }
             }
         }
 
-        return xTicksTop;
+        return xTicksLabels;
     }
 
     private List<Integer> getTicks(Integer interval, Integer max) {
@@ -246,8 +255,8 @@ public class ResponsesReporter implements Reporter {
         return ticks;
     }
 
-    private String IntListtoString(List<Integer> values) {
-        return values.stream().map(tick -> tick.toString()).collect(Collectors.joining(","));
+    private String ObjectListtoString(List<?> values, String seperator) {
+        return values.stream().map(tick -> tick.toString()).collect(Collectors.joining(seperator));
     }
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {

@@ -82,7 +82,9 @@
 <script>
 import constants from '../../shared/constants';
 const DEFAULT_META = {
-  interval: 10,
+  pointsInterval: 10,
+  xTickInterval: 50,
+  yTickInterval: 50
 };
 
 export default {

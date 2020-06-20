@@ -23,7 +23,7 @@
                   size="sm"
                   type="submit"
                   variant="primary"
-                  title="delete this configuration"
+                  title="copy configuration to clipboard"
                   @click="copy"
                 >
                   <b-icon icon="clipboard" font-scale="1"></b-icon>&nbsp;copy json to clipboard
