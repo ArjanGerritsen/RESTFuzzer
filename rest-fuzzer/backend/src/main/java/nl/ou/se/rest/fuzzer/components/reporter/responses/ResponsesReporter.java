@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -37,7 +36,7 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
     private static final String SEPERATOR_COMMA = ",";
 
     private static final String HEADER_TIME_PASSED = "time";
-    private static final String HEADER_TOTAL_REQUESTS = "responses";
+    private static final String HEADER_TOTAL_RESPONSES = "responses";
 
     // variable(s) for velocity template
     private static final String VM_DATA_ROWS = "dataRows";
@@ -117,13 +116,7 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
     }
 
     private String parseTemplate() {
-        Properties properties = new Properties();
-        properties.setProperty("resource.loaders", "class");
-        properties.setProperty("resource.loader.class.class",
-                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-
-        VelocityEngine ve = new VelocityEngine();
-        ve.init(properties);
+        VelocityEngine ve = this.getVelocityEngine(); 
 
         Template t = ve.getTemplate("velocity/report-responses.vm");
 
@@ -141,7 +134,7 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
 
         vc.put(VM_X_MAX, xTicks.remove(xTicks.size() - 1));
         vc.put(VM_X_TICKS, ObjectListtoString(xTicks, SEPERATOR_COMMA));
-        vc.put(VM_X_TICKS_LABELS, ObjectListtoString(getXticksLabels(dataLines, xTicks), SEPERATOR_COMMA));
+        vc.put(VM_X_TICKS_LABELS, ObjectListtoString(getXticksLabels(dataLines.subList(1, dataLines.size()), xTicks), SEPERATOR_COMMA));
 
         Integer yTicksInterval = this.metaDataUtil.getIntegerValue(Meta.X_TICK_INTERVAL);
         vc.put(VM_Y_TICKS, ObjectListtoString(getYticks(dataLines, yTicksInterval), SEPERATOR_COMMA));
@@ -153,19 +146,19 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
     }
 
     private List<List<Object>> getDataLines() {
-        List<List<Object>> lines = new ArrayList<>();
+        List<List<Object>> dateLines = new ArrayList<>();
 
         // header line
         List<Object> columnHeaders = new ArrayList<>();
         columnHeaders.add(HEADER_TIME_PASSED);
-        columnHeaders.add(HEADER_TOTAL_REQUESTS);
+        columnHeaders.add(HEADER_TOTAL_RESPONSES);
         this.statusCodes.forEach(c -> columnHeaders.add(c.toString()));
-        lines.add(columnHeaders);
+        dateLines.add(columnHeaders);
 
         // line with zeros for each column
         List<Object> zeros = new ArrayList<>();
         IntStream.rangeClosed(1, columnHeaders.size()).forEach(i -> zeros.add(0));
-        lines.add(zeros);
+        dateLines.add(zeros);
 
         // values
         Integer totalRequests = 0;
@@ -199,10 +192,10 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
                 dataLine.add(statusCodeCount);
             }
 
-            lines.add(dataLine);
+            dateLines.add(dataLine);
         }
 
-        return lines;
+        return dateLines;
     }
 
     private List<String> getPlots() {

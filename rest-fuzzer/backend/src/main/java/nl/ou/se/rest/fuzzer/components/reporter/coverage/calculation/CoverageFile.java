@@ -39,8 +39,8 @@ public class CoverageFile {
         return (locExecuted / (locExecuted + locNotExecuted)) * 100;
     }
 
-    public Object linesExecuted(String filter) {
-        Double locExecuted = Double.valueOf(0);
+    public Integer linesExecuted(String filter) {
+        Integer locExecuted = 0;
 
         for (Entry<String, PhpFile> entry : this.phpFiles.entrySet()) {
             PhpFile phpFile = entry.getValue();
@@ -67,8 +67,8 @@ public class CoverageFile {
         return (locExecuted / (locExecuted + locNotExecuted)) * 100;
     }
 
-    public double linesExecuted() {
-        Double locExecuted = Double.valueOf(0);
+    public Integer linesExecuted() {
+        Integer locExecuted = 0;
         for (PhpFile phpFile : this.phpFiles.values()) {
             locExecuted += phpFile.getLinesExecuted().size();
         }

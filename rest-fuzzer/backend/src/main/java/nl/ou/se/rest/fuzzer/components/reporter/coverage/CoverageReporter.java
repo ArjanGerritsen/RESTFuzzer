@@ -2,6 +2,7 @@ package nl.ou.se.rest.fuzzer.components.reporter.coverage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -15,11 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,16 +33,15 @@ import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil.Meta;
 import nl.ou.se.rest.fuzzer.components.reporter.Reporter;
+import nl.ou.se.rest.fuzzer.components.reporter.ReporterBase;
 import nl.ou.se.rest.fuzzer.components.reporter.coverage.calculation.CoverageFile;
 import nl.ou.se.rest.fuzzer.components.reporter.coverage.calculation.PhpFile;
 import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 
 @Service
-public class CoverageReporter implements Reporter {
+public class CoverageReporter extends ReporterBase implements Reporter {
 
     // variable(s)
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-
     private static String PATH_XDEBUG_FILES = "C://temp";
     private static String PATH_ENDPOINTS = "C:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\";
 
@@ -48,6 +50,23 @@ public class CoverageReporter implements Reporter {
 
     private MetaDataUtil metaDataUtil = null;
     private List<List<Object>> dataLines = new ArrayList<>();
+
+    private static final String SEPERATOR_COMMA = ",";
+
+    private static final String HEADER_TIME_PASSED = "time";
+    private static final String HEADER_TOTAL_RESPONSES = "responses";
+    private static final String HEADER_CC_PERC_ENDPOINTS = "cc-endpoints";
+    private static final String HEADER_LOC_EXECUTED_ENDPOINTS = "loc-executed-endpoints";
+    private static final String HEADER_CC_PERC_TOTAL = "cc-total";
+    private static final String HEADER_LOC_EXECUTED_TOTAL = "loc-executed-total";
+
+    // variable(s) for velocity template
+    private static final String VM_DATA_ROWS = "dataRows";
+    private static final String VM_PLOTS = "plots";
+    private static final String VM_X_TICKS_LABELS = "xTicksLabels";
+    private static final String VM_X_TICKS = "xTicks";
+    private static final String VM_X_MAX = "xMax";
+    private static final String VM_Y_TICKS = "yTicks";
 
     @Autowired
     private ReportService reportService;
@@ -92,6 +111,11 @@ public class CoverageReporter implements Reporter {
         Integer responsesCount = 0;
         LocalDateTime startTime = null;
 
+        // line with zeros for each column
+        List<Object> zeros = new ArrayList<>();
+        IntStream.rangeClosed(1, 6).forEach(i -> zeros.add(0));
+        this.dataLines.add(zeros);
+
         for (Path fileOnDisk : filesOnDisk) {
             responsesCount++;
 
@@ -102,41 +126,88 @@ public class CoverageReporter implements Reporter {
                 startTime = localDateTime;
             }
 
+            Integer time = Long.valueOf(ChronoUnit.SECONDS.between(startTime, localDateTime)).intValue();
+
             try {
                 current = processFile(fileOnDisk);
 
                 if (current != null && previous != null) {
                     current.merge(previous);
                 }
-
-                previous = current;
-
-                if (responsesCount % pointsInterval == 0) {
-                    List<Object> dataLine = new ArrayList<>();
-
-                    dataLine.add(ChronoUnit.SECONDS.between(startTime, localDateTime));
-                    dataLine.add(responsesCount);
-                    dataLine.add(current.codeCoveragePercentageFiltered(PATH_ENDPOINTS));
-                    dataLine.add(current.linesExecuted(PATH_ENDPOINTS));
-                    dataLine.add(current.codeCoveragePercentage());
-                    dataLine.add(current.linesExecuted());
-
-                    dataLines.add(dataLine);
-                }
-
             } catch (IOException e) {
                 e.printStackTrace();
                 // TODO
             }
 
-            task.setProgress(new BigDecimal((Math.ceil(responsesCount / filesOnDisk.size()) * 100)));
+            previous = current;
+
+            if ((time > 0) && time % pointsInterval == 0) {
+                List<Object> dataLine = new ArrayList<>();
+
+                dataLine.add(time);
+                dataLine.add(responsesCount);
+                dataLine.add(current.codeCoveragePercentageFiltered(PATH_ENDPOINTS));
+                dataLine.add(current.linesExecuted(PATH_ENDPOINTS));
+                dataLine.add(current.codeCoveragePercentage());
+                dataLine.add(current.linesExecuted());
+
+                this.dataLines.add(dataLine);
+            }
+
+            task.setProgress(new BigDecimal((responsesCount * 100) / filesOnDisk.size()));
             taskService.save(this.task);
         }
     }
 
     private String parseTemplate() {
-        // TODO Auto-generated method stub
-        return null;
+        VelocityEngine ve = this.getVelocityEngine();
+
+        Template t = ve.getTemplate("velocity/report-code-coverage.vm");
+
+        VelocityContext vc = new VelocityContext();
+
+        List<String> dataLineStrings = new ArrayList<>();
+        dataLineStrings.add(ObjectListtoString(this.getHeaders(), SEPERATOR_COMMA));
+        dataLineStrings.addAll(this.dataLines.stream().map(line -> ObjectListtoString(line, SEPERATOR_COMMA))
+                .collect(Collectors.toList()));
+
+        vc.put(VM_DATA_ROWS, dataLineStrings);
+        vc.put(VM_PLOTS, getPlots());
+
+        Integer xTicksInterval = this.metaDataUtil.getIntegerValue(Meta.X_TICK_INTERVAL);
+        List<Integer> xTicks = getXticks(this.dataLines, xTicksInterval);
+
+        vc.put(VM_X_MAX, xTicks.remove(xTicks.size() - 1));
+        vc.put(VM_X_TICKS, ObjectListtoString(xTicks, SEPERATOR_COMMA));
+        vc.put(VM_X_TICKS_LABELS, ObjectListtoString(getXticksLabels(this.dataLines, xTicks), SEPERATOR_COMMA));
+
+        Integer yTicksInterval = this.metaDataUtil.getIntegerValue(Meta.Y_TICK_INTERVAL);
+        vc.put(VM_Y_TICKS, ObjectListtoString(getYticks(dataLines, yTicksInterval), SEPERATOR_COMMA));
+
+        StringWriter sw = new StringWriter();
+        t.merge(vc, sw);
+
+        return sw.toString();
+    }
+
+    private List<String> getHeaders() {
+        List<String> headers = new ArrayList<>();
+        headers.add(HEADER_TIME_PASSED);
+        headers.add(HEADER_TOTAL_RESPONSES);
+        headers.add(HEADER_CC_PERC_ENDPOINTS);
+        headers.add(HEADER_LOC_EXECUTED_ENDPOINTS);
+        headers.add(HEADER_CC_PERC_TOTAL);
+        headers.add(HEADER_LOC_EXECUTED_TOTAL);
+
+        return headers;
+    }
+
+    private List<String> getPlots() {
+        List<String> plots = new ArrayList<>();
+        plots.add(HEADER_LOC_EXECUTED_ENDPOINTS);
+        plots.add(HEADER_LOC_EXECUTED_TOTAL);
+
+        return plots;
     }
 
     private static CoverageFile processFile(Path path) throws IOException {

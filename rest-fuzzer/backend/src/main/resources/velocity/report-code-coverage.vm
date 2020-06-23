@@ -56,19 +56,19 @@
       ymajorgrids=true,
       xlabel={time [seconds]},
       xtick={$xTicks},
-      ylabel={cummulative response count},
+      ylabel={executed lines of code},
       legend cell align={left},
       legend pos=north west,
     ]
       #foreach($plot in $plots)
        \addplot table[x = time, y = $plot] from \reponsesReportOne;
-       \addlegendentry{HTTP status: $plot}
+       \addlegendentry{$plot}
       #end
     \end{axis}
   \end{tikzpicture}
 
   \caption{TODO: Caption here}
-  \label{figure:report-responses}
+  \label{figure:report-code-coverage}
 
   \normalsize
   \captionsetup{font=normalsize}  
