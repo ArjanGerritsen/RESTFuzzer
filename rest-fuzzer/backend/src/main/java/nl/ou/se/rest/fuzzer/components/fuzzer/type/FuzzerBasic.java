@@ -1,5 +1,6 @@
 package nl.ou.se.rest.fuzzer.components.fuzzer.type;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzRequestService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzResponseService;
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzDictionary;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
@@ -41,6 +43,7 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
     @Autowired
     private ExecutorUtil executorUtil;
 
+    // method(s)
     public void start(FuzProject project, Task task) {
         this.project = project;
 
@@ -57,11 +60,11 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
         int total = repetitions * actions.size();
 
         // init requestUtil
-        requestUtil.init(project, metaDataUtil.getDefaults());
+        requestUtil.init(project, metaDataUtil.getDefaults(), new ArrayList<FuzDictionary>());
 
         for (int i = 0; i < repetitions; i++) {
             for (RmdAction a : actions) {
-                FuzRequest request = requestUtil.getRequestFromAction(a, null);
+                FuzRequest request = requestUtil.getRequestFromAction(a, null, null);
                 requestService.save(request);
 
                 FuzResponse response = executorUtil.processRequest(request);

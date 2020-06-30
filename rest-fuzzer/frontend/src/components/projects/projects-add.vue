@@ -18,10 +18,10 @@
       <b-alert
         show
         variant="danger"
-        v-if="dictionariesForSelection.length === 0 && isTypeDictionary"
+        v-if="dictionariesForSelection.length === 0 && (isTypeDict || isTypeMbDict)"
       >
         No dictionaries available. Please
-        <b-link to="suts" size="sm" type="submit" variant="primary">add</b-link>&nbsp;a least one dictionary.
+        <b-link to="dictionaries" size="sm" type="submit" variant="primary">add</b-link>&nbsp;a least one dictionary.
       </b-alert>
 
       <b-form>
@@ -57,7 +57,7 @@
         </b-form-group>
 
         <b-form-group
-          v-if="!isTypeModelBased && !isTypeDictionary"
+          v-if="isTypeBasic || isTypeDict"
           label="Repetitions:"
           label-for="input-2"
           description="Set number of repetitions"
@@ -73,7 +73,7 @@
           <hr />
         </b-form-group>
 
-        <div v-if="isTypeModelBased || isTypeDictionary">
+        <div v-if="isTypeMb || isTypeMbDict">
           <b-form-group
             label="Maximum sequence length:"
             label-for="sequence-length"
@@ -92,7 +92,7 @@
           <hr />
         </div>
 
-        <div v-if="isTypeModelBased || isTypeDictionary">
+        <div v-if="isTypeMb || isTypeMbDict">
           <b-form-group
             label="Maximum number of requests:"
             label-for="max-requests"
@@ -113,7 +113,7 @@
         </div>
 
         <b-form-group
-          v-if="dictionariesForSelection.length > 0 && isTypeDictionary"
+          v-if="dictionariesForSelection.length > 0 && (isTypeDict || isTypeMbDict)"
           label="Dictionaries:"
           description="Dictionaries for project (select one or more)"
         >
@@ -123,6 +123,8 @@
             :options="dictionariesForSelection"
             v-model="dictionaries"
           ></b-form-checkbox-group>
+
+          {{ this.dictionaries }}
         </b-form-group>
 
         <b-form-group
@@ -157,7 +159,8 @@ const DEFAULT_META = {
   configuration: {},
   repetitions: 1,
   maxSequenceLength: 1,
-  maxNumRequests: 1000
+  maxNumRequests: 1000,
+  dictionaries: []
 };
 
 export default {
@@ -176,8 +179,8 @@ export default {
       metaDataTuplesJson: DEFAULT_META,
       types: [
         { value: "BASIC_FUZZER", text: "Basic" },
-        { value: "MB_FUZZER", text: "ModelBased" },
         { value: "DICTIONARY_FUZZER", text: "Dictionary" },
+        { value: "MB_FUZZER", text: "ModelBased" },
         { value: "MB_DICTIONARY_FUZZER", text: "ModelBasedDictionary" }
       ]
     };
@@ -195,7 +198,10 @@ export default {
     setMetaDataTuplesJson() {
       this.metaDataTuplesJson.configuration = this.getConfigurationJson();
 
-      if (this.project.type === "BASIC_FUZZER") {
+      if (
+        this.project.type === "BASIC_FUZZER" ||
+        this.project.type === "DICTIONARY_FUZZER"
+      ) {
         this.metaDataTuplesJson.repetitions = Number(
           this.metaDataTuplesJson.repetitions
         );
@@ -216,6 +222,15 @@ export default {
       } else {
         delete this.metaDataTuplesJson.maxSequenceLength;
         delete this.metaDataTuplesJson.maxNumRequests;
+      }
+
+      if (
+        this.project.type === "DICTIONARY_FUZZER" ||
+        this.project.type === "MB_DICTIONARY_FUZZER"
+      ) {
+        this.metaDataTuplesJson.dictionaries = this.dictionaries;
+      } else {
+        delete this.metaDataTuplesJson.repetitions;
       }
 
       this.project.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);
@@ -259,19 +274,17 @@ export default {
     }
   },
   computed: {
-    isTypeModelBased() {
-      return (
-        this.project.type &&
-        (this.project.type === "MB_FUZZER" ||
-          this.project.type === "MB_DICTIONARY_FUZZER")
-      );
+    isTypeBasic() {
+      return this.project.type && this.project.type === "BASIC_FUZZER";
     },
-    isTypeDictionary() {
-      return (
-        this.project.type &&
-        (this.project.type === "DICTIONARY_FUZZER" ||
-          this.project.type === "MB_DICTIONARY_FUZZER")
-      );
+    isTypeMb() {
+      return this.project.type && this.project.type === "MB_FUZZER";
+    },
+    isTypeMbDict() {
+      return this.project.type && this.project.type === "MB_DICTIONARY_FUZZER";
+    },
+    isTypeDict() {
+      return this.project.type && this.project.type === "DICTIONARY_FUZZER";
     },
     display() {
       return (

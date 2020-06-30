@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,15 +45,15 @@ public class MetaDataUtil {
         public static final String DEFAULTS = "defaults";
         public static final String DEFAULT_VALUE = "default";
 
-        // basic fuzzer
+        // basic fuzzer && dictionary fuzzer
         public static final String REPITITIONS = "repetitions";
 
-        // model based fuzzers
+        // model-based fuzzers
         public static final String MAX_SEQUENCE_LENGTH = "maxSequenceLength";
         public static final String MAX_NUMBER_REQUESTS = "maxNumRequests";
 
-        // dictionary fuzzers
-        // TODO
+        // (model-based) dictionary fuzzers
+        public static final String DICTIONARIES = "dictionaries";
 
         // responses reporter
         public static final String POINTS_INTERVAL = "pointsInterval";
@@ -99,6 +100,15 @@ public class MetaDataUtil {
 
     public Integer getIntegerValue(String key) {
         return (Integer) this.getValueForKey(this.tuplesMetaData, key);
+    }
+
+    public List<Integer> getIntegerArrayValues(String key) {
+        List<Integer> result = new ArrayList<>();
+
+        JSONArray array = (JSONArray) this.getValueForKey(this.tuplesMetaData, key);
+        array.forEach(intValue -> result.add((Integer) intValue));
+
+        return result;
     }
 
     public Authentication getAuthentication() {

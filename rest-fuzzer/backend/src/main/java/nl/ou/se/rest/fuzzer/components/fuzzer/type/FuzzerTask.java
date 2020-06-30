@@ -25,7 +25,13 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
     private FuzzerBasic fuzzerBasic;
 
     @Autowired
+    private FuzzerDictionary fuzzerDictionary;
+
+    @Autowired
     private FuzzerModelBased fuzzerModelBased;
+
+    @Autowired
+    private FuzzerModelBasedDictionary fuzzerModelBasedDictionary;
 
     @Override
     public void execute() {
@@ -49,8 +55,14 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
         case BASIC_FUZZER:
             fuzzer = fuzzerBasic;
             break;
+        case DICTIONARY_FUZZER:
+            fuzzer = fuzzerDictionary;
+            break;
         case MB_FUZZER:
             fuzzer = fuzzerModelBased;
+            break;
+        case MB_DICTIONARY_FUZZER:
+            fuzzer = fuzzerModelBasedDictionary;
             break;
         default:
             break;
@@ -60,7 +72,7 @@ public class FuzzerTask extends TaskExecutionBase implements TaskExecution {
             fuzzer.start(project, this.getTask());
         }
 
-        projectService.save(project); // TODO Kan dit niet weg?
+        // projectService.save(project); // TODO Kan dit niet weg?
 
         this.logStop(FuzzerTask.class.getTypeName());
     }

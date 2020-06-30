@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzDictionary;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequence;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
@@ -39,17 +40,24 @@ public class ParameterUtil {
     private DependencyUtil dependencyUtil;
 
     private Map<ConfigurationParameter, Object> defaults;
+    private List<FuzDictionary> dictionaries;
 
     // method(s)
-    public void init(Map<ConfigurationParameter, Object> defaults) {
+    public void init(Map<ConfigurationParameter, Object> defaults, List<FuzDictionary> dictionaries) {
         this.defaults = defaults;
+        this.dictionaries = dictionaries;
     }
 
-    public Map<String, Object> createParameterMap(List<RmdParameter> parameters, FuzSequence sequence) {
+    public Map<String, Object> createParameterMap(List<RmdParameter> parameters, FuzSequence sequence,
+            RmdParameter fromDictionary) {
         Map<String, Object> parameterMap = new HashMap<>();
 
         parameters.forEach(parameter -> {
-            parameterMap.put(parameter.getName(), getValueForParameter(parameter, sequence));
+            if (fromDictionary != null && fromDictionary.equals(parameter)) {
+                parameterMap.put(parameter.getName(), getValueForParameterFromDictionary(parameter));
+            } else {
+                parameterMap.put(parameter.getName(), getValueForParameter(parameter, sequence));
+            }
         });
 
         return parameterMap;
@@ -61,6 +69,7 @@ public class ParameterUtil {
             return defaultValue;
         }
 
+        // model-based (dictionary) - context from previous requests in sequence
         if (sequence != null && dependencyUtil.hasDependency(parameter, sequence)) {
             return dependencyUtil.getValueFromPreviousRequestInSequence(parameter, sequence);
         }
@@ -71,6 +80,16 @@ public class ParameterUtil {
             String format = (String) parameter.getMetaDataTuples().get(RmdParameter.META_DATA_FORMAT);
             return getValueForParameter(parameter, parameter.getType(), format);
         }
+    }
+
+    private Object getValueForParameterFromDictionary(RmdParameter parameter) {
+        // TODO ... Welk type terug geven? Altijd String, wel array waarden gebruiken voor dictionary?
+
+        if (this.dictionaries.isEmpty()) {
+            logger.warn("DICTIONARIES MISSES"); // TODO
+        }
+
+        return null;
     }
 
     private Object getDefaultValue(RmdParameter parameter) {
