@@ -129,14 +129,14 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
         vc.put(VM_DATA_ROWS, dataLineStrings);
         vc.put(VM_PLOTS, getPlots());
 
-        Integer xTicksInterval = this.metaDataUtil.getIntegerValue(Meta.Y_TICK_INTERVAL);
+        Integer xTicksInterval = this.metaDataUtil.getIntegerValue(Meta.X_TICK_INTERVAL);
         List<Integer> xTicks = getXticks(dataLines, xTicksInterval);
 
         vc.put(VM_X_MAX, xTicks.remove(xTicks.size() - 1));
         vc.put(VM_X_TICKS, ObjectListtoString(xTicks, SEPERATOR_COMMA));
         vc.put(VM_X_TICKS_LABELS, ObjectListtoString(getXticksLabels(dataLines.subList(1, dataLines.size()), xTicks), SEPERATOR_COMMA));
 
-        Integer yTicksInterval = this.metaDataUtil.getIntegerValue(Meta.X_TICK_INTERVAL);
+        Integer yTicksInterval = this.metaDataUtil.getIntegerValue(Meta.Y_TICK_INTERVAL);
         vc.put(VM_Y_TICKS, ObjectListtoString(getYticks(dataLines, yTicksInterval), SEPERATOR_COMMA));
 
         StringWriter sw = new StringWriter();
