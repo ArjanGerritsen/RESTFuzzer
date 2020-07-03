@@ -23,7 +23,7 @@ public class ReporterBase {
 
     protected List<Integer> getXticks(List<List<Object>> dataLines, Integer interval) {
         List<Object> lastLine = dataLines.get(dataLines.size() - 1);
-        Integer max = (Integer) lastLine.get(1);
+        Integer max = (Integer) lastLine.get(0);
 
         return getTicks(interval, max);
     }

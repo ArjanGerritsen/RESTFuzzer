@@ -122,6 +122,8 @@ public class CoverageReporter extends ReporterBase implements Reporter {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS");
             LocalDateTime localDateTime = LocalDateTime.parse(fileOnDisk.getFileName().toString(), formatter);
 
+            System.out.println(fileOnDisk.getFileName().toString() + " => " + localDateTime);
+            
             if (startTime == null) {
                 startTime = localDateTime;
             }
@@ -141,7 +143,11 @@ public class CoverageReporter extends ReporterBase implements Reporter {
 
             previous = current;
 
-            if ((time > 0) && time % pointsInterval == 0) {
+            time = getCorrectedTime(time, pointsInterval);
+
+            if (time != null) {
+                System.out.println("adding ... ");
+
                 List<Object> dataLine = new ArrayList<>();
 
                 dataLine.add(time);
@@ -157,6 +163,31 @@ public class CoverageReporter extends ReporterBase implements Reporter {
             task.setProgress(new BigDecimal((responsesCount * 100) / filesOnDisk.size()));
             taskService.save(this.task);
         }
+    }
+
+    private Integer getCorrectedTime(Integer time, Integer pointsInterval) {
+        System.out.println("time: " + time);
+
+        if (time <= 0) {
+            return null;
+        }
+
+        Integer lastValue = (Integer) this.dataLines.get(this.dataLines.size() - 1).get(0);
+        if (time.equals(lastValue)) {
+            return null;
+        }
+
+        // no exact match, correcting
+        if (time > (lastValue + pointsInterval)) {
+            System.out.println("correctiong " + time + " to " + lastValue + pointsInterval);
+            time = lastValue + pointsInterval;
+        }
+
+        if (time % pointsInterval == 0) {
+            return time;
+        }
+
+        return null;
     }
 
     private String parseTemplate() {
