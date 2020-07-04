@@ -1,10 +1,19 @@
 package nl.ou.se.rest.fuzzer.components.fuzzer.type;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzDictionaryService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzRequestService;
@@ -15,6 +24,7 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
 import nl.ou.se.rest.fuzzer.components.data.rmd.dao.RmdActionService;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
 import nl.ou.se.rest.fuzzer.components.data.task.domain.Task;
 import nl.ou.se.rest.fuzzer.components.fuzzer.executor.ExecutorUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil;
@@ -27,6 +37,7 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
     // variable(s)
     private FuzProject project = null;
     private MetaDataUtil metaDataUtil = null;
+    private List<String> dictionaryValues = new ArrayList<String>();
 
     @Autowired
     private RmdActionService actionService;
@@ -55,26 +66,55 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
 
         // get meta
         Integer repetitions = metaDataUtil.getIntegerValue(Meta.REPITITIONS);
-        List<Integer> dictionaryIds = metaDataUtil.getIntegerArrayValues(Meta.DICTIONARIES);
-        
+        Integer maxDictionaryParams = metaDataUtil.getIntegerValue(Meta.MAX_DICTIONARY_PARAMS);
+        Integer maxDictionaryItems = metaDataUtil.getIntegerValue(Meta.MAX_DICTIONARY_ITEMS);
+
+        List<Long> dictionaryIds = metaDataUtil.getLongArrayValues(Meta.DICTIONARIES);
         List<FuzDictionary> dictionaries = dictionaryService.findByIds(dictionaryIds);
+        dictionaries.forEach(dictionary -> this.dictionaryValues.addAll(dictionary.getItems()));
 
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
         actions = metaDataUtil.getFilteredActions(actions);
 
-        int count = 0;
-        int total = repetitions * actions.size();
+        Integer count = 0;
+        Integer total = repetitions * actions.size();
 
         // init requestUtil
-        requestUtil.init(project, metaDataUtil.getDefaults(), dictionaries);
+        requestUtil.init(project, metaDataUtil.getDefaults());
 
-        for (int i = 0; i < repetitions; i++) {
+        for (Integer i = 0; i < repetitions; i++) {
             for (RmdAction a : actions) {
-                FuzRequest request = requestUtil.getRequestFromAction(a, null, null);
-                requestService.save(request);
+                FuzRequest request = requestUtil.getRequestFromAction(a, null);
 
-                FuzResponse response = executorUtil.processRequest(request);
-                responseService.save(response);
+                for (RmdParameter parameter : getRandomFromValues(a.getParameters(), maxDictionaryParams)) {
+                    for (String dictionaryValue : getRandomFromValues(this.dictionaryValues, maxDictionaryItems)) {
+//                        FuzRequest requestCopy = SerializationUtils.clone(request);
+
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.enableDefaultTyping(DefaultTyping.NON_FINAL);
+                        String jsonSource = null;
+                        try {
+                            jsonSource = mapper.writeValueAsString(request);
+                        } catch (JsonProcessingException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
+                        FuzRequest requestCopy = null;
+                        try {
+                            requestCopy = mapper.readValue(jsonSource, FuzRequest.class);
+                        } catch (JsonProcessingException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                        requestCopy.replaceParameterValue(parameter, dictionaryValue);
+
+                        requestService.save(requestCopy);
+
+                        FuzResponse response = executorUtil.processRequest(request);
+                        responseService.save(response);
+                    }
+                }
 
                 count++;
                 saveTaskProgress(task, count, total);
@@ -82,8 +122,22 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
         }
     }
 
+    public List<RmdParameter> getRandomFromValues(SortedSet<RmdParameter> values, Integer max) {
+        List<RmdParameter> list = values.stream().collect(Collectors.toList());
+        Collections.shuffle(list);
+        Integer toIndex = Arrays.asList(list.size(), max).stream().max(Integer::compare).get() - 1;
+        return list.subList(0, toIndex);
+    }
+
+    public List<String> getRandomFromValues(List<String> values, Integer max) {
+        Collections.shuffle(values);
+        Integer toIndex = Arrays.asList(values.size(), max).stream().max(Integer::compare).get() - 1;
+        return values.subList(0, toIndex);
+    }
+
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
         this.metaDataUtil = new MetaDataUtil(metaDataTuples);
-        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.REPITITIONS, Meta.DICTIONARIES);
+        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.REPITITIONS, Meta.DICTIONARIES, Meta.MAX_DICTIONARY_PARAMS,
+                Meta.MAX_DICTIONARY_ITEMS);
     }
 }

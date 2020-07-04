@@ -23,6 +23,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
+import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdParameter;
+import nl.ou.se.rest.fuzzer.components.shared.Constants;
 import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 
 @Entity(name = "fuz_requests")
@@ -123,6 +125,16 @@ public class FuzRequest implements Comparable<FuzRequest> {
             break;
         default:
             break;
+        }
+    }
+
+    public void replaceParameterValue(RmdParameter parameter, String dictionaryValue) {
+        Map<String, Object> map = this.getParameterMap(parameter.getContext());
+
+        if (map != null && map.containsKey(parameter.getName())) {
+            map.put(parameter.getName(), dictionaryValue);            
+        } else {
+            throw new IllegalArgumentException(String.format(Constants.Fuzzer.PARAMETER_UNKNOWN, parameter.getId(), parameter.getName()));
         }
     }
 

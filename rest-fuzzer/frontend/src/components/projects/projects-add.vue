@@ -124,7 +124,43 @@
             v-model="dictionaries"
           ></b-form-checkbox-group>
 
-          {{ this.dictionaries }}
+          <hr />
+        </b-form-group>
+
+        <b-form-group
+          v-if="isTypeDict || isTypeMbDict"
+          label="Maximum parameters to adapt per action:"
+          description="Select the maximum amount of paramters to use a dictionary value for (per action)"
+        >
+          <b-form-input
+            id="max-dict-params"
+            v-model="metaDataTuplesJson.maxDictParams"
+            type="range"
+            min="1"
+            max="25"
+            step="1"
+          ></b-form-input>
+          <div class="mt-2">Maximum parameters : {{ metaDataTuplesJson.maxDictParams }}</div>
+
+          <hr />
+        </b-form-group>
+
+        <b-form-group
+          v-if="isTypeDict || isTypeMbDict"
+          label="Maximum items to use per adapted parameter:"
+          description="Select the maximum amount of items to use from the dictionary per adapted parameter"
+        >
+          <b-form-input
+            id="max-dict-items"
+            v-model="metaDataTuplesJson.maxDictItems"
+            type="range"
+            min="1"
+            max="25"
+            step="1"
+          ></b-form-input>
+          <div class="mt-2">Maximum items : {{ metaDataTuplesJson.maxDictItems }}</div>
+
+          <hr />
         </b-form-group>
 
         <b-form-group
@@ -160,7 +196,9 @@ const DEFAULT_META = {
   repetitions: 1,
   maxSequenceLength: 1,
   maxNumRequests: 1000,
-  dictionaries: []
+  dictionaries: [],
+  maxDictParams: 1,
+  maxDictItems: 1
 };
 
 export default {
@@ -231,6 +269,21 @@ export default {
         this.metaDataTuplesJson.dictionaries = this.dictionaries;
       } else {
         delete this.metaDataTuplesJson.repetitions;
+      }
+
+      if (
+        this.project.type === "DICTIONARY_FUZZER" ||
+        this.project.type === "MB_DICTIONARY_FUZZER"
+      ) {
+        this.metaDataTuplesJson.maxDictParams = Number(
+          this.metaDataTuplesJson.maxDictParams
+        );
+        this.metaDataTuplesJson.maxDictItems = Number(
+          this.metaDataTuplesJson.maxDictItems
+        );
+      } else {
+        delete this.metaDataTuplesJson.maxDictParams;
+        delete this.metaDataTuplesJson.maxDictItems;
       }
 
       this.project.metaDataTuplesJson = JSON.stringify(this.metaDataTuplesJson);

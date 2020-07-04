@@ -16,6 +16,6 @@ public interface FuzDictionaryService extends CrudRepository<FuzDictionary, Long
     Optional<FuzDictionary> findById(Long id);
 
     @Query("SELECT d FROM fuz_dictionaries d WHERE d.id IN (:ids)")
-    List<FuzDictionary> findByIds(List<Integer> ids);
+    List<FuzDictionary> findByIds(List<Long> ids);
 
 }

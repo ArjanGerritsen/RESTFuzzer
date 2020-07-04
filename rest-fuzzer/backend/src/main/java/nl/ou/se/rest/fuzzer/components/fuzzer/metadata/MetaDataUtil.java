@@ -54,6 +54,8 @@ public class MetaDataUtil {
 
         // (model-based) dictionary fuzzers
         public static final String DICTIONARIES = "dictionaries";
+        public static final String MAX_DICTIONARY_PARAMS = "maxDictParams";
+        public static final String MAX_DICTIONARY_ITEMS = "maxDictItems";
 
         // responses reporter
         public static final String POINTS_INTERVAL = "pointsInterval";
@@ -102,11 +104,11 @@ public class MetaDataUtil {
         return (Integer) this.getValueForKey(this.tuplesMetaData, key);
     }
 
-    public List<Integer> getIntegerArrayValues(String key) {
-        List<Integer> result = new ArrayList<>();
+    public List<Long> getLongArrayValues(String key) {
+        List<Long> result = new ArrayList<>();
 
         JSONArray array = (JSONArray) this.getValueForKey(this.tuplesMetaData, key);
-        array.forEach(intValue -> result.add((Integer) intValue));
+        array.forEach(intValue -> result.add(Long.valueOf((Integer)intValue)));
 
         return result;
     }

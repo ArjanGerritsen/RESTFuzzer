@@ -1,6 +1,5 @@
 package nl.ou.se.rest.fuzzer.components.fuzzer.type;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzRequestService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzResponseService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzSequenceService;
-import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzDictionary;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzProject;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
@@ -86,7 +84,7 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
         }
 
         // init requestUtil
-        requestUtil.init(project, metaDataUtil.getDefaults(), new ArrayList<FuzDictionary>());
+        requestUtil.init(project, metaDataUtil.getDefaults());
 
         // for all sequences
         int sequencePosition = 1;
@@ -100,7 +98,7 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
 
             // for each item in sequence
             for (RmdAction a : actionsFromSequence) {
-                FuzRequest request = requestUtil.getRequestFromAction(a, sequence, null);
+                FuzRequest request = requestUtil.getRequestFromAction(a, sequence);
                 requestService.save(request);
                 sequence.addRequest(request);
 
