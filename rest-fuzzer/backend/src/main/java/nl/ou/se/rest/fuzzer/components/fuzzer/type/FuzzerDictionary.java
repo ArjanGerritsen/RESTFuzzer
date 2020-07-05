@@ -11,10 +11,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
-
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzDictionaryService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzRequestService;
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzResponseService;
@@ -86,32 +82,23 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
             for (RmdAction a : actions) {
                 FuzRequest request = requestUtil.getRequestFromAction(a, null);
 
-                for (RmdParameter parameter : getRandomFromValues(a.getParameters(), maxDictionaryParams)) {
-                    for (String dictionaryValue : getRandomFromValues(this.dictionaryValues, maxDictionaryItems)) {
-//                        FuzRequest requestCopy = SerializationUtils.clone(request);
+                List<RmdParameter> parameters = getRandomFromValues(a.getParameters(), maxDictionaryParams);
+                System.out.println(parameters.size());
+                for (RmdParameter parameter : parameters) {
+                    System.out.println("NEW PARAM: " + parameter.getName());
 
-                        ObjectMapper mapper = new ObjectMapper();
-                        mapper.enableDefaultTyping(DefaultTyping.NON_FINAL);
-                        String jsonSource = null;
-                        try {
-                            jsonSource = mapper.writeValueAsString(request);
-                        } catch (JsonProcessingException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        }
-                        FuzRequest requestCopy = null;
-                        try {
-                            requestCopy = mapper.readValue(jsonSource, FuzRequest.class);
-                        } catch (JsonProcessingException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                    List<String> dictionaryValues = getRandomFromValues(this.dictionaryValues, maxDictionaryItems);
+                    System.out.println(dictionaryValues.size());
+                    for (String dictionaryValue : dictionaryValues) {
+                        System.out.println(dictionaryValue);
+                        
+                        FuzRequest requestCopy = request.getDeepCopy();
 
                         requestCopy.replaceParameterValue(parameter, dictionaryValue);
 
                         requestService.save(requestCopy);
 
-                        FuzResponse response = executorUtil.processRequest(request);
+                        FuzResponse response = executorUtil.processRequest(requestCopy);
                         responseService.save(response);
                     }
                 }
@@ -125,13 +112,13 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
     public List<RmdParameter> getRandomFromValues(SortedSet<RmdParameter> values, Integer max) {
         List<RmdParameter> list = values.stream().collect(Collectors.toList());
         Collections.shuffle(list);
-        Integer toIndex = Arrays.asList(list.size(), max).stream().max(Integer::compare).get() - 1;
+        Integer toIndex = Arrays.asList(list.size(), max).stream().min(Integer::compare).get();
         return list.subList(0, toIndex);
     }
 
     public List<String> getRandomFromValues(List<String> values, Integer max) {
         Collections.shuffle(values);
-        Integer toIndex = Arrays.asList(values.size(), max).stream().max(Integer::compare).get() - 1;
+        Integer toIndex = Arrays.asList(values.size(), max).stream().min(Integer::compare).get();
         return values.subList(0, toIndex);
     }
 

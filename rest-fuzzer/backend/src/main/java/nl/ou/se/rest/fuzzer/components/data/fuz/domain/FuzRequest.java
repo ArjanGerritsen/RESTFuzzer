@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzRequestFactory;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.HttpMethod;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterContext;
 import nl.ou.se.rest.fuzzer.components.data.rmd.domain.RmdAction;
@@ -70,9 +71,9 @@ public class FuzRequest implements Comparable<FuzRequest> {
     public FuzRequest() {
     }
 
-    public FuzRequest(String path, String httpMethod) {
+    public FuzRequest(String path, HttpMethod httpMethod) {
         this.path = path;
-        this.httpMethod = HttpMethod.valueOf(httpMethod);
+        this.httpMethod = httpMethod;
     }
 
     // method(s)
@@ -132,10 +133,23 @@ public class FuzRequest implements Comparable<FuzRequest> {
         Map<String, Object> map = this.getParameterMap(parameter.getContext());
 
         if (map != null && map.containsKey(parameter.getName())) {
-            map.put(parameter.getName(), dictionaryValue);            
+            map.put(parameter.getName(), dictionaryValue);
+            this.setParameterMap(parameter.getContext(), map);
         } else {
-            throw new IllegalArgumentException(String.format(Constants.Fuzzer.PARAMETER_UNKNOWN, parameter.getId(), parameter.getName()));
+            throw new IllegalArgumentException(
+                    String.format(Constants.Fuzzer.PARAMETER_UNKNOWN, parameter.getId(), parameter.getName()));
         }
+    }
+
+    public FuzRequest getDeepCopy() {
+        FuzRequestFactory requestFactory = new FuzRequestFactory();
+
+        requestFactory.create(this.project, this.action);
+        for (ParameterContext pc : ParameterContext.values()) {
+            requestFactory.addParameterMap(pc, this.getParameterMap(pc));
+        }
+
+        return requestFactory.build();
     }
 
     // getter(s) and setter(s)
