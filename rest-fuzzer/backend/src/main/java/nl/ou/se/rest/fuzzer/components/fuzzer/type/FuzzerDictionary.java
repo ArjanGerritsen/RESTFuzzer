@@ -79,30 +79,24 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
         requestUtil.init(project, metaDataUtil.getDefaults());
 
         for (Integer i = 0; i < repetitions; i++) {
+
             for (RmdAction a : actions) {
                 FuzRequest request = requestUtil.getRequestFromAction(a, null);
 
                 List<RmdParameter> parameters = getRandomFromValues(a.getParameters(), maxDictionaryParams);
-                System.out.println(parameters.size());
                 for (RmdParameter parameter : parameters) {
-                    System.out.println("NEW PARAM: " + parameter.getName());
 
                     List<String> dictionaryValues = getRandomFromValues(this.dictionaryValues, maxDictionaryItems);
-                    System.out.println(dictionaryValues.size());
                     for (String dictionaryValue : dictionaryValues) {
-                        System.out.println(dictionaryValue);
-                        
+
                         FuzRequest requestCopy = request.getDeepCopy();
-
                         requestCopy.replaceParameterValue(parameter, dictionaryValue);
-
                         requestService.save(requestCopy);
 
                         FuzResponse response = executorUtil.processRequest(requestCopy);
                         responseService.save(response);
                     }
                 }
-
                 count++;
                 saveTaskProgress(task, count, total);
             }
