@@ -49,7 +49,7 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
         executorUtil.setAuthentication(metaDataUtil.getAuthentication());
 
         // get meta
-        Integer repetitions = metaDataUtil.getIntegerValue(Meta.REPITITIONS);
+        Integer repetitions = metaDataUtil.getIntegerValue(Meta.REPETITIONS);
 
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
         actions = metaDataUtil.getFilteredActions(actions);
@@ -76,6 +76,6 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
         this.metaDataUtil = new MetaDataUtil(metaDataTuples);
-        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.REPITITIONS);
+        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.REPETITIONS);
     }
 }

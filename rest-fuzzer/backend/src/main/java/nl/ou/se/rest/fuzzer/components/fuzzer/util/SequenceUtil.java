@@ -58,6 +58,17 @@ public class SequenceUtil {
         return sequences;
     }
 
+    public List<RmdAction> getDependentActions(RmdAction action) {
+        List<RmdAction> actions = new ArrayList<>();
+
+        if (this.mappedDepencies.containsKey(action.getId())) {
+            List<Long> dependencies = this.mappedDepencies.get(action.getId());
+            actions = dependencies.stream().map(actionId -> this.mappedActions.get(actionId)).collect(Collectors.toList());
+        }
+
+        return actions;
+    }
+
     private List<String> createNewSequences(List<String> sequences) {
         List<String> newSequences = new ArrayList<String>();
         if (sequences.isEmpty()) {
@@ -80,10 +91,6 @@ public class SequenceUtil {
     }
 
     private Boolean satisfiesAllDependencies(String sequence) {
-        if (sequence.equals("264,261,246")) {
-            System.out.println("test");
-        }
-
         String[] actionStringIds = sequence.split(",");
         List<Long> actionIds = Arrays.asList(actionStringIds).stream().map(id -> Long.parseLong(id))
                 .collect(Collectors.toList());
