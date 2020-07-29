@@ -16,6 +16,10 @@
       "httpMethod": ".*"
     },
     {
+      "path": "/wp/v2/users/\\{id\\}",
+      "httpMethod": "PATCH|POST|PUT"
+    },
+    {
       "path": "/wp/v2/taxonomies.*",
       "httpMethod": "GET"
     },

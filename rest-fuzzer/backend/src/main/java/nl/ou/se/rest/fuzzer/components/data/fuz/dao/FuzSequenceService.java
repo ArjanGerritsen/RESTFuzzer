@@ -12,11 +12,12 @@ import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzSequenceStatus;
 
 public interface FuzSequenceService extends CrudRepository<FuzSequence, Long> {
 
-    @Query(value = "SELECT COUNT(s) FROM fuz_sequences s WHERE s.project.id = :projectId AND s.status IN (:statuses) AND s.length IN (:lengths)")
-    Long countByProjectId(Long projectId, List<FuzSequenceStatus> statuses, List<Integer> lengths);
+    @Query(value = "SELECT COUNT(s) FROM fuz_sequences s WHERE s.project.id = :projectId AND s.status IN (:statuses) AND s.length IN (:lengths) AND CAST(s.id AS string) LIKE :filterId")
+    Long countByProjectId(Long projectId, List<FuzSequenceStatus> statuses, List<Integer> lengths, String filterId);
 
-    @Query(value = "SELECT s FROM fuz_sequences s WHERE s.project.id = :projectId AND s.status IN (:statuses) AND s.length IN (:lengths)")
-    List<FuzSequence> findByProjectId(Long projectId, List<FuzSequenceStatus> statuses, List<Integer> lengths, Pageable pageable);
+    @Query(value = "SELECT s FROM fuz_sequences s WHERE s.project.id = :projectId AND s.status IN (:statuses) AND s.length IN (:lengths) AND CAST(s.id AS string) LIKE :filterId")
+    List<FuzSequence> findByProjectId(Long projectId, List<FuzSequenceStatus> statuses, List<Integer> lengths,
+            String filterId, Pageable pageable);
 
     @Modifying
     @Query(value = "DELETE FROM fuz_sequences s WHERE s.project.id = :projectId")

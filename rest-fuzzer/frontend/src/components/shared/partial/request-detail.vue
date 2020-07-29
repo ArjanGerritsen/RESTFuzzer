@@ -22,6 +22,10 @@
       <dd v-if="request.queryParametersJson !== '{}'"  class="col-sm-10">
         <div class="json" :inner-html.prop="request.queryParametersJson | json"></div>
       </dd>
+      <dt class="col-sm-2">sequence</dt>
+      <dd class="col-sm-10">
+        <b>#{{request.sequence ? request.sequence.id : '-'}}</b>
+      </dd>
       <dt class="col-sm-2">created @</dt>
       <dd class="col-sm-10">{{request.createdAt | date }}</dd>
     </dl>

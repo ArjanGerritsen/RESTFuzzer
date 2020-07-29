@@ -20,6 +20,7 @@ import nl.ou.se.rest.fuzzer.components.data.rmd.domain.ParameterType;
 public abstract class FilterUtil {
 
     // variable(s)
+    public static final String ID = "id";
     public static final String PATH = "path";
     public static final String NAME = "name";
 

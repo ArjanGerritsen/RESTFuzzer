@@ -11,7 +11,7 @@
           </template>
           <b-card-text>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group label-size="sm" label="Status(es):">
+              <b-form-group label-size="sm" label="Status(es):" label-for="input-sequence-status">
                 <b-form-checkbox
                   class="float-left"
                   style="margin-right:15px;"
@@ -26,7 +26,11 @@
               <b-link @click="filter.sequenceStatuses = []">select none</b-link>
             </div>
             <div class="float-left" style="margin-right:25px;">
-              <b-form-group label-size="sm" label="Sequence length(s):">
+              <b-form-group
+                label-size="sm"
+                label="Sequence length(s):"
+                label-for="input-sequence-length"
+              >
                 <b-form-checkbox
                   class="float-left"
                   style="margin-right:15px;"
@@ -39,6 +43,22 @@
               </b-form-group>
               <b-link @click="filter.sequenceLengths = sequenceLengths">select all</b-link>&nbsp;/
               <b-link @click="filter.sequenceLengths = []">select none</b-link>
+            </div>
+            <div class="float-left" style="margin-right:25px;">
+              <b-form-group label-size="sm" label="Id:" label-for="input-id">
+                <b-input-group size="sm" label-for="input-id">
+                  <b-form-input
+                    id="input-id"
+                    v-model="filter.id"
+                    size="sm"
+                    type="search"
+                    placeholder="type to filter id"
+                  ></b-form-input>
+                  <b-input-group-append>
+                    <b-button :disabled="!filter.id" @click="filter.id = ''">clear</b-button>
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form-group>
             </div>
           </b-card-text>
         </b-card>
@@ -140,7 +160,8 @@ export default {
       sequenceLengths: Constants.SEQUENCE_LENGTHS,
       filter: {
         sequenceStatuses: Constants.SEQUENCE_STATUSES,
-        sequenceLengths: Constants.SEQUENCE_LENGTHS
+        sequenceLengths: Constants.SEQUENCE_LENGTHS,
+        id: ""
       },
       filterCopy: null
     };

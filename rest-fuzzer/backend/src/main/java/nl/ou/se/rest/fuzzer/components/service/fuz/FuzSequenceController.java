@@ -40,9 +40,10 @@ public class FuzSequenceController {
 
         List<FuzSequenceStatus> statuses = FilterUtil.getStatuses(filter);
         List<Integer> lengths = FilterUtil.getLengths(filter);
+        String filterId = FilterUtil.getValueFromFilter(filter, FilterUtil.ID);
 
-        return ResponseEntity.ok(FuzSequenceMapper.toDtos(
-                sequenceService.findByProjectId(id, statuses, lengths, FilterUtil.toPageRequest(curPage, perPage))));
+        return ResponseEntity.ok(FuzSequenceMapper.toDtos(sequenceService.findByProjectId(id, statuses, lengths,
+                FilterUtil.toLike(filterId), FilterUtil.toPageRequest(curPage, perPage))));
     }
 
     @RequestMapping(path = "{id}/sequences/count", method = RequestMethod.GET)
@@ -51,8 +52,9 @@ public class FuzSequenceController {
 
         List<FuzSequenceStatus> statuses = FilterUtil.getStatuses(filter);
         List<Integer> lengths = FilterUtil.getLengths(filter);
+        String filterId = FilterUtil.getValueFromFilter(filter, FilterUtil.ID);
 
-        return ResponseEntity.ok(sequenceService.countByProjectId(id, statuses, lengths));
+        return ResponseEntity.ok(sequenceService.countByProjectId(id, statuses, lengths, FilterUtil.toLike(filterId)));
     }
 
     @Transactional

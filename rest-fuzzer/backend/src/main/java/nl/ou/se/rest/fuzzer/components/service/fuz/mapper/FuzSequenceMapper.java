@@ -11,13 +11,15 @@ import nl.ou.se.rest.fuzzer.components.service.fuz.domain.FuzSequenceDto;
 public class FuzSequenceMapper {
 
     public static List<FuzSequenceDto> toDtos(List<FuzSequence> sequences) {
-        return sequences.stream().map(s -> FuzSequenceMapper.toDto(s)).collect(Collectors.toList());
+        return sequences.stream().map(s -> FuzSequenceMapper.toDto(s, true)).collect(Collectors.toList());
     }
 
-    private static FuzSequenceDto toDto(FuzSequence sequence) {
+    public static FuzSequenceDto toDto(FuzSequence sequence, boolean mapRequests) {
         FuzSequenceDto dto = new FuzSequenceDto();
         BeanUtils.copyProperties(sequence, dto);
-        dto.setRequests(FuzRequestMapper.toDtos(sequence.getRequests().stream().collect(Collectors.toList())));
+        if (mapRequests) { 
+            dto.setRequests(FuzRequestMapper.toDtos(sequence.getRequests().stream().collect(Collectors.toList())));
+        }
         return dto;
     }
 }
