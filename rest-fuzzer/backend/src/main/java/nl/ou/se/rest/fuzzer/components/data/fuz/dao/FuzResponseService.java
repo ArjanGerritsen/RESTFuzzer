@@ -19,7 +19,7 @@ public interface FuzResponseService extends CrudRepository<FuzResponse, Long> {
     @Query(value = "SELECT r FROM fuz_responses r LEFT JOIN FETCH r.request req WHERE r.project.id = :projectId AND req.httpMethod IN (:httpMethods) AND r.statusCode IN (:statusCodes) AND r.request.path LIKE :path")
     List<FuzResponse> findByFilter(Long projectId, List<HttpMethod> httpMethods, List<Integer> statusCodes, String path, Pageable pageable);
 
-    @Query(value = "SELECT DISTINCT(r.statusCode) FROM fuz_responses r WHERE r.project.id = :projectId")
+    @Query(value = "SELECT DISTINCT(r.statusCode) FROM fuz_responses r WHERE r.project.id = :projectId ORDER BY r.statusCode")
     List<Integer> findUniqueStatusCodesForProject(Long projectId);
 
     @Modifying
@@ -32,7 +32,10 @@ public interface FuzResponseService extends CrudRepository<FuzResponse, Long> {
     @Query(value = "SELECT MIN(r.createdAt) FROM fuz_responses r WHERE r.project.id = :projectId")
     LocalDateTime findMinCreatedByProjectId(Long projectId);
 
-    @Query(value = "SELECT r.statusCode, COUNT(r) AS count FROM fuz_responses r WHERE r.project.id = :projectId AND r.createdAt >= :from AND r.createdAt < :to GROUP BY r.statusCode")
-    List<Object[]> findStatusCodesAndCountsByProjectIdAndDateAndInterval(Long projectId, LocalDateTime from, LocalDateTime to);
+    @Query(value = "SELECT r.statusCode, COUNT(r) AS count FROM fuz_responses r WHERE r.project.id = :projectId AND r.id <= :responseId GROUP BY r.statusCode ORDER BY r.id")
+    List<Object[]> findStatusCodesAndCountsByProjectIdAndMaxId(Long projectId, Long responseId);
+
+    @Query(value = "SELECT r FROM fuz_responses r WHERE r.project.id = :projectId ORDER BY r.createdAt")
+    List<FuzResponse> findByProjectId(Long projectId, Pageable pageable);
 
 }

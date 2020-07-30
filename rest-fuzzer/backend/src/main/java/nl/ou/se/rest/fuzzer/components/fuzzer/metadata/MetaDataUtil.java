@@ -45,12 +45,14 @@ public class MetaDataUtil {
         public static final String DEFAULTS = "defaults";
         public static final String DEFAULT_VALUE = "default";
 
+        // all fuzzers
+        public static final String MAX_NUMBER_REQUESTS = "maxNumRequests";
+        
         // basic fuzzer && dictionary fuzzer
         public static final String REPETITIONS = "repetitions";
 
         // model-based fuzzers
         public static final String MAX_SEQUENCE_LENGTH = "maxSequenceLength";
-        public static final String MAX_NUMBER_REQUESTS = "maxNumRequests";
 
         // (model-based) dictionary fuzzers
         public static final String DICTIONARIES = "dictionaries";

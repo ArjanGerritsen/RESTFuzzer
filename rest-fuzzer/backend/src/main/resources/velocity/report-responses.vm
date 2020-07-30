@@ -35,7 +35,8 @@
       xmax=$xMax,
       ymin=0,
       ytick={$yTicks},
-      height=8cm,    
+      height=8cm,
+      width=\textwidth,      
       grid style=dotted,
     }
 
@@ -56,7 +57,7 @@
       ymajorgrids=true,
       xlabel={time [seconds]},
       xtick={$xTicks},
-      ylabel={cummulative response count},
+      ylabel={cummulative responses count},
       legend cell align={left},
       legend pos=north west,
     ]

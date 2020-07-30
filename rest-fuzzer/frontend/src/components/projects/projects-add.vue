@@ -67,7 +67,8 @@
             v-model="metaDataTuplesJson.repetitions"
             type="range"
             min="1"
-            max="25000"
+            step="1"
+            max="1000"
           ></b-form-input>
           <div class="mt-2">Repetitions: {{ metaDataTuplesJson.repetitions }}</div>
           <hr />
@@ -92,7 +93,7 @@
           <hr />
         </div>
 
-        <div v-if="isTypeMb || isTypeMbDict">
+        <div>
           <b-form-group
             label="Maximum number of requests:"
             label-for="max-requests"
@@ -236,6 +237,10 @@ export default {
     setMetaDataTuplesJson() {
       this.metaDataTuplesJson.configuration = this.getConfigurationJson();
 
+      this.metaDataTuplesJson.maxNumRequests = Number(
+        this.metaDataTuplesJson.maxNumRequests
+      );
+
       if (
         this.project.type === "BASIC_FUZZER" ||
         this.project.type === "DICTIONARY_FUZZER"
@@ -254,12 +259,8 @@ export default {
         this.metaDataTuplesJson.maxSequenceLength = Number(
           this.metaDataTuplesJson.maxSequenceLength
         );
-        this.metaDataTuplesJson.maxNumRequests = Number(
-          this.metaDataTuplesJson.maxNumRequests
-        );
       } else {
         delete this.metaDataTuplesJson.maxSequenceLength;
-        delete this.metaDataTuplesJson.maxNumRequests;
       }
 
       if (
@@ -268,7 +269,7 @@ export default {
       ) {
         this.metaDataTuplesJson.dictionaries = this.dictionaries;
       } else {
-        delete this.metaDataTuplesJson.repetitions;
+        delete this.metaDataTuplesJson.dictionaries;
       }
 
       if (

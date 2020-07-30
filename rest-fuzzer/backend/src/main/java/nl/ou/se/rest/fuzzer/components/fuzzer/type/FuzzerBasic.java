@@ -49,6 +49,7 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
         executorUtil.setAuthentication(metaDataUtil.getAuthentication());
 
         // get meta
+        Integer maxNumRequests = metaDataUtil.getIntegerValue(Meta.MAX_NUMBER_REQUESTS);
         Integer repetitions = metaDataUtil.getIntegerValue(Meta.REPETITIONS);
 
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
@@ -56,6 +57,11 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
 
         int count = 0;
         int total = repetitions * actions.size();
+        
+        // cap at maxNumRequests
+        if (total > maxNumRequests) {
+            total = maxNumRequests;
+        }
 
         // init requestUtil
         requestUtil.init(project, metaDataUtil.getDefaults());
@@ -70,12 +76,16 @@ public class FuzzerBasic extends FuzzerBase implements Fuzzer {
 
                 count++;
                 saveTaskProgress(task, count, total);
+
+                if (count == total) {
+                    return;
+                }
             }
         }
     }
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
         this.metaDataUtil = new MetaDataUtil(metaDataTuples);
-        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.REPETITIONS);
+        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.MAX_NUMBER_REQUESTS, Meta.REPETITIONS);
     }
 }

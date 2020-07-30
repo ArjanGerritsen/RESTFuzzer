@@ -7,9 +7,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -17,9 +14,11 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import nl.ou.se.rest.fuzzer.components.data.fuz.dao.FuzResponseService;
+import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
 import nl.ou.se.rest.fuzzer.components.data.report.dao.ReportService;
 import nl.ou.se.rest.fuzzer.components.data.report.domain.Report;
 import nl.ou.se.rest.fuzzer.components.data.task.dao.TaskService;
@@ -51,7 +50,7 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
     private List<Integer> statusCodes;
 
     private MetaDataUtil metaDataUtil = null;
-    private SortedMap<Long, List<Object[]>> data = new TreeMap<>();
+    private DataTable dataTable = new DataTable();
 
     @Autowired
     private FuzResponseService responseService;
@@ -72,7 +71,7 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
         this.task = task;
         this.statusCodes = responseService.findUniqueStatusCodesForProject(report.getProject().getId());
 
-        data.clear(); // reset
+        dataTable.reset();
     }
 
     public void generate() {
@@ -93,24 +92,34 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
     }
 
     private void gatherData() {
-        LocalDateTime start = responseService.findMinCreatedByProjectId(report.getProject().getId());
+        Integer page = 1;
         Integer pointsInterval = this.metaDataUtil.getIntegerValue(Meta.POINTS_INTERVAL);
 
-        LocalDateTime from = null;
-        LocalDateTime to = null;
+        /**
+         * TODO, Eigenlijk createdAt van request die bij deze response hoort.
+         */
+        FuzResponse firstResponse = responseService.findByProjectId(report.getProject().getId(), PageRequest.of(0, 1)).get(0);
 
         do {
-            from = ((to == null) ? start : to);
-            to = from.plusSeconds(pointsInterval);
+            List<FuzResponse> responses = responseService.findByProjectId(report.getProject().getId(), PageRequest.of((page * pointsInterval), 1));
+            if (responses.isEmpty()) {
+                break;
+            }
 
-            List<Object[]> statusCodesAndCounts = responseService
-                    .findStatusCodesAndCountsByProjectIdAndDateAndInterval(report.getProject().getId(), from, to);
+            FuzResponse response = responses.get(0);
+
+            List<Object[]> statusCodesAndCounts = responseService.findStatusCodesAndCountsByProjectIdAndMaxId(report.getProject().getId(), response.getId());
 
             if (statusCodesAndCounts.isEmpty()) {
                 break;
             }
 
-            data.put(ChronoUnit.SECONDS.between(start, to), statusCodesAndCounts);
+            response = responseService.findByProjectId(report.getProject().getId(), PageRequest.of(page * pointsInterval, 1)).get(0);
+            Long secondsPassed = ChronoUnit.SECONDS.between(firstResponse.getCreatedAt(), response.getCreatedAt());
+
+            dataTable.add(page * pointsInterval, secondsPassed, statusCodesAndCounts);
+
+            page++;
 
         } while (true);
     }
@@ -122,7 +131,9 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
 
         VelocityContext vc = new VelocityContext();
 
-        List<List<Object>> dataLines = getDataLines();
+        List<List<Object>> dataLines = getHeaderLines();
+        dataLines.addAll(dataTable.getDataLines(this.statusCodes));
+
         List<String> dataLineStrings = dataLines.stream().map(line -> ObjectListtoString(line, SEPERATOR_COMMA))
                 .collect(Collectors.toList());
 
@@ -144,58 +155,23 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
 
         return sw.toString();
     }
-
-    private List<List<Object>> getDataLines() {
-        List<List<Object>> dateLines = new ArrayList<>();
-
+    
+    private List<List<Object>> getHeaderLines() {
+        List<List<Object>> headerLines = new ArrayList<List<Object>>();
+        
         // header line
         List<Object> columnHeaders = new ArrayList<>();
-        columnHeaders.add(HEADER_TIME_PASSED);
         columnHeaders.add(HEADER_TOTAL_RESPONSES);
-        this.statusCodes.forEach(c -> columnHeaders.add(c.toString()));
-        dateLines.add(columnHeaders);
+        columnHeaders.add(HEADER_TIME_PASSED);
+        statusCodes.forEach(c -> columnHeaders.add(c.toString()));
+        headerLines.add(columnHeaders);
 
         // line with zeros for each column
         List<Object> zeros = new ArrayList<>();
         IntStream.rangeClosed(1, columnHeaders.size()).forEach(i -> zeros.add(0));
-        dateLines.add(zeros);
-
-        // values
-        Integer totalRequests = 0;
-        SortedMap<Integer, Integer> statusCodesTotals = new TreeMap<>();
-
-        for (Entry<Long, List<Object[]>> entry : this.data.entrySet()) {
-            List<Object> dataLine = new ArrayList<>();
-
-            dataLine.add(entry.getKey().intValue()); // time passed
-
-            totalRequests += entry.getValue().stream().mapToInt(statusAndCount -> {
-                return Long.valueOf((long) statusAndCount[1]).intValue();
-            }).sum();
-
-            // cumulative response count total
-            dataLine.add(totalRequests);
-
-            for (Integer statusCode : this.statusCodes) {
-                Integer statusCodeCount = entry.getValue().stream().filter(statusAndCount -> {
-                    return statusAndCount[0].equals(statusCode);
-                }).mapToInt(statusAndCount -> {
-                    return Long.valueOf((long) statusAndCount[1]).intValue();
-                }).sum();
-
-                if (statusCodesTotals.containsKey(statusCode)) {
-                    statusCodeCount += statusCodesTotals.get(statusCode);
-                }
-                statusCodesTotals.put(statusCode, statusCodeCount);
-
-                // cumulative response count for current response type
-                dataLine.add(statusCodeCount);
-            }
-
-            dateLines.add(dataLine);
-        }
-
-        return dateLines;
+        headerLines.add(zeros);
+        
+        return headerLines;
     }
 
     private List<String> getPlots() {
