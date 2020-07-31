@@ -47,16 +47,16 @@
 
         <div>
           <b-form-group
-            label="Interval (seconds):"
+            label="Interval (responses):"
             label-for="points-interval"
-            description="Set interval points in seconds"
+            description="Set interval points responses"
           >
             <b-form-input
               id="points-interval"
               v-model="metaDataTuplesJson.pointsInterval"
               type="range"
               min="10"
-              max="250"
+              max="1000"
               step="5"
             ></b-form-input>
             <div class="mt-2">Points interval: {{ metaDataTuplesJson.pointsInterval }}</div>
@@ -76,7 +76,7 @@
               v-model="metaDataTuplesJson.xTickInterval"
               type="range"
               min="10"
-              max="1000"
+              max="2500"
               step="10"
             ></b-form-input>
             <div class="mt-2">Grid interval x-axis: {{ metaDataTuplesJson.xTickInterval }}</div>
@@ -96,7 +96,7 @@
               v-model="metaDataTuplesJson.yTickInterval"
               type="range"
               min="10"
-              max="1000"
+              max="2500"
               step="10"
             ></b-form-input>
             <div class="mt-2">Grid interval y-axis: {{ metaDataTuplesJson.yTickInterval }}</div>

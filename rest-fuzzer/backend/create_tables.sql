@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS rmd_suts (
 CREATE TABLE IF NOT EXISTS rmd_actions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   path VARCHAR(255) NOT NULL,
-  http_method ENUM('GET', 'POST', 'PATCH', 'PUT', 'DELETE') NOT NULL,
+  http_method ENUM('GET', 'PATCH', 'POST', 'PUT', 'DELETE') NOT NULL,
   sut_id INT,
   created_at DATETIME NULL  
 ) ENGINE=INNODB;

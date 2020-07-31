@@ -16,6 +16,18 @@
       "httpMethod": ".*"
     },
     {
+      "path": "/wp/v2/block-renderer/\\{name\\}",
+      "httpMethod": ".*"
+    },
+    {
+      "path": "/wp/v2/pages/\\{parent\\}/revisions/\\{id\\}",
+      "httpMethod": ".*"
+    },
+    {
+      "path": "/wp/v2/posts/\\{parent\\}/revisions/\\{id\\}",
+      "httpMethod": ".*"
+    },
+    {
       "path": "/wp/v2/users/\\{id\\}",
       "httpMethod": "PATCH|POST|PUT"
     },

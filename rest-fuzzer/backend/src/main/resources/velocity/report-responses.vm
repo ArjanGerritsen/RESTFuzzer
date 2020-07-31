@@ -20,6 +20,7 @@
 }{\reponsesReportOne}
 
 \begin{figure}
+  \centering
   \tiny
   \captionsetup{font=tiny}
 
@@ -33,13 +34,12 @@
       scale only axis,
       legend style={at={(1.15,0.5)},anchor=west,draw=none,mark=none},
       cycle list name=line styles,
-      width=\textwidth,
       xmin=0,
       xmax=$xMax,
       ymin=0,
       ytick={$yTicks},
-      height=8cm,
-      width=\textwidth,      
+      height=6cm,
+      width=0.9\textwidth,
       grid style=dotted,
     }
 
