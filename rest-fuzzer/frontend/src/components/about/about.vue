@@ -24,6 +24,7 @@
                 <b-tab title="v0.09 | xx-08-2020">
                   <b-card-text>
                     <ul>
+                      <li>Fix: Update report when task is finished / refresh list.</li>
                       <li>Fix: SUT selection is empty when adding new fuzzing projects.</li>
                       <li>Fix: Clear results for fuzzing project doesn't work correct.</li>
                       <li>TODO Refactor createdAt to constructors instead of factories.</li>

@@ -13,6 +13,8 @@ import java.util.stream.IntStream;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,8 @@ import nl.ou.se.rest.fuzzer.components.reporter.ReporterBase;
 public class ResponsesReporter extends ReporterBase implements Reporter {
 
     // variable(s)
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
     private static final String SEPERATOR_COMMA = ",";
 
     private static final String HEADER_TIME_PASSED = "time";
@@ -50,7 +54,7 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
     private List<Integer> statusCodes;
 
     private MetaDataUtil metaDataUtil = null;
-    private DataTable dataTable = new DataTable();
+    private DataTable dataTable;
 
     @Autowired
     private FuzResponseService responseService;
@@ -69,7 +73,11 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
     public void init(Report report, Task task) {
         this.report = report;
         this.task = task;
-        this.statusCodes = responseService.findUniqueStatusCodesForProject(report.getProject().getId());
+
+        List<Object[]> statusCodesWithPresence = responseService.findUniqueStatusCodesForProjectOrderByPresence(report.getProject().getId());
+        this.statusCodes = statusCodesWithPresence.stream().map(objectArray -> (int) objectArray[0]).collect(Collectors.toList()); 
+
+        this.dataTable = new DataTable(this.statusCodes);
 
         dataTable.reset();
     }
@@ -95,33 +103,40 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
         Integer page = 1;
         Integer pointsInterval = this.metaDataUtil.getIntegerValue(Meta.POINTS_INTERVAL);
 
-        /**
-         * TODO, Eigenlijk createdAt van request die bij deze response hoort.
-         */
-        FuzResponse firstResponse = responseService.findByProjectId(report.getProject().getId(), PageRequest.of(0, 1)).get(0);
+        LocalDateTime startedAt = getStartedAt();
+        if (startedAt == null) {
+            // TODO LOG
+            logger.warn("OOPS");
+            return;
+        }
 
         do {
-            List<FuzResponse> responses = responseService.findByProjectId(report.getProject().getId(), PageRequest.of((page * pointsInterval), 1));
+            List<FuzResponse> responses = responseService.findByProjectId(report.getProject().getId(), PageRequest.of((page * pointsInterval) -1, 1));
             if (responses.isEmpty()) {
                 break;
             }
 
             FuzResponse response = responses.get(0);
-
             List<Object[]> statusCodesAndCounts = responseService.findStatusCodesAndCountsByProjectIdAndMaxId(report.getProject().getId(), response.getId());
-
+            
             if (statusCodesAndCounts.isEmpty()) {
                 break;
             }
 
-            response = responseService.findByProjectId(report.getProject().getId(), PageRequest.of(page * pointsInterval, 1)).get(0);
-            Long secondsPassed = ChronoUnit.SECONDS.between(firstResponse.getCreatedAt(), response.getCreatedAt());
-
+            Integer secondsPassed = (int) ChronoUnit.SECONDS.between(startedAt, response.getCreatedAt());
             dataTable.add(page * pointsInterval, secondsPassed, statusCodesAndCounts);
-
             page++;
 
         } while (true);
+    }
+
+    private LocalDateTime getStartedAt() {
+        List<FuzResponse> responses = responseService.findByProjectId(this.report.getProject().getId(), PageRequest.of(0, 1));
+        if (responses.isEmpty()) {
+            return null;
+        }
+        FuzResponse firstResponse = responses.get(0);
+        return firstResponse.getRequest().getCreatedAt();
     }
 
     private String parseTemplate() {
@@ -132,7 +147,7 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
         VelocityContext vc = new VelocityContext();
 
         List<List<Object>> dataLines = getHeaderLines();
-        dataLines.addAll(dataTable.getDataLines(this.statusCodes));
+        dataLines.addAll(dataTable.getDataLines());
 
         List<String> dataLineStrings = dataLines.stream().map(line -> ObjectListtoString(line, SEPERATOR_COMMA))
                 .collect(Collectors.toList());
@@ -174,10 +189,17 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
         return headerLines;
     }
 
-    private List<String> getPlots() {
-        List<String> plots = new ArrayList<>();
-        this.statusCodes.forEach(c -> plots.add(c.toString()));
+    private List<Object[]> getPlots() {
+        List<Object[]> plots = new ArrayList<>();
+        this.statusCodes.forEach(statusCode -> plots.add(getPlot(statusCode)));
         return plots;
+    }
+
+    private Object[] getPlot(Integer statusCode) {
+        Object[] plot = new Object[2];
+        plot[0] = statusCode.toString();
+        plot[1] = this.dataTable.getMaxForStatusCode(statusCode);
+        return plot;
     }
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {

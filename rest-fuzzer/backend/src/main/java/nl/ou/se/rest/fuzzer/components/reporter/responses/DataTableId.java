@@ -4,10 +4,10 @@ public class DataTableId implements Comparable<DataTableId> {
 
     // variable(s)
     private Integer numRequests;
-    private Long seconds;
+    private Integer seconds;
 
     // constructor(s)
-    public DataTableId(Integer numRequests, Long seconds) {
+    public DataTableId(Integer numRequests, Integer seconds) {
         this.numRequests = numRequests;
         this.seconds = seconds;
     }
@@ -16,7 +16,7 @@ public class DataTableId implements Comparable<DataTableId> {
     public int compareTo(DataTableId other) {
         return this.getNumRequests().compareTo(other.getNumRequests());
     }
-    
+
     // getter(s) and setter(s)
     public Integer getNumRequests() {
         return numRequests;
@@ -26,11 +26,11 @@ public class DataTableId implements Comparable<DataTableId> {
         this.numRequests = numRequests;
     }
 
-    public Long getSeconds() {
+    public Integer getSeconds() {
         return seconds;
     }
 
-    public void setSeconds(Long seconds) {
+    public void setSeconds(Integer seconds) {
         this.seconds = seconds;
     }
 }

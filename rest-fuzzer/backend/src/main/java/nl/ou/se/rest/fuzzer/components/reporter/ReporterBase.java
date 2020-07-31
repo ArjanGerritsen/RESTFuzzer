@@ -9,11 +9,12 @@ import org.apache.velocity.app.VelocityEngine;
 
 public class ReporterBase {
 
+    // method(s)
     protected List<Integer> getYticks(List<List<Object>> dataLines, Integer interval) {
         List<Object> lastLine = dataLines.get(dataLines.size() - 1);
         Integer max = lastLine.subList(2, lastLine.size()).stream().mapToInt(v -> {
             if (v instanceof Double) {
-              return ((Double) v).intValue();    
+                return ((Double) v).intValue();
             }
             return (Integer) v;
         }).max().getAsInt();
