@@ -33,6 +33,7 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
     private List<String> dictionaryValues = new ArrayList<String>();
 
     List<RmdAction> actions;
+    Integer maxNumRequests;
     Integer repetitions;
     Integer maxDictionaryParams;
     Integer maxDictionaryItems;
@@ -62,7 +63,12 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
         this.init(); 
 
         Integer count = 0;
-        Integer total = this.repetitions * this.actions.size();
+        Integer total = this.repetitions * this.actions.size() * maxDictionaryParams * maxDictionaryItems;
+
+        // cap at maxNumRequests
+        if (total > maxNumRequests) {
+            total = maxNumRequests;
+        }
 
         for (Integer i = 0; i < this.repetitions; i++) {
 
@@ -81,19 +87,25 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
 
                         FuzResponse response = executorUtil.processRequest(requestCopy);
                         responseService.save(response);
+                        
+                        count++;
+                        saveTaskProgress(task, count, total);
+
+                        if (count >= total) {
+                            return;
+                        }                        
                     }
                 }
-                count++;
-                saveTaskProgress(task, count, total);
             }
         }
     }
-    
+
     public void init() {
         // authentication
         executorUtil.setAuthentication(metaDataUtil.getAuthentication());
 
         // get meta
+        this.maxNumRequests = metaDataUtil.getIntegerValue(Meta.MAX_NUMBER_REQUESTS);
         this.repetitions = metaDataUtil.getIntegerValue(Meta.REPETITIONS);
         this.maxDictionaryParams = metaDataUtil.getIntegerValue(Meta.MAX_DICTIONARY_PARAMS);
         this.maxDictionaryItems = metaDataUtil.getIntegerValue(Meta.MAX_DICTIONARY_ITEMS);
@@ -112,7 +124,7 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {
         this.metaDataUtil = new MetaDataUtil(metaDataTuples);
-        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.REPETITIONS, Meta.DICTIONARIES, Meta.MAX_DICTIONARY_PARAMS,
+        return metaDataUtil.isValid(Meta.CONFIGURATION, Meta.MAX_NUMBER_REQUESTS, Meta.REPETITIONS, Meta.DICTIONARIES, Meta.MAX_DICTIONARY_PARAMS,
                 Meta.MAX_DICTIONARY_ITEMS);
     }
 }
