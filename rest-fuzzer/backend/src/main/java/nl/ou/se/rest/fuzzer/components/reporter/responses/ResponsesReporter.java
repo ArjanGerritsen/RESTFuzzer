@@ -29,6 +29,7 @@ import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil;
 import nl.ou.se.rest.fuzzer.components.fuzzer.metadata.MetaDataUtil.Meta;
 import nl.ou.se.rest.fuzzer.components.reporter.Reporter;
 import nl.ou.se.rest.fuzzer.components.reporter.ReporterBase;
+import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service
 public class ResponsesReporter extends ReporterBase implements Reporter {
@@ -74,8 +75,10 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
         this.report = report;
         this.task = task;
 
-        List<Object[]> statusCodesWithPresence = responseService.findUniqueStatusCodesForProjectOrderByPresence(report.getProject().getId());
-        this.statusCodes = statusCodesWithPresence.stream().map(objectArray -> (int) objectArray[0]).collect(Collectors.toList()); 
+        List<Object[]> statusCodesWithPresence = responseService
+                .findUniqueStatusCodesForProjectOrderByPresence(report.getProject().getId());
+        this.statusCodes = statusCodesWithPresence.stream().map(objectArray -> (int) objectArray[0])
+                .collect(Collectors.toList());
 
         this.dataTable = new DataTable(this.statusCodes);
 
@@ -103,44 +106,74 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
         Integer page = 1;
         Integer pointsInterval = this.metaDataUtil.getIntegerValue(Meta.POINTS_INTERVAL);
 
-        LocalDateTime startedAt = getStartedAt();
-        if (startedAt == null) {
-            // TODO LOG
-            logger.warn("OOPS");
+        FuzResponse firstResponse = getFirstResponse();
+        if (firstResponse == null) {
+            logger.warn(String.format(Constants.Reporter.NO_RESPONSESES, report.getId()));
             return;
         }
 
+        LocalDateTime startedAt = firstResponse.getRequest().getCreatedAt();
+
+        boolean endReached = false;
+
         do {
-            List<FuzResponse> responses = responseService.findByProjectId(report.getProject().getId(), PageRequest.of((page * pointsInterval) -1, 1));
+            List<FuzResponse> responses = responseService.findByProjectId(report.getProject().getId(),
+                    PageRequest.of((page * pointsInterval) - 1, 1));
+
+            System.out.println("1");
+            
             if (responses.isEmpty()) {
-                break;
+                responses = responseService.findTopByProjectIdOrderByIdDesc(this.report.getProject().getId());
+
+                System.out.println("1 A");
+                
+                if (endReached || responses.isEmpty()) {
+
+                    System.out.println("1 B");
+
+                    break;
+                }
+
+                endReached = true;
             }
 
-            FuzResponse response = responses.get(0);
-            List<Object[]> statusCodesAndCounts = responseService.findStatusCodesAndCountsByProjectIdAndMaxId(report.getProject().getId(), response.getId());
+            System.out.println("2");
             
+            FuzResponse lastResponse = responses.get(0);
+
+            List<Object[]> statusCodesAndCounts = responseService
+                    .findStatusCodesAndCountsByProjectIdAndMaxId(report.getProject().getId(), lastResponse.getId());
+
             if (statusCodesAndCounts.isEmpty()) {
                 break;
             }
 
-            Integer secondsPassed = (int) ChronoUnit.SECONDS.between(startedAt, response.getCreatedAt());
-            dataTable.add(page * pointsInterval, secondsPassed, statusCodesAndCounts);
+            Integer secondsPassed = (int) ChronoUnit.SECONDS.between(startedAt, lastResponse.getCreatedAt());
+            Integer countResponses = responseService.countByProjectIdAndFromIdAndUntilId(report.getProject().getId(),
+                    firstResponse.getId(), lastResponse.getId()).intValue();
+
+            System.out.println("seconds: " + secondsPassed);
+            System.out.println("respons: " + countResponses);
+            
+            dataTable.add(countResponses, secondsPassed, statusCodesAndCounts);
             page++;
 
         } while (true);
     }
 
-    private LocalDateTime getStartedAt() {
-        List<FuzResponse> responses = responseService.findByProjectId(this.report.getProject().getId(), PageRequest.of(0, 1));
+    private FuzResponse getFirstResponse() {
+        List<FuzResponse> responses = responseService.findByProjectId(report.getProject().getId(),
+                PageRequest.of(0, 1));
+
         if (responses.isEmpty()) {
             return null;
         }
-        FuzResponse firstResponse = responses.get(0);
-        return firstResponse.getRequest().getCreatedAt();
+
+        return responses.get(0);
     }
 
     private String parseTemplate() {
-        VelocityEngine ve = this.getVelocityEngine(); 
+        VelocityEngine ve = this.getVelocityEngine();
 
         Template t = ve.getTemplate("velocity/report-responses.vm");
 
@@ -160,7 +193,8 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
 
         vc.put(VM_X_MAX, xTicks.remove(xTicks.size() - 1));
         vc.put(VM_X_TICKS, ObjectListtoString(xTicks, SEPERATOR_COMMA));
-        vc.put(VM_X_TICKS_LABELS, ObjectListtoString(getXticksLabels(dataLines.subList(1, dataLines.size()), xTicks), SEPERATOR_COMMA));
+        vc.put(VM_X_TICKS_LABELS,
+                ObjectListtoString(getXticksLabels(dataLines.subList(1, dataLines.size()), xTicks), SEPERATOR_COMMA));
 
         Integer yTicksInterval = this.metaDataUtil.getIntegerValue(Meta.Y_TICK_INTERVAL);
         vc.put(VM_Y_TICKS, ObjectListtoString(getYticks(dataLines, yTicksInterval), SEPERATOR_COMMA));
@@ -170,10 +204,10 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
 
         return sw.toString();
     }
-    
+
     private List<List<Object>> getHeaderLines() {
         List<List<Object>> headerLines = new ArrayList<List<Object>>();
-        
+
         // header line
         List<Object> columnHeaders = new ArrayList<>();
         columnHeaders.add(HEADER_TOTAL_RESPONSES);
@@ -185,7 +219,7 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
         List<Object> zeros = new ArrayList<>();
         IntStream.rangeClosed(1, columnHeaders.size()).forEach(i -> zeros.add(0));
         headerLines.add(zeros);
-        
+
         return headerLines;
     }
 

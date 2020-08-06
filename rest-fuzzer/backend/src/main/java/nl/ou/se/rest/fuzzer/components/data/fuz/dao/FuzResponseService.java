@@ -41,4 +41,10 @@ public interface FuzResponseService extends CrudRepository<FuzResponse, Long> {
     @Query(value = "SELECT r FROM fuz_responses r LEFT JOIN FETCH r.request req WHERE r.project.id = :projectId ORDER BY r.createdAt")
     List<FuzResponse> findByProjectId(Long projectId, Pageable pageable);
 
+    // get the last response
+    List<FuzResponse> findTopByProjectIdOrderByIdDesc(Long projectId);
+
+    @Query(value = "SELECT COUNT(r) AS count FROM fuz_responses r WHERE r.project.id = :projectId AND r.id >= :fromId AND r.id <= :untilId")
+    Long countByProjectIdAndFromIdAndUntilId(Long projectId, Long fromId, Long untilId);
+
 }

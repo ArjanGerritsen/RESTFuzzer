@@ -38,7 +38,7 @@
       xmax=$xMax,
       ymin=0,
       ytick={$yTicks},
-      height=6cm,
+      height=5cm,
       width=0.9\textwidth,
       grid style=dotted,
     }

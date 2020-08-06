@@ -21,9 +21,10 @@
           <b-card-text>
             <b-card no-body>
               <b-tabs card pills vertical>
-                <b-tab title="v0.09 | xx-08-2020">
+                <b-tab title="v0.09 | xx-08-2020" active>
                   <b-card-text>
                     <ul>
+                      <li>Allow limiting all fuzzers to a maximum number of requests.</li>
                       <li>Fix: Update report when task is finished / refresh list.</li>
                       <li>Fix: SUT selection is empty when adding new fuzzing projects.</li>
                       <li>Fix: Clear results for fuzzing project doesn't work correct.</li>
@@ -31,7 +32,7 @@
                     </ul>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="v0.08 | 22-07-2020" active>
+                <b-tab title="v0.08 | 22-07-2020">
                   <b-card-text>
                     <ul>
                       <li>Add/execute initial version dictionary fuzzing.</li>

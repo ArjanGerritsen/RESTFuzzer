@@ -48,4 +48,9 @@ public abstract class Constants {
 		public static final String STOP = TASK_PREFIX + "Stop";
 
 	}
+
+	// Reporter
+	public abstract class Reporter {
+        public static final String NO_RESPONSESES = "Report: %s: No responses found";
+	}
 }
