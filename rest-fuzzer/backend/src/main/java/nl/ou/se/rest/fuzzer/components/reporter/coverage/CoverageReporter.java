@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,8 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,14 +39,17 @@ import nl.ou.se.rest.fuzzer.components.reporter.Reporter;
 import nl.ou.se.rest.fuzzer.components.reporter.ReporterBase;
 import nl.ou.se.rest.fuzzer.components.reporter.coverage.calculation.CoverageFile;
 import nl.ou.se.rest.fuzzer.components.reporter.coverage.calculation.PhpFile;
+import nl.ou.se.rest.fuzzer.components.shared.Constants;
 import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 
 @Service
 public class CoverageReporter extends ReporterBase implements Reporter {
 
     // variable(s)
-    private static String PATH_XDEBUG_FILES = "C://temp";
-    private static String PATH_ENDPOINTS = "C:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\";
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());	
+	
+    private static String PATH_XDEBUG_FILES = "/Users/arjan/ws/test/deel"; // "C://temp";
+    private static String PATH_ENDPOINTS = "C:/xampp/apps/wordpress/htdocs/wp-includes/rest-api/"; // "C:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\";
 
     private Report report;
     private Task task;
@@ -104,6 +110,8 @@ public class CoverageReporter extends ReporterBase implements Reporter {
 
         List<Path> filesOnDisk = Stream.of(new File(PATH_XDEBUG_FILES).listFiles()).filter(file -> !file.isDirectory())
                 .map(file -> file.toPath()).collect(Collectors.toList());
+        
+        Collections.sort(filesOnDisk);
 
         CoverageFile current = null;
         CoverageFile previous = null;
@@ -137,8 +145,8 @@ public class CoverageReporter extends ReporterBase implements Reporter {
                     current.merge(previous);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-                // TODO
+                logger.warn(String.format(Constants.Reporter.IO_EXCEPTION, report.getId(), e.getMessage()));
+                break;
             }
 
             previous = current;
@@ -150,8 +158,8 @@ public class CoverageReporter extends ReporterBase implements Reporter {
 
                 List<Object> dataLine = new ArrayList<>();
 
-                dataLine.add(time);
                 dataLine.add(responsesCount);
+                dataLine.add(time);
                 dataLine.add(current.codeCoveragePercentageFiltered(PATH_ENDPOINTS));
                 dataLine.add(current.linesExecuted(PATH_ENDPOINTS));
                 dataLine.add(current.codeCoveragePercentage());

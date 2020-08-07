@@ -37,12 +37,12 @@ public class PhpFile {
     }
 
     public String path() {
-        Path path = Paths.get(this.name);
+        Path path = Paths.get(this.name.replaceAll("\\\\", "/"));
         return path.getParent().toString();
     }
 
     public String shortName() {
-        Path path = Paths.get(this.name);
+        Path path = Paths.get(this.name.replaceAll("\\\\", "/"));
         return path.getFileName().toString();
     }
 

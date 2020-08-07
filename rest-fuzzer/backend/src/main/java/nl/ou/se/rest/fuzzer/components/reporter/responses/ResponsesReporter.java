@@ -119,25 +119,16 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
         do {
             List<FuzResponse> responses = responseService.findByProjectId(report.getProject().getId(),
                     PageRequest.of((page * pointsInterval) - 1, 1));
-
-            System.out.println("1");
             
             if (responses.isEmpty()) {
                 responses = responseService.findTopByProjectIdOrderByIdDesc(this.report.getProject().getId());
-
-                System.out.println("1 A");
                 
                 if (endReached || responses.isEmpty()) {
-
-                    System.out.println("1 B");
-
                     break;
                 }
 
                 endReached = true;
             }
-
-            System.out.println("2");
             
             FuzResponse lastResponse = responses.get(0);
 
@@ -151,9 +142,6 @@ public class ResponsesReporter extends ReporterBase implements Reporter {
             Integer secondsPassed = (int) ChronoUnit.SECONDS.between(startedAt, lastResponse.getCreatedAt());
             Integer countResponses = responseService.countByProjectIdAndFromIdAndUntilId(report.getProject().getId(),
                     firstResponse.getId(), lastResponse.getId()).intValue();
-
-            System.out.println("seconds: " + secondsPassed);
-            System.out.println("respons: " + countResponses);
             
             dataTable.add(countResponses, secondsPassed, statusCodesAndCounts);
             page++;

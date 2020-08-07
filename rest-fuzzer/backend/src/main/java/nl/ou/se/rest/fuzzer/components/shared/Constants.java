@@ -51,6 +51,7 @@ public abstract class Constants {
 
 	// Reporter
 	public abstract class Reporter {
-        public static final String NO_RESPONSESES = "Report: %s: No responses found";
+        public static final String NO_RESPONSESES = "Report: %s - No responses found";
+		public static final String IO_EXCEPTION = "Report: %s - IO Exception reading XDEBUG information - %s";
 	}
 }
