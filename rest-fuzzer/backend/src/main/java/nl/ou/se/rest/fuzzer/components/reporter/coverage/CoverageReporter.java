@@ -48,7 +48,7 @@ public class CoverageReporter extends ReporterBase implements Reporter {
     // variable(s)
     private Logger logger = LoggerFactory.getLogger(this.getClass().getName());	
 	
-    private static String PATH_XDEBUG_FILES = "/Users/arjan/ws/test/deel"; // "C://temp";
+    private static String PATH_XDEBUG_FILES = "/Users/arjan/ws/test/"; // "C://temp";
     private static String PATH_ENDPOINTS = "C:/xampp/apps/wordpress/htdocs/wp-includes/rest-api/"; // "C:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\";
 
     private Report report;
@@ -151,9 +151,9 @@ public class CoverageReporter extends ReporterBase implements Reporter {
 
             previous = current;
 
-            time = getCorrectedTime(time, pointsInterval);
+            // time = getCorrectedTime(time, pointsInterval);
 
-            if (time != null) {
+            if (responsesCount % pointsInterval == 0 || responsesCount == filesOnDisk.size()) {
                 System.out.println("adding ... ");
 
                 List<Object> dataLine = new ArrayList<>();
