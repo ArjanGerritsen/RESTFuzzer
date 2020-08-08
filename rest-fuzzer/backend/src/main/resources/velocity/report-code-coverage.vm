@@ -48,7 +48,7 @@
       xtick={$xTicks},
       xticklabels={$xTicksLabels},    
     ]
-      \addplot[color=white, draw opacity=0] table[x = time, y = $plots[0]] from \reponsesReportOne;
+      \addplot[color=white, draw opacity=0] table[x = time, y = $plots[0][0]] from \reponsesReportOne;
     \end{axis}
 
     \begin{axis}[
@@ -61,7 +61,8 @@
       legend pos=north west,
     ]
       #foreach($plot in $plots)
-       \addplot table[x = time, y = $plot] from \reponsesReportOne;
+       \addplot table[x = time, y = $plot[0]] from \reponsesReportOne;
+       node[pos=1.0, pin={[pin distance=.15cm]0:$plot[1]}]{};       
        \addlegendentry{$plot}
       #end
     \end{axis}

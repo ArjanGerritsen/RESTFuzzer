@@ -48,8 +48,8 @@ public class CoverageReporter extends ReporterBase implements Reporter {
     // variable(s)
     private Logger logger = LoggerFactory.getLogger(this.getClass().getName());	
 	
-    private static String PATH_XDEBUG_FILES = "/Users/arjan/ws/test/"; // "C://temp";
-    private static String PATH_ENDPOINTS = "C:/xampp/apps/wordpress/htdocs/wp-includes/rest-api/"; // "C:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\";
+    private static String PATH_XDEBUG_FILES = "c:/temp"; // "/Users/arjan/ws/test/";
+    private static String PATH_ENDPOINTS = "c:/xampp/apps/wordpress/htdocs/wp-includes/rest-api/"; // "C:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\";
 
     private Report report;
     private Task task;
@@ -130,8 +130,8 @@ public class CoverageReporter extends ReporterBase implements Reporter {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS");
             LocalDateTime localDateTime = LocalDateTime.parse(fileOnDisk.getFileName().toString(), formatter);
 
-            System.out.println(fileOnDisk.getFileName().toString() + " => " + localDateTime);
-            
+            logger.debug(String.format(Constants.Reporter.PROCESSING_FILE, fileOnDisk.getFileName().toString(), localDateTime));
+
             if (startTime == null) {
                 startTime = localDateTime;
             }
@@ -151,11 +151,8 @@ public class CoverageReporter extends ReporterBase implements Reporter {
 
             previous = current;
 
-            // time = getCorrectedTime(time, pointsInterval);
-
             if (responsesCount % pointsInterval == 0 || responsesCount == filesOnDisk.size()) {
-                System.out.println("adding ... ");
-
+                logger.debug(String.format(Constants.Reporter.ADD_INTERVAL, responsesCount));
                 List<Object> dataLine = new ArrayList<>();
 
                 dataLine.add(responsesCount);
@@ -171,31 +168,6 @@ public class CoverageReporter extends ReporterBase implements Reporter {
             task.setProgress(new BigDecimal((responsesCount * 100) / filesOnDisk.size()));
             taskService.save(this.task);
         }
-    }
-
-    private Integer getCorrectedTime(Integer time, Integer pointsInterval) {
-        System.out.println("time: " + time);
-
-        if (time <= 0) {
-            return null;
-        }
-
-        Integer lastValue = (Integer) this.dataLines.get(this.dataLines.size() - 1).get(0);
-        if (time.equals(lastValue)) {
-            return null;
-        }
-
-        // no exact match, correcting
-        if (time > (lastValue + pointsInterval)) {
-            System.out.println("correctiong " + time + " to " + lastValue + pointsInterval);
-            time = lastValue + pointsInterval;
-        }
-
-        if (time % pointsInterval == 0) {
-            return time;
-        }
-
-        return null;
     }
 
     private String parseTemplate() {
