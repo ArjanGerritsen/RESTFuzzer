@@ -85,7 +85,6 @@ public class FuzzerModelBasedDictionary extends FuzzerBase implements Fuzzer {
 
         // for all actions
         for (RmdAction action : this.actions) {
-            FuzRequest request = requestUtil.getRequestFromAction(action, null);
 
             // for all selected parameters
             List<RmdParameter> parameters = RandomUtil.getFromValues(action.getParameters(), maxDictionaryParams);
@@ -95,8 +94,11 @@ public class FuzzerModelBasedDictionary extends FuzzerBase implements Fuzzer {
                 List<String> dictionaryValues = RandomUtil.getFromValues(this.dictionaryValues, maxDictionaryItems);
                 for (String dictionaryValue : dictionaryValues) {
 
+                    // create request
+                    FuzRequest request = requestUtil.getRequestFromAction(action, null);
+
                     // create sequence
-                    List<FuzRequest> requests = getRequestsForSequence(action, request.getDeepCopy());
+                    List<FuzRequest> requests = getRequestsForSequence(action, request);
                     FuzSequence sequence = sequenceFactory.create(sequencePosition, requests.size(), project).build();
                     sequenceService.save(sequence);
 
@@ -104,14 +106,14 @@ public class FuzzerModelBasedDictionary extends FuzzerBase implements Fuzzer {
 
                     requestCount += sequence.getRequests().size();
 
-                    if (requestCount >= maxRequests) {
-                        // TODO !!! ABORT
-                        // TODO Progress ???
-                    }
-
                     // update sequence
                     sequenceService.save(sequence);
                     sequencePosition++;
+                    
+                    if (requestCount >= maxRequests) {
+                        saveTaskProgress(task, total, total);
+                        return;
+                    }
                 }
             }
 

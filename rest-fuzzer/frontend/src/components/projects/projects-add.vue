@@ -74,7 +74,7 @@
           <hr />
         </b-form-group>
 
-        <div v-if="isTypeMb || isTypeMbDict">
+        <div v-if="isTypeMb">
           <b-form-group
             label="Maximum sequence length:"
             label-for="sequence-length"
@@ -253,8 +253,7 @@ export default {
       }
 
       if (
-        this.project.type === "MB_FUZZER" ||
-        this.project.type === "MB_DICTIONARY_FUZZER"
+        this.project.type === "MB_FUZZER"
       ) {
         this.metaDataTuplesJson.maxSequenceLength = Number(
           this.metaDataTuplesJson.maxSequenceLength

@@ -73,7 +73,6 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
         for (Integer i = 0; i < this.repetitions; i++) {
 
             for (RmdAction a : this.actions) {
-                FuzRequest request = requestUtil.getRequestFromAction(a, null);
 
                 List<RmdParameter> parameters = RandomUtil.getFromValues(a.getParameters(), maxDictionaryParams);
                 for (RmdParameter parameter : parameters) {
@@ -81,13 +80,13 @@ public class FuzzerDictionary extends FuzzerBase implements Fuzzer {
                     List<String> dictionaryValues = RandomUtil.getFromValues(this.dictionaryValues, maxDictionaryItems);
                     for (String dictionaryValue : dictionaryValues) {
 
-                        FuzRequest requestCopy = request.getDeepCopy();
-                        requestCopy.replaceParameterValue(parameter, dictionaryValue);
-                        requestService.save(requestCopy);
+                        FuzRequest request = requestUtil.getRequestFromAction(a, null);
+                        request.replaceParameterValue(parameter, dictionaryValue);
+                        requestService.save(request);
 
-                        FuzResponse response = executorUtil.processRequest(requestCopy);
+                        FuzResponse response = executorUtil.processRequest(request);
                         responseService.save(response);
-                        
+
                         count++;
                         saveTaskProgress(task, count, total);
 

@@ -38,7 +38,7 @@ public interface FuzResponseService extends CrudRepository<FuzResponse, Long> {
     @Query(value = "SELECT r.statusCode, COUNT(r) AS count FROM fuz_responses r WHERE r.project.id = :projectId AND r.id <= :responseId GROUP BY r.statusCode ORDER BY r.id")
     List<Object[]> findStatusCodesAndCountsByProjectIdAndMaxId(Long projectId, Long responseId);
 
-    @Query(value = "SELECT r FROM fuz_responses r LEFT JOIN FETCH r.request req WHERE r.project.id = :projectId ORDER BY r.createdAt")
+    @Query(value = "SELECT r FROM fuz_responses r LEFT JOIN FETCH r.request req WHERE r.project.id = :projectId ORDER BY r.id")
     List<FuzResponse> findByProjectId(Long projectId, Pageable pageable);
 
     // get the last response
