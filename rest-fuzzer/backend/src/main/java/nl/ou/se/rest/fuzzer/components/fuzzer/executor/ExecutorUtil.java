@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzRequest;
 import nl.ou.se.rest.fuzzer.components.data.fuz.domain.FuzResponse;
 import nl.ou.se.rest.fuzzer.components.data.fuz.factory.FuzResponseFactory;
+import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 @Service
 public class ExecutorUtil {
@@ -85,9 +86,7 @@ public class ExecutorUtil {
         }
         Long ms = ldt.until(LocalDateTime.now(), ChronoUnit.MILLIS);
 
-        logger.info(String.format("it took %s ms to execute request and capture response", ms)); // TODO Kan straks weg,
-                                                                                                 // is alleen voor
-                                                                                                 // performance.
+        logger.info(String.format(Constants.Fuzzer.EXECUTION_TIME, ms));
 
         return createFuzResponse(request, response, failureReason);
     }

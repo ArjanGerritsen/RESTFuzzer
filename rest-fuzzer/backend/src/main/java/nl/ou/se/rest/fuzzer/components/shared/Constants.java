@@ -21,6 +21,7 @@ public abstract class Constants {
         public static final String META_DATA_INVALID = "Meta data value %s is invalid for %s";
         public static final String PARAMETER_TYPE_UNKNOWN = "Parameter type %s is unknown";
         public static final String PARAMETER_UNKNOWN = "Parameter %s (%s) is unknown";
+        public static final String EXECUTION_TIME = "Request processed in %s ms";
 	}
 
 	// Service
