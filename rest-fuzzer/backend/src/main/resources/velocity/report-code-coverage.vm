@@ -19,11 +19,15 @@
  #end
 }{\reponsesReportOne}
 
-\begin{figure}
+\begin{figure}[h]
+  \centering
   \tiny
   \captionsetup{font=tiny}
 
   \begin{tikzpicture}[]
+    \tikzset{
+      every pin/.style={text=white,fill=colour-blue-light!50!white,rectangle,rounded corners=3pt,font=\tiny},
+    }
   
     \pgfplotsset{
       every axis plot/.append style={thin},
@@ -40,7 +44,7 @@
     }
 
     \begin{axis}[
-      xlabel={number of responses},
+      xlabel={time [seconds]},
       hide y axis,
       xticklabel pos=right,
       xlabel near ticks,
@@ -48,21 +52,21 @@
       xtick={$xTicks},
       xticklabels={$xTicksLabels},    
     ]
-      \addplot[color=white, draw opacity=0] table[x = time, y = $plots[0][0]] from \reponsesReportOne;
+      \addplot[color=white, draw opacity=0] table[x = responses, y = $plots[0][0]] from \reponsesReportOne;
     \end{axis}
 
     \begin{axis}[
       xmajorgrids=true,
       ymajorgrids=true,
-      xlabel={time [seconds]},
+      xlabel={number of responses},
       xtick={$xTicks},
       ylabel={executed lines of code},
       legend cell align={left},
       legend pos=north west,
     ]
       #foreach($plot in $plots)
-       \addplot table[x = time, y = $plot[0]] from \reponsesReportOne;
-       node[pos=1.0, pin={[pin distance=.15cm]0:$plot[1]}]{};       
+       \addplot table[x = responses, y = $plot[0]] from \reponsesReportOne
+       node[pos=1.0, pin={[pin distance=.15cm]0:$plot[1]}]{};
        \addlegendentry{$plot}
       #end
     \end{axis}

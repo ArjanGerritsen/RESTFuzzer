@@ -15,9 +15,16 @@ public class CoverageFile {
             return;
         }
 
+        int pre = this.linesExecuted();
+
         this.phpFiles.entrySet().forEach(entry -> {
             entry.getValue().merge(report.getPhpFiles().get(entry.getKey()));
         });
+
+        if (pre > this.linesExecuted()) {
+            int j = 1;
+            int k = j + 100;
+        }
     }
 
     public Object codeCoveragePercentageFiltered(String filter) {

@@ -46,10 +46,25 @@ import nl.ou.se.rest.fuzzer.components.shared.JsonUtil;
 public class CoverageReporter extends ReporterBase implements Reporter {
 
     // variable(s)
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());	
-	
-    private static String PATH_XDEBUG_FILES = "c:/temp"; // "/Users/arjan/ws/test/";
-    private static String PATH_ENDPOINTS = "c:/xampp/apps/wordpress/htdocs/wp-includes/rest-api/"; // "C:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\";
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
+    /**
+     * Variants:
+     * 
+     * - "/Users/arjan/ws/test/"; - "c:/temp/mb-5k";
+     * 
+     */
+    private static String PATH_XDEBUG_FILES = "c:/temp/mb-5k";
+
+    /**
+     * Variants:
+     * 
+     * - "c:\\xampp\\apps\\wordpress\\htdocs\\wp-includes\\rest-api\\"; -
+     * "c:/xampp/apps/wordpress/htdocs/wp-includes/rest-api/"; -
+     * "\\/var\\/www\\/html\\/wordpress\\/wp-includes\\/rest-api\\/";
+     * 
+     */
+    private static String PATH_ENDPOINTS = "\\var\\www\\html\\wordpress\\wp-includes\\rest-api\\";
 
     private Report report;
     private Task task;
@@ -110,11 +125,11 @@ public class CoverageReporter extends ReporterBase implements Reporter {
 
         List<Path> filesOnDisk = Stream.of(new File(PATH_XDEBUG_FILES).listFiles()).filter(file -> !file.isDirectory())
                 .map(file -> file.toPath()).collect(Collectors.toList());
-        
+
         Collections.sort(filesOnDisk);
 
         CoverageFile current = null;
-        CoverageFile previous = null;
+        CoverageFile sum = null;
 
         Integer responsesCount = 0;
         LocalDateTime startTime = null;
@@ -130,7 +145,8 @@ public class CoverageReporter extends ReporterBase implements Reporter {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS");
             LocalDateTime localDateTime = LocalDateTime.parse(fileOnDisk.getFileName().toString(), formatter);
 
-            logger.debug(String.format(Constants.Reporter.PROCESSING_FILE, fileOnDisk.getFileName().toString(), localDateTime));
+            logger.info(String.format(Constants.Reporter.PROCESSING_FILE, fileOnDisk.getFileName().toString(),
+                    localDateTime));
 
             if (startTime == null) {
                 startTime = localDateTime;
@@ -141,15 +157,17 @@ public class CoverageReporter extends ReporterBase implements Reporter {
             try {
                 current = processFile(fileOnDisk);
 
-                if (current != null && previous != null) {
-                    current.merge(previous);
+                if (current != null && sum != null) {
+                    sum.merge(current);
                 }
             } catch (IOException e) {
                 logger.warn(String.format(Constants.Reporter.IO_EXCEPTION, report.getId(), e.getMessage()));
                 break;
             }
 
-            previous = current;
+            if (sum == null) { 
+                sum = current; // initialize sum
+            }
 
             if (responsesCount % pointsInterval == 0 || responsesCount == filesOnDisk.size()) {
                 logger.debug(String.format(Constants.Reporter.ADD_INTERVAL, responsesCount));
@@ -157,10 +175,10 @@ public class CoverageReporter extends ReporterBase implements Reporter {
 
                 dataLine.add(responsesCount);
                 dataLine.add(time);
-                dataLine.add(current.codeCoveragePercentageFiltered(PATH_ENDPOINTS));
-                dataLine.add(current.linesExecuted(PATH_ENDPOINTS));
-                dataLine.add(current.codeCoveragePercentage());
-                dataLine.add(current.linesExecuted());
+                dataLine.add(sum.codeCoveragePercentageFiltered(PATH_ENDPOINTS));
+                dataLine.add(sum.linesExecuted(PATH_ENDPOINTS));
+                dataLine.add(sum.codeCoveragePercentage());
+                dataLine.add(sum.linesExecuted());
 
                 this.dataLines.add(dataLine);
             }
@@ -203,8 +221,8 @@ public class CoverageReporter extends ReporterBase implements Reporter {
 
     private List<String> getHeaders() {
         List<String> headers = new ArrayList<>();
-        headers.add(HEADER_TIME_PASSED);
         headers.add(HEADER_TOTAL_RESPONSES);
+        headers.add(HEADER_TIME_PASSED);
         headers.add(HEADER_CC_PERC_ENDPOINTS);
         headers.add(HEADER_LOC_EXECUTED_ENDPOINTS);
         headers.add(HEADER_CC_PERC_TOTAL);
@@ -213,27 +231,35 @@ public class CoverageReporter extends ReporterBase implements Reporter {
         return headers;
     }
 
-    private List<String> getPlots() {
-        List<String> plots = new ArrayList<>();
-        plots.add(HEADER_LOC_EXECUTED_ENDPOINTS);
-        plots.add(HEADER_LOC_EXECUTED_TOTAL);
+    private List<Object[]> getPlots() {
+        List<Object[]> plots = new ArrayList<>();
+        plots.add(getPlot(HEADER_LOC_EXECUTED_ENDPOINTS));
+        plots.add(getPlot(HEADER_LOC_EXECUTED_TOTAL));
 
         return plots;
+    }
+
+    private Object[] getPlot(String title) {
+        Object[] plot = new Object[2];
+        plot[0] = title;
+        plot[1] = 0; // TODO
+
+        return plot;
     }
 
     private static CoverageFile processFile(Path path) throws IOException {
         String fileContent = Files.readString(path, StandardCharsets.UTF_8);
         Map<String, Object> objects = JsonUtil.stringToMap(fileContent);
 
-        CoverageFile coverageReport = new CoverageFile();
+        CoverageFile coverageFile = new CoverageFile();
 
         Map<String, PhpFile> phpFiles = new HashMap<>();
         objects.entrySet().forEach(entry -> {
             phpFiles.put(entry.getKey(), processFileEntry(entry));
         });
-        coverageReport.setPhpFiles(phpFiles);
+        coverageFile.setPhpFiles(phpFiles);
 
-        return coverageReport;
+        return coverageFile;
     }
 
     private static PhpFile processFileEntry(Entry<String, Object> entry) {
