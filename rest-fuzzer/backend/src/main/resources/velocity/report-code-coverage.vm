@@ -34,12 +34,12 @@
       scale only axis,
       legend style={at={(1.15,0.5)},anchor=west,draw=none,mark=none},
       cycle list name=line styles,
-      width=\textwidth,
+      width=0.9\textwidth,
       xmin=0,
       xmax=$xMax,
       ymin=0,
       ytick={$yTicks},
-      height=8cm,    
+      height=5cm,    
       grid style=dotted,
     }
 
@@ -67,7 +67,7 @@
       #foreach($plot in $plots)
        \addplot table[x = responses, y = $plot[0]] from \reponsesReportOne
        node[pos=1.0, pin={[pin distance=.15cm]0:$plot[1]}]{};
-       \addlegendentry{$plot}
+       \addlegendentry{$plot[0]}
       #end
     \end{axis}
   \end{tikzpicture}
