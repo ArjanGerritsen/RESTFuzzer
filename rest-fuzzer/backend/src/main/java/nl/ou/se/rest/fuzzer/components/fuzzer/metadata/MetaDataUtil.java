@@ -162,6 +162,17 @@ public class MetaDataUtil {
         return actions;
     }
 
+    public List<RmdAction> getCorrectedActions(List<RmdAction> actions) {
+        List<ConfigurationParameter> excludeParameters = this.getExcludeParameters();
+
+        if (excludeParameters != null && !excludeParameters.isEmpty()) {
+            actions = actions.stream().map(action -> removeMatchedParameters(action, excludeParameters))
+                    .collect(Collectors.toList());
+        }
+
+        return actions;
+    }    
+
     public Map<ConfigurationParameter, Object> getDefaults() {
         Map<ConfigurationParameter, Object> defaults = new HashMap<>();
 
@@ -276,6 +287,7 @@ public class MetaDataUtil {
 
     private RmdAction removeMatchedParameters(RmdAction action, List<ConfigurationParameter> parameters) {
         List<RmdParameter> parametersToRemove = new ArrayList<RmdParameter>();
+
         for (RmdParameter parameter : action.getParameters()) {
             for (ConfigurationParameter cp : parameters) {
                 if (cp.getAction().matches(action) && cp.matches(parameter)) {

@@ -178,6 +178,9 @@ public class FuzzerModelBasedDictionary extends FuzzerBase implements Fuzzer {
         this.maxDictionaryItems = metaDataUtil.getIntegerValue(Meta.MAX_DICTIONARY_ITEMS);
 
         // actions
+        List<RmdAction> allActions = actionService.findBySutId(this.project.getSut().getId());
+        allActions = metaDataUtil.getCorrectedActions(allActions);
+
         this.actions = actionService.findBySutId(this.project.getSut().getId());
         this.actions = metaDataUtil.getFilteredActions(this.actions);
 
@@ -191,7 +194,8 @@ public class FuzzerModelBasedDictionary extends FuzzerBase implements Fuzzer {
 
         // sequences information
         List<RmdActionDependency> dependencies = actionDependencyService.findBySutId(this.project.getSut().getId());
-        this.sequenceUtil = new SequenceUtil(actions, dependencies);
+
+        this.sequenceUtil = new SequenceUtil(allActions, actions, dependencies);
     }
 
     public Boolean isMetaDataValid(Map<String, Object> metaDataTuples) {

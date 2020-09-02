@@ -18,14 +18,16 @@ public class SequenceUtil {
     private static final String SEPERATOR = ",";
     private static final int NUM_SEQUENCES_SINGLE_LENGTH = 3;
 
-    private List<RmdAction> actions = new ArrayList<>();
+    private List<RmdAction> allActions = new ArrayList<>();
+    private List<RmdAction> filteredActions = new ArrayList<>();
     private List<RmdActionDependency> dependencies = new ArrayList<>();
 
     private Map<Long, List<Long>> mappedDepencies = new HashMap<>();
     private Map<Long, RmdAction> mappedActions = new HashMap<>();
 
-    public SequenceUtil(List<RmdAction> actions, List<RmdActionDependency> dependencies) {
-        this.actions = actions;
+    public SequenceUtil(List<RmdAction> allActions, List<RmdAction> filteredActions, List<RmdActionDependency> dependencies) {
+        this.allActions = allActions;
+        this.filteredActions = filteredActions;
         this.dependencies = dependencies;
         this.init();
     }
@@ -44,7 +46,7 @@ public class SequenceUtil {
         });
 
         // initialise mapped actions
-        this.actions.forEach(a -> {
+        this.allActions.forEach(a -> {
             this.mappedActions.put(a.getId(), a);
         });
     }
@@ -72,11 +74,11 @@ public class SequenceUtil {
     private List<String> createNewSequences(List<String> sequences) {
         List<String> newSequences = new ArrayList<String>();
         if (sequences.isEmpty()) {
-            newSequences = this.actions.stream().map(a -> a.getId().toString()).filter(s -> satisfiesAllDependencies(s))
+            newSequences = this.filteredActions.stream().map(a -> a.getId().toString()).filter(s -> satisfiesAllDependencies(s))
                     .collect(Collectors.toList());
         } else {
             for (String sequence : sequences) {
-                for (RmdAction action : this.actions) {
+                for (RmdAction action : this.filteredActions) {
                     String newSequence = sequence.concat(SEPERATOR + action.getId().toString());
                     if (satisfiesAllDependencies(newSequence)) {
                         newSequences.add(newSequence);

@@ -67,12 +67,15 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
         executorUtil.setAuthentication(metaDataUtil.getAuthentication());
 
         // get sequences
+        List<RmdAction> allActions = actionService.findBySutId(this.project.getSut().getId());
+        allActions = metaDataUtil.getCorrectedActions(allActions);
+
         List<RmdAction> actions = actionService.findBySutId(this.project.getSut().getId());
         actions = metaDataUtil.getFilteredActions(actions);
 
         List<RmdActionDependency> dependencies = actionDependencyService.findBySutId(this.project.getSut().getId());
 
-        SequenceUtil sequenceUtil = new SequenceUtil(actions, dependencies);
+        SequenceUtil sequenceUtil = new SequenceUtil(allActions, actions, dependencies);
         List<String> sequences = sequenceUtil.getValidSequences(maxSequenceLength);
 
         int total = sequenceUtil.getNumberOfRequests(sequences);
