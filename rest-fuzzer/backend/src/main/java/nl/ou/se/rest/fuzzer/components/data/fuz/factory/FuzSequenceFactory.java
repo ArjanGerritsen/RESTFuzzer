@@ -7,8 +7,8 @@ public class FuzSequenceFactory {
 
     private FuzSequence sequence;
 
-    public FuzSequenceFactory create(int position, int length, FuzProject project) {
-        sequence = new FuzSequence(position, length, project);
+    public FuzSequenceFactory create(int position, FuzProject project) {
+        sequence = new FuzSequence(position, project);
         return this;
     }
 

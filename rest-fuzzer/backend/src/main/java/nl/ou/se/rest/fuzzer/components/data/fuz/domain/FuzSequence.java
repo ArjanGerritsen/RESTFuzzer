@@ -53,9 +53,8 @@ public class FuzSequence implements Comparable<FuzSequence> {
     public FuzSequence() {
     }
 
-    public FuzSequence(int position, int length, FuzProject project) {
+    public FuzSequence(int position, FuzProject project) {
         this.position = position;
-        this.length = length;
         this.status = FuzSequenceStatus.CREATED;
         this.project = project;
         this.createdAt = LocalDateTime.now();
@@ -74,6 +73,7 @@ public class FuzSequence implements Comparable<FuzSequence> {
     public void addRequest(FuzRequest request) {
         request.setSequence(this);
         this.requests.add(request);
+        this.length = this.requests.size();
     }
 
     // getter(s) and setter(s)

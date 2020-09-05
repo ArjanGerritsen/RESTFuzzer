@@ -95,8 +95,7 @@ public class FuzzerModelBased extends FuzzerBase implements Fuzzer {
             FuzSequenceStatus status = FuzSequenceStatus.COMPLETED;
             List<RmdAction> actionsFromSequence = sequenceUtil.getActionsFromSequence(sequenceString);
 
-            FuzSequence sequence = sequenceFactory.create(sequencePosition, actionsFromSequence.size(), project)
-                    .build();
+            FuzSequence sequence = sequenceFactory.create(sequencePosition, project).build();
             sequenceService.save(sequence);
 
             // for each item in sequence

@@ -40,6 +40,10 @@ public class DependencyUtil {
                 break;
             }
         }
+        
+        if (response == null) {
+            return null;
+        }
 
         Object valueFromResponse = getValueFromResponse(response.getBody(), actionDependency.getParameterDependsOn());
 

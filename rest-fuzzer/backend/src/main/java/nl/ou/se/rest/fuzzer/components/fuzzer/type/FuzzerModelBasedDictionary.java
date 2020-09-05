@@ -3,7 +3,6 @@ package nl.ou.se.rest.fuzzer.components.fuzzer.type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,15 +93,15 @@ public class FuzzerModelBasedDictionary extends FuzzerBase implements Fuzzer {
                 List<String> dictionaryValues = RandomUtil.getFromValues(this.dictionaryValues, maxDictionaryItems);
                 for (String dictionaryValue : dictionaryValues) {
 
-                    // create request
-                    FuzRequest request = requestUtil.getRequestFromAction(action, null);
-
                     // create sequence
-                    List<FuzRequest> requests = getRequestsForSequence(action, request);
-                    FuzSequence sequence = sequenceFactory.create(sequencePosition, requests.size(), project).build();
+                    FuzSequence sequence = sequenceFactory.create(sequencePosition, project).build();
                     sequenceService.save(sequence);
 
-                    executeSequence(sequence, requests, parameter, dictionaryValue);
+                    // get all dependent actions + current action
+                    List<RmdAction> actionsInSequence = sequenceUtil.getDependentActions(action);
+                    actionsInSequence.add(action);
+
+                    executeSequence(sequence, actionsInSequence, parameter, dictionaryValue);
 
                     requestCount += sequence.getRequests().size();
 
@@ -124,33 +123,24 @@ public class FuzzerModelBasedDictionary extends FuzzerBase implements Fuzzer {
         saveTaskProgress(task, total, total);
     }
 
-    public List<FuzRequest> getRequestsForSequence(RmdAction action, FuzRequest request) {
-        List<FuzRequest> requests = null;
-
-        // get dependent actions
-        List<RmdAction> actions = sequenceUtil.getDependentActions(action);
-
-        requests = actions.stream().map(act -> requestUtil.getRequestFromAction(act, null))
-                .collect(Collectors.toList());
-        requests.add(request);
-
-        return requests;
-    }
-
-    public FuzSequence executeSequence(FuzSequence sequence, List<FuzRequest> requests, RmdParameter parameter,
+    public FuzSequence executeSequence(FuzSequence sequence, List<RmdAction> actions, RmdParameter parameter,
             String dictionaryValue) {
 
         FuzSequenceStatus status = FuzSequenceStatus.COMPLETED;
-
-        for (FuzRequest request : requests) {
+        
+        for (RmdAction action : actions) {
+            FuzRequest request = requestUtil.getRequestFromAction(action, sequence); 
 
             // apply dictionary fuzzing on last request in sequence
-            if (requests.size() == 1 || requests.get(requests.size() - 1).equals(request)) {
+            if (actions.size() == 1 || actions.get(actions.size() - 1).equals(action)) {
                 request.replaceParameterValue(parameter, dictionaryValue);
             }
 
             requestService.save(request);
+
+            // update and save sequence
             sequence.addRequest(request);
+            sequenceService.save(sequence);
 
             // execute requests
             FuzResponse response = executorUtil.processRequest(request);
