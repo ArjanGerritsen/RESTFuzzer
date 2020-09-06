@@ -99,7 +99,6 @@ public class FuzzerModelBasedDictionary extends FuzzerBase implements Fuzzer {
 
                     // get all dependent actions + current action
                     List<RmdAction> actionsInSequence = sequenceUtil.getDependentActions(action);
-                    actionsInSequence.add(action);
 
                     executeSequence(sequence, actionsInSequence, parameter, dictionaryValue);
 

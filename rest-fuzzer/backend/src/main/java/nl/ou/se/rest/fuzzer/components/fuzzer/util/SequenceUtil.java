@@ -62,13 +62,32 @@ public class SequenceUtil {
 
     public List<RmdAction> getDependentActions(RmdAction action) {
         List<RmdAction> actions = new ArrayList<>();
+        actions.add(action);
+        List<RmdAction> allActions = new ArrayList<>();
+        allActions = getDependentActions(actions);
+        Collections.reverse(allActions);
+        return allActions;
+    }
 
-        if (this.mappedDepencies.containsKey(action.getId())) {
-            List<Long> dependencies = this.mappedDepencies.get(action.getId());
-            actions = dependencies.stream().map(actionId -> this.mappedActions.get(actionId)).collect(Collectors.toList());
+    private List<RmdAction> getDependentActions(List<RmdAction> actions) {
+        List<RmdAction> dependentActions = new ArrayList<>(); 
+
+        for (RmdAction action : actions) {
+            if (this.mappedDepencies.containsKey(action.getId())) {
+                List<Long> dependencies = this.mappedDepencies.get(action.getId());
+                dependentActions.addAll(dependencies.stream().map(actionId -> this.mappedActions.get(actionId)).collect(Collectors.toList()));            
+            }
         }
 
-        return actions;
+        // only unique results
+        dependentActions = dependentActions.stream().distinct().collect(Collectors.toList());
+
+        if (!dependentActions.isEmpty()) {
+            actions.addAll(getDependentActions(dependentActions));
+            return actions;
+        } else {
+            return actions;
+        }
     }
 
     private List<String> createNewSequences(List<String> sequences) {
