@@ -22,6 +22,7 @@ public abstract class Constants {
         public static final String PARAMETER_TYPE_UNKNOWN = "Parameter type %s is unknown";
         public static final String PARAMETER_UNKNOWN = "Parameter %s (%s) is unknown";
         public static final String EXECUTION_TIME = "Request processed in %s ms";
+        public static final String NUMBER_OF_ACTIONS = "Number of actions to process: %s";
 	}
 
 	// Service

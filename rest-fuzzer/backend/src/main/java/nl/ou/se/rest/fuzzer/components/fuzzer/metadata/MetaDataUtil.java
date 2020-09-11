@@ -141,7 +141,7 @@ public class MetaDataUtil {
     public List<RmdAction> getFilteredActions(List<RmdAction> actions) {
         List<ConfigurationAction> includeActions = this.getIncludeActions();
         List<ConfigurationAction> excludeActions = this.getExcludeActions();
-
+        
         if (includeActions != null && !includeActions.isEmpty()) {
             actions = actions.stream().filter(action -> isActionMatched(action, includeActions))
                     .collect(Collectors.toList());
@@ -151,6 +151,8 @@ public class MetaDataUtil {
             actions = actions.stream().filter(action -> !isActionMatched(action, excludeActions))
                     .collect(Collectors.toList());
         }
+
+        logger.info(String.format(Constants.Fuzzer.NUMBER_OF_ACTIONS, actions.size()));
 
         List<ConfigurationParameter> excludeParameters = this.getExcludeParameters();
 
