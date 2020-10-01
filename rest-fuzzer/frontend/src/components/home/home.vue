@@ -7,14 +7,7 @@
       </template>
       <hr class="my-4">
       <p>
-        Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse potenti. 
-        Vivamus eget nunc quis quam dapibus laoreet at ut eros. 
-        Suspendisse pharetra interdum sem tincidunt bibendum.
-        Fusce vel cursus mauris.
-        Etiam blandit velit ac lorem euismod sodales id non magna.
-        Donec turpis lacus, condimentum vel massa vulputate, facilisis auctor libero. 
-        In vel maximus dolor.
-        Curabitur at sagittis erat. 
+        This web application contains four types of fuzzers capable of fuzzing REST web services by deferring a model from an OAS v2 specification.
       </p>
       <div class="button-group-left">
         <b-button size="sm" variant="primary" href="/suts">Start</b-button>

@@ -7,9 +7,13 @@
             <b-icon icon="list-task" font-scale="1"></b-icon>&nbsp;About
           </span>
           <b-card-text>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque dapibus tellus ut leo rhoncus vestibulum. Integer vel facilisis nibh. Ut ut diam a lacus sollicitudin posuere a vel arcu. Sed vehicula, enim sed bibendum ullamcorper, justo nisl finibus velit, eget hendrerit nunc felis et massa. Phasellus dignissim magna et turpis aliquam, vel facilisis purus viverra. Nunc volutpat libero id tortor pharetra, id tincidunt nisl egestas. Aenean nec bibendum odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce mollis odio ut est blandit lobortis. Maecenas vitae nisl at elit fringilla auctor. Phasellus fermentum eros vel dolor sodales blandit.</p>
-            <p>In sapien arcu, egestas et placerat eu, mattis sit amet libero. Nam tincidunt viverra pharetra. Aliquam at diam arcu. Aliquam eget diam vel odio scelerisque congue vitae ac lectus. Fusce aliquam metus elit, ut pulvinar turpis eleifend id. Integer ac tellus sagittis urna pharetra consequat a eget ligula. Nam congue quam eros, eu commodo orci commodo non. Praesent malesuada a ipsum ut rhoncus. In sed mi sed nunc dictum consequat sit amet non arcu. In et libero ut sem blandit mollis. Vestibulum nunc erat, molestie ut ullamcorper eu, eleifend nec nunc. Duis iaculis, odio non ultricies fringilla, dolor quam suscipit quam, vitae fringilla lorem nisl eget arcu.</p>
-            <p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse potenti. Vivamus eget nunc quis quam dapibus laoreet at ut eros. Suspendisse pharetra interdum sem tincidunt bibendum. Fusce vel cursus mauris. Etiam blandit velit ac lorem euismod sodales id non magna. Donec turpis lacus, condimentum vel massa vulputate, facilisis auctor libero. In vel maximus dolor. Curabitur at sagittis erat.</p>
+            <p>
+              This web application is a prototype fuzzer, capable of basic, model-based, dictionary, and model-based dictionary fuzzing.
+              It is developed as graduation assignment for the education Master Software Engineering on the <a href="http://www.ou.nl">Open Universiteit</a>.
+            </p>
+            <p>            
+              For more information please contact the researcher: <a href="mailto:research@arjangerritsen.nl">Arjan Gerritsen</a>.
+            </p>
           </b-card-text>
         </b-card>
       </div>
@@ -21,18 +25,34 @@
           <b-card-text>
             <b-card no-body>
               <b-tabs card pills vertical>
-                <b-tab title="v0.09 | xx-08-2020" active>
+                <b-tab title="v1.0.1 | 01-10-2020" active>
                   <b-card-text>
                     <ul>
-                      <li>Allow limiting all fuzzers to a maximum number of requests.</li>
-                      <li>Fix: Update report when task is finished / refresh list.</li>
-                      <li>Fix: SUT selection is empty when adding new fuzzing projects.</li>
-                      <li>Fix: Clear results for fuzzing project doesn't work correct.</li>
+                      <li>Verify/cleanup TODOs.</li>
+                    </ul>
+                  </b-card-text>
+                </b-tab>
+                <b-tab title="v1.0.0 | 01-09-2020">
+                  <b-card-text>
+                    <ul>
+                      <li>TODO: Aanvullen</li>
                       <li>TODO Refactor createdAt to constructors instead of factories.</li>
                     </ul>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="v0.08 | 22-07-2020">
+                <b-tab title="v0.0.9 | 26-08-2020">
+                  <b-card-text>
+                    <ul>
+                      <li>Allow limiting all fuzzers to a maximum number of requests.</li>
+                    </ul>
+                    <ul>                      
+                      <li>Fix: Update report when task is finished / refresh list.</li>
+                      <li>Fix: SUT selection is empty when adding new fuzzing projects.</li>
+                      <li>Fix: Clear results for fuzzing project doesn't work correct.</li>
+                    </ul>
+                  </b-card-text>
+                </b-tab>
+                <b-tab title="v0.0.8 | 22-07-2020">
                   <b-card-text>
                     <ul>
                       <li>Add/execute initial version dictionary fuzzing.</li>
@@ -40,7 +60,7 @@
                     </ul>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="v0.07 | 01-07-2020">
+                <b-tab title="v0.0.7 | 01-07-2020">
                   <b-card-text>
                     <ul>
                       <li>Add CRUD for reports (code coverage and responses status codes).</li>
@@ -49,7 +69,7 @@
                     </ul>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="v0.06 | 13-06-2020">
+                <b-tab title="v0.0.6 | 13-06-2020">
                   <b-card-text>
                     <ul>
                       <li>View all information with sequences for projects.</li>
@@ -58,11 +78,13 @@
                       <li>Default values in configuration.</li>
                       <li>Relation between request and action to display action details with request.</li>
                       <li>Use values from dependencies in sequence.</li>
+                    </ul>
+                    <ul>                      
                       <li>Fix. Sequences are not always valid.</li>
                     </ul>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="v0.05 | 13-05-2020">
+                <b-tab title="v0.0.5 | 13-05-2020">
                   <b-card-text>
                     <ul>
                       <li>Create sequences for MB fuzzing (implementing in fuzzing process + overview with fuzzing projects).</li>
@@ -77,7 +99,7 @@
                     </ul>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="v0.04 | 22-04-2020">
+                <b-tab title="v0.0.4 | 22-04-2020">
                   <b-card-text>
                     <ul>
                       <li>Configuration maintenance and selecting configuration for fuzzing projects.</li>
@@ -90,7 +112,7 @@
                     </ul>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="v0.03 | 23-03-2020">
+                <b-tab title="v0.0.3 | 23-03-2020">
                   <b-card-text>
                     <ul>
                       <li>Parameters for Fuzzing projects.</li>
@@ -104,7 +126,7 @@
                     </ul>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="v0.02 | 19-02-2020">
+                <b-tab title="v0.0.2 | 19-02-2020">
                   <b-card-text>
                     <ul>
                       <li>Display REST model description information.</li>
@@ -118,7 +140,7 @@
                     </ul>
                   </b-card-text>
                 </b-tab>
-                <b-tab title="v0.01 | 29-01-2020">
+                <b-tab title="v0.0.1 | 29-01-2020">
                   <b-card-text>
                     <ul>
                       <li>Project setup.</li>
