@@ -54,7 +54,7 @@ public class CoverageReporter extends ReporterBase implements Reporter {
      * - "/Users/arjan/ws/test/"; - "c:/temp/mb-5k";
      * 
      */
-    private static String PATH_XDEBUG_FILES = "c:/temp/mb-5k";
+    private static String PATH_XDEBUG_FILES = "C:/temp/mb-dict-5k-2e-keer";
 
     /**
      * Variants:

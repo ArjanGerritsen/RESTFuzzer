@@ -32,7 +32,6 @@
     \pgfplotsset{
       every axis plot/.append style={thin},
       scale only axis,
-      legend style={at={(1.15,0.5)},anchor=west,draw=none,mark=none},
       cycle list name=line styles,
       width=0.9\textwidth,
       xmin=0,
@@ -61,12 +60,11 @@
       xlabel={number of responses},
       xtick={$xTicks},
       ylabel={executed lines of code},
-      legend cell align={left},
-      legend pos=north west,
+      legend style={at={(0.5,-0.17)},anchor=north,legend cell align=left},
     ]
       #foreach($plot in $plots)
        \addplot table[x = responses, y = $plot[0]] from \reponsesReportOne
-       node[pos=1.0, pin={[pin distance=.15cm]0:$plot[1]}]{};
+       node[pos=1.0, pin={[pin distance=.15cm]270:$plot[1]}]{};
        \addlegendentry{$plot[0]}
       #end
     \end{axis}
