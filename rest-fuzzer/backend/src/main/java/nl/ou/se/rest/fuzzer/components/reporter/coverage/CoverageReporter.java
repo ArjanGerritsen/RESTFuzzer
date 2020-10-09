@@ -48,13 +48,7 @@ public class CoverageReporter extends ReporterBase implements Reporter {
     // variable(s)
     private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /**
-     * Variants:
-     * 
-     * - "/Users/arjan/ws/test/"; - "c:/temp/mb-5k";
-     * 
-     */
-    private static String PATH_XDEBUG_FILES = "C:/temp/mb-dict-5k-2e-keer";
+    private static String PATH_XDEBUG_FILES = "C:/temp/";
 
     /**
      * Variants:
@@ -242,7 +236,7 @@ public class CoverageReporter extends ReporterBase implements Reporter {
     private Object[] getPlot(String title) {
         Object[] plot = new Object[2];
         plot[0] = title;
-        plot[1] = 0; // TODO
+        plot[1] = 0;
 
         return plot;
     }

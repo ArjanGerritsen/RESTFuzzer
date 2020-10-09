@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.models.parameters.FormParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
@@ -17,7 +20,10 @@ import nl.ou.se.rest.fuzzer.components.shared.Constants;
 
 public abstract class ExtractorUtil {
 
-    // constants
+    // variable(s)
+    private static Logger logger = LoggerFactory.getLogger(ExtractorUtil.class);
+
+    // constant(s)
     public static final String KEY_TYPE = "TYPE";
 
     private static final String TYPE_ARRAY = "array";
@@ -168,7 +174,7 @@ public abstract class ExtractorUtil {
             // no enum
             break;
         default:
-            // TODO log error !!!
+            logger.warn(String.format(Constants.Extractor.UNKONW_ENUM_TYPE, property.getType()));
             break;
         }
         return result;

@@ -11,6 +11,7 @@ public abstract class Constants {
     
 	// Extractor
 	public abstract class Extractor {
+	    public static final String UNKONW_ENUM_TYPE = "Unkwon enum type: %s";
 	}
 
 	// Fuzzer

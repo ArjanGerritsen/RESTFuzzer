@@ -30,13 +30,21 @@
                     <ul>
                       <li>Verify/cleanup TODOs.</li>
                     </ul>
+                    <ul>
+                      <li>Known issue: Clearing project sequences, responses, and requests fails due to foreign key contraints and order of execution.</li>
+                      <li>Known issue: Pagination doens't work at the project page.</li>
+                      <li>Known issue: Refresh issues when creating new project (e.g. population of SUT list).</li>
+                    </ul>                    
                   </b-card-text>
                 </b-tab>
                 <b-tab title="v1.0.0 | 01-09-2020">
                   <b-card-text>
                     <ul>
-                      <li>TODO: Aanvullen</li>
-                      <li>TODO Refactor createdAt to constructors instead of factories.</li>
+                      <li>Update about and home page.</li>
+                      <li>Some improvements in de code coverage report.</li>
+                    </ul>
+                    <ul>
+                      <li>Fix: Model-based dictionary fuzzer, didn't use dependency information correctly.</li>
                     </ul>
                   </b-card-text>
                 </b-tab>
