@@ -60,7 +60,7 @@
       ymajorgrids=true,
       xlabel={responses},
       xtick={$xTicks},
-      ylabel={cummulative responses count},
+      ylabel={cumulative responses count},
       legend cell align={left},
       legend pos=north west,
     ]
